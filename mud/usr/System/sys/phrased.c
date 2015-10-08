@@ -26,7 +26,7 @@ inherit rep PHRASE_REPOSITORY;
    more before you assume it works, though.  Removing languages is
    possible, but much harder and you'll probably have to add a lot of
    code to Phantasmal. */
-#define INTL_NUM_LANG 5
+#define INTL_NUM_LANG 6
 
 /**************** Dealing with locales ****************************/
 
@@ -62,12 +62,16 @@ static void create(varargs int clone)
                 "esUS" :         LANG_espanolUS,
                 "espUS" :        LANG_espanolUS,
                 "US" :           LANG_englishUS,
+		"polish" :       LANG_polishPL,
+		"POLISH" :       LANG_polishPL,
+		"pl" :           LANG_polishPL,
+		"pol" :          LANG_polishPL,
+		"PL" :           LANG_polishPL,
+		"plPL" :         LANG_polishPL,
   ]);
 
-  langnames = ({ "debug", "none", "none", "US english",
-                   "broken spanish" });
-  localenames = ({ "dbUS", "noNO", "noNO", "enUS",
-                     "esUS" });
+  langnames = ({ "debug", "none", "none", "US english",	"broken spanish", "polski" });
+  localenames = ({ "dbUS", "noNO", "noNO", "enUS", "esUS", "plPL" });
 
   /* Set up base repository of phrases for localized MUD strings outside
      of any zone or world such as login greetings, menus and error

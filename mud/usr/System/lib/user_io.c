@@ -49,7 +49,7 @@ static void create(varargs int clone) {
       num_cols = 78;
 
       /* Default to enUS locale */
-      locale = PHRASED->language_by_name("english");
+      locale = PHRASED->language_by_name("polish");
 
       state_stack = ({ });
     }
