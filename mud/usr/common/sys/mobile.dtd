@@ -1,0 +1,8 @@
+~DTD{
+  ~mobile{type,name?,number?,body,data?}
+  ~type{string}
+  ~name{phrase}
+  ~number{int}
+  ~body{int}
+  ~data{unq}
+}

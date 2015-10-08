@@ -1,0 +1,5 @@
+bin/driver
+mud/kernel/data/**
+mud/log/**
+mud/usr/game/object/**
+mud/usr/game/users/**

@@ -1,0 +1,9 @@
+~bind{
+  ~tag{object}
+  ~code{/usr/common/obj/simple_room}
+}
+
+~bind{
+  ~tag{simple room}
+  ~code{/usr/common/obj/simple_room}
+}
