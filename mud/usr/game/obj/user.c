@@ -80,8 +80,6 @@ void upgraded(varargs int clone) {
 		     "out"       : "cmd_movement",
 
 		     "help"      : "cmd_help",
-		     "locale"    : "cmd_locale",
-		     "locales"   : "cmd_locales",
 		     "users"     : "cmd_users",
 		     "who"       : "cmd_users",
 		     "whoami"    : "cmd_whoami",
@@ -557,42 +555,6 @@ static void cmd_impbug(object user, string cmd, string str) {
 
 static void cmd_whoami(object user, string cmd, string str) {
   message("You are '" + Name + "'.\n");
-}
-
-static void cmd_locale(object user, string cmd, string str) {
-  int loc;
-  string lstr;
-
-  if (!str || STRINGD->is_whitespace(str)) {
-    /* Was only one word, the command itself */
-    lstr = PHRASED->name_for_language(get_locale());
-    message("Current locale: " + lstr + "\n");
-    return;
-  }
-
-  str = STRINGD->trim_whitespace(str);
-
-  /* Should only be one word -- the locale itself */
-  if (sscanf(str, "%*s %*s") == 2) {
-    /* Oops, more than one left, exit with error */
-    send_system_phrase("Usage: ");
-    message("locale <dialect>\n");
-    return;
-  }    
-
-  loc = PHRASED->language_by_name(str);
-  if(loc == -1) {
-    message("Unrecognized language or dialect: " + str + ".\n");
-    return;
-  }
-  set_locale(loc);
-  message("Setting locale to " + PHRASED->name_for_language(loc)
-	  + ".\n");
-  save_user_to_file();
-}
-
-static void cmd_locales(object user, string cmd, string str) {
-  message("Valid locales:\n  english\n  espanol\n\n");
 }
 
 static void cmd_look(object user, string cmd, string str) {
