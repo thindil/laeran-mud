@@ -1,7 +1,0 @@
-2015-10-08  Bartek thindil Jasicki  <thindil@laearan.pl>
-
-	* mud/usr/System/lib/user_io.c, mud/usr/System/sys/phrased.c,
-	mud/include/phantasmal/phrase.h : added Polish language
-
-	* ChangeLog: added ChangeLog file
-
