@@ -1,3 +1,3 @@
 #!/bin/sh
 
-./driver mud.dgd
+./driver mud.dgd &
