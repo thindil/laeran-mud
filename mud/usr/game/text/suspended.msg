@@ -1,6 +1,6 @@
-This MUD is under brief maintenance -- backing up, restoring or
-upgrading.  Due to DGD's lovely upgrade-in-place nature this should
-cause few problems but you'll need to try this connection again.
+Gra jest na przeglądzie technicznym -- tworzenie kopii zapasowej,
+przywracanie albo aktualizacja. Z pewnych względów technicznych, może
+to powodować niewielkie problemy w połączeniu.
 
-Normally upgrades take only a very short time for a MUD of our size.
-Please try back in five to ten seconds.  We apologize for the delay.
+Normalnie aktualizacje zabierają krótką chwilę. Proszę spróbować za
+kilka sekund ponownie. Przepraszamy za niedogodności.

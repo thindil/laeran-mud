@@ -1,16 +1,18 @@
-This MUD comes with ABSOLUTELY NO WARRANTY;
-for details, type "help warranty" after login.
-The server is public domain and you are welcome
-to redistribute it under certain conditions;
-Type "help copying" for details.
+.____                                       
+|    |   _____    ________________    ____  
+|    |   \__  \ _/ __ \_  __ \__  \  /    \ 
+|    |___ / __ \\  ___/|  | \// __ \|   |  \
+|_______ (____  /\___  >__|  (____  /___|  /
+        \/    \/     \/           \/     \/ 
 
-This is a Phantasmal-based MUD.  See
-"http://phantasmal.sf.net" for details.
+MUD napędzany parą
 
-The owners of this MUD can customize this file.
-It's located in /usr/game/text/welcome.msg.  But
-they haven't done so yet.
+Witaj na Laeran. Na razie jesteśmy jeszcze
+we wczesnej fazie rozwoju, wszystko może
+ulec zmianie.
 
-Enter Account Name or Close Connection Now
+Wprowadź nazwę konta albo zamknij połączenie.
+Jeżeli chcesz założyć nowe konto, wpisz wybraną
+przez siebie nawzę konta.
 
-Account Login: 
+Nazwa konta: 
