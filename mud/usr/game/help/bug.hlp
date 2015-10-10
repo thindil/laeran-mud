@@ -1,52 +1,55 @@
-~name{
-  ~enUS{bug,typo,idea}
-}
+~name{bug,literówka,idea,literowka}
 ~desc{
-  ~enUS{
-If you've found a typographical error ('typo') in a description of a MUD
-object, use the typo command.  For example:
+Jeżeli znalazłeś błąd ortograficzny bądź interpunkcyjny w opisach
+obiektów w grze, użyj komendy literowka. Na przykład: 
 
-  typo In this room, "their" should be "there".  Yur mud rox!
+  literowka w pokoju "Karczma" jest "ktury" a powinno być "który".
 
-If you've found a bug other than a typo, you can use the bug command.
-Give a significant description.  For example:
+Jeżeli znalazłeś błąd inny niż związany z tekstem, użyj komendy bug.
+Postaraj się podać jak najwięcej szczegółów na temat błędu. Przykład:
 
-  bug When I attack the dented lamp with my sledgehammer, it gets less dented!
+  bug próbowałem otworzyć drzwi w pokoju "Brama do Zamku" w krainie
+  "yrwpxy" ale zamiast otworzenia drzwi pojawił się komunikat:
+  "nie możesz tego zrobić".
 
-Feel free to contact an implementor directly to describe a more
-complicated bug.
+Nie krępuj się kontaktować bezpośrednio z Opiekunami Laeran aby
+opisać bardziej skomplikowane błędy.
 
-If you've got an idea or feature request, use the idea command:
+Jeżeli masz jakiś prosty (dający się bardzo łatwo opisać) pomysł
+albo opcję, użyj komendy idea:
 
-  idea You should be able to buy calcium tablets at the market.
+  idea dobrze byłoby dodać system poczty.
 
-Thanks!
-
-For what happens when you exploit a bug on this MUD, see "help exploits".
-}}
-
-
-~name{~enUS{exploit,exploits}}
-~desc{~enUS{
-
-Exploiting bugs in the game is a good way to lose your account or
-otherwise lose all benefits gained that way.  You'll also lose enough
-extra that we don't think you'll ever do it again.  Be warned.
-
-If you report bugs (see the "bug" and "typo" commands) you may be
-rewarded in-game for preventing an exploitable bug from being
-exploited.  You also get the warm fuzzy feeling of having improved the
-MUD.  Good job!
-
-}}
+Aby dowiedzieć się co się dzieje, kiedy korzystasz z błędów w grze,
+zobacz "pomoc wykorzystywanie".
+}
 
 
-~name{~enUS{feedback}}
-~desc{~enUS{
+~name{exploit,wykorzystywanie,eksploit,wykorzystanie}
+~desc{
 
-Some commands to help you give us feedback:
-help bug                Report general problems with the MUD world
-help typo               Report problems in in-room descriptions
-help impbug             Speak in real-time with any admins logged in
+Wykorzystywanie błędów w grze jest dobrym sposobem na pozbycie
+się konta czy pozbycia się rzeczy zdobytych w ten sposób. Oczywiście
+stracisz również coś ekstra a może nawet zapracujesz sobie na bana.
+Czuj się ostrzeżonym.
 
-}}
+Z drugiej strony, zgłaszając błędy (zobacz komendy "bug" i
+"literowka") możesz dostać nagrodę za zapobiegniecie wykorzystania
+danego błędu. Oraz oczywiście dostaniesz to miłe, ciepłe uczucie, że
+pomogłeś ulepszyć grę. Dobra robota!
+
+}
+
+
+~name{kontakt}
+~desc{
+
+Parę komend pomagających skontaktować się z Opiekunami:
+pomoc bug               Zgłaszanie ogólnych problemów z grą
+pomoc literowka         Zgłaszanie tekstowych problemów z grą
+pomoc idea              Zgłaszanie propozycji do gry
+
+Możesz oczywiście też, kontaktować się z nami poprzez maila, którego
+znajdziesz na strone gry.
+
+}
