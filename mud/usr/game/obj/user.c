@@ -84,7 +84,7 @@ void upgraded(varargs int clone) {
 		     "who"       : "cmd_users",
 		     "whoami"    : "cmd_whoami",
 		     "bug"       : "cmd_bug",
-		     "typo"      : "cmd_typo",
+		     "literowka" : "cmd_typo",
 		     "idea"      : "cmd_idea",
 		     "tell"      : "cmd_tell",
 
@@ -549,8 +549,25 @@ static void cmd_tell(object self, string cmd, string str) {
   }
 }
 
-static void cmd_impbug(object user, string cmd, string str) {
-  message("Unimplemented.  Use ooc.\n");
+/* Report bug */
+static void cmd_bug(object user, string cmd, string str)
+{
+  write_file("/usr/game/text/bug_reports.txt", Name + ": " + str + "\n\n");
+  message("Dziękujemy za zgłoszenie błędu.\n");
+}
+
+/* Report typo */
+static void cmd_typo(object user, string cmd, string str)
+{
+  write_file("/usr/game/text/typo_reports.txt", Name + ": " + str + "\n\n");
+  message("Dziękujemy za zgłoszenie literówki.\n");
+}
+
+/* Propose idea */
+static void cmd_idea(object user, string cmd, string str)
+{
+  write_file("/usr/game/text/idea_reports.txt", Name + ": " + str + "\n\n");
+  message("Dziękujemy za propozycję.\n");
 }
 
 static void cmd_whoami(object user, string cmd, string str) {
