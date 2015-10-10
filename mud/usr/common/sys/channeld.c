@@ -36,7 +36,7 @@ void upgraded(varargs int clone) {
 
   /* Note:  these must mesh with include/channel.h.  Don't just modify
      stuff here. */
-  channel_attributes = ({ ({ "OOC", 0 }),
+  channel_attributes = ({ ({ "PP", 0 }),
 			    ({ "Log", ATTRIB_ADMIN }),
 			    ({ "Error", ATTRIB_ADMIN }),
 			    });
@@ -132,7 +132,7 @@ void string_to_channel(int channel, string str, varargs int modifiers) {
   }
 }
 
-void chat_to_channel(int channel, object phrase, varargs int modifiers) {
+void chat_to_channel(int channel, string phrase, varargs int modifiers) {
   int    ctr, do_write;
   mixed *keys, *user_stuff;
   int    sub_dat;
@@ -160,13 +160,8 @@ void chat_to_channel(int channel, object phrase, varargs int modifiers) {
       string name;
 
       name = previous_object()->get_Name();
-      if(!name) { name = "Somebody"; }
-      user_stuff[0]->send_system_phrase("(OOC)");
-      user_stuff[0]->message(" " + name + " ");
-      user_stuff[0]->send_system_phrase("chats");
-      user_stuff[0]->message(": ");
-      user_stuff[0]->send_phrase(phrase);
-      user_stuff[0]->message("\r\n");
+      if(!name) { name = "Ktoś"; }
+      user_stuff[0]->message("(Globalny czat) " + name + " mówi: " + phrase + "\n");
     }
   }
 }

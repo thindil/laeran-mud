@@ -79,7 +79,7 @@ void upgraded(varargs int clone) {
 		     "in"        : "cmd_movement",
 		     "out"       : "cmd_movement",
 
-		     "help"      : "cmd_help",
+		     "pomoc"     : "cmd_help",
 		     "users"     : "cmd_users",
 		     "who"       : "cmd_users",
 		     "whoami"    : "cmd_whoami",
@@ -87,6 +87,7 @@ void upgraded(varargs int clone) {
 		     "literowka" : "cmd_typo",
 		     "idea"      : "cmd_idea",
 		     "tell"      : "cmd_tell",
+		     "pp"        : "cmd_ooc",
 
 		     "channel"   : "cmd_channels",
 		     "channels"  : "cmd_channels",
@@ -500,12 +501,7 @@ static void cmd_ooc(object user, string cmd, string str) {
     return;
   }
 
-  CHANNELD->chat_to_channel(CHANNEL_OOC, NEW_PHRASE(str));
-
-  send_system_phrase("(OOC)");
-  message(" ");
-  send_system_phrase("You chat");
-  message(": " + str + "\n");
+  CHANNELD->chat_to_channel(CHANNEL_OOC, str);
 }
 
 static void cmd_say(object user, string cmd, string str) {
