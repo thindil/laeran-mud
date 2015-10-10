@@ -991,3 +991,40 @@ static void cmd_list_tags(object user, string cmd, string str) {
 
   user->message_scroll(msg);
 }
+
+static void cmd_reports(object user, string cmd, string str)
+{
+  string report;
+  
+  if (!str)
+    {
+      user->message("Użycie: " + cmd + " bug, idea, literowka\n");
+      return;
+    }
+
+  switch(str)
+    {
+    case "bug":
+      report = read_file("/usr/game/text/bug_reports.txt");
+      break;
+    case "idea":
+      report = read_file("/usr/game/text/idea_reports.txt");
+      break;
+    case "literowka":
+      report = read_file("/usr/game/text/typo_reports.txt");
+      break;
+    default:
+      report = nil;
+      user->message("Użycie: " + cmd + " bug, idea, literowka\n");
+      return;
+    }
+
+  if (!report)
+    {
+      user->message("Brak zgłoszeń na ten temat.\n");
+    }
+  else
+    {
+      user->message_scroll(report + "\n");
+    }
+}

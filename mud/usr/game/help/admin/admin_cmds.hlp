@@ -18,6 +18,7 @@ require privilege on the caller's part to perform successfully.
 %who                Show those logged on, with IP addrs
 %log                Writes events to the system log
 %log_subscribe      Choose what log events get written to file
+%zgloszenia         Zobacz zgłoszenia błędów/literówek/pomysłów
 
 }}
 
@@ -262,5 +263,23 @@ the channel will send you all uncaught errors that the ErrorD
 receives.
 
 See also:  logfile, %log_subscribe
+
+}}
+
+~name{~enUS{zgloszenia, zgłoszenia}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+Administratorzy mogą przeglądać wszystkie zgłoszenia błędów, literówek
+czy pomysłów, które zostały wysłane przez graczy. Aby zobaczyć wybrane
+zgłoszenia należy podać rodzaj zgłoszeń. Użycie:
+
+zgloszenia bug - pokaże zgłoszenia wszytkich błędów
+zgloszenia idea - pokaże wszystkie zgłoszone propozycje
+zgloszenia literowka - pokaże wszystkie zgłoszenia literówek
+
+Wpisanie samej komendy czy też komendy z nieprawidłową opcją, pokaże
+wszystkie dostępne opcje dla komendy.
 
 }}

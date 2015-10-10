@@ -208,6 +208,8 @@ void upgraded(varargs int clone) {
 	"@write_log"           : ({ "cmd_writelog" }),
 	"%write_log"           : ({ "cmd_writelog" }),
 	"%log_subscribe"       : ({ "cmd_log_subscribe" }),
+	"%zgloszenia"          : ({ "cmd_reports" }),
+	"@zgloszenia"          : ({ "cmd_reports" }),
 
 	"%people"              : ({ "cmd_people" }),
 	"@people"              : ({ "cmd_people" }),
