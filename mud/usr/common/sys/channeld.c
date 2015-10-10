@@ -36,7 +36,7 @@ void upgraded(varargs int clone) {
 
   /* Note:  these must mesh with include/channel.h.  Don't just modify
      stuff here. */
-  channel_attributes = ({ ({ "PP", 0 }),
+  channel_attributes = ({ ({ "Globalny", 0 }),
 			    ({ "Log", ATTRIB_ADMIN }),
 			    ({ "Error", ATTRIB_ADMIN }),
 			    });
