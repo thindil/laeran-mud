@@ -11,9 +11,6 @@
 
 inherit COMMON_AUTO;
 
-/* Reference to Soundexd */
-private object  soundex;
-
 /* UNQ DTD for help entries */
 private object  help_dtd;
 
@@ -22,7 +19,6 @@ private int     num_loc;
 
 /* Help entries */
 private mixed*  exact_entries;
-private mapping sdx_entries;
 
 /* Known help directories/files */
 private mixed*  path_stack;
@@ -55,9 +51,6 @@ static void create(varargs int clone) {
     compile_object(UNQ_PARSER);
   if(!find_object(UNQ_DTD))
     compile_object(UNQ_DTD);
-
-  if(!find_object(SOUNDEXD)) { compile_object(SOUNDEXD); }
-  soundex = find_object(SOUNDEXD);
 
   path_stack = ({ });
 
@@ -152,7 +145,6 @@ void clear_help_entries(void) {
     for(iter = 0; iter < num_loc; iter++) {
       exact_entries[iter] = ([ ]);
     }
-    sdx_entries = ([ ]);
   }
 }
 
@@ -343,30 +335,6 @@ mixed* query_exact_with_keywords(string key, object user, string* kw) {
     return nil;
 }
 
-mixed* query_soundex(string sdx_key, object user) {
-  int locale;
-  locale = user->get_locale();
-
-  if(GAME() || COMMON() || SYSTEM()) {
-
-    if(locale != LANG_englishUS)
-      return nil;
-
-    return sdx_entries[sdx_key];
-  } else
-    return nil;
-}
-
-mixed* query_soundex_with_keywords(string sdx_key, object user, string* kw) {
-  mixed* entries;
-
-  if(GAME() || COMMON() || SYSTEM()) {
-    entries = query_soundex(sdx_key, user);
-    return filter_for_keywords(entries, kw);
-  } else
-    return nil;
-}
-
 private void new_unq_entry(string path, object PHRASE names, object PHRASE desc,
                            string keywords) {
   int     locale, len, ctr, tag_ctr;
@@ -428,24 +396,8 @@ private void new_unq_entry(string path, object PHRASE names, object PHRASE desc,
       if(!exact_entries[locale][keys[ctr]])
         exact_entries[locale][keys[ctr]] = ({ });
 
-      if(locale == LANG_englishUS) {
-        /* Generate Soundex key */
-        sdx = soundex->get_key(keys[ctr]);
-      } else {
-        /* If it's not English, don't bother with Soundex */
-        sdx = "";
-      }
-
       /* Compose entry */
       arr = ({keys[ctr], desc, path, sdx, kw_arr });
-
-      if(locale == LANG_englishUS) {
-        if(!sdx_entries[sdx])
-          sdx_entries[sdx] = ({ });
-
-        /* If it's English, put its Soundex into the sdx_entries array */
-        sdx_entries[sdx] += ({ arr });
-      }
 
       /* Put exact entry into specified locale */
       exact_entries[locale][keys[ctr]] += ({ arr });

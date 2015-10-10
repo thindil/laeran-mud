@@ -17,7 +17,6 @@
 #define LOGD        "/usr/System/sys/logd"
 #define PHRASED     "/usr/System/sys/phrased"
 #define HELPD       "/usr/System/sys/helpd"
-#define SOUNDEXD    "/usr/common/sys/soundexd"
 #define STRINGD     "/usr/common/sys/stringd"
 #define MAPD        "/usr/common/sys/mapd"
 #define EXITD       "/usr/common/sys/exitd"

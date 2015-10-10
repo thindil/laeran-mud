@@ -830,37 +830,6 @@ static void cmd_help(object user, string cmd, string str) {
     return;
   }
 
-  if(!exact) {
-    string sdx_key;
-
-    sdx_key = SOUNDEXD->get_key(str);
-    hlp = HELPD->query_soundex_with_keywords(sdx_key, this_object(), ({ }));
-
-    if(hlp && sizeof(hlp)) {
-      if(index) {
-	if(index < sizeof(hlp)) {
-	  message("Help on " + hlp[index][0] + ":\n");
-	  message(hlp[index][1]->to_string(this_object()));
-	  message("\n");
-	} else {
-	  message("There are only " + sizeof(hlp)
-		  + " help entries that sound like " + str + ".\n");
-	}
-      } else if(sizeof(hlp) == 1) {
-	message_scroll("Help on " + hlp[0][0] + ":\n"
-		       + hlp[0][1]->to_string(this_object())
-		       + "\n");
-      } else {
-	message("\nWhich do you want help on:\n");
-	for(index = 0; index < sizeof(hlp); index++) {
-	  message("     " + hlp[index][0] + "\n");
-	}
-	message("(type \"help <topic>\" for the topic you want)\n");
-      }
-      return;
-    }
-  }
-
   message("No help on \"" + str + "\".\n");
 }
 
