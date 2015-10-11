@@ -16,7 +16,7 @@ help guts           Commands dealing directly with LPC
 
 help syntax         Using any commands
 
-For the "normal help" screen, type "help player_index".
+For the "normal help" screen, type "pomoc pomoc_gracza".
 
 Go to http://phantasmal.sourceforge.net/Tutorial/index.html
 for an online tutorial of building inside phantasmal.
