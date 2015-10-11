@@ -684,9 +684,8 @@ static void cmd_put(object user, string cmd, string str) {
     return;
   }
 
-  if(sscanf(str, "%s inside %s", obj1, obj2) != 2
-     && sscanf(str, "%s into %s", obj1, obj2) != 2
-     && sscanf(str, "%s in %s", obj1, obj2) != 2) {
+  if(sscanf(str, "%s do %s", obj1, obj2) != 2
+     && sscanf(str, "%s w %s", obj1, obj2) != 2) {
     user->message("Usage: " + cmd + " <obj1> in <obj2>\n");
     return;
   }
@@ -744,10 +743,10 @@ static void cmd_remove(object user, string cmd, string str) {
     return;
   }
 
-  if(sscanf(str, "%s from inside %s", obj1, obj2) != 2
-     && sscanf(str, "%s from in %s", obj1, obj2) != 2
-     && sscanf(str, "%s from %s", obj1, obj2) != 2
-     && sscanf(str, "%s out of %s", obj1, obj2) != 2) {
+  if(sscanf(str, "%s ze srodka %s", obj1, obj2) != 2
+     && sscanf(str, "%s z wnetrza %s", obj1, obj2) != 2
+     && sscanf(str, "%s ze %s", obj1, obj2) != 2
+     && sscanf(str, "%s z %s", obj1, obj2) != 2) {
     user->message("Usage: " + cmd + " <obj1> from <obj2>\n");
     return;
   }
@@ -869,10 +868,10 @@ static void cmd_get(object user, string cmd, string str) {
     return;
   }
 
-  if(sscanf(str, "%*s from inside %*s") == 2
-     || sscanf(str, "%*s from in %*s") == 2
-     || sscanf(str, "%*s from %*s") == 2
-     || sscanf(str, "%*s out of %*s") == 2) {
+  if(sscanf(str, "%*s z wnetrza %*s") == 2
+     || sscanf(str, "%*s ze srodka %*s") == 2
+     || sscanf(str, "%*s z %*s") == 2
+     || sscanf(str, "%*s ze %*s") == 2) {
     cmd_remove(user, cmd, str);
     return;
   }

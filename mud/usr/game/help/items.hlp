@@ -1,129 +1,106 @@
-~name{~enUS{item,items,object,objects,stuff,loot,lewt}}
-~desc{~enUS{
+~name{rzecz,przedmiot,rzeczy,przedmioty,obiekty,loot}
+~desc{
 
-Commands to affect objects:
+Komendy oddziaływujące na przedmioty:
 
-get                  Pick up an item
-drop                 Drop an item
-put                  Place an item inside another
-remove               Remove an item from another
-inventory            See what you're carrying
-look                 Look at an object
-examine              Examine an object closely
-open                 Open a container
-close                Close a container
+wez                  Podnieś przedmiot
+upusc                Upuść przedmiot
+wsadz                Włóż przedmiot do innego
+wyjmij               Wyjmij przedmiot z innego
+inwentarz            Zobacz co niesiesz
+patrz                Patrz na obiekt
+otworz               Otwórz pojemnik
+zamknij              Zamknij pojemnik
 
-}}
-
-
-~name{~enUS{get,take,grab,pick up} ~esUS{toca}}
-~desc{~enUS{
-
-Just type "get" and then a description of the item you want to take
-and carry with you.  For instance, "get purple turnip" or "get
-cheddar".  You can take an item from inside another by saying
-"get parsip from bag".
-
-See also: put, remove, drop
-
-}}
+}
 
 
-~name{~enUS{put,place} ~esUS{pon}}
-~desc{~enUS{
+~name{wez,bierz,podnies,weź,podnieś}
+~desc{
 
-You can place an object inside another by saying "put" or "place" -- for
-instance "place turnip in bag" or "put weasel in breadbox".
+Po prostu wpisz "wez" a następnie opis przedmiotu aby go
+podnieść i zabrać ze sobą. Na przykład "wez purpurowa rzepa"
+albo "wez ser". Możesz brać przedmioty z pojemników poprzez
+napisanie "wez chleb z sakwa"
 
-See also: get, remove, drop, open, close
+Zobacz również: wsadz, wyjmij, upusc
 
-}}
-
-
-~name{~enUS{open} ~esUS{abra}}
-~desc{~enUS{
-
-You can open an openable container by saying "open" -- for instance,
-"open box" or "open sack".
-
-See also: get, put, remove, drop, close
-
-}}
+}
 
 
-~name{~enUS{close} ~esUS{cierra}}
-~desc{~enUS{
+~name{wsadz,wsadź,umiesc,umieść}
+~desc{
 
-You can close a closeable container by saying "close" -- for instance,
-"close box" or "close sack".
+Możesz wkładać przedmioty do innych przedmiotów poprzez napisanie
+"wsadz" bądź "umiesc" -- na przykład "wsadz miecz do skrzynia" lub
+"umiesc tarcza w woz".
 
-See also: get, put, remove, drop, open
+Zobacz również: wez, wyjmij, upusc, otworz, zamknij
 
-}}
-
-
-~name{~enUS{remove}}
-~desc{~enUS{
-
-You can take an object from inside another by saying "remove turtle
-from little bowl" or "remove Bob from his fantasy world".  The standard
-"get" verbs (get, take) work fine for this, too.
-
-See also:  get, put, drop, open, close
-
-}}
+}
 
 
-~name{~enUS{inv,inventory}}
-~desc{~enUS{
+~name{otworz,otwórz}
+~desc{
 
-Just type "inventory" or "inv" by itself and you'll see a listing of
-what items you're carrying around with you.
+Możesz otworzyć otwieralny pojemnik poprzez wpisanie "otworz" --
+na przykład "otworz skrzynia" lub "otworz plecak".
 
-See also: get, put, drop, examine
+Zobacz również: wez, wsadz, wyjmij, upusc, zamknij
 
-}}
-
-
-~name{~enUS{drop}}
-~desc{~enUS{
-
-Just type "drop" and then a description of the object to drop.  For
-instance, "drop hot potato".
-
-See also: get, put, remove
-
-}}
+}
 
 
-~name{~enUS{ex,exa,examine,search}}
-~desc{~enUS{
+~name{zamknij}
+~desc{
 
-The examine command (which can be abbreviated ex) examines an object
-closely looking for hidden details.
+Możesz zamknąć zamykalny pojemnik poprzez napisanie "zamknij" -- na
+przykład "zamknij skrzynia" lub "zamknij plecak".
 
-See also: look, glance, get
+Zobacz również: wez, wsadz, wyjmij, upusc, otworz
 
-}}
-
-
-~name{~enUS{l,look}}
-~desc{~enUS{
-
-The look command looks at an object in reasonable detail.  It can be
-abbreviated as "l".
-
-See also: examine, glance
-
-}}
+}
 
 
-~name{~enUS{g,gl,glance}}
-~desc{~enUS{
+~name{wyjmij}
+~desc{
 
-The glance command looks quickly at an object.  It can be abbreviated
-as "g" or "gl".
+Możesz wziąć obiekt z pojemnika poprzez napisanie "wyjmij zolw z
+mala miska" albo "wyjmij Bob ze skrzynia". Standardowa komenda
+"wez" też powinna działać.
 
-See also: look, examine
+Zobacz również: wez, wsadz, upusc, otworz, zamknij
 
-}}
+}
+
+
+~name{inw,inwentarz}
+~desc{
+
+Wpisz "inwentarz" lub "inw" aby zobaczysz listę przedmiotów które
+nosisz przy sobie.
+
+Zobacz również: wez, wsadz, upusc
+
+}
+
+
+~name{upusc,upuść}
+~desc{
+
+Po prostu wpisz "upusc" a następnie nazwę przedmiotu aby go upuścić.
+Na przykład, "upusc goracy ziemniak".
+
+Zobacz również: wez, wsadz, wyjmij
+
+}
+
+
+~name{p,patrz}
+~desc{
+
+Komenda patrz służy do przyjrzenia się bliżej przedmiotowi. Może być
+skrócona do samej litery "p". Na przykład, "p drzwi".
+
+}
+
