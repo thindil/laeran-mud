@@ -1,27 +1,26 @@
-~name{~enUS{copying,license,pd,public domain}}
-~desc{~enUS{
-This MUD Library is part of the public domain.
+~name{prawne,licencja}
+~desc{
+Większość kodu gry jest dostępna na licencji AGPL v3.
+Jedynie nie udostępnione fragmenty gry to szczegółowe informacje
+o pokojach, mobkach oraz przedmiotach (czyli ogólnie rzecz mówiąc,
+informacje o świecie). MudLib Phantasmal oraz driver DGD również
+są dostępne na tej samej licencji.
 
-Note that it being public domain does not guarantee MUD players to be
-able to request source code.  I choose to make source available (only
-by http or ftp) to such users of the MUD, but I also reserve the right
-to revoke this offer at any time.  For source code to Phantasmal check
-"http://phantasmal.sourceforge.net".  For source to the rest of the
-MUD, ask your MUD administrator, who may give it or deny it.
+Kod gry możesz znaleźć na stronie
+"https://github.com/thindil/laeran-mud"
 
-The server, DGD, makes its source available.  You can find out more at
-"http://phantasmal.sourceforge.net/DGD".  It is *not* public domain,
-nor is it OSI-approved Open Source.
+Zobacz również: pomoc gwarancja, pomoc możliwości
+}
 
-See also: help warranty, help features
-}}
+~name{gwarancja}
+~desc{
 
-~name{~enUS{warranty}}
-~desc{~enUS{
+Cały kod jest udostępniany w nadziei, iż będzie przydatny, jednak
+BEZ JAKIEJKOLWIEK GWARANCJI; nawet bez gwarancji zapewnionej przez
+przepisy prawne.
 
-The MUDLib is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+Czyli, jeżeli przed Twoim domem wylądują kosmici i będą chcieli
+zabrać Ci komputer za granie w Laeran, to nie podlega to gwarancji.
 
-See also: help copying
-}}
+Zobacz również: pomoc prawne
+}

@@ -1,54 +1,37 @@
-~name{~enUS{help}}
-~desc{~enUS{
-For help about a command, just type "help XXX" and hit return or enter,
-but replace XXX with the word you want help about.  Make sure to type the
-word help, then a space, then the word you want help with, then hit the
-return or enter key.  Or you can just type help by itself for an overview.
+~name{pomoc}
+~desc{
+Aby otrzymać pomoc na temat jakiejś komendy, po prostu wpis "pomoc XXX"
+i naciśnij return albo enter, ale zamień najpierw XXX na słowo, którego
+poszukujesz. Upewnij się, że wpisujesz słowo pomoc, następnie spację,
+a potem słowo, co do którego szukasz pomocy, na koniec zaś naciśnij
+enter bądź return. Albo po prostu wpisz pomoc aby zobaczyć ogólną pomoc.
 
-In many help entries you'll see things like "help <topic>" or
-"help <keyword>".  They don't really mean for you to put in the
-greater-than and less-than signs or to really type the word "topic" or 
-"keyword".  They mean you should type the name of the topic or keyword
-you're curious about.
+W wielu wpisach w pomocy możesz zobaczyć rzeczy takie jak "pomoc <temat>"
+albo "pomoc <słowo kluczowe>". Nie oznacza to, że masz wpisać te znaki
+większy-niż i mniejszy-niż albo wpisać słowo "temat" bądź "słowo kluczowe".
+Oznacza to tylko, że powinieneś wpisać nazwę interesującego Ciebie tematu
+bądź słowo kluczowe.
 
-Sometimes you'll see that there's more than one help entry on a given topic,
-especially if you misspell it a little and the system looks for a close
-match.  To read the later help entries, type things like "help 2 linkded"
-for the second help entry that could match "linkded".  If there's more than
-one, the help system will tell you so.  You'll see it when you ask for help
-without specifying a number, for instance "help linkded".
+Czasami możesz zobaczyć, że jest dostępne więcej niż jeden wpis pomocy na
+wybrany temat. Szczególnie jeżeli popełnisz literówkę a system pomocy
+wyszuka najbliższe jej znaczenia. Aby przeczytać kolejne wpisy w pomocy,
+wpisz coś w styly "pomoc 2 walka" aby zobaczyć drugi wpis, który pasuje do
+słowa "walka". Liczbę dostępnych wpisów pomocy na dany temat możesz zobaczyć
+wpisując komendę bez liczby, czyli na przykład "pomoc walka".
 
-If that went too fast and you can't read it, try setting your rows
-lower with set_num_lines 10.  Then get help on the set_num_lines
-function to figure out how you want to set it eventually.
-
-}}
+}
 
 
-~name{~enUS{lines, set_lines, scrolling, scroll, terminal, row, rows,
-            set_num_lines, num_lines}}
-~desc{~enUS{
+~name{slowo kluczowe,słowo kluczowe,temat,<temat>}
+~desc{
+Kiedy wpis pomocy mówi "pomoc <słowo kluczowe" albo "pomoc <temat>",
+nie ma na myśli aby wpisać tego dosłownie. Raczej chodzi o to, że
+powinieneś wpisać słowo "pomoc", bez cudzysłowów, następnie spację,
+następnie słowo kluczowe bądź interesujący Ciebie temat.
 
-You can use the set_num_lines command to set the number of lines of output
-Phantasmal will display in a help entry before it begins scrolling.
-The default is 20 lines.  Scrolling is primarily used in the display of
-help entries though certain other situations may call for the scrolling
-of output.
-
-}}
-
-
-~name{~enUS{keyword,<keyword>,topic,<topic>}}
-~desc{~enUS{
-When a helpfile says "help <keyword>" or "help <topic>", they're not
-really talking about typing that literally.  They mean you should type
-the word "help", without the quotes, then a space, then the keyword or
-topic you're interested in.
-
-If the help screen you were referring to when you typed "help
-keyword" had a bunch of other help commands listed, then you should
-typing one of those.  Which one depends entirely on what you want help
-about.  Similarly, if there was a vertical list of words there, you
-could try getting help by typing "help" and a space and one of those
-words.
+Jeżeli we wpisie znajdują się podane różne komendy pomocy, powinieneś
+spróbować ich wszystkich, aby dowiedzieć się więcej na dany temat.
+Albo wybrać tylko te, które Ciebie interesują najbardziej. Podobnie jest
+z wpisami które posiadają podane na dole listy ze słowami kluczowymi,
+bądź tematami. Po prostu wpisz "pomoc", spacja i jedno z owych słów.
 }}

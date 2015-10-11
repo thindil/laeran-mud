@@ -1,18 +1,19 @@
-~name{~enUS{credits}}
-~desc{~enUS{
-This MUD runs on the DGD MUD Server and the Phantasmal MUDLib.
+~name{zaslugi,zasługi}
+~desc{
+Laeran działa na driverze DGD i z użyciem MUDLiba Phantasmal.
 
-The DGD Server is written by Felix Croes and is well-documented at
-"http://phantasmal.sf.net/DGD/".  It's free for noncommercial use.
+Driver DGD został napisany przez Felix'a Croes'a a jego dokumentację
+znajdziesz na stronie "http://phantasmal.sf.net/DGD/". Silnik jest
+na licencji AGPL wersja 3
 
-The Phantasmal MUDLib is in the public domain.  You can find out more
-at "http://phantasmal.sf.net/".
+MUDLib Phantasmal jest również na licencji AGPL wersja 3. Więcej
+informacji znajdziesz na "http://phantasmal.sf.net/".
 
-For further Phantasmal credits, see
+Zasługi, kto i co zrobił dla Phantasmal możesz znaleźć na stronie
 "http://phantasmal.sf.net/Credits.html".
 
-However, your actual MUD administrator hasn't bothered to edit even
-*this* help file.  And this is the obvious one for egomaniacs to start
-with!
+Jak widać jednak administrator Laeran jest wystarczająco dużym
+egomaniakiem aby zedytować *ten* plik pomocy (ot takie nawiązanie
+do angielskiej wersji tego pliku).
 
-}}
+}
