@@ -838,7 +838,7 @@ private void __sub_unsub_channels(object user, string cmd, int chan,
 				  string channelname, string subval,
 				  string sublevel) {
   /* Sub or unsub the user */
-  if(!STRINGD->stricmp(subval, "on")
+  if(!STRINGD->stricmp(subval, "wl")
      || !STRINGD->stricmp(subval, "sub")
      || !STRINGD->stricmp(subval, "subscribe")) {
 
@@ -885,7 +885,7 @@ private void __sub_unsub_channels(object user, string cmd, int chan,
     /* Save new subscriptions, if any */
     save_user_to_file();
 
-  } else if(!STRINGD->stricmp(subval, "off")
+  } else if(!STRINGD->stricmp(subval, "wyl")
 	    || !STRINGD->stricmp(subval, "unsub")
 	    || !STRINGD->stricmp(subval, "unsubscribe")) {
 
@@ -897,7 +897,7 @@ private void __sub_unsub_channels(object user, string cmd, int chan,
       save_user_to_file();
     }
   } else {
-    user->message("Huh?  Try using 'on' or 'off' for the third value.\n");
+    user->message("Huh?  Try using 'wl' or 'wyl' for the third value.\n");
   }
 }
 
@@ -932,10 +932,10 @@ static void cmd_channels(object user, string cmd, string str) {
   if(!str || str == "" || sscanf(str, "%*s %*s %*s %*s") == 4) {
     if(wiztool) {
       send_system_phrase("Usage: ");
-      message(cmd + " [<channel name> [on|off]] [extra info]\n");
+      message(cmd + " [<channel name> [wl|wyl]] [extra info]\n");
     } else {
       send_system_phrase("Usage: ");
-      message(cmd + " [<channel name> [on|off]]\n");
+      message(cmd + " [<channel name> [wl|wyl]]\n");
     }
     return;
   }

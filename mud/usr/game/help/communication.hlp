@@ -1,83 +1,76 @@
-~name{~enUS{communication,communications,comm,comms}}
-~desc{~enUS{
-help talking               Speaking to the room you're in
-help chat                  Chatting with players elsewhere in the MUD
-help channel               Turning channels on and off
-}}
-
-
-~name{~enUS{abbreviations,abbreviation,abbrev,abb,
-            punctuation,symbolic,symbols}}
-~desc{~enUS{
-The following commands have symbolic abbreviations:
-
-                  ' say        (single forward quote)
-                  : emote      (colon)
-}}
-
-
-~name{~enUS{talking,talk,say,tell,ask,yell,shout,'}}
-~desc{~enUS{
-Some commands let you talk to other players and NPCs.
-  say          This commands say something to the room you're in
-  tell         Tells or asks a particular character something
-
-The command "say" can also be abbreviated with a single quote.
-
-See also 'help chat' and 'help emote'
-}}
-
-~name{~enUS{emote,:}}
-~desc{~enUS{
-The emote command lets you do free-form emotes.  It can be abbreviated
-with a colon.  For instance, "emote chuckles" will give output like
-"Sam chuckles".
-}}
-
-
-~name{~enUS{out-of-character}}
-~desc{~enUS{
-
-The chat command broadcasts a message to everybody listening to the
-out-of-character channel.  Note that people needn't listen to the chat
-channel (see 'help channel') if they don't want to.  The channel
-should be used only for out-of-character messages.  Some things that
-are explicitly forbidden are how to solve in-game puzzles, trading
-equipment, asking directions to MUD locations, objects or NPCs, asking
-where another player is located, forming a group, asking for item
-properties, or asking about how a particular NPC acts or fights.
-
-Some things that you explicitly *can* use OOC for are greeting players
-when you enter or exit the MUD ("howdy, all!"), discussing out-of-game
-things like MUD clients, and asking about game mechanics and features
-like how particular commands work.  If you do both acceptable and
-unacceptable things -- for instance asking how a command works on a
-particular NPC -- we'll make a judgement call.  It's usually pretty
-obvious when you're just trying to get away with something, so don't.
-You don't get to argue with our decisions.
-
-See also:  ooc, harassment
-}
-~esUS{
-Fuera De Personaje
-}
+~name{komunikacja}
+~desc{
+pomoc rozmawianie          Rozmawianie w pokoju w którym przebywasz
+pomoc czat                 Rozmowa z graczami w całej grze
+pomoc kanal                Włączanie/wyłączanie kanałów
 }
 
-~name{~enUS{channel,channels,subscribe,unsubscribe,sub,unsub}}
-~desc{~enUS{
-The channel command is used to play with channels, such as the ooc channel
-(see 'help ooc').  It can be used in several ways:
 
-  channel            This, by itself, lists the channels available
-  channel XXX on     Subscribe to channel XXX
-  channel XXX off    Unsubscribe to channel XXX
-  channel XXX        Queries whether you're listening to channel XXX, and
-                     whether it's available here.
+~name{skróty,skroty,symbole,punktacja}
+~desc{
+Następujące komendy mają skróty w symbolach:
 
-Note that not all channels may be available in all locations or to all
-people.  You may subscribe to a channel that isn't available where
-you're standing at the moment.  You may not subscribe to a channel
-that isn't available to you in *any* location.
+                  ' mow        (apostrof)
+                  : emo        (dwukropek)
+}
 
-  }
+
+~name{rozmawianie,mowienie,mówienie,rozmowa,mow,powiedz,'}
+~desc{
+Niekóre komendy pozwalają Tobie rozmawiać z graczami oraz NPC'kami.
+  mow          Tak komenda pozwala powiedzieć do wszystkich w pokoju
+  powiedz      Powiedz coś do wybranej postaci
+
+Komenda "mow" może być zastąpiona przez apostrof.
+
+Zobacz również 'pomoc czat' i 'pomoc emo'
+}
+
+~name{emo,:}
+~desc{
+Komenda emo pozwala wykonać dowolną akcję opisową. Może być w skrócie
+zapisana jako drukropek. Na przykład "emo chichocze" wyświetli
+wszystkim w pokoju informację "Sam chichocze" (jeżeli Sam to nazwa
+Twojej postaci).
+}
+
+
+~name{czat,ooc}
+~desc{
+
+Komenda pp (skrót od "poza postacią") wysyla wiadomość do wszystkich
+którzy zapisali się do kanału Globalny. Pamiętaj, że nie wszyscy
+gracze mogą nasłuchiwać na tym kanale (zobacz 'pomoc kanal'), jeżeli
+nie mają ochoty. Kanał ten powinien być używan tylko do rozmów pomiędzy
+graczami a nie postaciami. Możesz tutaj prosić o ogólną pomoc ale
+postaraj się nie szukać odpowiedzi na zagadki czy rozwiązania zadań
+i tym podobne rzeczy mogące popsuć zabawę innym.
+
+Niektóre rzeczy doskonale nadają się do rozmowy na tym kanale:
+pozdrawianie innych graczy kiedy wchodzisz/wychodzisz z gry, dyskusje
+niezwiązane z grą czy pytania jak działa jakaś komenda, to tylko
+kilka przykładów z wielu. Oczywiście wszystko z poszanowaniem zasad
+netykiety.
+
+Zobacz również:  dokuczanie
+}
+
+
+~name{kanał,kanal,kanaly,kanały,subskrypcja,sub}
+~desc{
+Komenda kanal jest używana do obsługi kanałów, takich jak na przykład
+Globalny (zobacz 'pomoc czat'). Może być użyta na kilka sposobów:
+
+  kanal              Sama komenda pokazuje listę dostępnych kanałów
+  kanal XXX wl       Zapisz się do kanału XXX
+  kanal XXX wyl      Wypisz się z kanału XXX
+  kanal XXX          Pokazuje ogóle informacje o kanale oraz czy
+  		     zapisałeś się do niego czy nie.
+
+Pamiętaj, nie wszystkie kanały mogą być dostępne w każdej lokacji albo
+dla wszystkich osób. Możesz zapisać się do kanału, który nie jest
+dostępny w miejscu w którym obecnie się znajdujesz. Nie możesz
+natomiast zapisać się do kanału, który nie jest dostępny dla Ciebie
+z *jakiejkolwiek* lokacji.
+
 }

@@ -1,4 +1,4 @@
-~name{spis,ogolne}
+~name{spis,ogolne,ogólne}
 ~desc{
 Wpisz "pomoc <słowo kluczowe>" aby otrzymać więcej informacji na
 wybrany temat: na przykład, wpisując "pomoc wez" (bez cudzysłowów)
@@ -10,7 +10,7 @@ pomoc poruszanie            Komendy służące do poruszania się
 pomoc komunikacja           Kanały i komunikacja między graczami
 pomoc przedmioty            Komendy związane z przedmiotami
 pomoc zasady                Zasady i etykieta Laeranu
-pomoc śmierć                Niezwykły charakter śmierci na Laeranie
+pomoc smierc                Niezwykły charakter śmierci na Laeranie
 pomoc kontakt               Kontakt z administracją Laeranu
 pomoc prawne                Licencje itp prawne aspekty
 pomoc zaslugi               Kto jest odpowiedzialny za to wszytko
@@ -53,7 +53,7 @@ po jakimś czasie. Spróbuj wtedy innych rzeczy. Wędruj po okolicy.
 Przeczytaj wszystkie pliki pomocy. Zadawaj pytania. I może jednak
 znajdziesz swoje miejsce w świecie Laeran!  }
 
-~name{mozliwosci,features,mudlib,mud lib,MUD lib,MUDLib}
+~name{mozliwosci,features,mudlib,mud lib,MUD lib,MUDLib,możliwości}
 ~desc{
 Używamy Phantasmal MUDLib dla DGD. Ten MUDLib jest dostępny na licencji
 AGPL wersja 3.

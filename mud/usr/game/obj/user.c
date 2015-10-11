@@ -52,8 +52,8 @@ void upgraded(varargs int clone) {
     ::upgraded(clone);
 
     commands_map = ([
-		     "say"       : "cmd_say",
-		     "emote"     : "cmd_emote",
+		     "mow"       : "cmd_say",
+		     "emo"       : "cmd_emote",
 
 		     "n"         : "cmd_movement",
 		     "s"         : "cmd_movement",
@@ -80,35 +80,34 @@ void upgraded(varargs int clone) {
 		     "out"       : "cmd_movement",
 
 		     "pomoc"     : "cmd_help",
-		     "users"     : "cmd_users",
-		     "who"       : "cmd_users",
-		     "whoami"    : "cmd_whoami",
+		     "kto"       : "cmd_users",
+		     "omnie"     : "cmd_whoami",
 		     "bug"       : "cmd_bug",
 		     "literowka" : "cmd_typo",
 		     "idea"      : "cmd_idea",
-		     "tell"      : "cmd_tell",
+		     "powiedz"   : "cmd_tell",
 		     "pp"        : "cmd_ooc",
 
-		     "channel"   : "cmd_channels",
-		     "channels"  : "cmd_channels",
+		     "kanal"     : "cmd_channels",
+		     "kanaly"    : "cmd_channels",
 
-		     "l"         : "cmd_look",
-		     "look"      : "cmd_look",
-		     "ex"        : "cmd_look",
-		     "exa"       : "cmd_look",
-		     "examine"   : "cmd_look",
+		     "p"         : "cmd_look",
+		     "patrz"     : "cmd_look",
+		     "zb"        : "cmd_look",
+		     "zba"       : "cmd_look",
+		     "zbadaj"    : "cmd_look",
 
-		     "get"       : "cmd_get",
-		     "take"      : "cmd_get",
-		     "drop"      : "cmd_drop",
+		     "wez"       : "cmd_get",
+		     "bierz"     : "cmd_get",
+		     "upusc"     : "cmd_drop",
 		     "i"         : "cmd_inventory",
-		     "inv"       : "cmd_inventory",
-		     "inventory" : "cmd_inventory",
-		     "put"       : "cmd_put",
-		     "place"     : "cmd_put",
-		     "remove"    : "cmd_remove",
-		     "open"      : "cmd_open",
-		     "close"     : "cmd_close",
+		     "inw"       : "cmd_inventory",
+		     "inwentarz" : "cmd_inventory",
+		     "wsadz"     : "cmd_put",
+		     "umiesc"    : "cmd_put",
+		     "wyjmij"    : "cmd_remove",
+		     "otworz"    : "cmd_open",
+		     "zamknij"   : "cmd_close",
 
 		     "parse"     : "cmd_parse"
     ]);
