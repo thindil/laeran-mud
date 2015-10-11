@@ -334,7 +334,7 @@ int process_command(string str)
 	} else {
 	  str = "";
 	}
-	cmd = "say";
+	cmd = "mow";
 	break;
 
       case ':':
@@ -343,7 +343,7 @@ int process_command(string str)
 	} else {
 	  str = "";
 	}
-	cmd = "emote";
+	cmd = "emo";
 	break;
 
       default:
@@ -371,7 +371,7 @@ int process_command(string str)
 	}
 	return MODE_NOECHO;
 
-      case "quit":
+      case "wyloguj":
 	if(str && strlen(str))
 	  message("(Arguments ignored...)\n");
 

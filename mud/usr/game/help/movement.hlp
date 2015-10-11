@@ -1,21 +1,23 @@
-~name{~enUS{movement,moving,move,moves}}
-~desc{~enUS{
-Some commands move your character or modify their movement:
-help direction           Commands to move in a particular compass-direction
-}}
+~name{poruszanie,ruszac,ruszać,poruszać się,poruszac sie,ruchy}
+~desc{
+Niektóre komendy poruszają Twoją postacią lub modyfikują jej poruszanie
+się:
 
-~name{~enUS{direction,directions,north,south,east,west,n,s,w,e,u,d,
-            northwest,northeast,southwest,southeast,nw,ne,sw,se,up,down}}
-~desc{~enUS{
-In most areas of the MUD standard movement commands are the compass
-directions common to almost every MUD and text game.  They include
+pomoc kierunki       Komendy do poruszania się w określonych kierunkach
+}
+
+~name{kierunki,kierunek,north,south,east,west,n,s,w,e,u,d,
+            northwest,northeast,southwest,southeast,nw,ne,sw,se,up,down}
+~desc{
+Na większości obszarów, standardowe komendy do poruszania się to angielskie
+nazwy kierunków z kompasu, używane w większości MUD'ów czy gier
+tekstowych. A konkretnie:
 
   north, south, west, east, northwest, southwest, southeast, northeast,
-  up, down
+  up, down, in, out
 
-and the abbeviations:
+oraz ich skróty:
 
-  n, s, w, e, nw, sw, se, ne
+  n, s, w, e, nw, sw, se, ne, u, d
 
-respectively for the compass directions.
-}}
+}

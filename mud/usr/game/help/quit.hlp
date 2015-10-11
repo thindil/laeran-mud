@@ -1,5 +1,5 @@
-~name{~enUS{quit,%quit}}
-~desc{~enUS{
-Logs out the current net connection, and if you have no more connections
-open, logs out your entire account.
-}}
+~name{wyloguj}
+~desc{
+Wyloguj się z gry. Twoja postać zostanie przeniesiona do bezpiecznego
+miejsca i tam będzie czekać na Twój powrót.
+}

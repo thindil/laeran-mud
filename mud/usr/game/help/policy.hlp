@@ -1,166 +1,137 @@
-~name{~enUS{policy,policies,rule,rules}}
-~desc{~enUS{
-This MUD maintains a number of policies.  See the following help topics
-for more about them.
+~name{zasady,regulamin}
+~desc{
+Na Laeran obowiązują pewne zasady, których staramy się trzymać. Zajrzyj
+do poniższych plików pomocy, aby dowiedzieć się więcej na ten temat.
 
-help impmanners                 How to interact with MUD administrators
-help manners                    How to interact with other players
-help pkill                      MUD policies on player-killing
-help pthief                     MUD policies on stealing from players
-help multiplay                  MUD policies on multiplaying
-help complaint                  Lodging a complaint about policy or admins
-help bugs                       MUD policies on exploiting bugs
-help linkdeath                  Your link to the MUD, losing it and dying
-help death                      MUD in-game rules on death and dying
+pomoc maniery                   Jak postępować z innymi graczami
+pomoc pvp                       Zasady Laeran dotyczące zabijania graczy
+pomoc multiplay                 Zasady Laeran dotyczące multiplaya
+pomoc skargi                    Zgłaszanie skarg na adminów bądź zasady
+pomoc exploit                   Zasady Laeran dotyczące błedów
+pomoc linkdeath                 Twoje połączenie z grą, utrata go i śmierć
+pomoc smierc                    Co się dzieje w wypadku śmierci
 -----
-}}
+}
 
-~name{~enUS{link,lose-link,linkdead,linkdeath,lag,lagdeath,link death,
-	lost link,lose link,lag death}}
-~desc{~enUS{
-We understand that sometimes you lose link.  This happens to
-everybody.  We understand that bad things can happen to your character
-when you lose link.  Unfortunately, this happens to everybody, too.
-We won't, and we can't, give you any restitution for this happening to
-you.  There's no way for us to verify this, and even if you _know_,
-down to your bones, that if you'd been on line to pick a more appropriate
-strategy against that Dark Faerie Archmage you'd be alive today, we
-really can't take your word for it.
+~name{link,lose-link,linkdead,linkdeath,lag,lagdeath,link death,
+	lost link,lose link,lag death,dc,disconnect}
+~desc{
+Rozumiemy, że czasami możesz stracić połączenie z grą. To zdarza się
+każdemu. Rozumiemy, że złe rzeczy mogą zdarzyć się Twojej postaci,
+kiedy jesteś rozłączony. Niestety to również zdarza się wszystkim.
+Nie możemy i nie będziemy przyznawać Tobie jakiejkolwiek rekompensaty
+za to. Nie mamy możliwości zweryfikowania iż naprawdę straciłeś
+połączenie, nie śledzimy Ciebie.
 
-In some cases you can actually _avoid_ bad things happening to your
-character if you lose link.  We try not to do this in our MUD, but
-there may still be cases where it's true.  If so, we _really_ need you
-not to cut off your 'net link just to avoid Bad Things happening to
-you.  If this becomes a problem, we have ways to enforce it.
+W niektórych przypadkach możesz uniknąć złych rzeczy jakie mogą
+spotkać Twoją postać poprzez rozłączenie. Próbowaliśmy uniknąć takich
+przypadków na Laeran ale nie mamy pewności czy nam sie to udało.
+Jeżeli znajdziesz taką możliwość, prosimy, zgłoś nam to jako błąd.
 
-We know you put a lot of effort into your character, and we know
-that you'd rather only Good Things happened to him/her/it, but we will
-do Bad Things to your character and account ourselves if you avoid the
-consequences of other Bad Things by killing your link artificially.
-Sorry.  We have to.  It's our job.
+Wiemy, że włożyłeś wiele wysiłku w swoją postać i wiemy że chciałbyś
+aby spotykały ją tylko dobre rzeczy ale jeżeli będziesz się rozłączać
+aby uniknąć tych złych, my zrobimy jakąś złą rzecz z Twoim kontem.
+Przykro nam, taka jest nasza praca tutaj.
 
-Besides, it's not fair to players with always-on connections that
-you can duck out on stuff that they have to be hurt by.
-}}
+}
 
-~name{~enUS{dead,death,dying,die}}
-~desc{~enUS{
-In the MUD, death of a character can be permanent.  That character,
-once permanently dead, cannot pass on money, knowledge, skills or
-other in-game benefits to any of your later characters, heirs,
-successors and whatnot.  However, you are welcome to make a new
-character from the same account (giving you player- level continuity,
-if not character-level) and there are some in-game benefits which
-apply at the account level, not the character level.  You'll know
-those benefits when you receive them.  They are unaffected by
-character death.
+~name{śmierć,smierc,umieranie,umierać,ginać,zginac,zginąć}
+~desc{
+Na Laeranie śmierć nie jest pernamentna. Po prostu pojawisz się
+ponownie w świątyni w Vishtar. Jednak aby nie było zbyt prosto,
+jest kara za umieranie. Cały Twój ekwipunek pozostanie w Twoich
+zwłokach na miejscu śmierci. Będziesz musiał jak najszybciej dotrzeć
+do zwłok i odzyskać przedmioty, zanim wszystko zniknie. Nikt inny
+nie może wyciągnąć przedmiotów z Twojego ciała.
 
-Don't use information your new character couldn't reasonably have,
-such as the location of your former corpse and former belongings.
-They aren't yours any more.  Any character may take it quite lawfully,
-and you have neither any specific claim on it, nor any reason your new
-"self" should know where to find it.
+Umieranie od lagów nie różni się niczym innym niż normalna śmierć.
+Pozostajesz tak samo martwy jak w innych przypadkach. Zobacz
+"pomoc linkdeath".
+}
 
-Further, we're working on a system of "character points" which will
-allow you to "cash out" powerful characters, or gain points to use
-with your next character when one dies.  More on this as it is
-implemented.
+~name{pk,pking,pkill,pkilling,playerkill,playerkilling,pkowanie,pvp}
+~desc{
+W obecnym stanie gry (pre-Alfa) zabijanie czy też okradanie innych
+graczy jest niemożliwe. Tak więc na chwilę obecną jest to raczej
+propozycja zasad niż same zasady.
 
-Dying due to lag doesn't entitle you to any benefits in return.
-None.  You remain exactly as dead as if you died any other way.  See
-"help linkdeath".
-}}
+Plany na później dotyczące rozwoju gry zawierają wprowadzenie
+walk pomiędzy graczami w określonych obszarach, bądź w postaci
+pojedynków. Jednak na razie jeszcze za wcześnie aby mówić o
+szczegółach.
 
-~name{~enUS{pk,pking,pkill,pkilling,playerkill,playerkilling,
-            pthief,pthieving,playerthief,playerthieving,pvp,
-            pkp}}
-~desc{~enUS{
-In the current pre-Beta stages of the game, killing or stealing from
-other players is frowned upon.  While it could be outright banned, it
-won't be unless some idiot tees people off by doing it.  Don't be
-that guy.
+W jakimkolwiek przypadku pkowania, wszystko musi pozostać pomiędzy
+postaciami a nie przenosić się do realnego świata czy też zmieniać
+się w nękanie. Nękanie jest wtedy, kiedy agresywne działania jednego
+gracza przeciwko drugiemu wykraczają poza to, co uznaje się za normalną
+grę. Oznacza to na przykład notoryczne zabijanie postaci czy wyzwiska.
 
-Plans for later in the MUD's evolution including allowing killing
-and/or stealing from players in certain areas.  The idea is that the
-MUD enforces penalties in-character and you are punished by guards
-or other players in civilized areas, and punished by nobody at all
-outside those civilized areas unless you get caught.  However, that
-is not yet the case.
+Zobacz również 'pomoc maniery' i 'pomoc nekanie'.
+}
 
-In any case player-killing and other 'crimes' against players must be
-in character, and may not escalate into harassment.  Harassment is when
-aggressive actions against a certain player get carried beyond what is
-considered normal gameplay. This can mean killing their character(s)
-repeatedly; it can also mean verbal harassment.
+~name{nękanie,nekanie}
+~desc{
+Nękanie jest wtedy kiedy szkodzisz postaciom innych graczy w sposób,
+który trudno wytłumaczyć jako odgrywanie roli. Może być to na przykład
+zabijanie za coś co powiedzieli na Globalnym czacie, może to być
+wielokrotne zabijanie jednej bądź wielu postaci należących do tego
+samego gracza, bądź po prostu wyzywanie ich na kanale Globalnym.
+Opiekunowie mają ostateczne zdanie na temat tego co jest nękaniem a co
+nie.
 
-See also 'help manners' and 'help harassment'.
-}}
+Kara może być nieprzyjemna i może (bądź nie) zależeć od powagi
+przewinienia jakie popełniłeś. Na przykład nękanie nowych graczy
+będzie dużo ostrzej karane niż nękanie graczy o podobnej do Twojej
+postaci sile. W takim przypadku naruszasz nasze przyjazne nastawienie
+w naszej grze i musimy poinformować Ciebie dosadnie, co sądzimy na
+ten temat.
 
-~name{~enUS{harass, harassment}}
-~desc{~enUS{
-Harassment is when you do things to harm another player's character(s)
-in a way that makes it clear it's not an in-character action.  This
-may be killing them for something they said on an OOC channel, it may
-be killing multiple or consecutive characters belonging to the same
-player, it may be simply insulting them on OOC channels repeatedly.
-Admins get final say about what is or is not harassment.
+Zobacz również 'pomoc maniery' i 'pomoc pvp'
+}
 
-The penalties may be nasty, and may or may not have much to do with
-the severity of what you've done to them.  Harassing newbies, for
-instance, carries a far harsher penalty than harassing people of
-similar power to yourself.  You're threatening the welcoming attitude
-of our MUD here, and we need to make it clear how we feel about that.
+~name{maniery}
+~desc{
+Jak jest przyjęte w tych oświeconych(?) czasch, nie tolerujemy
+rasizmu, seksizmu i jakiegokolwiek innego przejawu dyskryminacji
+czy to grup ludzi czy pojedynczy osobników. Nie krzywdź innych
+"poza grą". Jeżeli chcesz obrazić czyjąś postać w ogrywaniu roli,
+upewnij się że nie obraża to gracza, który daną postać prowadzi.
+Jeżeli jednak planujesz stworzyć sobie postać, która będzie
+notorycznie obrażać innych, obawiam się, że w takim wypadku za
+długo ze sobą nie pogramy.
 
-See also 'help manners' and 'help pkill'.
-}}
+Używanie wulgaryzmów w miejscach publicznych jest stanowczo
+zabronione. O ile jeszcze od czasu do czasu pojawienie się
+'ciężkiego słownictwa' może być zrozumiałe, postarajmy się nie
+nadużywać go. Dzieci mogą czytać takie rzeczy.
+}
 
-~name{~enUS{manners}}
-~desc{~enUS{
-As is usual in these enlightened (?) times, we don't put up with
-racism, sexism, other non-individual discrimination, or many forms of
-individual discrimination.  Don't hurt people's feelings
-out-of-character.  If you hurt their feelings in-character, and make
-it clear that it's in-character, we'll be a bit more understanding,
-particularly if they're roleplaying too.  If you play a character that
-constantly harasses people (even in character), be prepared for us to
-be less understanding.
+~name{multiplay,multiplayer,multiplaying,mp,multiboxing}
+~desc{
 
-Serious profanity will not be tolerated in public chat.  While we
-understand the occasional 'oops', please make sure it doesn't go
-beyond that.  Kids may read this trash.
-}}
+Multiplaying jest wtedy kiedy jeden gracz kontroluje wiele
+kont albo wielu graczy dzieli między sobą jedno konto. Na Laeran
+jest to niedozwolone, jeżeli przyłapiemy na takim procederze,
+konto bądź konta zostaną zbanowane bądź skasowane. Nie przyjmujemy
+do wiadomości że owe konta mogą należeć do Twojej rodziny, przyjaciół,
+itd. Jeżeli nie chcesz mieć jakichkolwiek problemów staraj się nie
+tworzyć wielu kont dla siebie samego.
 
-~name{~enUS{multiplay,multiplayer,multiplaying,mp}}
-~desc{~enUS{
+My, Opiekunowie, chcielibyśmy aby każdy gracz miał tylko jedno
+konto i jedno konto było pod kontrolą tylko jednej osoby. Prawda, że
+może być to niewygodne, ale w końcu to gra dla wielu osób. Granie
+na wielu kontach nie ma sensu i jest oszukiwaniem innych graczy.
 
-Multiplaying is when a single (human) player controls multiple
-accounts or multiple human players sharing one account.  Note that
-multiplay on this MUD is more interesting to define since one kind of
-multiplay (one account, multiple characters) is a standard and
-encouraged part of the game.  However, account sharing or keeping
-multiple accounts will be treated harshly even if the extras are guest
-accounts, newbie characters, friends' or spouses' accounts, or
-otherwise excusable in your mind.  This is true even if you say, in a
-whiny voice, "Aw, come on man!" and then an excuse.
+Zobacz "pomoc ban"
+}
 
-We, the administrators, would prefer that each human player control
-only one account and each account have only one human player.  We
-understand that this can be inconvenient, however the temptation to
-misuse multiple accounts appears to be beyond the resistance of mortal
-man.  That being the case we'll watch for cases of multiplay and
-should any abuse of that kind be detected, we'll cancel all of your
-accounts (yes, even if they're not yours) and maybe even site-ban
-you. (see "help siteban")
-}}
-
-~name{~enUS{siteban,ban,site ban,site-ban}}
-~desc{~enUS{
-When you are on a site that has been site-banned on this MUD, it
-means that no characters may log in from that site.  For example, if
-we have severe problems with players from dartmouth.edu, we might ban
-dartmouth.edu entirely so that nobody logging on from Dartmouth
-University would be able to create a player.
-
-Dartmouth is used only as an example here; we've had no players from
-there as yet, good or bad.
-}}
+~name{siteban,ban,site ban,site-ban}
+~desc{
+Jeżeli zostaniesz zbanowany, możesz zawsze zażądać podania przyczyny
+dla której zostałeś zbanowany. Możesz to zrobić na adres mailowy podany
+na stronie. Ban może być tymczasowy bądź stały. Może być na grę bądź też
+na stronę również. Wszystko zależy od skali przewinienia.
+Oczywiście, jeżeli uda Ci się udowodnić, że był to niesprawiedliwy
+ban, zostanie on zdjęty i będziesz mógł wrócić do gry. Wszystko
+zależy od Ciebie.
+}
