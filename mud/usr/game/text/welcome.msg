@@ -13,6 +13,6 @@ ulec zmianie.
 
 Wprowadź nazwę konta albo zamknij połączenie.
 Jeżeli chcesz założyć nowe konto, wpisz wybraną
-przez siebie nawzę konta.
+przez siebie nazwę konta.
 
 Nazwa konta: 
