@@ -102,5 +102,17 @@ Zobacz również: wez, wsadz, wyjmij
 Komenda patrz służy do przyjrzenia się bliżej przedmiotowi. Może być
 skrócona do samej litery "p". Na przykład, "p drzwi".
 
+Zobacz również: zbadaj
+
 }
 
+~name{zb,zba,zbadaj}
+~desc{
+
+Komneda zbadaj służy do bliższego przyjrzenia się obiektowi w poszukiwaniu
+jakiś ukrytych cech. Może być skrócona do "zb" bądź "zba". Na przykład:
+"zb drzwi".
+
+Zobacz również: patrz
+
+}

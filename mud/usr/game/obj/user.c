@@ -585,7 +585,7 @@ static void cmd_look(object user, string cmd, string str) {
     return;
   }
 
-  if (cmd[0] != 'e') {
+  if (cmd[0] != 'z') {
     /* trim an initial "at" off the front of the command if the verb
        was "look" and not "examine". */
     sscanf(str, "at %s", str);
@@ -641,7 +641,7 @@ static void cmd_look(object user, string cmd, string str) {
 		  + "You check the first one.\n\n");
   }
 
-  if(cmd[0] == 'e' && tmp[0]->get_examine()) {
+  if(cmd[0] == 'z' && tmp[0]->get_examine()) {
     user->send_phrase(tmp[0]->get_examine());
   } else {
     user->send_phrase(tmp[0]->get_look());
