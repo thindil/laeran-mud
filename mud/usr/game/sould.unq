@@ -8,7 +8,7 @@
 }
 
 ~social{
-  ~verb{warcz}
+  ~verb{warkot}
   ~self-only{Warczysz.}
   ~self-target{Warczysz na ~target{}.}
   ~target{~actor{} warczy na Ciebie.}

@@ -87,6 +87,7 @@ void upgraded(varargs int clone) {
 		     "idea"      : "cmd_idea",
 		     "powiedz"   : "cmd_tell",
 		     "pp"        : "cmd_ooc",
+		     "socjalne"  : "cmd_socials",
 
 		     "kanal"     : "cmd_channels",
 		     "kanaly"    : "cmd_channels",
@@ -807,6 +808,22 @@ static void cmd_users(object user, string cmd, string str) {
     }
   }
   message(str + "\n");
+}
+
+/* List available social commands */
+static void cmd_socials(object user, string cmd, string str)
+{
+  int i, sz;
+  string* scommands;
+  
+  message("Dostępne komendy socjalne:\n");
+  scommands = SOULD->all_socials();
+  str = "";
+  for (i = 0, sz = sizeof(scommands); i < sz; i++)
+    {
+      str += scommands[i] + "\n";
+    }
+  message_scroll(str + "\n");
 }
 
 static void cmd_movement(object user, string cmd, string str) {

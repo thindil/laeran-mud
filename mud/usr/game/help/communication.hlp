@@ -3,6 +3,7 @@
 pomoc rozmawianie          Rozmawianie w pokoju w którym przebywasz
 pomoc czat                 Rozmowa z graczami w całej grze
 pomoc kanal                Włączanie/wyłączanie kanałów
+pomoc socjalne		   Specjalne komendy do odgrywania postaci
 }
 
 
@@ -14,6 +15,27 @@ Następujące komendy mają skróty w symbolach:
                   : emo        (dwukropek)
 }
 
+~name{soc,socjalne}
+~desc{
+Niektóre komendy służą tylko i wyłącznie odgrywaniu postaci.
+Aby otrzymać pełną listę komend socjalnych użyj komendy "socjalne".
+Komendy socjalne tym różnią się od komendy emo, że mają przypisaną
+tylko jedną akcję społeczną do siebie oraz mogą wyświetlać inny
+tekst osobom znajdującym się w pokoju. Na przykład komenda "chichot"
+pokaże:
+
+osobie używającej jej: Chichoczesz.
+osobom w pokoju: Bob chichocze.
+
+W komendach socjalnych możesz również podawać cel, np "chichot Adam".
+Taka komenda pokaże:
+
+osobie używającej jej: Chichoczesz do Adam.
+osobom w pokoju, poza Adamem: Bob chichocze do Adam.
+Adamowi: Bob chichocze do Ciebie.
+
+Zobacz również: 'pomoc emo'
+}
 
 ~name{rozmawianie,mowienie,mówienie,rozmowa,mow,powiedz,'}
 ~desc{
@@ -32,6 +54,8 @@ Komenda emo pozwala wykonać dowolną akcję opisową. Może być w skrócie
 zapisana jako drukropek. Na przykład "emo chichocze" wyświetli
 wszystkim w pokoju informację "Sam chichocze" (jeżeli Sam to nazwa
 Twojej postaci).
+
+Zobacz również 'pomoc socjalne'
 }
 
 
