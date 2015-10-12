@@ -109,7 +109,7 @@ Zobacz również: zbadaj
 ~name{zb,zba,zbadaj}
 ~desc{
 
-Komneda zbadaj służy do bliższego przyjrzenia się obiektowi w poszukiwaniu
+Komenda zbadaj służy do bliższego przyjrzenia się obiektowi w poszukiwaniu
 jakiś ukrytych cech. Może być skrócona do "zb" bądź "zba". Na przykład:
 "zb drzwi".
 
