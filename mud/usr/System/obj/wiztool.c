@@ -200,6 +200,7 @@ void upgraded(varargs int clone) {
 	"%od_report"           : ({ "cmd_od_report" }),
 	"%list_dest"           : ({ "cmd_list_dest" }),
 	"%full_rebuild"        : ({ "cmd_full_rebuild" }),
+	"%load_socials"        : ({ "cmd_load_socials" }),
 
 	"@log"                 : ({ "cmd_writelog" }),
 	"%log"                 : ({ "cmd_writelog" }),

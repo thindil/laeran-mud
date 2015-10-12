@@ -1028,3 +1028,12 @@ static void cmd_reports(object user, string cmd, string str)
       user->message_scroll(report + "\n");
     }
 }
+
+static void cmd_load_socials(object user, string cmd, string str)
+{
+  string file_tmp;
+
+  file_tmp = read_file("/usr/game/sould.unq");
+  SOULD->from_unq_text(file_tmp);
+  user->message("Przeładowano komendy socjalne.\n");
+}
