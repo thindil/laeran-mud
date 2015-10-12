@@ -24,6 +24,9 @@ inherit io   SYSTEM_USER_IO;
 #define STATE_OLDPASSWD         2
 #define STATE_NEWPASSWD1        3
 #define STATE_NEWPASSWD2        4
+#define STATE_EMAIL             5
+#define STATE_EMAIL1            6
+#define STATE_GENDER            7
 
 /* Directory to store user passwords in */
 #define SYSTEM_USER_DIR     "/usr/game/users"
@@ -36,6 +39,8 @@ int    channel_subs;            /* user channel subscriptions */
 int    log_chan_level;          /* Level of output on CHANNEL_LOG */
 int    err_chan_level;          /* Level of output on CHANNEL_ERR */
 int    body_num;                /* number of body object */
+string email;                   /* user email */
+int    gender;                  /* 1 - male, 2 - female, character gender */
 
 
 /* Random unsaved */
@@ -577,11 +582,9 @@ int login(string str)
       first_login = 0;
 
     if (password) {
-      object phr;
 
       /* check password */
-      phr = PHRASED->file_phrase(SYSTEM_PHRASES, "Password: ");
-      previous_object()->message(phr->to_string(this_object()));
+      previous_object()->message("Hasło: ");
 
       set_state(previous_object(), STATE_LOGIN);
     } else {
@@ -590,11 +593,9 @@ int login(string str)
       /* Set our connection object to the one that just called us */
       connection(previous_object());
 
-      message_all_users(Name + " ");
-      system_phrase_all_users("logs in.");
-      message_all_users("\n");
+      message_all_users(Name + " loguje się.\n");
 
-      send_system_phrase("choose new password");
+      previous_object()->message("Podaj nowe hasło: ");
       set_state(previous_object(), STATE_NEWPASSWD1);
 
       /* Check if an immort */
@@ -624,9 +625,7 @@ void logout(int quit)
   if (previous_program() == LIB_CONN && --nconn == 0) {
     if (query_conn()) {
       if (quit) {
-	message_all_users(Name + " ");
-	system_phrase_all_users("logs out.");
-	message_all_users("\n");
+	message_all_users(Name + " wylogowuje się\n");
       } else {
 	message_all_users(Name + " disconnected.\n");
       }
@@ -662,19 +661,12 @@ static int process_message(string str)
 
   case STATE_LOGIN:
     if (crypt(str, password) != password) {
-      object phr;
 
-      previous_object()->message("\n");
-      phr = PHRASED->file_phrase(SYSTEM_PHRASES, "Bad password.");
-      previous_object()->message(phr->to_string(this_object()));
-      previous_object()->message("\n");
+      previous_object()->message("\nZłe hasło.\n");
       return MODE_DISCONNECT;
     }
     connection(previous_object());
-    message("\n");
-    message_all_users(Name + " ");
-    system_phrase_all_users("logs in.");
-    message_all_users("\n");
+    message_all_users("\n" + Name + " loguje się.\n");
     if (!wiztool && sizeof(rsrc::query_owners() & ({ name })) != 0) {
       wiztool = SYSTEM_USER_OBJ->clone_wiztool_as(name);
       if(!wiztool)
@@ -691,59 +683,83 @@ static int process_message(string str)
 
   case STATE_OLDPASSWD:
     if (crypt(str, password) != password) {
-      message("\n");
-      send_system_phrase("Bad password.");
-      message("\n");
+      message("\nZłe hasło.\n");
       break;
     }
-    message("\n");
-    send_system_phrase("New password: ");
+    message("\nNowe hasło: ");
     set_state(previous_object(), STATE_NEWPASSWD1);
     return MODE_NOECHO;
 
   case STATE_NEWPASSWD1:
     if(strlen(str) == 0) {
-      message("\n");
-      send_system_phrase("Looks like no password");
-      message("\n");
+      message("\nNie wygląda na hasło\n");
       if(password && strlen(password)) {
-	send_system_phrase("Password change cancelled");
+	message("Zmiana hasła przerwana");
 	return MODE_NOECHO;
       }
 
       return MODE_DISCONNECT;
     }
     if(strlen(str) < 4) {
-      message("\n");
-      send_system_phrase("must be four characters");
-      message("\n");
-      send_system_phrase("New password: ");
+      message("\nMusi mieć co najmniej cztery znaki\n");
+      message("Nowe hasło: ");
       return MODE_NOECHO;
     }
     newpasswd = str;
-    message("\n");
-    send_system_phrase("Retype new password: ");
+    message("\nPowtórz nowe hasło: ");
     set_state(previous_object(), STATE_NEWPASSWD2);
     return MODE_NOECHO;
 
   case STATE_NEWPASSWD2:
     if (newpasswd == str) {
       password = crypt(str);
-      save_user_to_file();
-      message("\n");
-      send_system_phrase("Password changed.");
-      message("\n");
+      message("\nHasło zmienione\n");
     } else {
-      message("\n");
-      send_system_phrase("Mismatch; password not changed.");
-      message("\n");
+      message("\nPomyłka; hasło nie zmienione.\n");
 
       set_state(previous_object(), STATE_NEWPASSWD1);
-      send_system_phrase("New password: ");
+      message("Nowe hasło: ");
       return MODE_NOECHO;
     }
     newpasswd = nil;
-
+    message("\nPodaj email. Potrzebujemy go tylko po to aby wysłać Tobie " +
+	    "nowe hasło, gdybyś zapomniał starego. Jeżeli nie chcesz podawać " +
+	    "emaila, po prostu wciśnij enter. Email: ");
+    set_state(previous_object(), STATE_EMAIL);
+    return MODE_ECHO;
+  case STATE_EMAIL:
+    newpasswd = str;
+    message("\nPowtórz adres email: ");
+    set_state(previous_object(), STATE_EMAIL1);
+    return MODE_ECHO;
+  case STATE_EMAIL1:
+    if (str == newpasswd)
+      {
+	email = str;
+      }
+    else
+      {
+	message("\nNiepoprawny adres email, spróbuj ponownie: ");
+	return MODE_ECHO;
+      }
+    message ("\nWybierz płeć dla swojej postaci, (M)ężczyzna bądź (K)obieta: ");
+    set_state(previous_object(), STATE_GENDER);
+    return MODE_ECHO;
+  case STATE_GENDER:
+    if (strlen(str) == 0)
+      {
+	message("\nSpróbuj jeszcze raz.(M/K): ");
+	return MODE_ECHO;
+      }
+    if (str[0] == 'M' || str[0] == 'm')
+      {
+	gender = 1;
+      }
+    else
+      {
+	gender = 2;
+      }
+    save_user_to_file();
     if(!location) {
       catch {
 	this_object()->player_login(first_login);

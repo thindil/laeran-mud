@@ -15,4 +15,4 @@ Wprowadź nazwę konta albo zamknij połączenie.
 Jeżeli chcesz założyć nowe konto, wpisz wybraną
 przez siebie nazwę konta.
 
-Nazwa konta: 
+Imię postaci: 
