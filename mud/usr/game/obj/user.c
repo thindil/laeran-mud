@@ -155,7 +155,7 @@ void player_login(int first_time)
   body = nil;
 
   /* Set up location, body, etc */
-  start_room_num = 300;
+  start_room_num = 100;
   start_room = MAPD->get_room_by_num(start_room_num);
 
   /* If start room can't be found, set the start room to the void */
