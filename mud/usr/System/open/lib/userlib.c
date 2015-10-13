@@ -804,9 +804,8 @@ static void cmd_help(object user, string cmd, string str) {
   exact = 0;
   if (str && sscanf(str, "%d %s", index, str) == 2) {
     if(index < 1) {
-      send_system_phrase("Usage: ");
-      message(cmd + " <word>\n");
-      message("   or  " + cmd + " <num> <word>\n");
+      message("Użycie: " + cmd + " <słowo>\n");
+      message(" lub " + cmd + " <numer> <słowo>\n");
       return;
     }
     exact = 1;
@@ -833,18 +832,19 @@ static void cmd_help(object user, string cmd, string str) {
   if(hlp) {
     if((exact && (sizeof(hlp) <= index)) || (sizeof(hlp) < 0)
        || (index < 0)) {
-      message("Only " + sizeof(hlp) + " help files on \""
+      message("Tylko " + sizeof(hlp) + " pliki(ów) pomocy dla \""
 	      + str + "\".\n");
     } else {
       if(sizeof(hlp) > 1) {
-	message("Help on " + str + ":    [" + sizeof(hlp) + " entries]\n");
+	message("Pomoc dla " + str + ":    [" + sizeof(hlp) + " wpisy]\n");
       }
       message_scroll(hlp[index][1]->to_string(this_object()) + "\n");
     }
     return;
   }
 
-  message("No help on \"" + str + "\".\n");
+  message("Brak pomocy dla \"" + str + "\".\n");
+  write_file("/usr/game/text/help_reports.txt", Name + ": " + str + "\n\n");
 }
 
 

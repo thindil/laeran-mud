@@ -998,7 +998,7 @@ static void cmd_reports(object user, string cmd, string str)
   
   if (!str)
     {
-      user->message("Użycie: " + cmd + " bug, idea, literowka\n");
+      user->message("Użycie: " + cmd + " bug, idea, literowka, pomoc\n");
       return;
     }
 
@@ -1013,9 +1013,12 @@ static void cmd_reports(object user, string cmd, string str)
     case "literowka":
       report = read_file("/usr/game/text/typo_reports.txt");
       break;
+    case "pomoc":
+      report = read_file("/usr/game/text/help_reports.txt");
+      break;
     default:
       report = nil;
-      user->message("Użycie: " + cmd + " bug, idea, literowka\n");
+      user->message("Użycie: " + cmd + " bug, idea, literowka, pomoc\n");
       return;
     }
 
