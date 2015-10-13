@@ -852,9 +852,7 @@ private void __sub_unsub_channels(object user, string cmd, int chan,
 				  string channelname, string subval,
 				  string sublevel) {
   /* Sub or unsub the user */
-  if(!STRINGD->stricmp(subval, "wl")
-     || !STRINGD->stricmp(subval, "sub")
-     || !STRINGD->stricmp(subval, "subscribe")) {
+  if(!STRINGD->stricmp(subval, "wl")) {
 
     if(sublevel) {
       int level;
@@ -862,9 +860,9 @@ private void __sub_unsub_channels(object user, string cmd, int chan,
       /* Subscribe with extra sub info */
       if((chan != CHANNEL_ERR && chan != CHANNEL_LOG)
 	 || !wiztool) {
-	user->message("You can't subscribe to any channels that use"
-		      + " extra subscription info.\n");
-	user->message("Usage: " + cmd + " <channel> [on|off]\n");
+	user->message("Nie możesz zapisywać się do tego rodzaju"
+		      + " kanałów.\n");
+	user->message("Użycie: " + cmd + " <kanał> [wl|wyl]\n");
       }
 
       if(!sscanf(sublevel, "%d", level)) {
@@ -873,45 +871,43 @@ private void __sub_unsub_channels(object user, string cmd, int chan,
 	   && LOGD->get_level_by_name(sublevel)) {
 	  level = LOGD->get_level_by_name(sublevel);
 	} else {
-	  user->message("Not sure what level to use for '" + sublevel
-			+ "'.\n");
+	  user->message("Nie jestem pewien jaki poziom użyć dla '"
+			+ sublevel + "'.\n");
 	  return;
 	}
       }
 
       /* Subscribe with extra info 'level' */
       if(CHANNELD->subscribe_user(user, chan, level) < 0) {
-	  user->message("You can't subscribe to that channel.\n");
+	  user->message("Nie możesz nasłuchiwać na tym kanale.\n");
       } else {
-	user->message("Subscribed to " + channelname + ", level " + level
+	user->message("Nasłuchujesz kanał " + channelname + ", poziom " + level
 		      + ".\n");
       }
     } else {
 
       /* Subscribe with no extra info */
       if(CHANNELD->subscribe_user(user, chan) < 0) {
-	user->message("You can't subscribe to that channel.\n");
+	user->message("Nie możesz włączyć tego kanału.\n");
       } else {
-	user->message("Subscribed to " + channelname + ".\n");
+	user->message("Włączyłeś kanał " + channelname + ".\n");
       }
     }
 
     /* Save new subscriptions, if any */
     save_user_to_file();
 
-  } else if(!STRINGD->stricmp(subval, "wyl")
-	    || !STRINGD->stricmp(subval, "unsub")
-	    || !STRINGD->stricmp(subval, "unsubscribe")) {
+  } else if(!STRINGD->stricmp(subval, "wyl")) {
 
     if(CHANNELD->unsubscribe_user(user, chan) < 0) {
-      user->message("You can't unsub from that.  "
-		    + "Are you sure you're subscribed?\n");
+      user->message("Nie możesz przestać nasłuchiwać. "
+		    + "Jesteś pewien, że masz ten kanał włączony?\n");
     } else {
-      user->message("Unsubscribed from " + channelname + ".\n");
+      user->message("Wyłączyłeś kanał " + channelname + ".\n");
       save_user_to_file();
     }
   } else {
-    user->message("Huh?  Try using 'wl' or 'wyl' for the third value.\n");
+    user->message("Słucham? Spróbuj użyć 'wl' lub 'wyl' jako trzecią wartość.\n");
   }
 }
 
@@ -924,7 +920,7 @@ static void cmd_channels(object user, string cmd, string str) {
     str = STRINGD->trim_whitespace(str);
   if(!str || str == "") {
     chanlist = CHANNELD->channel_list(user);
-    user->message("Channels:\n");
+    user->message("Kanały:\n");
     for(ctr = 0; ctr < sizeof(chanlist); ctr++) {
       if(CHANNELD->is_subscribed(user, ctr)) {
 	user->message("* ");
@@ -945,11 +941,9 @@ static void cmd_channels(object user, string cmd, string str) {
 
   if(!str || str == "" || sscanf(str, "%*s %*s %*s %*s") == 4) {
     if(wiztool) {
-      send_system_phrase("Usage: ");
-      message(cmd + " [<channel name> [wl|wyl]] [extra info]\n");
+      message("Użycie: " + cmd + " [<nazwa kanału> [wl|wyl]] [dodatkowe informacje]\n");
     } else {
-      send_system_phrase("Usage: ");
-      message(cmd + " [<channel name> [wl|wyl]]\n");
+      message("Użycie: " + cmd + " [<nazwa kanału> [wl|wyl]]\n");
     }
     return;
   }
@@ -957,15 +951,15 @@ static void cmd_channels(object user, string cmd, string str) {
   if((sscanf(str, "%s %s %s", channelname, subval, sublevel) != 3)
      && (sscanf(str, "%s %s", channelname, subval) != 2)
      && (sscanf(str, "%s", channelname) != 1)) {
-    user->message("Parsing error!\n");
+    user->message("Podano złe wartości!\n");
     return;
   }
 
   chan = CHANNELD->get_channel_by_name(channelname, user);
 
   if(chan < 0) {
-    user->message("You don't know any channel named '" + channelname
-		  + "'.  Type 'channels' for a list of names.\n");
+    user->message("Nie znasz kanału o nazwie '" + channelname
+		  + "'. Wpisz 'kanaly' dla listy kanałów.\n");
     return;
   }
 
@@ -976,11 +970,11 @@ static void cmd_channels(object user, string cmd, string str) {
 
   /* Check whether you're subbed and whether the channel is available
      here. */
-  user->message("Channel: " + channelname + "\n");
+  user->message("Kanał: " + channelname + "\n");
   if(CHANNELD->is_subscribed(user, chan)) {
-    user->message("You are currently subscribed to that channel.\n");
+    user->message("Włączyłeś ten kanał.\n");
   } else {
-    user->message("You are not currently subscribed to that channel.\n");
+    user->message("Ten kanał jest obecnie wyłączony dla Ciebie.\n");
   }
-  user->message("That channel is available in this area.\n");
+  user->message("Ten kanał jest dostępny na tym obszarze.\n");
 }
