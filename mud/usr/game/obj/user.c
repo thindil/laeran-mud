@@ -88,6 +88,7 @@ void upgraded(varargs int clone) {
 		     "powiedz"   : "cmd_tell",
 		     "pp"        : "cmd_ooc",
 		     "socjalne"  : "cmd_socials",
+		     "komendy"   : "cmd_commands",
 
 		     "kanal"     : "cmd_channels",
 		     "kanaly"    : "cmd_channels",
@@ -1064,4 +1065,35 @@ static void cmd_close(object user, string cmd, string str) {
   } else {
     message(err + "\n");
   }
+}
+
+/* Show list of available commands */
+static void cmd_commands(object user, string cmd, string str)
+{
+  string msg;
+  int i;
+  mixed indices;
+
+  /* Standard commands */
+  msg = "Dostępne komendy: \n";
+  indices = map_indices(commands_map);
+  for (i = 0; i < sizeof(indices); i++)
+    {
+      msg += indices[i] + " ";
+    }
+  msg += "wyloguj \n";
+  /* Admin commands */
+  if (is_admin())
+    {
+      mixed* admin_commands;
+      msg += "Komendy administracyjne: \n";
+      admin_commands = SYSTEM_WIZTOOL->get_command_sets(this_object());
+      indices = map_indices(admin_commands[0]);
+      for (i = 0; i < sizeof(indices); i++)
+	{
+	  msg += indices[i] + " ";
+	}
+	msg += "\n";
+    }
+  message_scroll(msg);
 }

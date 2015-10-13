@@ -79,7 +79,7 @@ static void upgraded(varargs int clone) {
 }
 
 mixed* get_command_sets(object wiztool) {
-  if(!SYSTEM())
+  if(!SYSTEM() && !GAME())
     return nil;
 
   return command_sets;
