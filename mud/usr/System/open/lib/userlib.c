@@ -323,13 +323,16 @@ static void show_room_to_player(object ROOM location) {
 
   message("\n");
   if(location->num_exits()) {
-    message("Wyjścia: ");
+    message("Wyjścia: \n");
     for(ctr = 0; ctr < location->num_exits(); ctr++) {
       object exit;
 
       exit = location->get_exit_num(ctr);
-      phr = EXITD->get_short_for_dir(exit->get_direction());
-      message(phr->to_string(this_object()) + " ");
+      phr = EXITD->get_name_for_dir(exit->get_direction());
+      tmp = "- " + phr->to_string(this_object()) + ": ";
+      phr = exit->get_destination()->get_brief();
+      tmp += phr->to_string(this_object()) + "\n";
+      message(tmp);
     }
     message("\n");
   }

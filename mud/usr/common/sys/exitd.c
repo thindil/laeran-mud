@@ -23,9 +23,6 @@ private void add_complex_exit_by_unq(int roomnum1, mixed value);
 void upgraded(varargs int clone);
 
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
-#define FILE(x) PHRASED->file_phrase(EXITD_PHRASES,(x))
-
-#define EXITD_PHRASES       "/usr/common/sys/exitd.phr"
 
 static void create(varargs int clone) {
   ::create(clone);
@@ -38,10 +35,6 @@ static void create(varargs int clone) {
   deferred_add_newexit = ({ });
 
   upgraded();
-
-  if(!load_filemanaged_file(EXITD_PHRASES)) {
-    error("Can't load ExitD phrase file!");
-  }
 }
 
 void upgraded(varargs int clone) {
@@ -50,59 +43,59 @@ void upgraded(varargs int clone) {
 
   ::upgraded();
 
-  name_for_dir = ([ DIR_NORTH : FILE("north"),
-		    DIR_SOUTH : FILE("south"),
-		    DIR_EAST : FILE("east"),
-		    DIR_WEST : FILE("west"),
-		    DIR_NORTHWEST : FILE("northwest"),
-		    DIR_NORTHEAST : FILE("northeast"),
-		    DIR_SOUTHWEST : FILE("southwest"),
-		    DIR_SOUTHEAST : FILE("southeast"),
-		    DIR_IN : FILE("in"),
-		    DIR_OUT : FILE("out"),
-		    DIR_UP : FILE("up"),
-		    DIR_DOWN : FILE("down"),
+  name_for_dir = ([ DIR_NORTH : PHR("północ"),
+		    DIR_SOUTH : PHR("południe"),
+		    DIR_EAST : PHR("wschód"),
+		    DIR_WEST : PHR("zachód"),
+		    DIR_NORTHWEST : PHR("północnyzachód"),
+		    DIR_NORTHEAST : PHR("północnywschód"),
+		    DIR_SOUTHWEST : PHR("południowyzachód"),
+		    DIR_SOUTHEAST : PHR("południowywschód"),
+		    DIR_IN : PHR("do środka"),
+		    DIR_OUT : PHR("na zewnątrz"),
+		    DIR_UP : PHR("góra"),
+		    DIR_DOWN : PHR("dół"),
 		    ]);
 
-  shortname_for_dir = ([ DIR_NORTH : FILE("n"),
-			 DIR_SOUTH : FILE("s"),
-			 DIR_EAST : FILE("e"),
-			 DIR_WEST : FILE("w"),
-			 DIR_NORTHWEST : FILE("nw"),
-			 DIR_NORTHEAST : FILE("ne"),
-			 DIR_SOUTHWEST : FILE("sw"),
-			 DIR_SOUTHEAST : FILE("se"),
-			 DIR_IN : FILE("i"),
-			 DIR_OUT : FILE("o"),
-			 DIR_UP : FILE("u"),
-			 DIR_DOWN : FILE("d"),
+  shortname_for_dir = ([ DIR_NORTH : PHR("pn"),
+			 DIR_SOUTH : PHR("pd"),
+			 DIR_EAST : PHR("w"),
+			 DIR_WEST : PHR("z"),
+			 DIR_NORTHWEST : PHR("pnz"),
+			 DIR_NORTHEAST : PHR("pnw"),
+			 DIR_SOUTHWEST : PHR("pdz"),
+			 DIR_SOUTHEAST : PHR("pdw"),
+			 DIR_IN : PHR("ds"),
+			 DIR_OUT : PHR("nz"),
+			 DIR_UP : PHR("g"),
+			 DIR_DOWN : PHR("d"),
 			 ]);
 
   /* This is the set of direction string acceptable for
      builder commands (currently) and file formats (probably forever) */
-  builder_directions = ([ "north"      : DIR_NORTH,
-			  "south"      : DIR_SOUTH,
-			  "east"       : DIR_EAST,
-			  "west"       : DIR_WEST,
-			  "northeast"  : DIR_NORTHEAST,
-			  "northwest"  : DIR_NORTHWEST,
-			  "southeast"  : DIR_SOUTHEAST,
-			  "southwest"  : DIR_SOUTHWEST,
-			  "up"         : DIR_UP,
-			  "down"       : DIR_DOWN,
-			  "in"         : DIR_IN,
-			  "out"        : DIR_OUT,
+  builder_directions = ([ "północ"            : DIR_NORTH,
+			  "południe"          : DIR_SOUTH,
+			  "wschód"            : DIR_EAST,
+			  "zachód"            : DIR_WEST,
+			  "północnywschód"    : DIR_NORTHEAST,
+			  "północnyzachód"    : DIR_NORTHWEST,
+			  "południowywschód"  : DIR_SOUTHEAST,
+			  "południowyzachód"  : DIR_SOUTHWEST,
+			  "góra"              : DIR_UP,
+			  "dół"               : DIR_DOWN,
+			  "do środka"         : DIR_IN,
+			  "na zewnątrz"       : DIR_OUT,
 
-			  "n"  : DIR_NORTH,
-			  "s"  : DIR_SOUTH,
-			  "e"  : DIR_EAST,
-			  "w"  : DIR_WEST,
-			  "ne" : DIR_NORTHEAST,
-			  "nw" : DIR_NORTHWEST,
-			  "se" : DIR_SOUTHEAST,
-			  "sw" : DIR_SOUTHWEST,
-			  "u"  : DIR_UP,
-			  "d"  : DIR_DOWN,
+			  "pn"  : DIR_NORTH,
+			  "pd"  : DIR_SOUTH,
+			  "w"   : DIR_EAST,
+			  "z"   : DIR_WEST,
+			  "pnw" : DIR_NORTHEAST,
+			  "pnz" : DIR_NORTHWEST,
+			  "pdw" : DIR_SOUTHEAST,
+			  "pdz" : DIR_SOUTHWEST,
+			  "g"   : DIR_UP,
+			  "d"   : DIR_DOWN,
 			  ]);
 }
 

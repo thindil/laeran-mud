@@ -6,18 +6,18 @@ się:
 pomoc kierunki       Komendy do poruszania się w określonych kierunkach
 }
 
-~name{kierunki,kierunek,north,south,east,west,n,s,w,e,u,d,
-            northwest,northeast,southwest,southeast,nw,ne,sw,se,up,down}
+~name{kierunki,kierunek,północ,polnoc,południe,poludnie,wschód,wschod,
+	zachód,zachod,pn,pd,w,z,g,d,gora,dol,góra,dół}
 ~desc{
-Na większości obszarów, standardowe komendy do poruszania się to angielskie
-nazwy kierunków z kompasu, używane w większości MUD'ów czy gier
-tekstowych. A konkretnie:
+Na większości obszarów, standardowe komendy do poruszania się to głównie
+nazwy kierunków z kompasu, używane w większości MUD'ów czy gier tekstowych.
+A konkretnie:
 
-  north, south, west, east, northwest, southwest, southeast, northeast,
-  up, down, in, out
+  polnoc, poludnie, wschod, zachod, polnocnywschod, polnocnyzachod,
+  poludniowywschod, poludniowyzachod, gora, dol, dosrodka, nazewnatrz
 
 oraz ich skróty:
 
-  n, s, w, e, nw, sw, se, ne, u, d
+  pn, pd, w, z, pnw, pnz, pdw, pdz, g, d, ds, nz
 
 }
