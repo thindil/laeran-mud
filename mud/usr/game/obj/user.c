@@ -35,6 +35,7 @@ static void cmd_social(object user, string cmd, string str);
 #define USER_MOBILE "/usr/common/obj/user_mobile"
 
 int meat_locker_rn;
+int current_room;
 
 /*
  * NAME:	create()
@@ -198,6 +199,7 @@ void player_login(int first_time)
 
   if(!body) {
     location = start_room;
+    current_room = start_room_num;
 
     body = clone_object(SIMPLE_ROOM);
     if(!body)
@@ -261,7 +263,7 @@ void player_login(int first_time)
        file again... */
     save_user_to_file();
   } else {
-    location = body->get_location();
+    location = MAPD->get_room_by_num(current_room);
     mobile = body->get_mobile();
     if(!mobile) {
       mobile = clone_object(USER_MOBILE);
@@ -273,7 +275,7 @@ void player_login(int first_time)
     mobile->teleport(location, 1);
 
     /* Move body to start room */
-    if(location->get_number() == meat_locker_rn) {
+    if(location->get_number() <= meat_locker_rn) {
       mobile->teleport(start_room, 1);
     }
   }
@@ -294,24 +296,31 @@ static void player_logout(void)
     error("Wrong program calling player_logout!");
 
   /* Teleport body to meat locker */
-  if(body) {
-    object meat_locker;
-    object mobile;
+  if(body)
+    {
+      object meat_locker;
+      object mobile;
 
-    if(meat_locker_rn >= 0) {
-      meat_locker = MAPD->get_room_by_num(meat_locker_rn);
-      if(meat_locker) {
-	if (location) {
-	  mobile = body->get_mobile();
-	  mobile->teleport(meat_locker, 1);
+      if(meat_locker_rn >= 0)
+	{
+	  meat_locker = MAPD->get_room_by_num(meat_locker_rn);
+	  if(meat_locker)
+	    {
+	      if (location)
+		{
+		  current_room = location->get_number();
+		  mobile = body->get_mobile();
+		  mobile->teleport(meat_locker, 1);
+		}
+	    }
+	  else
+	    {
+	      LOGD->write_syslog("Can't find room #" + meat_locker_rn
+				 + " as meat locker!", LOG_ERR);
+	    }
 	}
-      } else {
-	LOGD->write_syslog("Can't find room #" + meat_locker_rn
-			   + " as meat locker!", LOG_ERR);
-      }
     }
-  }
-
+  save_user_to_file();
   CHANNELD->unsubscribe_user_from_all(this_object());
 }
 
