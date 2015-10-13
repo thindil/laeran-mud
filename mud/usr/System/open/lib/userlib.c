@@ -322,10 +322,8 @@ static void show_room_to_player(object ROOM location) {
   }
 
   message("\n");
-
-  if(function_object("num_exits", location)) {
-    send_system_phrase("Exits");
-    message(": ");
+  if(location->num_exits()) {
+    message("Wyjścia: ");
     for(ctr = 0; ctr < location->num_exits(); ctr++) {
       object exit;
 
