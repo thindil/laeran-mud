@@ -146,7 +146,7 @@ int name_is_forbidden(string name) {
  */
 void player_login(int first_time)
 {
-  int    start_room_num, start_zone;
+  int    start_room_num, start_zone, rnd;
   object start_room, other_user;
 
   if(previous_program() != PHANTASMAL_USER)
@@ -207,11 +207,21 @@ void player_login(int first_time)
     body->set_openable(0);
 
     /* Players weigh about 80 kilograms */
-    body->set_weight(80.0);
-    /* Players are about 2.5dm x 1dm x 18dm == 45dm^3 == 45 liters */
-    body->set_volume(45.0);
-    /* A player is about 18dm == 180 centimeters tall */
-    body->set_length(180.0);
+    rnd = random(11);
+    if (random(11) < 5)
+      {
+	rnd = rnd * (-1);
+      }
+    body->set_weight(80.0 + (float)rnd);
+    rnd = random(11);
+    if (random(11) < 5)
+      {
+	rnd = rnd * (-1);
+      }
+    rnd = 180 + rnd;
+    body->set_length((float)rnd);
+    rnd = rnd / 10;
+    body->set_volume((2.5 * (float)rnd));
 
     /* Players are able to lift 50 kilograms */
     body->set_weight_capacity(50.0);
