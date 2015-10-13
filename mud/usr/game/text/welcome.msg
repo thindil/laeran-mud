@@ -11,8 +11,8 @@ Witaj na Laeran. Na razie jesteśmy jeszcze
 we wczesnej fazie rozwoju, wszystko może
 ulec zmianie.
 
-Wprowadź nazwę konta albo zamknij połączenie.
-Jeżeli chcesz założyć nowe konto, wpisz wybraną
-przez siebie nazwę konta.
+Wprowadź imię postaci albo zamknij połączenie.
+Jeżeli chcesz stworzyć nową postać, wpisz wybrane
+przez siebie imię postaci.
 
 Imię postaci: 

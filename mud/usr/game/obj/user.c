@@ -232,7 +232,7 @@ void player_login(int first_time)
 
     /* Set descriptions and add noun for new name */
     body->set_brief(NEW_PHRASE(Name));
-    body->set_look(NEW_PHRASE(Name + " wanders the MUD."));
+    body->set_look(NEW_PHRASE(Name + " stoi tutaj."));
     body->set_examine(nil);
     body->add_noun(NEW_PHRASE(STRINGD->to_lower(Name)));
 
