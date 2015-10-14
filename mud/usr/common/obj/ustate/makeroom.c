@@ -1624,24 +1624,25 @@ static int prompt_wlocation_input(string input)
     }
 
   inputlocations = explode(input, " ");
+  locations = ({ });
   for (i = 0; i < sizeof(inputlocations); i ++)
     {
       switch (inputlocations[i])
 	{
 	case "głowa":
-	  locations[i] = 1;
+	  locations += ({1});
 	  break;
 	case "tułów":
-	  locations[i] = 2;
+	  locations += ({2});
 	  break;
 	case "ręce":
-	  locations[i] = 3;
+	  locations += ({3});
 	  break;
 	case "dłonie":
-	  locations[i] = 4;
+	  locations += ({4});
 	  break;
 	case "nogi":
-	  locations[i] = 5;
+	  locations += ({5});
 	  break;
 	case "none":
 	  locations = nil;
