@@ -110,9 +110,8 @@ void upgraded(varargs int clone) {
 		     "umiesc"    : "cmd_put",
 		     "wyjmij"    : "cmd_remove",
 		     "otworz"    : "cmd_open",
-		     "zamknij"   : "cmd_close",
+		     "zamknij"   : "cmd_close"
 
-		     "parse"     : "cmd_parse"
     ]);
 
   }
@@ -471,62 +470,6 @@ int process_command(string str)
 
 
 /************** User-level commands *************************/
-
-/* Temporary command for testing the parser */
-static void cmd_parse(object user, string cmd, string str) {
-  mixed* output, binder_output;
-  int     ctr;
-
-  output = PARSED->parse_cmd(str);
-
-  if (output == nil) {
-    string *words, *tmpwords;
-
-    message("FAILED!\n");
-
-    /* If the parse failed, either one or more words weren't
-       recognized or the words weren't in an order that made any
-       sense.  Check to see that we recognize all words. */
-
-    if(str) {
-
-      /* Currently we explode on comma and space.  We should really
-	 explode on several other whitespace characters but they
-	 currently can't be input.  We should probably do this with
-	 parse_string somehow, but I'm lazy and that's complicated. */
-      tmpwords = explode(str, " ");
-      words = ({ });
-      for(ctr = 0; ctr < sizeof(tmpwords); ctr++) {
-	words += explode(tmpwords[ctr], ",");
-      }
-
-      for(ctr = 0; ctr < sizeof(words); ctr++) {
-	if(!PARSED->registered_as_word(words[ctr])) {
-	  message("The game doesn't know the word '" + words[ctr]
-		  + "' (and maybe others).\n"
-		  + "Try rephrasing your request.\n");
-	  return;
-	}
-      }
-    }
-
-    message("Every individual word made sense, yet together...\n"
-	    + "I don't get it.\n");
-  } else {
-    message("PARSED!\n" + STRINGD->tree_sprint(output, 0) + "\n\n");
-
-    if(sizeof(output) > 1) {
-      message("Ambiguous parse:  " + sizeof(output) + " possibilities.\n");
-    }
-
-    /* Now we go through and bind the words to verbs, which do noun
-       binding. */
-    binder_output = PARSED->bind_commands(output);
-
-    message("Binding done!\n" + STRINGD->tree_sprint(binder_output, 0)
-	    + "\n\n");
-  }
-}
 
 static void cmd_ooc(object user, string cmd, string str) {
   if (!str || str == "") {
