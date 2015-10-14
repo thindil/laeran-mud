@@ -51,7 +51,7 @@ private object obj_detail_of;
 #define SS_PROMPT_LENGTH_CAPACITY  25
 #define SS_PROMPT_WEAPON           26
 #define SS_PROMPT_DAMAGE           27
-#define SS_PROMPT_WEREABLE         28
+#define SS_PROMPT_WEARABLE         28
 #define SS_PROMPT_WLOCATION        29
 #define SS_PROMPT_ARMOR            30
 
@@ -83,7 +83,7 @@ static int  prompt_volume_capacity_input(string input);
 static int  prompt_length_capacity_input(string input);
 static void prompt_weapon_data(mixed data);
 static int  prompt_damage_input(string input);
-static void prompt_wereable_data(mixed data);
+static void prompt_wearable_data(mixed data);
 static int  prompt_wlocation_input(string input);
 static int  prompt_armor_input(string input);
 
@@ -204,7 +204,7 @@ int from_user(string input) {
   case SS_PROMPT_OPEN:
   case SS_PROMPT_OPENABLE:
   case SS_PROMPT_WEAPON:
-  case SS_PROMPT_WEREABLE:
+  case SS_PROMPT_WEARABLE:
     send_string("Internal error in state machine!  Cancelling OLC!\r\n");
     LOGD->write_syslog("Reached from_user() in state " + substate
 		       + " while doing @make_room.  Illegal!", LOG_ERR);
@@ -367,7 +367,7 @@ private string blurb_for_substate(int substate) {
   case SS_PROMPT_OPEN:
   case SS_PROMPT_OPENABLE:
   case SS_PROMPT_WEAPON:
-  case SS_PROMPT_WEREABLE:
+  case SS_PROMPT_WEARABLE:
     return "This blurb should never be used.  Oops!\r\n";
 
   case SS_PROMPT_WEIGHT_CAPACITY:
@@ -468,7 +468,9 @@ void switch_from(int popp) {
        && substate != SS_PROMPT_EXAMINE_DESC
        && substate != SS_PROMPT_CONTAINER
        && substate != SS_PROMPT_OPEN
-       && substate != SS_PROMPT_OPENABLE) {
+       && substate != SS_PROMPT_OPENABLE
+       && substate != SS_PROMPT_WEAPON
+       && substate != SS_PROMPT_WEARABLE) {
       send_string("(Creating object -- suspending)\r\n");
     }
   }
@@ -496,8 +498,8 @@ void pass_data(mixed data) {
   case SS_PROMPT_WEAPON:
     prompt_weapon_data(data);
     break;
-  case SS_PROMPT_WEREABLE:
-    prompt_wereable_data(data);
+  case SS_PROMPT_WEARABLE:
+    prompt_wearable_data(data);
     break;
   default:
     send_string("Warning: User State was passed unrecognized data!\r\n");
@@ -1527,7 +1529,7 @@ static void prompt_weapon_data(mixed data)
     }
   else
     {
-      substate = SS_PROMPT_WEREABLE;
+      substate = SS_PROMPT_WEARABLE;
       push_new_state(US_ENTER_YN, "Obiekt można zakładać na ciało? ");
       return;
     }
@@ -1577,13 +1579,13 @@ static int prompt_damage_input(string input)
   new_obj->set_damage(value);
 
   send_string("Zaakceptowano obrażenia.\n\n");
-  substate = SS_PROMPT_WEREABLE;
-  push_new_state(US_ENTER_YN, "Obiekt można nosić? ");
+  substate = SS_PROMPT_WEARABLE;
+  push_new_state(US_ENTER_YN, "Obiekt można zakładać na ciało? ");
 
   return RET_NORMAL;
 }
 
-static void prompt_wereable_data(mixed data)
+static void prompt_wearable_data(mixed data)
 {
   if(typeof(data) != T_INT)
     {
@@ -1594,11 +1596,12 @@ static void prompt_wereable_data(mixed data)
 
   if(data)
     {
-      new_obj->set_weapon(1);
+      new_obj->set_wearable(1);
     }
   else
     {
       substate = SS_PROMPT_ARMOR;
+      send_string(blurb_for_substate(substate));
       return;
     }
 
@@ -1649,10 +1652,11 @@ static int prompt_wlocation_input(string input)
 	}
     }
 
-  new_obj->set_locations(locations);
+  new_obj->set_wearlocations(locations);
 
   send_string("Zaakceptowano lokacje do noszenia.\n\n");
   substate = SS_PROMPT_ARMOR;
+  send_string(blurb_for_substate(substate));
 
   return RET_NORMAL;
 }

@@ -29,8 +29,8 @@ private object* pending_removed_adjectives;
 #define OF_CONTAINER          1
 #define OF_OPEN               2
 #define OF_OPENABLE           8
-#define OF_WEAPON             9
-#define OF_WEREABLE           10
+#define OF_WEAPON             48
+#define OF_WEARABLE           64
 
 private int objflags;
 
@@ -49,7 +49,7 @@ private int objflags;
 private float weight, volume, length;
 private float weight_capacity, volume_capacity, length_capacity;
 private int damage, armor;
-private int* locations;
+private int* wearlocations;
 
 /* These are the total current amount of weight and volume
    being held in the object. */
@@ -69,7 +69,7 @@ static void create(varargs int clone) {
     weight = volume = length = -1.0;
     weight_capacity = volume_capacity = length_capacity = -1.0;
     damage = armor = -1;
-    locations = nil;
+    wearlocations = ({ });
 
     pending_parents = nil;
     pending_location = -1;
@@ -201,15 +201,15 @@ int get_armor(void)
   if(armor < 0 && sizeof(obj::get_archetypes()))
     return obj::get_archetypes()[0]->get_armor();
 
-  return damage;
+  return armor;
 }
 
-int* get_locations(void)
+int* get_wearlocations(void)
 {
-  if(locations == nil && sizeof(obj::get_archetypes()))
-    return obj::get_archetypes()[0]->get_locations();
+  if(wearlocations == nil && sizeof(obj::get_archetypes()))
+    return obj::get_archetypes()[0]->get_wearlocations();
 
-  return locations;
+  return wearlocations;
 }
 
 void set_weight(float new_weight) {
@@ -292,11 +292,11 @@ void set_armor(int new_armor) {
   armor = new_armor;
 }
 
-void set_locations(int* new_locations) {
+void set_wearlocations(int* new_wearlocations) {
   if(!SYSTEM() && !COMMON() && !GAME())
     error("Only authorized code can set length capacities!");
 
-  locations = new_locations;
+  wearlocations = new_wearlocations;
 }
 
 /*** Functions dealing with Exits ***/
@@ -372,8 +372,8 @@ int is_weapon() {
   return objflags & OF_WEAPON;
 }
 
-int is_wereable() {
-  return objflags & OF_WEREABLE;
+int is_wearable() {
+  return objflags & OF_WEARABLE;
 }
 
 private void set_flags(int flags, int value) {
@@ -412,11 +412,11 @@ void set_weapon(int value) {
   set_flags(OF_WEAPON, value);
 }
 
-void set_wereable(int value) {
+void set_wearable(int value) {
   if(!SYSTEM() && !COMMON() && !GAME())
     error("Only authorized code can currently set an object as openable!");
 
-  set_flags(OF_WEREABLE, value);
+  set_flags(OF_WEARABLE, value);
 }
 
 /*
@@ -984,6 +984,25 @@ string to_unq_flags(void) {
     if(length_capacity >= 0.0)
       ret += "  ~length_capacity{" + length_capacity + "}\n";
   }
+
+  if (is_weapon())
+    {
+      if (damage > 0)
+	{
+	  ret += "  ~damage{" + damage + "}\n";
+	}
+    }
+  if (is_wearable())
+    {
+      if (wearlocations != nil)
+	{
+	  ret += "  ~wearlocations{{" + serialize_list(wearlocations) + "}}\n";
+	}
+    }
+  if (armor > 0)
+    {
+      ret += "  ~armor{" + armor + "}\n";
+    }
 
   rem = get_removed_details();
   if(rem && sizeof(rem)) {

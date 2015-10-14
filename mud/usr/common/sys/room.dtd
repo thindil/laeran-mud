@@ -4,7 +4,7 @@
        nouns,rem_nouns?,adjectives?,rem_adjectives?,
        exit*,newexit*,flags?,weight?,volume?,length?,
        weight_capacity?,volume_capacity?,length_capacity?,removed_details?,
-       tags?,data?}
+       tags?,data?,damage?,locations?,armor?}
   ~object:obj{}
   ~obj_type{string}
   ~number{int}
@@ -31,6 +31,9 @@
   ~removed_details{int*}
   ~tags{unq}
   ~data{unq}
+  ~damage{int}
+  ~locations{int*}
+  ~armor{int}
   ~newexit{rnumber,direction,destination,return,type,rbdesc?,rgdesc?,
            rldesc?,redesc?,rnouns?,radjectives?,rflags?}
   ~rnumber{int}
