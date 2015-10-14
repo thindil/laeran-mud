@@ -1699,7 +1699,7 @@ static int prompt_armor_input(string input)
       return RET_NORMAL;
     }
 
-  new_obj->set_damage(value);
+  new_obj->set_armor(value);
 
   send_string("Zaakceptowano zbroję obiektu.\n\n");
   send_string("Zakończono prace nad przenośnym obiektem #" + new_obj->get_number() + ".\n");
