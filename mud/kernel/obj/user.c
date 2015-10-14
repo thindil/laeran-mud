@@ -224,7 +224,7 @@ int receive_message(string str)
 		if (wiztool) {
 		    wiztool->input(str);
 		} else if (strlen(str) != 0) {
-		    message("No command: " + str + "\n");
+		    message("Nie ma komendy: " + str + "\n");
 		}
 	    }
 	    break;

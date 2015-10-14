@@ -44,7 +44,7 @@ void notify_moved(object obj) {
 void hook_say(object body, string message) {
   if (user) {
     user->send_phrase(body->get_brief());
-    user->message(" says: " + message + "\r\n");
+    user->message(" mówi: " + message + "\r\n");
   }
 }
 
@@ -89,12 +89,12 @@ void hook_leave(object body, int dir) {
   if (user) {
     if (dir == DIR_TELEPORT) {
       user->send_phrase(body->get_brief());
-      user->message(" disappears into thin air.\r\n");
+      user->message(" znika w kłębie dymu.\n");
     } else {
       user->send_phrase(body->get_brief()) ;
-      user->message(" leaves going ");
+      user->message(" odchodzi na ");
       user->send_phrase(EXITD->get_name_for_dir(dir));
-      user->message("\r\n");
+      user->message("\n");
     }
   }
 }
@@ -103,12 +103,12 @@ void hook_enter(object body, int dir) {
   if (user) {
     if (dir == DIR_TELEPORT) {
       user->send_phrase(body->get_brief());
-      user->message(" appears from thin air.\r\n");
+      user->message(" pojawia się znikąd.\n");
     } else {
       user->send_phrase(body->get_brief()) ;
-      user->message(" enters from the ");
+      user->message(" nadchodzi z ");
       user->send_phrase(EXITD->get_name_for_dir(dir));
-      user->message("\r\n");
+      user->message("\n");
     }
   }
 }

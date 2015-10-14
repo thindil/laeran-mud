@@ -320,7 +320,7 @@ static void process_command(string cmd, string str)
     break;
 
   default:
-    message("No command: " + cmd + "\n");
+    message("Nie ma takiej komendy: " + cmd + "\n");
     break;
   }
 }

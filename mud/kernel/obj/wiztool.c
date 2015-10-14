@@ -90,7 +90,7 @@ static void process(string str)
 	break;
 
     default:
-	message("No command: " + str + "\n");
+	message("Nie ma takiej komendy: " + str + "\n");
 	break;
     }
 }
