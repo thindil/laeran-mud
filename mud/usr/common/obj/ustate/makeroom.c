@@ -1630,19 +1630,19 @@ static int prompt_wlocation_input(string input)
       switch (inputlocations[i])
 	{
 	case "głowa":
-	  locations += ({1});
+	  locations += ({0});
 	  break;
 	case "tułów":
-	  locations += ({2});
+	  locations += ({1});
 	  break;
 	case "ręce":
-	  locations += ({3});
+	  locations += ({2});
 	  break;
 	case "dłonie":
-	  locations += ({4});
+	  locations += ({3});
 	  break;
 	case "nogi":
-	  locations += ({5});
+	  locations += ({4});
 	  break;
 	case "none":
 	  locations = nil;
