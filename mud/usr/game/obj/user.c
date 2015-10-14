@@ -215,13 +215,27 @@ void player_login(int first_time)
       {
 	rnd = rnd * (-1);
       }
-    body->set_weight(80.0 + (float)rnd);
+    if (gender == 1)
+      {
+	body->set_weight(70.0 + (float)rnd);
+      }
+    else
+      {
+	body->set_weight(55.0 + (float)rnd);
+      }
     rnd = random(11);
     if (random(11) < 5)
       {
 	rnd = rnd * (-1);
       }
-    rnd = 180 + rnd;
+    if (gender == 1)
+      {
+	rnd = 170 + rnd;
+      }
+    else
+      {
+	rnd = 160 + rnd;
+      }
     body->set_length((float)rnd);
     rnd = rnd / 10;
     body->set_volume((2.5 * (float)rnd));
