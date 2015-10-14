@@ -29,6 +29,8 @@ private object* pending_removed_adjectives;
 #define OF_CONTAINER          1
 #define OF_OPEN               2
 #define OF_OPENABLE           8
+#define OF_WEAPON             9
+#define OF_WEREABLE           10
 
 private int objflags;
 
@@ -46,6 +48,8 @@ private int objflags;
    acceptable length. */
 private float weight, volume, length;
 private float weight_capacity, volume_capacity, length_capacity;
+private int damage, armor;
+private int* locations;
 
 /* These are the total current amount of weight and volume
    being held in the object. */
@@ -64,6 +68,8 @@ static void create(varargs int clone) {
 
     weight = volume = length = -1.0;
     weight_capacity = volume_capacity = length_capacity = -1.0;
+    damage = armor = -1;
+    locations = nil;
 
     pending_parents = nil;
     pending_location = -1;
@@ -182,6 +188,30 @@ float get_current_volume(void) {
   return current_volume;
 }
 
+int get_damage(void)
+{
+  if(damage < 0 && sizeof(obj::get_archetypes()))
+    return obj::get_archetypes()[0]->get_damage();
+
+  return damage;
+}
+
+int get_armor(void)
+{
+  if(armor < 0 && sizeof(obj::get_archetypes()))
+    return obj::get_archetypes()[0]->get_armor();
+
+  return damage;
+}
+
+int* get_locations(void)
+{
+  if(locations == nil && sizeof(obj::get_archetypes()))
+    return obj::get_archetypes()[0]->get_locations();
+
+  return locations;
+}
+
 void set_weight(float new_weight) {
   object loc;
 
@@ -248,6 +278,26 @@ void set_length_capacity(float new_length_capacity) {
   length_capacity = new_length_capacity;
 }
 
+void set_damage(int new_damage) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can set length capacities!");
+
+  damage = new_damage;
+}
+
+void set_armor(int new_armor) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can set length capacities!");
+
+  armor = new_armor;
+}
+
+void set_locations(int* new_locations) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can set length capacities!");
+
+  locations = new_locations;
+}
 
 /*** Functions dealing with Exits ***/
 
@@ -318,6 +368,14 @@ int is_openable() {
   return objflags & OF_OPENABLE;
 }
 
+int is_weapon() {
+  return objflags & OF_WEAPON;
+}
+
+int is_wereable() {
+  return objflags & OF_WEREABLE;
+}
+
 private void set_flags(int flags, int value) {
   if(value) {
     objflags |= flags;
@@ -347,6 +405,19 @@ void set_openable(int value) {
   set_flags(OF_OPENABLE, value);
 }
 
+void set_weapon(int value) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can currently set an object as openable!");
+
+  set_flags(OF_WEAPON, value);
+}
+
+void set_wereable(int value) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can currently set an object as openable!");
+
+  set_flags(OF_WEREABLE, value);
+}
 
 /*
  * overloaded room notification functions
