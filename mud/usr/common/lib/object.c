@@ -232,7 +232,7 @@ private atomic void add_remove_noun_adj(object phr, int do_add, int is_noun) {
   else
     unregister_my_adjs();
 
-  locale = LANG_enUS;
+  locale = LANG_plPL;
 
   for(ctr = 0; ctr < sizeof(taglist); ctr += 2) {
     string *cur_words;
@@ -246,7 +246,7 @@ private atomic void add_remove_noun_adj(object phr, int do_add, int is_noun) {
                 + " passed when modifying nouns/adjs!");
         break;
       case '}':
-        locale = LANG_enUS;
+        locale = LANG_plPL;
         break;
       default:
         error("Illegal phrase passed when modifying nouns/adjs!");
