@@ -341,6 +341,32 @@ static void cmd_stat(object user, string cmd, string str) {
 		  + " mobiles.\n\n";
   }
 
+  if(function_object("is_weapon", obj)) 
+    {
+      if (obj->is_weapon())
+	{
+	  tmp += "Obiekt jest bronią. I zadaje " + (string)obj->get_damage() + " obrażeń.\n";
+	}
+    }
+
+  if(function_object("is_wearable", obj))
+    {
+      string* wlocations;
+      int* wlocationsnum;
+      if (obj->is_wearable())
+	{
+	  tmp += "Obiekt można nosić.\n";
+	  tmp += "Lokacje ciała: ";
+	  wlocationsnum = obj->get_wearlocations();
+	  wlocations = ({"głowa", "tułów", "ręce", "dłonie", "nogi" });
+	  for (ctr = 0; ctr < sizeof(wlocationsnum); ctr++)
+	    {
+	      tmp += wlocations[wlocationsnum[ctr]] + " ";
+	    }
+	  tmp += "\n";
+	}
+    }
+
   details = obj->get_immediate_details();
   if(details && sizeof(details)) {
     object detail;
