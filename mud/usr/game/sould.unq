@@ -15,3 +15,12 @@
   ~other-only{~actor{} warczy.}
   ~other-target{~actor{} warczy na ~target{}.}
 }
+
+~social{
+  ~verb{pozdrow}
+  ~self-only{Pozdrawiasz wszystkich.}
+  ~self-target{Pozdrawiasz samego siebie.}
+  ~target{~actor{} pozdrawia Ciebie.}
+  ~other-only{~actor{} pozdrawia wszystkich.}
+  ~other-target{~actor{} pozdrawia ~target{}.}
+}
