@@ -161,7 +161,6 @@ nomask void whisper(object to, string str) {
 
   mob = to->get_mobile();
   if (mob == nil) {
-    get_user()->message("uups\n");
     return;
   }
   mob->hook_whisper(body, str);
