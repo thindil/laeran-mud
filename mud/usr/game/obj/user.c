@@ -785,8 +785,7 @@ static void cmd_users(object user, string cmd, string str) {
   string name_idx;
 
   users = users();
-  send_system_phrase("Zalogowani:");
-  message("\n");
+  message("Zalogowani: \n");
   str = "";
   for (i = 0, sz = sizeof(users); i < sz; i++) {
     name_idx = users[i]->query_name();
