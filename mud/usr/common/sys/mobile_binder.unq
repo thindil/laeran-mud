@@ -12,3 +12,8 @@
   ~tag{animal}
   ~code{/usr/common/obj/animal_mobile}
 }
+
+~bind{
+  ~tag{shop}
+  ~code{/usr/common/obj/shop_mobile}
+}
