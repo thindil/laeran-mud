@@ -48,7 +48,7 @@ private int objflags;
    acceptable length. */
 private float weight, volume, length;
 private float weight_capacity, volume_capacity, length_capacity;
-private int damage, armor;
+private int damage, armor, price;
 private int* wearlocations;
 
 /* These are the total current amount of weight and volume
@@ -68,7 +68,7 @@ static void create(varargs int clone) {
 
     weight = volume = length = -1.0;
     weight_capacity = volume_capacity = length_capacity = -1.0;
-    damage = armor = -1;
+    damage = armor = price = 0;
     wearlocations = ({ });
 
     pending_parents = nil;
@@ -204,6 +204,14 @@ int get_armor(void)
   return armor;
 }
 
+int get_price(void)
+{
+  if(price < 0 && sizeof(obj::get_archetypes()))
+    return obj::get_archetypes()[0]->get_price();
+
+  return price;
+}
+
 int* get_wearlocations(void)
 {
   if(wearlocations == nil && sizeof(obj::get_archetypes()))
@@ -290,6 +298,13 @@ void set_armor(int new_armor) {
     error("Only authorized code can set length capacities!");
 
   armor = new_armor;
+}
+
+void set_price(int new_price) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can set length capacities!");
+
+  price = new_price;
 }
 
 void set_wearlocations(int* new_wearlocations) {
@@ -1003,6 +1018,10 @@ string to_unq_flags(void) {
     {
       ret += "  ~armor{" + armor + "}\n";
     }
+  if (price > 0)
+    {
+      ret += "  ~price{" + price + "}\n";
+    }
 
   rem = get_removed_details();
   if(rem && sizeof(rem)) {
@@ -1165,7 +1184,16 @@ void from_dtd_tag(string tag, mixed value) {
       damage = value;
       break;
     case "armor":
-      armor = armor;
+      armor = value;
+      break;
+    case "price":
+      price = value;
+      break;
+    case "wearlocations":
+      for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
+	{
+	  wearlocations += ({ value[ctr2] });
+	}
       break;
     case "removed_details":
       if(typeof(value) == T_INT)

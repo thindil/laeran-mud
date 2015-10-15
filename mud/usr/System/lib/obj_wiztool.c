@@ -367,6 +367,9 @@ static void cmd_stat(object user, string cmd, string str) {
 	}
     }
 
+  tmp += "Zbroja obiektu wynosi: " + (string)obj->get_armor() + "\n";
+  tmp += "Cena za obiekt wynosi: " + (string)obj->get_price() + "\n";
+
   details = obj->get_immediate_details();
   if(details && sizeof(details)) {
     object detail;

@@ -54,6 +54,7 @@ private object obj_detail_of;
 #define SS_PROMPT_WEARABLE         28
 #define SS_PROMPT_WLOCATION        29
 #define SS_PROMPT_ARMOR            30
+#define SS_PROMPT_PRICE            31
 
 
 /* Input function return values */
@@ -86,6 +87,7 @@ static int  prompt_damage_input(string input);
 static void prompt_wearable_data(mixed data);
 static int  prompt_wlocation_input(string input);
 static int  prompt_armor_input(string input);
+static int  prompt_price_input(string input);
 
 private string blurb_for_substate(int substate);
 
@@ -197,7 +199,9 @@ int from_user(string input) {
   case SS_PROMPT_ARMOR:
     ret = prompt_armor_input(input);
     break;
-
+  case SS_PROMPT_PRICE:
+    ret = prompt_price_input(input);
+    break;
   case SS_PROMPT_LOOK_DESC:
   case SS_PROMPT_EXAMINE_DESC:
   case SS_PROMPT_CONTAINER:
@@ -424,9 +428,14 @@ private string blurb_for_substate(int substate) {
     if(new_obj && sizeof(new_obj->get_archetypes()))
       return "Wprowadź wartość zbroi przedmiotu, czyli ile obrażeń potrafi "
 	+ " odjąć podczas ataku \n albo wpisz 'none' aby przyjąć wartości "
-	+ " z archetypu\n.";
+	+ " z archetypu.\n";
     return "Wprowadź wartość zbroi przedmiotu, czyli ile obrażeń potrafi "
-      + " odjąć podczas ataku \n";
+      + " odjąć podczas ataku. \n";
+  case SS_PROMPT_PRICE:
+    if(new_obj && sizeof(new_obj->get_archetypes()))
+      return "Wprowadź cenę za przedmiot w sklepie (kupno/sprzedaż) albo wpisz"
+	+ " 'none' aby przyjąć \n wartości z archetypu.\n";
+    return "Wprowadź cenę za przedmiot w sklepie (kupno/sprzedaż).\n";
   default:
     return "<UNDEFINED STATE>\r\n";
   }
@@ -1703,6 +1712,53 @@ static int prompt_armor_input(string input)
   new_obj->set_armor(value);
 
   send_string("Zaakceptowano zbroję obiektu.\n\n");
+  substate = SS_PROMPT_PRICE;
+  send_string(blurb_for_substate(substate));
+
+  return RET_NORMAL;
+}
+
+static int prompt_price_input(string input)
+{
+  int     value;
+
+  value = 0;
+
+  if(!input || STRINGD->is_whitespace(input))
+    {
+      send_string("Spróbujmy ponownie.\r\n");
+      send_string(blurb_for_substate(substate));
+
+      return RET_NORMAL;
+    }
+
+  input = STRINGD->trim_whitespace(input);
+
+  if(sscanf(input, "%d", value) == 1)
+    {
+      if (value < 0)
+	{
+	  send_string("Cena nie powinna być ujemna. Spróbuj ponownie.\n");
+	  send_string(blurb_for_substate(substate));
+
+	  return RET_NORMAL;
+	}
+    }
+  else if(!STRINGD->stricmp(input, "none"))
+    {
+      value = -1;
+    }
+  else
+    {
+      send_string("Podaj cenę obiektu. Spróbuj ponownie.\n");
+      send_string(blurb_for_substate(substate));
+	  
+      return RET_NORMAL;
+    }
+
+  new_obj->set_armor(value);
+
+  send_string("Zaakceptowano cenę obiektu.\n\n");
   send_string("Zakończono prace nad przenośnym obiektem #" + new_obj->get_number() + ".\n");
 
   return RET_POP_STATE;
