@@ -72,16 +72,16 @@ void hook_social(object body, object target, string verb) {
 void hook_whisper(object body, string message) {
   if (user) {
     user->send_phrase(body->get_brief());
-    user->message(" whispers to you: " + message + "\r\n");
+    user->message(" szepcze do Ciebie: " + message + "\n");
   }
 }
 
 void hook_whisper_other(object body, object target) {
   if (user) {
     user->send_phrase(body->get_brief());
-    user->message(" whispers something to ");
+    user->message(" szepcze coś do ");
     user->send_phrase(target->get_brief());
-    user->message("\r\n");
+    user->message("\n");
   }
 }
 

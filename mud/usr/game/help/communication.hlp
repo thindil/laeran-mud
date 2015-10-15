@@ -37,11 +37,14 @@ Adamowi: Bob chichocze do Ciebie.
 Zobacz również: 'pomoc emo'
 }
 
-~name{rozmawianie,mowienie,mówienie,rozmowa,mow,powiedz,'}
+~name{szepnij,rozmawianie,mowienie,mówienie,rozmowa,mow,powiedz,'}
 ~desc{
 Niekóre komendy pozwalają Tobie rozmawiać z graczami oraz NPC'kami.
   mow          Tak komenda pozwala powiedzieć do wszystkich w pokoju
-  powiedz      Powiedz coś do wybranej postaci
+  powiedz      Powiedz coś do wybranej postaci, gdziekolwiek się ona
+               znajduje.
+  szepnij      Powiedz coś do wybranej postaci w tej samej lokacji
+               co Ty.
 
 Komenda "mow" może być zastąpiona przez apostrof.
 

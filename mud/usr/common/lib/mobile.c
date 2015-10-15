@@ -153,19 +153,22 @@ nomask void whisper(object to, string str) {
   if(!SYSTEM() && !COMMON() && !GAME())
     return;
 
-  if (to->get_location() != location) {
-    return;
-  }
+  if (to->get_location() != location)
+    {
+      get_user()->message("Nie ma takiej osoby w okolicy.\n");
+      return;
+    }
 
   mob = to->get_mobile();
   if (mob == nil) {
+    get_user()->message("uups\n");
     return;
   }
   mob->hook_whisper(body, str);
   if (get_user()) {
-    get_user()->message("You whisper to ");
+    get_user()->message("Szepczesz do ");
     get_user()->send_phrase(to->get_brief());
-    get_user()->message(": " + str + "\r\n");
+    get_user()->message(": " + str + "\n");
   }
   location->enum_room_mobiles("hook_whisper_other",
                               ({ this_object(), mob }), body, to);

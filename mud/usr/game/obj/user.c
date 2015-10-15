@@ -87,6 +87,7 @@ void upgraded(varargs int clone) {
 		     "literowka" : "cmd_typo",
 		     "idea"      : "cmd_idea",
 		     "powiedz"   : "cmd_tell",
+		     "szepnij"   : "cmd_whisper",
 		     "pp"        : "cmd_ooc",
 		     "socjalne"  : "cmd_socials",
 		     "komendy"   : "cmd_commands",
@@ -490,10 +491,27 @@ static void cmd_tell(object self, string cmd, string str) {
 
   if (sscanf(str, "%s %s", username, str) != 2 ||
       !(user=::find_user(username))) {
-    message("Użycie: " + cmd + " <postać> <tekst>\n");
+    message("Użycie: " + cmd + " <imię> <tekst>\n");
   } else {
     user->message(Name + " mówi Tobie: " + str + "\n");
   }
+}
+
+/* Whisper to someone */
+static void cmd_whisper(object self, string cmd, string str)
+{
+  object user;
+  string username;
+
+  if (sscanf(str, "%s %s", username, str) != 2 ||
+      !(user=::find_user(username)))
+    {
+      message("Użycie: " + cmd + " <imię> <tekst>\n");
+    }
+  else
+    {
+      mobile->whisper(user->get_body(), str);
+    }
 }
 
 /* Report bug */
