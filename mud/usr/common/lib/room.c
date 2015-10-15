@@ -1069,87 +1069,123 @@ private void parse_all_tags(mixed* value) {
 void from_dtd_tag(string tag, mixed value) {
   int ctr, ctr2;
 
-  if(tag == "number")
-    tr_num = value;
-
-  else if(tag == "obj_type") {
-    /* Nothing...  Already handled */
-
-  } else if(tag == "detail") {
-    if(pending_location > -1) {
-      LOGD->write_syslog("Detail specified despite pending location!",
-			 LOG_ERR);
-      LOGD->write_syslog("Obj #" + tr_num + ", detail field: "
-			 + value + ", existing location/detail: "
-			 + pending_location, LOG_ERR);
-      error("Error loading object #" + tr_num + "!  Check logfile.");
+  switch (tag)
+    {
+    case "number":
+      tr_num = value;
+      break;
+    case "obj_type":
+      break;
+    case "detail":
+      if(pending_location > -1)
+	{
+	  LOGD->write_syslog("Detail specified despite pending location!",
+			     LOG_ERR);
+	  LOGD->write_syslog("Obj #" + tr_num + ", detail field: "
+			     + value + ", existing location/detail: "
+			     + pending_location, LOG_ERR);
+	  error("Error loading object #" + tr_num + "!  Check logfile.");
+	}
+      pending_detail_of = value;
+      pending_location = value;
+      break;
+    case "location":
+      if(pending_location > -1)
+	{
+	  LOGD->write_syslog("Location specified despite pending location!",
+			     LOG_ERR);
+	  LOGD->write_syslog("Obj #" + tr_num + ", new location: "
+			     + value + ", existing location/detail: "
+			     + pending_location, LOG_ERR);
+	  error("Error loading object #" + tr_num + "!  Check logfile.");
+      }
+      pending_location = value;
+      break;
+    case "bdesc":
+      set_brief(value);
+      break;
+    case "ldesc":
+      set_look(value);
+      break;
+    case "edesc":
+      set_examine(value);
+      break;
+    case "flags":
+      objflags = value;
+      break;
+    case "parent":
+      pending_parents = ({ value });
+      break;
+    case "nouns":
+      for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
+	{
+	  add_noun(value[ctr2]);
+	}
+      break;
+    case "adjectives":
+      for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
+	{
+	  add_adjective(value[ctr2]);
+	}
+      break;
+    case "rem_nouns":
+      for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
+	{
+	  pending_removed_nouns += ({ value[ctr2] });
+	}
+      break;
+    case "rem_adjectives":
+      for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
+	{
+	  pending_removed_adjectives += ({ value[ctr2] });
+	}
+      break;
+    case "newexit":
+      EXITD->room_request_complex_exit(tr_num, value);
+      break;
+    case "weight":
+      weight = value;
+      break;
+    case "volume":
+      volume = value;
+      break;
+    case "length":
+      length = value;
+      break;
+    case "weight_capacity":
+      weight_capacity = value;
+      break;
+    case "volume_capacity":
+      volume_capacity = value;
+      break;
+    case "length_capacity":
+      length_capacity = value;
+      break;
+    case "damage":
+      damage = value;
+      break;
+    case "armor":
+      armor = armor;
+      break;
+    case "removed_details":
+      if(typeof(value) == T_INT)
+	{
+	  pending_removed_details = ({ value });
+	}
+      else if(typeof(value) == T_ARRAY)
+	{
+	  pending_removed_details = value;
+	}
+      else
+	{	
+	  error("Unreasonable type for removed_details!");
+	}
+      break;
+    case "tags":
+      /* Fill in tags array for this object */
+      parse_all_tags(value);
+      break;
+    default:
+      error("Don't recognize tag " + tag + " in function from_dtd_tag()");
     }
-    pending_detail_of = value;
-    pending_location = value;
-
-  } else if(tag == "location") {
-    if(pending_location > -1) {
-      LOGD->write_syslog("Location specified despite pending location!",
-			 LOG_ERR);
-      LOGD->write_syslog("Obj #" + tr_num + ", new location: "
-			 + value + ", existing location/detail: "
-			 + pending_location, LOG_ERR);
-      error("Error loading object #" + tr_num + "!  Check logfile.");
-    }
-    pending_location = value;
-
-  } else if(tag == "bdesc")
-    set_brief(value);
-  else if(tag == "ldesc")
-    set_look(value);
-  else if(tag == "edesc")
-    set_examine(value);
-  else if(tag == "flags")
-    objflags = value;
-  else if(tag == "parent")
-    pending_parents = ({ value });
-  else if(tag == "nouns") {
-    for(ctr2 = 0; ctr2 < sizeof(value); ctr2++) {
-      add_noun(value[ctr2]);
-    }
-  } else if(tag == "adjectives") {
-    for(ctr2 = 0; ctr2 < sizeof(value); ctr2++) {
-      add_adjective(value[ctr2]);
-    }
-  } else if(tag == "rem_nouns") {
-    for(ctr2 = 0; ctr2 < sizeof(value); ctr2++) {
-      pending_removed_nouns += ({ value[ctr2] });
-    }
-  } else if(tag == "rem_adjectives") {
-    for(ctr2 = 0; ctr2 < sizeof(value); ctr2++) {
-      pending_removed_adjectives += ({ value[ctr2] });
-    }
-  } else if(tag == "newexit") {
-    EXITD->room_request_complex_exit(tr_num, value);
-  } else if(tag == "weight") {
-    weight = value;
-  } else if(tag == "volume") {
-    volume = value;
-  } else if(tag == "length") {
-    length = value;
-  } else if(tag == "weight_capacity") {
-    weight_capacity = value;
-  } else if(tag == "volume_capacity") {
-    volume_capacity = value;
-  } else if(tag == "length_capacity") {
-    length_capacity = value;
-  } else if(tag == "removed_details") {
-    if(typeof(value) == T_INT) {
-      pending_removed_details = ({ value });
-    } else if(typeof(value) == T_ARRAY) {
-      pending_removed_details = value;
-    } else
-      error("Unreasonable type for removed_details!");
-  } else if(tag == "tags") {
-    /* Fill in tags array for this object */
-    parse_all_tags(value);
-
-  } else {
-    error("Don't recognize tag " + tag + " in function from_dtd_tag()");
-  }
 }
