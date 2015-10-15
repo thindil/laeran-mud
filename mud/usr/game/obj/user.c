@@ -500,17 +500,22 @@ static void cmd_tell(object self, string cmd, string str) {
 /* Whisper to someone */
 static void cmd_whisper(object self, string cmd, string str)
 {
-  object user;
+  object *user;
   string username;
 
-  if (sscanf(str, "%s %s", username, str) != 2 ||
-      !(user=::find_user(username)))
+  if (sscanf(str, "%s %s", username, str) != 2)
     {
       message("Użycie: " + cmd + " <imię> <tekst>\n");
+      return;
+    }
+  user = find_first_objects(username, LOC_CURRENT_ROOM);
+  if (!user)
+    {
+      message("Nie ma kogoś o imieniu " + username + " w okolicy.\n");
     }
   else
     {
-      mobile->whisper(user->get_body(), str);
+      mobile->whisper(user[0], str);
     }
 }
 
