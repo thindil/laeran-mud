@@ -30,14 +30,52 @@ string get_type(void) {
 void hook_social(object body, object target, string verb)
 {
   whisper(body, "Witaj w moim sklepie. Jeżeli chcesz zobaczyć listę towarów, szepnij do mnie 'lista'. \n"
-	  + " Jeżeli chcesz coś kupić szepnij do mnie 'kupuje <nazwa przedmiotu>.'\n"
-	  + " Jeżeli chcesz coś sprzedać, szepnij do mnie 'sprzedaje <nazwa przedmiotu>' \n");
+	  + " Jeżli chcesz obejrzeć przedmiot, szepnij do mnie 'zobacz <nazwa przedmiotu>'.\n"
+	  + " Jeżeli chcesz coś kupić, szepnij do mnie 'kupuje <nazwa przedmiotu>'.\n"
+	  + " Jeżeli chcesz coś sprzedać, szepnij do mnie 'sprzedaje <nazwa przedmiotu>'.\n");
 }
 
-/* Start trade */
+/* Trader iteraction */
 void hook_whisper(object body, string message)
 {
-  whisper(body, "|"+message+"|\n");
+  string* parts;
+  mixed* objs;
+  int i;
+  string items;
+
+  parts = explode(message, " ");
+  objs = get_body()->objects_in_container();
+  items = "Lista dostępnych na sprzedaż przedmiotów: \n";
+  switch (parts[0])
+    {
+    case "lista":
+      for (i = 0; i < sizeof(objs); i++)
+	{
+	  items += "- " + objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) + "\n";
+	}
+      body->get_mobile()->get_user()->message_scroll(items);
+      break;
+    case "zobacz":
+      if (sizeof(parts) < 2 || parts[1] == "")
+	{
+	  whisper(body, "Jaki przedmiot chcesz konkretnie zobaczyć?");
+	  return;
+	}
+      for (i = 0; i < sizeof(objs); i++)
+	{
+	  if (objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) == implode(parts[1..], " "))
+	    {
+	      body->get_mobile()->get_user()->message(objs[i]->get_look()->to_string(body->get_mobile()->get_user()) + "\n");
+	      break;
+	    }
+	}
+      break;
+    default:
+      whisper(body, "Witaj w moim sklepie. Jeżeli chcesz zobaczyć listę towarów, szepnij do mnie 'lista'. \n"
+	  + " Jeżli chcesz obejrzeć przedmiot, szepnij do mnie 'zobacz <nazwa przedmiotu>'.\n"
+	  + " Jeżeli chcesz coś kupić, szepnij do mnie 'kupuje <nazwa przedmiotu>'.\n"
+	  + " Jeżeli chcesz coś sprzedać, szepnij do mnie 'sprzedaje <nazwa przedmiotu>'.\n");
+    }
 }
 
 void from_dtd_unq(mixed* unq) {

@@ -163,12 +163,12 @@ nomask void whisper(object to, string str) {
   if (mob == nil) {
     return;
   }
-  mob->hook_whisper(body, str);
   if (get_user()) {
     get_user()->message("Szepczesz do ");
     get_user()->send_phrase(to->get_brief());
     get_user()->message(": " + str + "\n");
   }
+  mob->hook_whisper(body, str);
   location->enum_room_mobiles("hook_whisper_other",
                               ({ this_object(), mob }), body, to);
   
