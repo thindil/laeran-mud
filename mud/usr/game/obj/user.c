@@ -397,7 +397,7 @@ int process_command(string str)
       }
 
     if(SOULD->is_social_verb(cmd)) {
-      cmd_social(this_object(), cmd, str = "" ? nil : str);
+      cmd_social(this_object(), cmd, str);
       str = nil;
     }
 
@@ -830,7 +830,7 @@ static void cmd_social(object user, string cmd, string str) {
 	      + "' w okolicy.\n");
       return;
     }
-
+    
     /* For the moment, just pick the first one */
     mobile->social(cmd, targets[0]);
     return;
