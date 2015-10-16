@@ -29,8 +29,10 @@ private object* pending_removed_adjectives;
 #define OF_CONTAINER          1
 #define OF_OPEN               2
 #define OF_OPENABLE           8
-#define OF_WEAPON             48
-#define OF_WEARABLE           64
+#define OF_WEAPON             64
+#define OF_WEARABLE          128
+#define OF_DRESSED           256
+
 
 private int objflags;
 
@@ -391,6 +393,10 @@ int is_wearable() {
   return objflags & OF_WEARABLE;
 }
 
+int is_dressed() {
+  return objflags & OF_DRESSED;
+}
+
 private void set_flags(int flags, int value) {
   if(value) {
     objflags |= flags;
@@ -432,6 +438,13 @@ void set_wearable(int value) {
     error("Only authorized code can currently set an object as openable!");
 
   set_flags(OF_WEARABLE, value);
+}
+
+void set_dressed(int value) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can currently set an object as openable!");
+
+  set_flags(OF_DRESSED, value);
 }
 
 /*

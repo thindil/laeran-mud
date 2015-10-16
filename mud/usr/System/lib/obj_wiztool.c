@@ -367,6 +367,14 @@ static void cmd_stat(object user, string cmd, string str) {
 	}
     }
 
+  if(function_object("is_dressed", obj)) 
+    {
+      if (obj->is_dressed())
+	{
+	  tmp += "Obiekt jest założony.\n";
+	}
+    }
+
   tmp += "Zbroja obiektu wynosi: " + (string)obj->get_armor() + "\n";
   tmp += "Cena za obiekt wynosi: " + (string)obj->get_price() + "\n";
 

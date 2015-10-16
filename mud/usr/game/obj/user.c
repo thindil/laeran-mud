@@ -111,7 +111,9 @@ void upgraded(varargs int clone) {
 		     "umiesc"    : "cmd_put",
 		     "wyjmij"    : "cmd_remove",
 		     "otworz"    : "cmd_open",
-		     "zamknij"   : "cmd_close"
+		     "zamknij"   : "cmd_close",
+		     "zaloz"     : "cmd_wear",
+		     "zdejmij"   : "cmd_takeoff"
 
     ]);
 
@@ -656,6 +658,10 @@ static void cmd_inventory(object user, string cmd, string str) {
   for(ctr = 0; ctr < sizeof(objs); ctr++) {
     user->message("- ");
     user->send_phrase(objs[ctr]->get_brief());
+    if (objs[ctr]->is_dressed())
+      {
+	user->message(" (założony)");
+      }
     user->message("\n");
   }
 }
@@ -1072,4 +1078,132 @@ static void cmd_commands(object user, string cmd, string str)
 	msg += "\n";
     }
   message_scroll(msg);
+}
+
+/* Wear weapons, armors, etc */
+static void cmd_wear(object user, string cmd, string str)
+{
+  object* tmp;
+  int ctr, i;
+  mixed* items;
+  
+  if(str)
+    {
+      str = STRINGD->trim_whitespace(str);
+    }
+  if(!str || str == "")
+    {
+      message("Użycie: " + cmd + " <obiekt>\n");
+      return;
+    }
+  tmp = find_first_objects(str, LOC_INVENTORY);
+  if(!tmp || !sizeof(tmp))
+    {
+      message("Nie możesz znaleźć jakiegokolwiek '" + str + "'.\n");
+      return;
+    }
+  ctr = 0;
+  if(sizeof(tmp) > 1)
+    {
+      for(ctr = 0; ctr < sizeof(tmp); ctr++)
+	{
+	  if ((tmp[ctr]->is_wearable() || tmp[ctr]->is_weapon()) && !tmp[ctr]->is_dressed())
+	    {
+	      break;
+	    }
+	}
+      if(ctr >= sizeof(tmp))
+	{
+	  message("Żadna z tych rzeczy nie może być założona.\n");
+	  return;
+	}
+      message("Więcej niż jedna taka rzecz jest w ekwipunku.\n");
+      message("Wybierasz ");
+      send_phrase(tmp[ctr]->get_brief());
+      message(".\n");
+    }
+  if(!tmp[ctr]->is_wearable() && !tmp[ctr]->is_weapon())
+    {
+      message("Nie możesz tego założyć!\n");
+      return;
+    }
+  if (tmp[ctr]->is_dressed())
+    {
+      message("Ten obiekt jest już założony!\n");
+      return;
+    }
+  items = body->objects_in_container();
+  if (tmp[ctr]->is_weapon())
+    {
+      for (i = 0; i < sizeof(items); i++)
+	{
+	  if (items[i]->is_weapon() && items[i]->is_dressed())
+	    {
+	      message("Chowasz " + items[i]->get_brief()->to_string(user) + ".\n");
+	      items[i]->set_dressed(0);
+	      break;
+	    }
+	}
+      message("Bierzesz " + tmp[ctr]->get_brief()->to_string(user) + " do ręki.\n");
+    }
+  else
+    {
+      
+    }
+  tmp[ctr]->set_dressed(1);
+}
+
+/* Take off equipment */
+static void cmd_takeoff(object user, string cmd, string str)
+{
+  object* tmp;
+  int ctr, i;
+  mixed* items;
+  
+  if(str)
+    {
+      str = STRINGD->trim_whitespace(str);
+    }
+  if(!str || str == "")
+    {
+      message("Użycie: " + cmd + " <obiekt>\n");
+      return;
+    }
+  tmp = find_first_objects(str, LOC_INVENTORY);
+  if(!tmp || !sizeof(tmp))
+    {
+      message("Nie możesz znaleźć jakiegokolwiek '" + str + "'.\n");
+      return;
+    }
+  ctr = 0;
+  if(sizeof(tmp) > 1)
+    {
+      for(ctr = 0; ctr < sizeof(tmp); ctr++)
+	{
+	  if ((tmp[ctr]->is_wearable() || tmp[ctr]->is_weapon()) && tmp[ctr]->is_dressed())
+	    {
+	      break;
+	    }
+	}
+      if(ctr >= sizeof(tmp))
+	{
+	  message("Żadna z tych rzeczy nie może być zdjęta.\n");
+	  return;
+	}
+    }
+  if (!tmp[ctr]->is_dressed())
+    {
+      message("Ten obiekt nie jest założony!\n");
+      return;
+    }
+  items = body->objects_in_container();
+  if (tmp[ctr]->is_weapon())
+    {
+      message("Chowasz " + tmp[ctr]->get_brief()->to_string(user) + ".\n");
+    }
+  else
+    {
+      message("Zdejmujesz " + tmp[ctr]->get_brief()->to_string(user) + ".\n");
+    }
+  tmp[ctr]->set_dressed(0);
 }

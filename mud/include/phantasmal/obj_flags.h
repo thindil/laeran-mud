@@ -6,3 +6,6 @@
 #define OF_OPENABLE           8
 #define OF_LOCKED             16
 #define OF_LOCKABLE           32
+#define OF_WEAPON             64
+#define OF_WEREABLE          128
+#define OF_DRESSED           256
