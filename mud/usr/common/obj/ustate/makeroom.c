@@ -1756,7 +1756,7 @@ static int prompt_price_input(string input)
       return RET_NORMAL;
     }
 
-  new_obj->set_armor(value);
+  new_obj->set_price(value);
 
   send_string("Zaakceptowano cenę obiektu.\n\n");
   send_string("Zakończono prace nad przenośnym obiektem #" + new_obj->get_number() + ".\n");
