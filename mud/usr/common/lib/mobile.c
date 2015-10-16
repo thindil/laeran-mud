@@ -104,7 +104,7 @@ nomask void say(string msg) {
   location->enum_room_mobiles("hook_say", ({ this_object() }), body, msg );
 
   if (get_user()) {
-    get_user()->message("You say: " + msg + "\r\n");
+    get_user()->message("Mówisz: " + msg + "\r\n");
   }
 }
 
@@ -348,15 +348,15 @@ nomask string open(object obj) {
   }
 
   if(!obj->is_openable() || (!obj->is_container())) {
-    return "That can't be opened!";
+    return "To nie może być otwarte!";
   }
 
   if(obj->is_open()) {
-    return "That's already open.";
+    return "To już jest otwarte.";
   }
 
   if(obj->is_locked()) {
-    return "That appears to be locked.";
+    return "Wygląda na zablokowane.";
   }
 
   if (isexit) {
@@ -371,7 +371,7 @@ nomask string open(object obj) {
 
   if(!isexit && obj->get_location() != body
      && obj->get_location() != location) {
-    return "You can't reach that from here.";
+    return "Nie możesz tego dosięgnąć.";
   }
 
   return nil;
@@ -401,17 +401,17 @@ nomask string close(object obj) {
   }
 
   if(!obj->is_openable() || (!obj->is_container())) {
-    return "That can't be closed!";
+    return "To nie może być zamknięte!";
   }
 
   if(!obj->is_open()) {
-    return "That's already closed.";
+    return "To już jest zamknięte.";
   }
 
   if(obj->get_location() != location
      && obj->get_location() != body
      && !isexit) {
-    return "You can't reach that from here.";
+    return "Nie możesz tego dosięgnąć.";
   }
 
   if (isexit) {
@@ -445,12 +445,12 @@ nomask string move(int dir) {
 
   exit = location->get_exit(dir);
   if (!exit) {
-    return "There's no exit in that direction!";
+    return "Nie ma wyjścia w tym kierunku!";
   }
 
   dest = exit->get_destination();
   if (!dest) {
-    return "That exit doesn't seem to lead anywhere!";
+    return "To wyjście prowadzi donikąd!";
   }
 
   /* NB.  I do want a = (not == ), as in other places like this*/
