@@ -5,7 +5,9 @@
 #include <gameconfig.h>
 #include <config.h>
 
+static mixed* load_file_with_dtd(string file_path, string dtd_path);
 static void load_sould(void);
+static void load_tagd(void);
 static int read_object_dir(string path);
 
 static void create(void) {
@@ -17,9 +19,13 @@ static void create(void) {
   if(find_object(GAME_DRIVER))
     CONFIGD->set_game_driver(find_object(GAME_DRIVER));
 
+  /* Set up TagD */
+  load_tagd();
+
   /* Register a help directory for the HelpD to use */
   HELPD->new_help_directory("/usr/game/help");
 
+  /* Load the SoulD with social commands */
   load_sould();
 
   /* Load stuff into MAPD and EXITD */
@@ -41,11 +47,79 @@ static void create(void) {
   LOGD->write_syslog("Configured Phantasmal from /usr/game!");
 }
 
+static mixed* load_file_with_dtd(string file_path, string dtd_path) {
+  string file_tmp, dtd_tmp;
+  object dtd;
+  mixed* dtd_unq;
+
+  dtd_tmp = read_file(dtd_path);
+  file_tmp = read_file(file_path);
+
+  dtd = clone_object(UNQ_DTD);
+  dtd->load(dtd_tmp);
+
+  dtd_unq = UNQ_PARSER->unq_parse_with_dtd(file_tmp, dtd, file_path);
+  destruct_object(dtd);
+
+  return dtd_unq;
+}
+
 static void load_sould(void) {
   string file_tmp;
 
   file_tmp = read_file("/usr/game/sould.unq");
   SOULD->from_unq_text(file_tmp);
+}
+
+static void load_tagd(void) {
+  mixed *dtd_unq;
+  int    ctr, ctr2;
+
+  dtd_unq = load_file_with_dtd("/usr/game/tagd.unq", "/usr/game/tagd.dtd");
+
+  for(ctr = 0; ctr < sizeof(dtd_unq); ctr += 2) {
+    string tag_name, tag_get, tag_set, add_func;
+    int    tag_type;
+
+    if(typeof(dtd_unq[ctr + 1]) != T_ARRAY)
+      error("Internal error parsing TAGD file!");
+
+    switch(dtd_unq[ctr]) {
+    case "mobile_tag":
+      add_func = "new_mobile_tag";
+      break;
+    case "object_tag":
+      add_func = "new_object_tag";
+      break;
+    default:
+      error("Unknown tag '" + STRINGD->mixed_sprint(dtd_unq[ctr]) + "'!");
+    }
+
+    tag_get = tag_set = nil;
+    tag_type = -1;
+
+    for(ctr2 = 0; ctr2 < sizeof(dtd_unq[ctr + 1]); ctr2++) {
+      switch(dtd_unq[ctr + 1][ctr2][0]) {
+      case "name":
+	tag_name = STRINGD->trim_whitespace(dtd_unq[ctr + 1][ctr2][1]);
+	break;
+      case "type":
+	tag_type = dtd_unq[ctr + 1][ctr2][1];
+	break;
+      case "getter":
+	tag_get = STRINGD->trim_whitespace(dtd_unq[ctr + 1][ctr2][1]);
+	break;
+      case "setter":
+	tag_set = STRINGD->trim_whitespace(dtd_unq[ctr + 1][ctr2][1]);
+	break;
+      default:
+	error("Unrecognized label in switch for TagD UNQ: "
+	      + STRINGD->mixed_sprint(dtd_unq[ctr + 1][ctr2]) + "!");
+      }
+    }
+
+    call_other(TAGD, add_func, tag_name, tag_type, tag_get, tag_set);
+  }
 }
 
 /* read_object_dir loads all rooms and exits from the specified directory,
