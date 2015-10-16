@@ -1134,6 +1134,8 @@ void from_dtd_tag(string tag, mixed value) {
       break;
     case "parent":
       pending_parents = ({ value });
+      set_brief(nil);
+      set_look(nil);
       break;
     case "nouns":
       for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)

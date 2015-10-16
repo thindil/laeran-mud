@@ -339,6 +339,7 @@ string* get_nouns(int locale) {
     for(ctr = 0; ctr < sizeof(archetypes); ctr++) {
       ret += archetypes[ctr]->get_nouns(locale);
     }
+    return ret;
   }
 
   return (nouns[locale] + ret) - removed_nouns[locale];
@@ -371,6 +372,7 @@ string* get_adjectives(int locale) {
     for(ctr = 0; ctr < sizeof(archetypes); ctr++) {
       ret += archetypes[ctr]->get_adjectives(locale);
     }
+    return ret;
   }
 
   return (adjectives[locale] + ret) - removed_adjectives[locale];
