@@ -84,9 +84,9 @@ void hook_whisper(object body, string message)
 	      new_object = clone_object(SIMPLE_ROOM);
 	      MAPD->add_room_to_zone(new_object, -1, ZONED->get_zone_for_room(body->get_location()));
 	      new_object->add_archetype(objs[i]);
-	      new_object->set_brief(objs[i]->get_brief());
-	      new_object->set_look(objs[i]->get_look());
-	      new_object->set_examine(objs[i]->get_examine());
+	      new_object->set_brief(nil);
+	      new_object->set_look(nil);
+	      body->get_location()->add_to_container(new_object);
 	      if (objs[i]->is_container())
 		{
 		  new_object->set_container(1);
@@ -107,8 +107,17 @@ void hook_whisper(object body, string message)
 		{
 		  new_object->set_wearable(1);
 		}
-	      body->add_to_container(new_object);
-	      body->get_mobile()->get_user()->message("Kupiłeś " + objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) + "\n");
+	      items = body->get_mobile()->place(new_object, body);
+	      if (!items)
+		{
+		  body->get_mobile()->get_user()->message("Kupiłeś " + objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) + "\n");
+		}
+	      else
+		{
+		  body->get_mobile()->get_user()->message(items + "\n");
+		  /*body->get_location()->remove_from_container(new_object);
+		    destruct_object(new_object);*/
+		}
 	      return;
 	    }
 	}
@@ -124,9 +133,16 @@ void hook_whisper(object body, string message)
 	{
 	  if (objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) == implode(parts[1..], " "))
 	    {
-	      body->get_mobile()->get_user()->message("Sprzedałeś " + objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) + "\n");
-	      body->remove_from_container(objs[i]);
-	      destruct_object(objs[i]);
+	      items = body->get_mobile()->place(objs[i], body->get_location());
+	      if (!items)
+		{
+		  body->get_mobile()->get_user()->message("Sprzedałeś " + objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) + "\n");
+		  /*destruct_object(objs[i]);*/
+		}
+	      else
+		{
+		  body->get_mobile()->get_user()->message(items + "\n");
+		}
 	      return;
 	    }
 	}

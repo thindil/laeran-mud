@@ -190,7 +190,7 @@ float get_current_volume(void) {
 
 int get_damage(void)
 {
-  if(damage < 0 && sizeof(obj::get_archetypes()))
+  if(damage < 1 && sizeof(obj::get_archetypes()))
     return obj::get_archetypes()[0]->get_damage();
 
   return damage;
@@ -198,7 +198,7 @@ int get_damage(void)
 
 int get_armor(void)
 {
-  if(armor < 0 && sizeof(obj::get_archetypes()))
+  if(armor < 1 && sizeof(obj::get_archetypes()))
     return obj::get_archetypes()[0]->get_armor();
 
   return armor;
@@ -206,7 +206,7 @@ int get_armor(void)
 
 int get_price(void)
 {
-  if(price < 0 && sizeof(obj::get_archetypes()))
+  if(price < 1 && sizeof(obj::get_archetypes()))
     return obj::get_archetypes()[0]->get_price();
 
   return price;
