@@ -655,24 +655,24 @@ string can_put(object user, object mover, object movee, object old_env) {
 
   if(movee && (current_weight + movee->get_weight() > weight_capacity)) {
     if(!user)
-      return "too full";
+      return "niesie zbyt wiele";
     else
-      return get_brief()->to_string(user) + " is too full!";
+      return get_brief()->to_string(user) + " niesie zbyt wiele!";
   }
 
   if(movee && (current_volume + movee->get_volume() > volume_capacity)) {
     if(!user)
-      return "too full";
+      return "niesie zbyt wiele";
     else
-      return get_brief()->to_string(user) + " is too full!";
+      return get_brief()->to_string(user) + " niesie zbyt wiele!";
   }
 
   if(movee && (movee->get_length() > length_capacity)) {
     if(!user)
-      return "not long enough";
+      return "nie ma odpowiedniej długości";
     else
       return get_brief()->to_string(user)
-	+ " can't hold something that long!";
+	+ " nie może trzymać czegoś tak długiego!";
   }
 }
 

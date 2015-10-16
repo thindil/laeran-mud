@@ -81,6 +81,17 @@ void hook_whisper(object body, string message)
 	{
 	  if (objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) == implode(parts[1..], " "))
 	    {
+	      items = body->can_put(body->get_mobile()->get_user(), body, objs[i], nil);
+	      if (items)
+		{
+		  body->get_mobile()->get_user()->message(items + "\n");
+		  return;
+		}
+	      if (body->get_price() < objs[i]->get_price())
+		{
+		  body->get_mobile()->get_user()->message("Nie masz tylu pieniędzy aby kupić ten przedmiot.\n");
+		  return;
+		}
 	      new_object = clone_object(SIMPLE_ROOM);
 	      MAPD->add_room_to_zone(new_object, -1, ZONED->get_zone_for_room(body->get_location()));
 	      new_object->add_archetype(objs[i]);
@@ -110,13 +121,14 @@ void hook_whisper(object body, string message)
 	      items = body->get_mobile()->place(new_object, body);
 	      if (!items)
 		{
-		  body->get_mobile()->get_user()->message("Kupiłeś " + objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) + "\n");
+		  body->set_price(body->get_price() - objs[i]->get_price());
+		  body->get_mobile()->get_user()->message("Kupiłeś " + objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) + " i zapłaciłeś za to " + (string)objs[i]->get_price() + " miedziaków. \n");
 		}
 	      else
 		{
 		  body->get_mobile()->get_user()->message(items + "\n");
-		  /*body->get_location()->remove_from_container(new_object);
-		    destruct_object(new_object);*/
+		  new_object->get_location()->remove_from_container(new_object);
+		  destruct_object(new_object);
 		}
 	      return;
 	    }
@@ -136,8 +148,10 @@ void hook_whisper(object body, string message)
 	      items = body->get_mobile()->place(objs[i], body->get_location());
 	      if (!items)
 		{
-		  body->get_mobile()->get_user()->message("Sprzedałeś " + objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) + "\n");
-		  /*destruct_object(objs[i]);*/
+		  body->set_price(body->get_price() + objs[i]->get_price());
+		  body->get_mobile()->get_user()->message("Sprzedałeś " + objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) + " i zarobiłeś na tym " + (string)objs[i]->get_price() + " miedziaków.\n");
+		  objs[i]->get_location()->remove_from_container(objs[i]);
+		  destruct_object(objs[i]);
 		}
 	      else
 		{
