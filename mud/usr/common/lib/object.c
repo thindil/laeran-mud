@@ -450,16 +450,16 @@ private int match_adj_and_nouns(object user, string *cmp_adjectives,
 
   locale = user->get_locale();
 
-  match = match_str_array(cmp_nouns, nouns[locale]);
+  match = match_str_array(cmp_nouns, get_nouns(locale));
   if(!match && locale != LANG_englishUS) {
-    match = match_str_array(cmp_nouns, nouns[LANG_englishUS]);
+    match = match_str_array(cmp_nouns, get_nouns(LANG_englishUS));
   }
 
   if(!match) return 0;
 
-  match = match_str_array(cmp_adjectives, adjectives[locale]);
+  match = match_str_array(cmp_adjectives, get_adjectives(locale));
   if(!match && locale != LANG_englishUS) {
-    match = match_str_array(cmp_adjectives, adjectives[LANG_englishUS]);
+    match = match_str_array(cmp_adjectives, get_adjectives(LANG_englishUS));
   }
 
   return match;
