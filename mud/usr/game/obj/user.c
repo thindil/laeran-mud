@@ -247,11 +247,8 @@ void player_login(int first_time)
     /* Players are able to carry up to 20 liters of stuff --
        that's roughly a large hiking backpack. */
     body->set_volume_capacity(20.0);
-    /* Players are able to carry an object up to half a meter long.
-       Note that that's stuff they're not currently holding in their
-       hands, so that's more reasonable.  Can you fit a 60cm object
-       in your pocket?  Would you want to? */
-    body->set_length_capacity(50.0);
+    /* Players are able to take 3m long items */
+    body->set_length_capacity(300.0);
 
     MAPD->add_room_to_zone(body, -1, start_zone);
     if(!MAPD->get_room_by_num(body->get_number())) {
