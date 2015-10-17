@@ -11,6 +11,8 @@ inwentarz            Zobacz co niesiesz
 patrz                Patrz na obiekt
 otworz               Otwórz pojemnik
 zamknij              Zamknij pojemnik
+zaloz                Załóż przedmiot
+zdejmij              Zdejmij noszony przedmiot
 
 }
 
@@ -114,5 +116,27 @@ jakiś ukrytych cech. Może być skrócona do "zb" bądź "zba". Na przykład:
 "zb drzwi".
 
 Zobacz również: patrz
+
+}
+
+~name{zaloz}
+~desc {
+
+Komenda zaloz służy do zakładania przedmiotów na ciało (np zbroi, broni czy
+biżuterii). Aby założyć dany przedmiot, musi znajdowa się on w inwentarzu
+postaci. Jeżeli masz już założony jakiś przedmiot w wybranym miejscu, zostanie
+on automatycznie zdjęty. Przykład: "zaloz miecz".
+
+Zobacz również: zdejmij
+
+}
+
+~name{zdejmij}
+~desc {
+
+Po prostu zdejmuje wybrany przedmiot z ciała. Aby zdjąć wpisz "zdejmij" i
+nazwę założonego przedmiotu. Przykład: "zdejmij zbroja".
+
+Zobacz również: zaloz
 
 }
