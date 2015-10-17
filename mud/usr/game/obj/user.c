@@ -1081,9 +1081,8 @@ static void cmd_commands(object user, string cmd, string str)
 static void cmd_wear(object user, string cmd, string str)
 {
   object* tmp;
-  int ctr, i, j, k;
+  int ctr, i;
   mixed* items;
-  int* wearloc, wearloc2;
   
   if(str)
     {
