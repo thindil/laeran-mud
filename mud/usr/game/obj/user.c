@@ -1081,7 +1081,7 @@ static void cmd_commands(object user, string cmd, string str)
 static void cmd_wear(object user, string cmd, string str)
 {
   object* tmp;
-  int ctr, i;
+  int ctr, i, j;
   mixed* items;
   
   if(str)
@@ -1145,7 +1145,19 @@ static void cmd_wear(object user, string cmd, string str)
     }
   else
     {
-      
+      for (i = 0; i < sizeof(items); i++)
+	{
+	  if (!items[i]->is_weapon() && items[i]->is_dressed())
+	    {
+	      if (tmp[ctr]->get_wearlocations() - items[i]->get_wearlocations() != tmp[ctr]->get_wearlocations())
+		{
+		  message("Zdejmujesz " + items[i]->get_brief()->to_string(user) + ".\n");
+		  items[i]->set_dressed(0);
+		  break;
+		}
+	    }
+	}
+      message("Zakładasz " + tmp[ctr]->get_brief()->to_string(user) + ".\n");
     }
   tmp[ctr]->set_dressed(1);
 }
