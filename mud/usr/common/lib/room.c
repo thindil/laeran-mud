@@ -1024,7 +1024,7 @@ string to_unq_flags(void) {
     {
       if (wearlocations != nil)
 	{
-	  ret += "  ~wearlocations{{" + serialize_list(wearlocations) + "}}\n";
+	  ret += "  ~wearlocations{" + serialize_list(wearlocations) + "}\n";
 	}
     }
   if (armor > 0)
@@ -1205,31 +1205,17 @@ void from_dtd_tag(string tag, mixed value) {
       price = value;
       break;
     case "wearlocations":
-      if(typeof(value) == T_INT)
+      value = explode(value, ", ");
+      for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
 	{
-	  wearlocations = ({ value });
-	}
-      else if(typeof(value) == T_ARRAY)
-	{
-	  wearlocations = value;
-	}
-      else
-	{	
-	  error("Unreasonable type for wearlocations!");
+	  wearlocations += ({ (int)value[ctr2] });
 	}
       break;
     case "removed_details":
-      if(typeof(value) == T_INT)
+      value = explode(value, ", ");
+      for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
 	{
-	  pending_removed_details = ({ value });
-	}
-      else if(typeof(value) == T_ARRAY)
-	{
-	  pending_removed_details = value;
-	}
-      else
-	{	
-	  error("Unreasonable type for removed_details!");
+	  pending_removed_details += ({ (int)value[ctr2] });
 	}
       break;
     case "tags":

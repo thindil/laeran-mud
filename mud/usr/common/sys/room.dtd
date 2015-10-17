@@ -32,7 +32,7 @@
   ~tags{unq}
   ~data{unq}
   ~damage{int}
-  ~wearlocations{int*}
+  ~wearlocations{string}
   ~armor{int}
   ~price{int}
   ~newexit{rnumber,direction,destination,return,type,rbdesc?,rgdesc?,
