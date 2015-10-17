@@ -257,9 +257,10 @@ static int destruct_object(mixed obj)
     lib = sscanf(oname, "%*s" + INHERITABLE_SUBDIR);
     oowner = (lib) ? driver->creator(oname) : obj->query_owner();
     if ((sscanf(oname, "/kernel/%*s") != 0 && !lib && !KERNEL()) ||
-	(creator != "System" && owner != oowner)) {
+	((creator != "System" && creator != "game") && owner != oowner))
+      {
 	error("Cannot destruct object: not owner");
-    }
+      }
 
     rlimits (-1; -1) {
 	if (!lib) {
