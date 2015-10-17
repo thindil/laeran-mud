@@ -8,6 +8,7 @@
 static mixed* load_file_with_dtd(string file_path, string dtd_path);
 static void load_sould(void);
 static void load_tagd(void);
+static void set_up_heart_beat(void);
 static int read_object_dir(string path);
 
 static void create(void) {
@@ -43,6 +44,13 @@ static void create(void) {
   } else {
     error("Can't read mobile file!  Dying!\n");
   }
+
+  /* Set up heart_beat functions */
+  if(!find_object(HEART_BEAT))
+    {
+      compile_object(HEART_BEAT);
+    }
+  HEART_BEAT->set_up_heart_beat();
 
   LOGD->write_syslog("Configured Phantasmal from /usr/game!");
 }

@@ -12,7 +12,8 @@
  * create() function, which will call ConfigD to set everything else
  * that Phantasmal needs to know.
  */
-#define GAME_INITD            "/usr/game/initd"
+#define GAME_INITD             "/usr/game/initd"
 
 #define GAME_DRIVER            "/usr/game/sys/gamedriver"
 #define GAME_WIZTOOL           "/usr/game/obj/wiztool"
+#define HEART_BEAT             "/usr/game/sys/heart_beat"

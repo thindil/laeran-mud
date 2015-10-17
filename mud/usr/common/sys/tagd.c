@@ -19,12 +19,9 @@ void upgraded(varargs int clone) {
 }
 
 private void check_value_type(int type, mixed value) {
-  if(typeof(value) == type)
+  if(typeof(value) == type || typeof(value) == T_NIL)
     return;
-
-  if(typeof(value) == T_NIL && (type != T_INT && type != T_FLOAT)) {
-    return;
-  }
+  
   error("Type mismatch:  type " + typeof(value)
 	+ " won't fit into a tag of type " + type + "!");
 }

@@ -908,13 +908,15 @@ static void cmd_get(object user, string cmd, string str) {
     return;
   }
 
-  if(!(err = mobile->place(tmp[0], body))) {
-    message("Bierzesz ");
-    send_phrase(tmp[0]->get_brief());
-    message(".\n");
-  } else {
-    message(err + "\n");
-  }
+  if(!(err = mobile->place(tmp[0], body)))
+    {
+      message("Bierzesz " + tmp[0]->get_brief()->to_string(user) + ".\n");
+      TAGD->set_tag_value(tmp[0], "DropTime", nil);
+    }
+  else
+    {
+      message(err + "\n");
+    }
 }
 
 static void cmd_drop(object user, string cmd, string str) {
@@ -934,18 +936,21 @@ static void cmd_drop(object user, string cmd, string str) {
     return;
   }
 
-  if(sizeof(tmp) > 1) {
-    message("Masz więcej niż jedną taką rzecz.\n");
-    message("Wybierasz " + tmp[0]->get_brief() + ".\n");
-  }
+  if(sizeof(tmp) > 1)
+    {
+      message("Masz więcej niż jedną taką rzecz.\n");
+      message("Wybierasz " + tmp[0]->get_brief()->to_string(user) + ".\n");
+    }
 
-  if (!(err = mobile->place(tmp[0], location))) {
-    message("Upuszczasz ");
-    send_phrase(tmp[0]->get_brief());
-    message(".\n");
-  } else {
-    message(err + "\n");
-  }
+  if (!(err = mobile->place(tmp[0], location)))
+    {
+      message("Upuszczasz " + tmp[0]->get_brief()->to_string(user) + ".\n");
+      TAGD->set_tag_value(tmp[0], "DropTime", time());
+    }
+  else
+    {
+      message(err + "\n");
+    }
 }
 
 static void cmd_open(object user, string cmd, string str) {
