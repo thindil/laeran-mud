@@ -1205,9 +1205,17 @@ void from_dtd_tag(string tag, mixed value) {
       price = value;
       break;
     case "wearlocations":
-      for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
+      if(typeof(value) == T_INT)
 	{
-	  wearlocations += ({ value[ctr2] });
+	  wearlocations = ({ value });
+	}
+      else if(typeof(value) == T_ARRAY)
+	{
+	  wearlocations = value;
+	}
+      else
+	{	
+	  error("Unreasonable type for wearlocations!");
 	}
       break;
     case "removed_details":
