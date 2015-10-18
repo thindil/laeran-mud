@@ -13,7 +13,7 @@ void set_up_heart_beat(void)
   if(previous_program() == GAME_INITD)
     {
       TIMED->set_heart_beat(TIMED_TEN_MINUTES, "heart_beat_clear");
-      TIMED->set_heart_beat(TIMED_HALF_MINUTE, "heart_beat_spawn");
+      /*TIMED->set_heart_beat(TIMED_HALF_MINUTE, "heart_beat_spawn");*/
     }
 }
 
