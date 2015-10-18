@@ -460,7 +460,10 @@ void switch_to(int pushp) {
 	     || substate == SS_PROMPT_EXAMINE_DESC) {
     /* Do nothing */
   } else if (substate == SS_PROMPT_NOUNS
-	     || substate == SS_PROMPT_WEIGHT_CAPACITY) {
+	     || substate == SS_PROMPT_WEIGHT_CAPACITY
+	     || substate == SS_PROMPT_DAMAGE
+	     || substate == SS_PROMPT_WLOCATION
+	     || substate == SS_PROMPT_ARMOR) {
     /* This means we just got back from getting a desc */
     send_string(" > ");
   } else {
