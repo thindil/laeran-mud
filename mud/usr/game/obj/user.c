@@ -36,6 +36,8 @@ static void cmd_social(object user, string cmd, string str);
 
 int meat_locker_rn;
 int current_room;
+mapping stats;
+mapping skills;
 
 /*
  * NAME:	create()
@@ -198,6 +200,13 @@ void player_login(int first_time)
     other_user->message("Closing your connection now...\n");
     destruct_object(other_user);
   }
+
+  /* Lets do character stats */
+  if (stats == nil)
+    {
+      stats = ([ "strength": ({10, 0}), "agility": ({10, 0}), "intelli": ({10, 0}), "cond": ({10, 0}) ]);
+      skills = ([ ]);
+    }
 
   if(!body) {
     location = start_room;
