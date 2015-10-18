@@ -50,7 +50,7 @@ private int objflags;
    acceptable length. */
 private float weight, volume, length;
 private float weight_capacity, volume_capacity, length_capacity;
-private int damage, armor, price, hp;
+private int damage, armor, price, hp, combat_rating;
 private int* wearlocations;
 
 /* These are the total current amount of weight and volume
@@ -70,7 +70,7 @@ static void create(varargs int clone) {
 
     weight = volume = length = -1.0;
     weight_capacity = volume_capacity = length_capacity = -1.0;
-    damage = armor = price = hp = 0;
+    damage = armor = price = hp = combat_rating = 0;
     wearlocations = ({ });
 
     pending_parents = nil;
@@ -230,6 +230,14 @@ int get_hp(void)
   return hp;
 }
 
+int get_combat_rating(void)
+{
+  if(combat_rating < 1 && sizeof(obj::get_archetypes()))
+    return obj::get_archetypes()[0]->get_combat_rating();
+
+  return combat_rating;
+}
+
 void set_weight(float new_weight) {
   object loc;
 
@@ -329,6 +337,13 @@ void set_hp(int new_hp) {
     error("Only authorized code can set length capacities!");
 
   hp = new_hp;
+}
+
+void set_combat_rating(int new_combat_rating) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can set length capacities!");
+
+  combat_rating = new_combat_rating;
 }
 
 /*** Functions dealing with Exits ***/
@@ -1051,6 +1066,10 @@ string to_unq_flags(void) {
     {
       ret += "  ~hp{" + hp + "}\n";
     }
+  if (combat_rating > 0)
+    {
+      ret += "  ~combat_rating{" + combat_rating + "}\n";
+    }
 
   rem = get_removed_details();
   if(rem && sizeof(rem)) {
@@ -1222,6 +1241,9 @@ void from_dtd_tag(string tag, mixed value) {
       break;
     case "hp":
       hp = value;
+      break;
+    case "combat_rating":
+      combat_rating = value;
       break;
     case "wearlocations":
       value = explode(value, ", ");

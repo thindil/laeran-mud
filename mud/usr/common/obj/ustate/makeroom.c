@@ -56,6 +56,7 @@ private object obj_detail_of;
 #define SS_PROMPT_ARMOR            30
 #define SS_PROMPT_PRICE            31
 #define SS_PROMPT_HP               32
+#define SS_PROMPT_COMBAT_RATING    33
 
 
 /* Input function return values */
@@ -90,6 +91,7 @@ static int  prompt_wlocation_input(string input);
 static int  prompt_armor_input(string input);
 static int  prompt_price_input(string input);
 static int  prompt_hp_input(string input);
+static int  prompt_combat_rating_input(string input);
 
 private string blurb_for_substate(int substate);
 
@@ -206,6 +208,9 @@ int from_user(string input) {
     break;
   case SS_PROMPT_HP:
     ret = prompt_hp_input(input);
+    break;
+  case SS_PROMPT_COMBAT_RATING:
+    ret = prompt_combat_rating_input(input);
     break;
   case SS_PROMPT_LOOK_DESC:
   case SS_PROMPT_EXAMINE_DESC:
@@ -424,7 +429,12 @@ private string blurb_for_substate(int substate) {
     if(new_obj && sizeof(new_obj->get_archetypes()))
       return "Wprowadź ilość punktów życia przedmiotu albo wpisz 'none' aby przyjąć \n"
 	+ "wartości z archetypu.\n";
-    return "Wprowadź ilość punktów życia przedmiotu";
+    return "Wprowadź ilość punktów życia przedmiotu.\n";
+  case SS_PROMPT_COMBAT_RATING:
+    if(new_obj && sizeof(new_obj->get_archetypes()))
+      return "Wprowadź poziom bojowy obiektu albo wpisz 'none' aby przyjąć wartości \n"
+	+ "z archetypu.\n";
+    return "Wprowadź poziom bojowy obiektu.\n";
   default:
     return "<NIEZNANY STAN>\r\n";
   }
@@ -451,6 +461,7 @@ void switch_to(int pushp) {
   } else if (substate == SS_PROMPT_NOUNS
 	     || substate == SS_PROMPT_WEIGHT_CAPACITY
 	     || substate == SS_PROMPT_WLOCATION
+	     || substate == SS_PROMPT_DAMAGE
 	     || substate == SS_PROMPT_ARMOR) {
     /* This means we just got back from getting a desc */
     send_string(" > ");
@@ -1785,6 +1796,53 @@ static int prompt_hp_input(string input)
   new_obj->set_hp(value);
 
   send_string("Zaakceptowano punkty życia obiektu.\n\n");
+  substate = SS_PROMPT_COMBAT_RATING;
+  send_string(blurb_for_substate(substate));
+
+  return RET_NORMAL;
+}
+
+static int prompt_combat_rating_input(string input)
+{
+  int     value;
+
+  value = 0;
+
+  if(!input || STRINGD->is_whitespace(input))
+    {
+      send_string("Spróbujmy ponownie.\r\n");
+      send_string(blurb_for_substate(substate));
+
+      return RET_NORMAL;
+    }
+
+  input = STRINGD->trim_whitespace(input);
+
+  if(sscanf(input, "%d", value) == 1)
+    {
+      if (value < 0)
+	{
+	  send_string("Poziom bojowy nie powinnien być ujemna. Spróbuj ponownie.\n");
+	  send_string(blurb_for_substate(substate));
+
+	  return RET_NORMAL;
+	}
+    }
+  else if(!STRINGD->stricmp(input, "none"))
+    {
+      value = -1;
+    }
+  else
+    {
+      send_string("Podaj poziom bojowy obiektu. Spróbuj ponownie.\n");
+      send_string(blurb_for_substate(substate));
+	  
+      return RET_NORMAL;
+    }
+
+  new_obj->set_combat_rating(value);
+
+  send_string("Zaakceptowano poziom bojowy obiektu.\n\n");
   send_string("Zakończono prace nad przenośnym obiektem #" + new_obj->get_number() + ".\n");
 
   return RET_POP_STATE;

@@ -4,7 +4,7 @@
        nouns?,rem_nouns?,adjectives?,rem_adjectives?,
        exit*,newexit*,flags?,weight?,volume?,length?,
        weight_capacity?,volume_capacity?,length_capacity?,removed_details?,
-       tags?,data?,damage?,wearlocations?,armor?,price?,hp?}
+       tags?,data?,damage?,wearlocations?,armor?,price?,hp?,combat_rating?}
   ~object:obj{}
   ~obj_type{string}
   ~number{int}
@@ -36,6 +36,7 @@
   ~armor{int}
   ~price{int}
   ~hp{int}
+  ~combat_rating{int}
   ~newexit{rnumber,direction,destination,return,type,rbdesc?,rgdesc?,
            rldesc?,redesc?,rnouns?,radjectives?,rflags?}
   ~rnumber{int}

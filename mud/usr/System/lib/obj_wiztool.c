@@ -380,6 +380,7 @@ static void cmd_stat(object user, string cmd, string str) {
   tmp += "Zbroja obiektu wynosi: " + (string)obj->get_armor() + "\n";
   tmp += "Cena za obiekt wynosi: " + (string)obj->get_price() + "\n";
   tmp += "Punkty życia obiektu: " + (string)obj->get_hp() + "\n";
+  tmp += "Poziom bojowy obiektu: " + (string)obj->get_combat_rating() + "\n";
 
   details = obj->get_immediate_details();
   if(details && sizeof(details)) {
