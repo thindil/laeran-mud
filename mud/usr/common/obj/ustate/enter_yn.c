@@ -8,7 +8,7 @@ private string prompt;
 static void create(varargs int clone) {
   ::create();
   if(clone) {
-    prompt = "Yes or no? ";
+    prompt = "Tak lub nie? ";
   }
 }
 
@@ -23,22 +23,22 @@ void set_up_func(varargs string new_prompt) {
 }
 
 int from_user(string input) {
-  if(input == "y" || input == "Y"
-     || !STRINGD->stricmp(input, "yes")) {
+  if(input == "t" || input == "T"
+     || !STRINGD->stricmp(input, "tak")) {
     pass_data(1);
 
     pop_state();
     return MODE_ECHO;
   }
   if(input == "n" || input == "N"
-     || !STRINGD->stricmp(input, "no")) {
+     || !STRINGD->stricmp(input, "nie")) {
     pass_data(0);
 
     pop_state();
     return MODE_ECHO;
   }
 
-  send_string("That wasn't a definite 'yes' or 'no'.  Please try again.\r\n");
+  send_string("To zdecydowanie nie było 'tak' lub 'nie'.  Spróbuj ponownie.\r\n");
   send_string(prompt);
 
   return MODE_ECHO;
