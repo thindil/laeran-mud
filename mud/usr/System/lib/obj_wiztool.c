@@ -345,9 +345,11 @@ static void cmd_stat(object user, string cmd, string str) {
     {
       if (obj->is_weapon())
 	{
-	  tmp += "Obiekt jest bronią. I zadaje " + (string)obj->get_damage() + " obrażeń.\n";
+	  tmp += "Obiekt jest bronią.\n";
 	}
     }
+
+  tmp += "Zadaje " + (string)obj->get_damage() + " obrażeń.\n";
 
   if(function_object("is_wearable", obj))
     {
@@ -377,6 +379,7 @@ static void cmd_stat(object user, string cmd, string str) {
 
   tmp += "Zbroja obiektu wynosi: " + (string)obj->get_armor() + "\n";
   tmp += "Cena za obiekt wynosi: " + (string)obj->get_price() + "\n";
+  tmp += "Punkty życia obiektu: " + (string)obj->get_hp() + "\n";
 
   details = obj->get_immediate_details();
   if(details && sizeof(details)) {

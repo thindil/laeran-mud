@@ -50,7 +50,7 @@ private int objflags;
    acceptable length. */
 private float weight, volume, length;
 private float weight_capacity, volume_capacity, length_capacity;
-private int damage, armor, price;
+private int damage, armor, price, hp;
 private int* wearlocations;
 
 /* These are the total current amount of weight and volume
@@ -70,7 +70,7 @@ static void create(varargs int clone) {
 
     weight = volume = length = -1.0;
     weight_capacity = volume_capacity = length_capacity = -1.0;
-    damage = armor = price = 0;
+    damage = armor = price = hp = 0;
     wearlocations = ({ });
 
     pending_parents = nil;
@@ -222,6 +222,14 @@ int* get_wearlocations(void)
   return wearlocations;
 }
 
+int get_hp(void)
+{
+  if(hp < 1 && sizeof(obj::get_archetypes()))
+    return obj::get_archetypes()[0]->get_hp();
+
+  return hp;
+}
+
 void set_weight(float new_weight) {
   object loc;
 
@@ -314,6 +322,13 @@ void set_wearlocations(int* new_wearlocations) {
     error("Only authorized code can set length capacities!");
 
   wearlocations = new_wearlocations;
+}
+
+void set_hp(int new_hp) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can set length capacities!");
+
+  hp = new_hp;
 }
 
 /*** Functions dealing with Exits ***/
@@ -1013,12 +1028,9 @@ string to_unq_flags(void) {
       ret += "  ~length_capacity{" + length_capacity + "}\n";
   }
 
-  if (is_weapon())
+  if (damage > 0)
     {
-      if (damage > 0)
-	{
-	  ret += "  ~damage{" + damage + "}\n";
-	}
+      ret += "  ~damage{" + damage + "}\n";
     }
   if (is_wearable())
     {
@@ -1034,6 +1046,10 @@ string to_unq_flags(void) {
   if (price > 0)
     {
       ret += "  ~price{" + price + "}\n";
+    }
+  if (hp > 0)
+    {
+      ret += "  ~hp{" + hp + "}\n";
     }
 
   rem = get_removed_details();
@@ -1203,6 +1219,9 @@ void from_dtd_tag(string tag, mixed value) {
       break;
     case "price":
       price = value;
+      break;
+    case "hp":
+      hp = value;
       break;
     case "wearlocations":
       value = explode(value, ", ");

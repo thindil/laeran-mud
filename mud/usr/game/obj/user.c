@@ -249,6 +249,7 @@ void player_login(int first_time)
     body->set_volume_capacity(20.0);
     /* Players are able to take 3m long items */
     body->set_length_capacity(300.0);
+    body->set_hp(10);
 
     MAPD->add_room_to_zone(body, -1, start_zone);
     if(!MAPD->get_room_by_num(body->get_number())) {
