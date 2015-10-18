@@ -280,7 +280,7 @@ void save_mud_data(object user, string room_dirname, string mob_filename,
 
   ACCESSD->save();
 
-  if(!SYSTEM()) {
+  if(!SYSTEM() && !GAME()) {
     error("Only privileged code can call save_mud_data!");
     return;
   }

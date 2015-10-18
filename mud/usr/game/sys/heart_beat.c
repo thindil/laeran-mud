@@ -14,6 +14,7 @@ void set_up_heart_beat(void)
     {
       TIMED->set_heart_beat(TIMED_TEN_MINUTES, "heart_beat_clear");
       TIMED->set_heart_beat(TIMED_HALF_MINUTE, "heart_beat_func");
+      TIMED->set_heart_beat(TIMED_ONE_DAY, "heart_beat_save");
     }
 }
 
@@ -138,4 +139,9 @@ void heart_beat_func(void)
 	  mobile->assign_body(body);
 	}
     }
+}
+
+void heart_beat_save(void)
+{
+  find_object(INITD)->save_mud_data(nil, ROOM_DIR, MOB_FILE, ZONE_FILE,nil);
 }
