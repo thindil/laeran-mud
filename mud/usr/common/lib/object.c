@@ -186,8 +186,8 @@ object* get_archetypes(void) {
    descending order of priority.  The primary archetype is used
    for purposes such as inheriting a primary description. */
 void set_archetypes(object* new_archetypes) {
-  if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM and COMMON objects may set archetypes!");
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only SYSTEM, COMMON and GAME objects may set archetypes!");
 
   if(!new_archetypes)
     new_archetypes = ({ });
@@ -205,8 +205,8 @@ void set_archetypes(object* new_archetypes) {
 }
 
 void add_archetype(object new_arch) {
-  if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM and COMMON objects may set archetypes!");
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only SYSTEM, COMMON and GAME objects may set archetypes!");
 
   archetypes += ({ new_arch });
 }

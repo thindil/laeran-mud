@@ -20,3 +20,9 @@ string get_type(void)
 {
   return "simple";
 }
+
+void from_dtd_unq(mixed* unq)
+{
+  /* Set the body, location and number fields */
+  unq = mobile_from_dtd_unq(unq);
+}

@@ -13,7 +13,7 @@ void set_up_heart_beat(void)
   if(previous_program() == GAME_INITD)
     {
       TIMED->set_heart_beat(TIMED_TEN_MINUTES, "heart_beat_clear");
-      /*TIMED->set_heart_beat(TIMED_HALF_MINUTE, "heart_beat_spawn");*/
+      TIMED->set_heart_beat(TIMED_HALF_MINUTE, "heart_beat_spawn");
     }
 }
 
@@ -54,7 +54,7 @@ void heart_beat_spawn(void)
 {
   int *mobiles, *rooms;
   int i, zone, roll;
-  object body, parentbody, room;
+  object body, parentbody, room, mobile;
   
   if (previous_program() != TIMED)
     {
@@ -63,10 +63,11 @@ void heart_beat_spawn(void)
   mobiles = MOBILED->all_mobiles();
   for (i = 0; i < sizeof(mobiles); i++)
     {
-      if (!mobiles[i]->get_body() && mobiles[i]->get_parentbody())
+      mobile = MOBILED->get_mobile_by_num(mobiles[i]);
+      if (!mobile->get_body() && mobile->get_parentbody())
 	{
 	  body = clone_object(SIMPLE_ROOM);
-	  parentbody = MAPD->get_room_by_num(mobiles[i]->get_parentbody());
+	  parentbody = MAPD->get_room_by_num(mobile->get_parentbody());
 	  body->add_archetype(parentbody);
 	  body->set_brief(nil);
 	  body->set_look(nil);
@@ -82,27 +83,28 @@ void heart_beat_spawn(void)
 	    {
 	      body->set_openable(1);
 	    }
-	  if (mobiles[i]->get_spawnroom())
+	  if (mobile->get_spawnroom())
 	    {
-	      room = MAPD->get_room_by_num(mobiles[i]->get_spawnroom());
+	      room = MAPD->get_room_by_num(mobile->get_spawnroom());
 	      zone = ZONED->get_zone_for_room(room);
 	    }
 	  else
 	    {
-	      zone = ZONED->get_zone_for_room(mobiles[i]->get_parentbody());
+	      zone = ZONED->get_zone_for_room(mobile->get_parentbody());
 	      rooms = MAPD->rooms_in_zone(zone);
 	      roll = -1;
-	      while (roll == mobiles[i]->get_parentbody())
+	      while (roll == mobile->get_parentbody())
 		{
 		  roll = random(sizeof(rooms));
-		  if (rooms[roll] == mobiles[i]->get_parentbody())
+		  if (rooms[roll] == mobile->get_parentbody())
 		    {
-		      roll = mobiles[i]->get_parentbody();
+		      roll = mobile->get_parentbody();
 		    }
 		}
 	    }
 	  MAPD->add_room_to_zone(body, -1, zone);
 	  room->add_to_container(body);
+	  mobile->assign_body(body);
 	}
     }
 }
