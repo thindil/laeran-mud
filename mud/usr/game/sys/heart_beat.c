@@ -13,7 +13,7 @@ void set_up_heart_beat(void)
   if(previous_program() == GAME_INITD)
     {
       TIMED->set_heart_beat(TIMED_TEN_MINUTES, "heart_beat_clear");
-      TIMED->set_heart_beat(TIMED_HALF_MINUTE, "heart_beat_spawn");
+      TIMED->set_heart_beat(TIMED_HALF_MINUTE, "heart_beat_func");
     }
 }
 
@@ -49,17 +49,18 @@ void heart_beat_clear(void)
     }
 }
 
-/* spawn mobiles bodies */
-void heart_beat_spawn(void)
+void heart_beat_func(void)
 {
   int *mobiles, *rooms;
-  int i, zone, roll;
-  object body, parentbody, room, mobile;
+  int i, zone, roll, j;
+  object body, parentbody, room, mobile, item;
+  mixed *inventory;
   
   if (previous_program() != TIMED)
     {
       return;
     }
+  /* spawn mobiles bodies */
   mobiles = MOBILED->all_mobiles();
   for (i = 0; i < sizeof(mobiles); i++)
     {
@@ -104,6 +105,36 @@ void heart_beat_spawn(void)
 	    }
 	  MAPD->add_room_to_zone(body, -1, zone);
 	  room->add_to_container(body);
+	  inventory = parentbody->objects_in_container();
+	  for (j = 0; j < sizeof(inventory); j++)
+	    {
+	      item = clone_object(SIMPLE_ROOM);
+	      item->add_archetype(inventory[j]);
+	      item->set_brief(nil);
+	      item->set_look(nil);
+	      if (inventory[j]->is_container())
+		{
+		  item->set_container(1);
+		}
+	      if (inventory[j]->is_open())
+		{
+		  item->set_open(1);
+		}
+	      if (inventory[j]->is_openable())
+		{
+		  item->set_openable(1);
+		}
+	      if (inventory[j]->is_weapon())
+		{
+		  item->set_weapon(1);
+		}
+	      if (inventory[j]->is_wearable())
+		{
+		  item->set_wearable(1);
+		}
+	      MAPD->add_room_to_zone(item, -1, zone);
+	      body->add_to_container(item);
+	    }
 	  mobile->assign_body(body);
 	}
     }
