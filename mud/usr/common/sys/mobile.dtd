@@ -1,8 +1,10 @@
 ~DTD{
-  ~mobile{type,name?,number?,body,data?}
+  ~mobile{type,name?,number?,body,data?,parentbody?,spawnroom?}
   ~type{string}
   ~name{phrase}
   ~number{int}
   ~body{int}
+  ~parentbody{int}
+  ~spawnroom{int}
   ~data{unq}
 }

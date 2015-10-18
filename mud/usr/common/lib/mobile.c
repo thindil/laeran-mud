@@ -19,6 +19,8 @@ inherit tag TAGGED;
 static object body;     /* The mobile's body -- an OBJECT of some type */
 static object location;
 static int    number;
+static int    parentbody;
+static int    spawnroom;
 
 static void create(varargs int clone) {
   unq::create();
@@ -70,6 +72,26 @@ void set_user(object new_user) {
 
 int get_number(void) {
   return number;
+}
+
+int get_parentbody(void)
+{
+  return parentbody;
+}
+
+void set_parentbody(int new_parentbody)
+{
+  parentbody = new_parentbody;
+}
+
+int get_spawnroom(void)
+{
+  return spawnroom;
+}
+
+void set_spawnroom(int new_spawnroom)
+{
+  spawnroom = new_spawnroom;
 }
 
 nomask void set_number(int new_num) {
@@ -565,22 +587,34 @@ string to_unq_text(void) {
   if(!SYSTEM() && !COMMON() && !GAME())
     return nil;
 
-  if(body) {
-    bodynum = body->get_number();
-  } else {
-    bodynum = -1;
-  }
+  if(body)
+    {
+      bodynum = body->get_number();
+    }
+  else
+    {
+      bodynum = -1;
+    }
 
   ret  = "~mobile{\n";
   ret += "  ~type{" + this_object()->get_type() + "}\n";
   ret += "  ~name{" + body->get_brief()->as_unq() + "}\n";
   ret += "  ~number{" + number + "}\n";
   ret += "  ~body{" + bodynum + "}\n";
-  if(function_object("mobile_unq_fields", this_object())) {
-    ret += "  ~data{\n";
-    ret += this_object()->mobile_unq_fields();
-    ret += "  }\n";
-  }
+  if (parentbody > 0)
+    {
+      ret += "  ~parentbody{" + parentbody + "}\n";
+    }
+  if (spawnroom > 0)
+    {
+      ret += "  ~spawnroom{" + spawnroom + "}\n";
+    }
+  if(function_object("mobile_unq_fields", this_object()))
+    {
+      ret += "  ~data{\n";
+      ret += this_object()->mobile_unq_fields();
+      ret += "  }\n";
+    }
   ret += "}\n\n";
 
   return ret;
@@ -601,31 +635,49 @@ static mixed mobile_from_dtd_unq(mixed* unq) {
 
   ctr = unq;
 
-  while(sizeof(ctr) > 0) {
-    if(!STRINGD->stricmp(ctr[0][0], "body")) {
-      bodynum = ctr[0][1];
-      if(bodynum != -1) {
-        body = MAPD->get_room_by_num(bodynum);
-        if(!body)
-          error("Can't find body for mobile, object #" + bodynum + "!\n");
-        location = body->get_location();
-      } else {
-        body = nil;
-        location = nil;
-      }
-    } else if(!STRINGD->stricmp(ctr[0][0], "number")) {
-      number = ctr[0][1];
-    } else if(!STRINGD->stricmp(ctr[0][0], "type")) {
-      /* Do nothing, already taken care of */
-    } else if(!STRINGD->stricmp(ctr[0][0], "data")) {
-      ret = ({ ctr[0][1] });
-    } else if(!STRINGD->stricmp(ctr[0][0], "name")) {
-      /* This is just a comment.  Ignore it. */
-    } else {
-      error("Unrecognized field in mobile structure!");
+  while(sizeof(ctr) > 0)
+    {
+      switch (ctr[0][0])
+	{
+	case "body":
+	  bodynum = ctr[0][1];
+	  if(bodynum != -1)
+	    {
+	      body = MAPD->get_room_by_num(bodynum);
+	      if(!body)
+		{
+		  error("Can't find body for mobile, object #" + bodynum + "!\n");
+		}
+	      location = body->get_location();
+	    }
+	  else
+	    {
+	      body = nil;
+	      location = nil;
+	    }
+	  break;
+	case "number":
+	  number = ctr[0][1];
+	  break;
+	case "type":
+	  break;
+	case "data":
+	  ret = ({ ctr[0][1] });
+	  break;
+	case "name":
+	  break;
+	case "parentbody":
+	  parentbody = ctr[0][1];
+	  break;
+	case "spawnroom":
+	  spawnroom = ctr[0][1];
+	  break;
+	default:
+	  error("Unrecognized field in mobile structure!");
+	  break;
+	}
+      ctr = ctr[1..];
     }
-    ctr = ctr[1..];
-  }
 
   return ret;
 }

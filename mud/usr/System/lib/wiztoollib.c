@@ -738,27 +738,26 @@ static void cmd_new_zone(object user, string cmd, string str) {
 }
 
 static void cmd_new_mobile(object user, string cmd, string str) {
-  int    mobnum, bodynum;
-  string mobtype, segown;
+  int    mobnum, bodynum, parentnum, spawnroom;
+  string mobtype;
   object mobile, body;
 
   mobnum = -1;
-  if(!str || sscanf(str, "%*s %*s %*s %*s") == 4) {
-    user->message("Usage: " + cmd
-		  + " #<new mob num> #<body num> <mobile type>\n");
-    user->message("    or " + cmd
-		  + " #<body num> <mobile type>\n");
+  parentnum = 0;
+  spawnroom = 0;
+  if(!str) {
+    user->message("Użycie: " + cmd + " #<body num> <mobile type> #<parentbody> #<spawnroom>\n");
     return;
   }
 
-  if((sscanf(str, "#%d #%d %s", mobnum, bodynum, mobtype) != 3)
-     && (sscanf(str, "#%d %s", bodynum, mobtype) != 2)) {
-    user->message("Usage: " + cmd
-		  + " #<new mob num> #<body num> <mobile type>\n");
-    user->message("    or " + cmd
-		  + " #<body num> <mobile type>\n");
-    return;
-  }
+  if((sscanf(str, "#%d %s", bodynum, mobtype) != 2)
+     || (sscanf(str, "#%d %s #%d", bodynum, mobtype, parentnum) != 3)
+     || (sscanf(str, "#%d %s #%d #%d", bodynum, mobtype, parentnum, spawnroom) != 4))
+    {
+      user->message("Usage: " + cmd
+		    + " #<body num> <mobile type> #<parentbody> #<spawnroom>\n");
+      return;
+    }
 
   mobtype = STRINGD->to_lower(mobtype);
 
@@ -770,28 +769,6 @@ static void cmd_new_mobile(object user, string cmd, string str) {
   }
 
   body = MAPD->get_room_by_num(bodynum);
-  if((bodynum <= 0) || !body) {
-    user->message("You must supply an appropriate body number with a "
-		  + "corresponding body object.\n"
-		  + "Object #" + bodynum
-		  + " was not found in MAPD.  Failed.\n");
-    return;
-  }
-
-  if(mobnum > 0) {
-    if(MOBILED->get_mobile_by_num(mobnum)) {
-      user->message("There is already a mobile #" + mobnum
-		    + " registered!\n");
-      return;
-    }
-
-    segown = OBJNUMD->get_segment_owner(mobnum / 100);
-    if(segown && segown != MOBILED) {
-      user->message("That number is in a segment reserved for "
-		    + "non-mobiles by '" + segown + "'!\n");
-      return;
-    }
-  }
 
   if(!MOBILED->get_file_by_mobile_type(mobtype)) {
     user->message("MOBILED doesn't recognize type '" + mobtype
@@ -804,7 +781,12 @@ static void cmd_new_mobile(object user, string cmd, string str) {
   if(!mobile)
     error("Can't clone mobile of type '" + mobtype + "'!");
 
-  mobile->assign_body(body);
+  if (body)
+    {
+      mobile->assign_body(body);
+    }
+  mobile->set_parentbody(parentnum);
+  mobile->set_spawnroom(spawnroom);
 
   MOBILED->add_mobile_number(mobile, mobnum);
   user->message("Added mobile #" + mobile->get_number() + ".\n");

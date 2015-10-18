@@ -44,18 +44,12 @@ See Also:  MOBILED, @stat, @delete_mobile, @new_mobile
 The @new_mob or @new_mobile command creates a new mobile of a
 specified type, with a specified body.  The syntax is:
 
-@new_mob #<mobnum> #<bodynum> <type>
-or
-@new_mob #<bodynum> <type>
+@new_mob #<bodynum> <type> #<parentbody> #<spawnroom>
 
-The mobnum, if provided, must be -1, or must be a number in an unowned
-or MOBILED segment.  Normally you should pass -1, which will
-automatically assign a number.  The bodynum should be an existing
-portable object registered with MAPD.  It will serve as the mobile's
-body, and the type should be a mobile type registered with the mobiled
-binder.  Example:
+The bodynum should be an existing portable object registered with MAPD.
+It will serve as the mobile's body, and the type should be a mobile
+type registered with the mobiled binder.  Example:
 
-@new_mob #-1 #347 wander
 @new_mob #347 wander
 
 These will create a new mobile with an autoassigned number, which will

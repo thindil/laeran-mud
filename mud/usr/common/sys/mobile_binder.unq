@@ -17,3 +17,8 @@
   ~tag{shop}
   ~code{/usr/common/obj/shop_mobile}
 }
+
+~bind{
+  ~tag{simple}
+  ~code{/usr/common/obj/simple_mobile}
+}

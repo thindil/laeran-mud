@@ -67,7 +67,7 @@ void upgraded(varargs int clone) {
   /* Hardcode a MUD minute to 20 real seconds right now,
      just to test. */
   delay_tab = allocate(TIMED_HIGHEST);
-  delay_tab[TIMED_HALF_MINUTE] = 30;
+  delay_tab[TIMED_HALF_MINUTE] = 5;
   delay_tab[TIMED_TEN_MINUTES] = 600;
   delay_tab[TIMED_ONE_HOUR] = 3600;
   delay_tab[TIMED_ONE_DAY] = 3600 * 24;
