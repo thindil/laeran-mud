@@ -13,6 +13,8 @@
 
 #include <type.h>
 
+#include <gameconfig.h>
+
 inherit PHANTASMAL_USER;
 
 /* Duplicated in PHANTASMAL_USER */
@@ -115,7 +117,9 @@ void upgraded(varargs int clone) {
 		     "otworz"    : "cmd_open",
 		     "zamknij"   : "cmd_close",
 		     "zaloz"     : "cmd_wear",
-		     "zdejmij"   : "cmd_takeoff"
+		     "zdejmij"   : "cmd_takeoff",
+
+		     "atakuj"    : "cmd_attack"
 
     ]);
 
@@ -321,6 +325,13 @@ static void player_logout(void)
   /* Teleport body to meat locker */
   if(body)
     {
+
+      if (TAGD->get_tag_value(body, "Combat"))
+	{
+	  COMBAT->stop_combat();
+	  message("Uciekasz z walki.\n");
+	}
+      
       object meat_locker;
       object mobile;
 
@@ -845,6 +856,12 @@ static void cmd_movement(object user, string cmd, string str) {
     return;
   }
 
+  if (TAGD->get_tag_value(body, "Combat"))
+    {
+      COMBAT->stop_combat();
+      message("Uciekasz z walki.\n");
+    }
+  
   show_room_to_player(location);
 }
 
@@ -1229,4 +1246,48 @@ static void cmd_takeoff(object user, string cmd, string str)
       message("Zdejmujesz " + tmp[ctr]->get_brief()->to_string(user) + ".\n");
     }
   tmp[ctr]->set_dressed(0);
+}
+
+/* Start combat */
+static void cmd_attack(object user, string cmd, string str)
+{
+  object *tmp;
+  
+  if(str)
+    {
+      str = STRINGD->trim_whitespace(str);
+    }
+  if(!str || str == "")
+    {
+      message("Użycie: " + cmd + " <obiekt>\n");
+      return;
+    }
+  tmp = find_first_objects(str, LOC_IMMEDIATE_CURRENT_ROOM);
+  if(!tmp || !sizeof(tmp))
+    {
+      message("Nie możesz znaleźć jakiegokolwiek '" + str + "'.\n");
+      return;
+    }
+  if (sizeof(tmp) > 1)
+    {
+      message("Jest kilka '" + str + "' w okolicy. Wybierz dokładnie którego chcesz zaatakować.\n");
+      return;
+    }
+  if (!tmp[0]->get_mobile())
+    {
+      message("Możesz atakować tylko istoty. Nie wyżywaj się na sprzęcie.\n");
+      return;
+    }
+  if (!tmp[0]->get_mobile()->get_parentbody())
+    {
+      message("Nie możesz zaatakować tej istoty.\n");
+      return;
+    }
+  if (TAGD->get_tag_value(body, "Combat") || TAGD->get_tag_value(tmp[0], "Combat"))
+    {
+      message("Któreś z Was już walczy. Dokończcie najpierw jedną walkę.\n");
+      return;
+    }
+  message("Atakujesz " + tmp[0]->get_brief()->to_string(user) + "...\n");
+  COMBAT->start_combat(body, tmp[0]);
 }

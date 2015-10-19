@@ -52,6 +52,11 @@ static void create(void) {
     }
   HEART_BEAT->set_up_heart_beat();
 
+  if(!find_object(COMBAT))
+    {
+      compile_object(COMBAT);
+    }
+
   LOGD->write_syslog("Configured Phantasmal from /usr/game!");
 }
 
