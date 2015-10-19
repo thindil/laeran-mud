@@ -382,6 +382,11 @@ static void cmd_stat(object user, string cmd, string str) {
   tmp += "Punkty życia obiektu: " + (string)obj->get_hp() + "\n";
   tmp += "Poziom bojowy obiektu: " + (string)obj->get_combat_rating() + "\n";
 
+  if (sizeof(obj->get_body_locations()))
+    {
+      tmp += "Lokacje ciała: " + implode(obj->get_body_locations(), ", ") + "\n";
+    }
+
   details = obj->get_immediate_details();
   if(details && sizeof(details)) {
     object detail;

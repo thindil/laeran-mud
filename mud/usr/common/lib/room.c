@@ -52,6 +52,7 @@ private float weight, volume, length;
 private float weight_capacity, volume_capacity, length_capacity;
 private int damage, armor, price, hp, combat_rating;
 private int* wearlocations;
+private string* body_locations;
 
 /* These are the total current amount of weight and volume
    being held in the object. */
@@ -72,6 +73,7 @@ static void create(varargs int clone) {
     weight_capacity = volume_capacity = length_capacity = -1.0;
     damage = armor = price = hp = combat_rating = 0;
     wearlocations = ({ });
+    body_locations = ({ });
 
     pending_parents = nil;
     pending_location = -1;
@@ -238,6 +240,14 @@ int get_combat_rating(void)
   return combat_rating;
 }
 
+string* get_body_locations(void)
+{
+  if(!sizeof(body_locations) && sizeof(obj::get_archetypes()))
+    return obj::get_archetypes()[0]->get_body_locations();
+
+  return body_locations;
+}
+
 void set_weight(float new_weight) {
   object loc;
 
@@ -344,6 +354,13 @@ void set_combat_rating(int new_combat_rating) {
     error("Only authorized code can set length capacities!");
 
   combat_rating = new_combat_rating;
+}
+
+void set_body_locations(string* new_body_locations) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can set length capacities!");
+
+  body_locations = new_body_locations;
 }
 
 /*** Functions dealing with Exits ***/
@@ -1049,10 +1066,7 @@ string to_unq_flags(void) {
     }
   if (is_wearable())
     {
-      if (wearlocations != nil)
-	{
-	  ret += "  ~wearlocations{" + serialize_list(wearlocations) + "}\n";
-	}
+      ret += "  ~wearlocations{" + serialize_list(wearlocations) + "}\n";
     }
   if (armor > 0)
     {
@@ -1069,6 +1083,10 @@ string to_unq_flags(void) {
   if (combat_rating > 0)
     {
       ret += "  ~combat_rating{" + combat_rating + "}\n";
+    }
+  if (sizeof(body_locations))
+    {
+      ret += "  ~body_locations{" + serialize_list(body_locations) + "}\n";
     }
 
   rem = get_removed_details();
@@ -1250,6 +1268,13 @@ void from_dtd_tag(string tag, mixed value) {
       for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
 	{
 	  wearlocations += ({ (int)value[ctr2] });
+	}
+      break;
+    case "body_locations":
+      value = explode(value, ", ");
+      for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
+	{
+	  body_locations += ({ value[ctr2] });
 	}
       break;
     case "removed_details":

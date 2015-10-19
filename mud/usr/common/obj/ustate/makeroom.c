@@ -57,6 +57,7 @@ private object obj_detail_of;
 #define SS_PROMPT_PRICE            31
 #define SS_PROMPT_HP               32
 #define SS_PROMPT_COMBAT_RATING    33
+#define SS_PROMPT_BODY_LOCATIONS   34
 
 
 /* Input function return values */
@@ -92,6 +93,7 @@ static int  prompt_armor_input(string input);
 static int  prompt_price_input(string input);
 static int  prompt_hp_input(string input);
 static int  prompt_combat_rating_input(string input);
+static int  prompt_body_locations_input(string input);
 
 private string blurb_for_substate(int substate);
 
@@ -211,6 +213,9 @@ int from_user(string input) {
     break;
   case SS_PROMPT_COMBAT_RATING:
     ret = prompt_combat_rating_input(input);
+    break;
+  case SS_PROMPT_BODY_LOCATIONS:
+    ret = prompt_body_locations_input(input);
     break;
   case SS_PROMPT_LOOK_DESC:
   case SS_PROMPT_EXAMINE_DESC:
@@ -435,6 +440,12 @@ private string blurb_for_substate(int substate) {
       return "Wprowadź poziom bojowy obiektu albo wpisz 'none' aby przyjąć wartości \n"
 	+ "z archetypu.\n";
     return "Wprowadź poziom bojowy obiektu.\n";
+  case SS_PROMPT_BODY_LOCATIONS:
+    if(new_obj && sizeof(new_obj->get_archetypes()))
+      return "Wprowadź lokacje ciała oddzielone spacjami albo wpisz 'none aby przyjąć wartość z archetypu.\n"
+	+ "Przykład: głowa, korpus, przednia łapa, tylnia łapa\n";
+    return "Wprowadź lokacje ciała oddzielone spacjami.\n"
+      + "Przykład: głowa, korpus, przednia łapa, tylnia łapa\n";
   default:
     return "<NIEZNANY STAN>\r\n";
   }
@@ -1837,6 +1848,32 @@ static int prompt_combat_rating_input(string input)
   new_obj->set_combat_rating(value);
 
   send_string("Zaakceptowano poziom bojowy obiektu.\n\n");
+  send_string("Zakończono prace nad przenośnym obiektem #" + new_obj->get_number() + ".\n");
+
+  return RET_POP_STATE;
+}
+
+static int prompt_body_locations_input(string input)
+{
+  string* locations;
+
+  if(!input || STRINGD->is_whitespace(input))
+    {
+      send_string("Spróbujmy ponownie.\r\n");
+      send_string(blurb_for_substate(substate));
+
+      return RET_NORMAL;
+    }
+
+  locations = explode(input, " ");
+  if (locations[0] == "none")
+    {
+      locations = nil;
+    }
+
+  new_obj->set_body_locations(locations);
+
+  send_string("Zaakceptowano lokacje ciała.\n\n");
   send_string("Zakończono prace nad przenośnym obiektem #" + new_obj->get_number() + ".\n");
 
   return RET_POP_STATE;
