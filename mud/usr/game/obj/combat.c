@@ -11,6 +11,8 @@ static object fighter1, fighter2;
 static int combat_call;
 static mapping combat_info1, combat_info2;
 
+void stop_combat(void);
+
 static void create(varargs int clone)
 {
   if (clone)
@@ -36,9 +38,18 @@ void start_combat(object new_fighter1, object new_fighter2)
   TAGD->set_tag_value(fighter1, "Combat", 1);
   TAGD->set_tag_value(fighter2, "Combat", 1);
 
+  combat_info1["name"] = fighter1->get_brief()->to_string(fighter1->get_mobile()->get_user());
   combat_info1["skill"] = "walka/walka wręcz";
-  combat_info1["damage"] = fighter1->get_mobile()->get_user()->get_stat_val("strength") / 10;
+  combat_info1["damage"] = fighter1->get_mobile()->get_user()->get_stat_val("siła") / 10;
   combat_info1["armor"] = ({({0, "głowa"}), ({0, "tułów"}), ({0, "ręce"}), ({0, "dłonie"}), ({0, "nogi"})});
+  if (TAGD->get_tag_value(fighter1, "Hp"))
+    {
+      combat_info1["hp"] = TAGD->get_tag_value(fighter1, "Hp");
+    }
+  else
+    {
+      combat_info1["hp"] = fighter1->get_hp();
+    }
   objs = fighter1->objects_in_container();
   for (i = 0; i < sizeof(objs); i++)
     {
@@ -56,14 +67,23 @@ void start_combat(object new_fighter1, object new_fighter2)
 	    }
 	}
     }
-  combat_info1["hit"] = fighter1->get_mobile()->get_user()->get_stat_val("strength") + fighter1->get_mobile()->get_user()->get_skill_val(combat_info1["skill"]);
-  combat_info1["evade"] = fighter1->get_mobile()->get_user()->get_stat_val("agility") + fighter1->get_mobile()->get_user()->get_skill_val("walka/unik");
-  
+  combat_info1["hit"] = fighter1->get_mobile()->get_user()->get_stat_val("siła") + fighter1->get_mobile()->get_user()->get_skill_val(combat_info1["skill"]);
+  combat_info1["evade"] = fighter1->get_mobile()->get_user()->get_stat_val("zręczność") + fighter1->get_mobile()->get_user()->get_skill_val("walka/unik");
+
+  if (TAGD->get_tag_value(fighter2, "Hp"))
+    {
+      combat_info2["hp"] = TAGD->get_tag_value(fighter2, "Hp");
+    }
+  else
+    {
+      combat_info2["hp"] = fighter2->get_hp();
+    }
+  combat_info2["name"] = fighter2->get_brief()->to_string(fighter1->get_mobile()->get_user());
   if (fighter2->get_mobile()->get_user()) /* is player */
     {
       objs = fighter2->objects_in_container();
       combat_info2["skill"] = "walka/walka wręcz";
-      combat_info2["damage"] = fighter2->get_mobile()->get_user()->get_stat_val("strength") / 10;
+      combat_info2["damage"] = fighter2->get_mobile()->get_user()->get_stat_val("siła") / 10;
       combat_info2["armor"] = ({({0, "głowa"}), ({0, "tułów"}), ({0, "ręce"}), ({0, "dłonie"}), ({0, "nogi"})});
       for (i = 0; i < sizeof(objs); i++)
 	{
@@ -82,8 +102,8 @@ void start_combat(object new_fighter1, object new_fighter2)
 		}
 	    }
 	}
-      combat_info2["hit"] = fighter2->get_mobile()->get_user()->get_stat_val("strength") + fighter2->get_mobile()->get_user()->get_skill_val(combat_info1["skill"]);
-      combat_info2["evade"] = fighter1->get_mobile()->get_user()->get_stat_val("agility") + fighter2->get_mobile()->get_user()->get_skill_val("walka/unik");
+      combat_info2["hit"] = fighter2->get_mobile()->get_user()->get_stat_val("siła") + fighter2->get_mobile()->get_user()->get_skill_val(combat_info1["skill"]);
+      combat_info2["evade"] = fighter1->get_mobile()->get_user()->get_stat_val("zręczność") + fighter2->get_mobile()->get_user()->get_skill_val("walka/unik");
     }
   else /* is mobile */
     {
@@ -102,8 +122,90 @@ void start_combat(object new_fighter1, object new_fighter2)
 
 void combat_round(void)
 {
-  fighter1->get_mobile()->get_user()->message("test\n");
-  combat_call = call_out("combat_round", 2);
+  int hit, evade, loc, dmg;
+  string message, message2;
+  hit = combat_info1["hit"] + random(50);
+  evade = combat_info2["evade"] + random(50);
+  message = "Atakujesz " + combat_info2["name"];
+  message2 = combat_info1["name"] + " atakuje Ciebie";
+  if (hit > evade)
+    {
+      loc = random(sizeof(combat_info2["armor"]));
+      message += " i  trafiasz go w " + combat_info2["armor"][loc][1] + ".";
+      message2 +=  " i trafia cię w " + combat_info2["armor"][loc][1] + ".";
+      dmg = combat_info1["damage"] - combat_info2["armor"][loc][0];
+      if (dmg < 0)
+	{
+	  dmg = 0;
+	}
+      combat_info2["hp"] -= dmg;
+      if (dmg = 0)
+	{
+	  message += " Jednak atak odbija się od jego ciała.";
+	  message2 += " Na szczęście atak odbija się od Twojej zbroi.";
+	}
+    }
+  else
+    {
+      message += " ale ten unika twojego ciosu.";
+      message2 += " ale udaje Ci się uniknąć ciosu.";
+    }
+  fighter1->get_mobile()->get_user()->message(message + "\n");
+  if (fighter2->get_mobile()->get_user())
+    {
+      fighter2->get_mobile()->get_user()->message(message2 + "\n");
+    }
+  hit = combat_info2["hit"] + random(50);
+  evade = combat_info1["evade"] + random(50);
+  message2 = "Atakujesz " + combat_info1["name"];
+  message = combat_info2["name"] + " atakuje Ciebie";
+  if (hit > evade)
+    {
+      loc = random(sizeof(combat_info1["armor"]));
+      message2 += " i  trafiasz go w " + combat_info1["armor"][loc][1] + ".";
+      message +=  " i trafia cię w " + combat_info1["armor"][loc][1] + ".";
+      dmg = combat_info2["damage"] - combat_info1["armor"][loc][0];
+      if (dmg < 0)
+	{
+	  dmg = 0;
+	}
+      combat_info1["hp"] -= dmg;
+      if (dmg = 0)
+	{
+	  message2 += " Jednak atak odbija się od jego ciała.";
+	  message += " Na szczęście atak odbija się od Twojej zbroi.";
+	}
+    }
+  else
+    {
+      message2 += " ale ten unika twojego ciosu.";
+      message += " ale udaje Ci się uniknąć ciosu.";
+    }
+  fighter1->get_mobile()->get_user()->message(message + "\n");
+  if (fighter2->get_mobile()->get_user())
+    {
+      fighter2->get_mobile()->get_user()->message(message2 + "\n");
+    }
+  if (combat_info1["hp"] < 1)
+    {
+      fighter1->get_mobile()->get_user()->death();
+    }
+  else if (combat_info2["hp"] < 1)
+    {
+      if (fighter2->get_mobile()->get_user())
+	{
+	  fighter2->get_mobile()->get_user()->death();
+	}
+      else
+	{
+	  fighter2->get_mobile()->death(fighter1->get_mobile()->get_user());
+	}
+      stop_combat();
+    }
+  else
+    {
+      combat_call = call_out("combat_round", 2);
+    }
 }
 
 void stop_combat()

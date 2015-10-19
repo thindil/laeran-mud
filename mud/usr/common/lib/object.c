@@ -339,7 +339,6 @@ string* get_nouns(int locale) {
     for(ctr = 0; ctr < sizeof(archetypes); ctr++) {
       ret += archetypes[ctr]->get_nouns(locale);
     }
-    /*return ret;*/
   }
 
   if (locale < sizeof(removed_nouns))

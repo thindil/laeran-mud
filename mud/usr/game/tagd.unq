@@ -8,3 +8,8 @@
   ~type{1}
 }
 
+~object_tag{
+  ~name{Hp}
+  ~type{1}
+}
+

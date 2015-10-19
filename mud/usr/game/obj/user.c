@@ -211,7 +211,7 @@ void player_login(int first_time)
   /* Lets do character stats */
   if (stats == nil)
     {
-      stats = ([ "strength": ({10, 0}), "agility": ({10, 0}), "intelli": ({10, 0}), "cond": ({10, 0}) ]);
+      stats = ([ "siła": ({10, 0}), "zręczność": ({10, 0}), "inteligencja": ({10, 0}), "kondycja": ({10, 0}) ]);
       skills = ([ ]);
     }
 
@@ -502,6 +502,10 @@ int get_skill_exp(string name)
   return skills[name][1];
 }
 
+void death()
+{
+  message("Giniesz.\n");
+}
 
 /************** User-level commands *************************/
 
