@@ -339,10 +339,17 @@ string* get_nouns(int locale) {
     for(ctr = 0; ctr < sizeof(archetypes); ctr++) {
       ret += archetypes[ctr]->get_nouns(locale);
     }
-    return ret;
+    /*return ret;*/
   }
 
-  return (nouns[locale] + ret) - removed_nouns[locale];
+  if (locale < sizeof(removed_nouns))
+    {
+      return (nouns[locale] + ret) - removed_nouns[locale];
+    }
+  else
+    {
+      return (nouns[locale] + ret);
+    }
 }
 
 string** get_immediate_nouns(void) {
