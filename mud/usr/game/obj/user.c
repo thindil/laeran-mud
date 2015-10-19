@@ -212,6 +212,9 @@ void player_login(int first_time)
   if (stats == nil)
     {
       stats = ([ "siła": ({10, 0}), "zręczność": ({10, 0}), "inteligencja": ({10, 0}), "kondycja": ({10, 0}) ]);
+    }
+  if (skills == nil)
+    {
       skills = ([ ]);
     }
 
@@ -509,7 +512,40 @@ void death()
 
 void gain_exp(string skill, int value)
 {
-  
+  int exp, needexp, level;
+
+  /* gain experience in stats */
+  if (sizeof(map_indices(stats) & ({ skill })))
+    {
+      exp = stats[skill][1] + value;
+      needexp = stats[skill][0] * 1000;
+      if (exp > needexp)
+	{
+	  exp -= needexp;
+	  stats[skill][0] ++;
+	}
+      stats[skill][1] = exp;
+      return;
+    }
+
+  if (sizeof(map_indices(skills) & ({ skill })))
+    {
+      exp = skills[skill][1] + value;
+      needexp = skills[skill][0] * 100;
+      level = skills[skill][0];
+    }
+  else
+    {
+      exp = value;
+      needexp = 100;
+      level = 1;
+    }
+  if (exp > needexp)
+    {
+      exp -= needexp;
+      level ++;
+    }
+  skills[skill] = ({ level, exp });
 }
 
 /************** User-level commands *************************/
