@@ -69,6 +69,7 @@ void start_combat(object new_fighter1, object new_fighter2)
     }
   combat_info1["hit"] = fighter1->get_mobile()->get_user()->get_stat_val("siła") + fighter1->get_mobile()->get_user()->get_skill_val(combat_info1["skill"]);
   combat_info1["evade"] = fighter1->get_mobile()->get_user()->get_stat_val("zręczność") + fighter1->get_mobile()->get_user()->get_skill_val("walka/unik");
+  combat_info1["exp"] = combat_info1["hit"] + combat_info1["evade"] + combat_info1["hp"];
 
   if (TAGD->get_tag_value(fighter2, "Hp"))
     {
@@ -118,6 +119,7 @@ void start_combat(object new_fighter1, object new_fighter2)
 	  combat_info2["armor"][i] = ({fighter2->get_armor(), locs[i]});
 	}
     }
+  combat_info2["exp"] = combat_info2["hit"] + combat_info2["evade"] + combat_info2["hp"];
 }
 
 void combat_round(void)
@@ -144,11 +146,13 @@ void combat_round(void)
 	  message += " Jednak atak odbija się od jego ciała.";
 	  message2 += " Na szczęście atak odbija się od Twojej zbroi.";
 	}
+      combat_info1["hits"] = 1;
     }
   else
     {
       message += " ale ten unika twojego ciosu.";
       message2 += " ale udaje Ci się uniknąć ciosu.";
+      combat_info2["dodge"] = 1;
     }
   fighter1->get_mobile()->get_user()->message(message + "\n");
   if (fighter2->get_mobile()->get_user())
@@ -175,11 +179,13 @@ void combat_round(void)
 	  message2 += " Jednak atak odbija się od jego ciała.";
 	  message += " Na szczęście atak odbija się od Twojej zbroi.";
 	}
+      combat_info2["hits"] = 1;
     }
   else
     {
       message2 += " ale ten unika twojego ciosu.";
       message += " ale udaje Ci się uniknąć ciosu.";
+      combat_info1["dodge"] = 1;
     }
   fighter1->get_mobile()->get_user()->message(message + "\n");
   if (fighter2->get_mobile()->get_user())
@@ -188,10 +194,23 @@ void combat_round(void)
     }
   if (combat_info1["hp"] < 1)
     {
+      if (fighter2->get_mobile()->get_user())
+	{
+	  fighter2->get_mobile()->get_user()->message(fighter1->get_brief()->to_string(fighter1->get_mobile()->get_user()) + " ginie.\n");
+	  fighter2->get_mobile()->get_user()->gain_exp(combat_info2["skill"], combat_info1["exp"]);
+	  fighter2->get_mobile()->get_user()->gain_exp("siła", combat_info1["exp"]);
+	  if (combat_info2["dodge"])
+	    {
+	      fighter2->get_mobile()->get_user()->gain_exp("walka/uniki", combat_info1["exp"]);
+	      fighter2->get_mobile()->get_user()->gain_exp("zręczność", combat_info1["exp"]);
+	    }
+	}
       fighter1->get_mobile()->get_user()->death();
+      stop_combat();
     }
   else if (combat_info2["hp"] < 1)
     {
+      fighter1->get_mobile()->get_user()->message(fighter2->get_brief()->to_string(fighter1->get_mobile()->get_user()) + " ginie.\n");
       if (fighter2->get_mobile()->get_user())
 	{
 	  fighter2->get_mobile()->get_user()->death();
@@ -199,6 +218,13 @@ void combat_round(void)
       else
 	{
 	  fighter2->get_mobile()->death(fighter1->get_mobile()->get_user());
+	}
+      fighter1->get_mobile()->get_user()->gain_exp(combat_info1["skill"], combat_info2["exp"]);
+      fighter1->get_mobile()->get_user()->gain_exp("siła", combat_info2["exp"]);
+      if (combat_info1["dodge"])
+	{
+	  fighter1->get_mobile()->get_user()->gain_exp("walka/uniki", combat_info2["exp"]);
+	  fighter1->get_mobile()->get_user()->gain_exp("zręczność", combat_info2["exp"]);
 	}
       stop_combat();
     }
@@ -213,4 +239,12 @@ void stop_combat()
   remove_call_out(combat_call);
   TAGD->set_tag_value(fighter1, "Combat", nil);
   TAGD->set_tag_value(fighter2, "Combat", nil);
+  if (combat_info1["hp"] > 0 && combat_info1["hp"] < fighter1->get_hp())
+    {
+      TAGD->set_tag_value(fighter1, "Hp", combat_info1["hp"]);
+    }
+  if (combat_info2["hp"] > 0 && combat_info2["hp"] < fighter2->get_hp())
+    {
+      TAGD->set_tag_value(fighter2, "Hp", combat_info2["hp"]);
+    }
 }

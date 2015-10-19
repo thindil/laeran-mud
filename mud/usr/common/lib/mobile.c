@@ -551,7 +551,6 @@ nomask void death(object user)
   if(!SYSTEM() && !COMMON() && !GAME())
     return;
 
-  user->message(body->get_brief()->to_string(user) + " ginie.\n");
   phr = PHRASED->new_simple_english_phrase("zwłoki " + body->get_brief()->to_string(user));
   body->set_brief(phr);
   phr = PHRASED->new_simple_english_phrase(body->get_brief()->to_string(user) + " leżą tutaj.");
@@ -560,6 +559,7 @@ nomask void death(object user)
   body->clear_nouns();
   phr = PHRASED->new_simple_english_phrase("zwłoki, zwloki");
   body->add_noun(phr);
+  TAGD->set_tag_value(body, "DropTime", time());
   body = nil;
 }
 

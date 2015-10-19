@@ -507,6 +507,11 @@ void death()
   message("Giniesz.\n");
 }
 
+void gain_exp(string skill, int value)
+{
+  
+}
+
 /************** User-level commands *************************/
 
 static void cmd_ooc(object user, string cmd, string str) {
