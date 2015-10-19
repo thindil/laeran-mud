@@ -61,11 +61,11 @@ void heart_beat_func(void)
     {
       return;
     }
-  /* spawn mobiles bodies */
   mobiles = MOBILED->all_mobiles();
   for (i = 0; i < sizeof(mobiles); i++)
     {
       mobile = MOBILED->get_mobile_by_num(mobiles[i]);
+      /* spawn mobiles bodies */
       if (!mobile->get_body() && mobile->get_parentbody())
 	{
 	  body = clone_object(SIMPLE_ROOM);
@@ -137,6 +137,15 @@ void heart_beat_func(void)
 	      body->add_to_container(item);
 	    }
 	  mobile->assign_body(body);
+	}
+      /* heal wounded mobiles (and players) */
+      if (mobile->get_body() && TAGD->get_tag_value(mobile->get_body(), "Hp"))
+	{
+	  TAGD->set_tag_value(mobile->get_body(), "Hp", nil);
+	  if (mobile->get_user())
+	    {
+	      mobile->get_user()->message("Jesteś już kompletnie zdrowy.\n");
+	    }
 	}
     }
 }
