@@ -25,6 +25,7 @@ inherit PHANTASMAL_USER;
 #define STATE_NEWPASSWD2        4
 
 static mapping commands_map;
+static object combat;
 
 /* Prototypes */
        void upgraded(varargs int clone);
@@ -330,7 +331,8 @@ static void player_logout(void)
 
       if (TAGD->get_tag_value(body, "Combat"))
 	{
-	  COMBAT->stop_combat();
+	  combat->stop_combat();
+	  destruct_object(combat);
 	  message("Uciekasz z walki.\n");
 	}
 
@@ -857,7 +859,8 @@ static void cmd_movement(object user, string cmd, string str) {
 
   if (TAGD->get_tag_value(body, "Combat"))
     {
-      COMBAT->stop_combat();
+      combat->stop_combat();
+      destruct_object(combat);
       message("Uciekasz z walki.\n");
     }
   
@@ -1251,6 +1254,8 @@ static void cmd_takeoff(object user, string cmd, string str)
 static void cmd_attack(object user, string cmd, string str)
 {
   object *tmp;
+  string target;
+  int number;
   
   if(str)
     {
@@ -1261,32 +1266,44 @@ static void cmd_attack(object user, string cmd, string str)
       message("Użycie: " + cmd + " <obiekt>\n");
       return;
     }
-  tmp = find_first_objects(str, LOC_IMMEDIATE_CURRENT_ROOM);
+  if (sscanf(str, "%d %s", number, target) != 2)
+    {
+      target = str;
+      number = 1;
+    }
+  tmp = find_first_objects(target, LOC_IMMEDIATE_CURRENT_ROOM);
   if(!tmp || !sizeof(tmp))
     {
-      message("Nie możesz znaleźć jakiegokolwiek '" + str + "'.\n");
+      message("Nie możesz znaleźć jakiegokolwiek '" + target + "'.\n");
       return;
     }
-  if (sizeof(tmp) > 1)
+  if (sizeof(tmp) > 1 && !number)
     {
-      message("Jest kilka '" + str + "' w okolicy. Wybierz dokładnie którego chcesz zaatakować.\n");
+      message("Jest kilka '" + target + "' w okolicy. Wybierz dokładnie którego chcesz zaatakować.\n");
       return;
     }
-  if (!tmp[0]->get_mobile())
+  if (number > sizeof(tmp))
+    {
+      message("Nie możesz znaleźć tego '" + target + "'.\n");
+      return;
+    }
+  number -= 1;
+  if (!tmp[number]->get_mobile())
     {
       message("Możesz atakować tylko istoty. Nie wyżywaj się na sprzęcie.\n");
       return;
     }
-  if (!tmp[0]->get_mobile()->get_parentbody())
+  if (!tmp[number]->get_mobile()->get_parentbody())
     {
       message("Nie możesz zaatakować tej istoty.\n");
       return;
     }
-  if (TAGD->get_tag_value(body, "Combat") || TAGD->get_tag_value(tmp[0], "Combat"))
+  if (TAGD->get_tag_value(body, "Combat") || TAGD->get_tag_value(tmp[number], "Combat"))
     {
       message("Któreś z Was już walczy. Dokończcie najpierw jedną walkę.\n");
       return;
     }
-  message("Atakujesz " + tmp[0]->get_brief()->to_string(user) + "...\n");
-  COMBAT->start_combat(body, tmp[0]);
+  message("Atakujesz " + tmp[number]->get_brief()->to_string(user) + "...\n");
+  combat = clone_object(COMBAT);
+  combat->start_combat(body, tmp[number]);
 }
