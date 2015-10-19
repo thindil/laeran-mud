@@ -879,7 +879,7 @@ static int prompt_nouns_input(string input) {
 
   if(obj_type == OT_PORTABLE
      && (!input || STRINGD->is_whitespace(input))) {
-    send_string("Nope.  You'll want at least one noun.  Try again.\r\n");
+    send_string("Nie. Chcesz mieć przynajmmniej jeden przymiotnik. Spróbuj ponownie.\r\n");
     send_string(blurb_for_substate(SS_PROMPT_NOUNS));
     return RET_NORMAL;
   }
@@ -889,7 +889,7 @@ static int prompt_nouns_input(string input) {
 
   substate = SS_PROMPT_ADJECTIVES;
 
-  send_string("Good.  Now do the same for adjectives.\r\n");
+  send_string("Dobrze. Teraz to samo dla przymiotników.\r\n");
   send_string(blurb_for_substate(SS_PROMPT_ADJECTIVES));
 
   return RET_NORMAL;
@@ -915,14 +915,14 @@ static int prompt_adjectives_input(string input) {
     new_obj->set_volume_capacity(27000000.0);  /* Equiv of 30m cubic room */
     new_obj->set_length_capacity(1500.0);      /* 15m */
 
-    send_string("\r\nDone with room #" + new_obj->get_number() + ".\r\n");
+    send_string("\r\nUkończono pokój #" + new_obj->get_number() + ".\r\n");
     return RET_POP_STATE;
   }
 
   if(obj_type == OT_PORTABLE) {
     substate = SS_PROMPT_WEIGHT;
 
-    send_string("Good.  Now we'll get the object's weight.\r\n");
+    send_string("Dobrze. Teraz ustalimy wagę obiektu.\r\n");
     send_string(blurb_for_substate(substate));
     return RET_NORMAL;
   }
@@ -934,7 +934,7 @@ static int prompt_adjectives_input(string input) {
 
   substate = SS_PROMPT_CONTAINER;
 
-  push_new_state(US_ENTER_YN, "Is the object a container? ");
+  push_new_state(US_ENTER_YN, "Czy obiekt jest pojemnikiem? ");
 
   return RET_NORMAL;
 }
@@ -949,7 +949,7 @@ static int prompt_weight_input(string input) {
   use_parent = 0;
 
   if(!input || STRINGD->is_whitespace(input)) {
-    send_string("Let's try that again.\r\n");
+    send_string("Spróbujmy ponownie.\r\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -981,8 +981,8 @@ static int prompt_weight_input(string input) {
     if(units[unitstr])
       value *= units[unitstr];
     else {
-      send_string("I don't recognize the units '" + unitstr
-		  + "' as units of weight or mass.  Try again.\r\n");
+      send_string("Nie rozpoznaję jednostki '" + unitstr
+		  + "' jako jednostki masy bądź wagi. Spróbuj ponownie.\r\n");
       send_string(blurb_for_substate(substate));
 
       return RET_NORMAL;
@@ -991,16 +991,15 @@ static int prompt_weight_input(string input) {
     use_parent = 1;
     value = -1.0;
   } else if(sscanf(input, "%f", value) != 1) {
-    send_string("Enter the value, optionally with units.  Something like:\r\n"
-		+ "  '4.7 oz' or '3 tons' or '0.5 mg'.  Try again.\r\n");
+    send_string("Wprowadź wartość, opcjonalnie z jednostkami. Coś jak:\r\n"
+		+ "  '4.7 oz' lub '3 tons' lub '0.5 mg'. Spróbuj ponownie.\r\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
   }
 
   if(value < 0.0 && !use_parent) {
-    send_string("You'll want to give a number no smaller than zero.  "
-		+ "Try again.\r\n");
+    send_string("Chcesz podać numer większy od zera. Sprónuj ponownie.\r\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1008,7 +1007,7 @@ static int prompt_weight_input(string input) {
 
   new_obj->set_weight(value);
 
-  send_string("Accepted weight.\r\n");
+  send_string("Waga zaakceptowana.\r\n");
   substate = SS_PROMPT_VOLUME;
   send_string(blurb_for_substate(substate));
 
@@ -1025,7 +1024,7 @@ static int prompt_volume_input(string input) {
   use_parent = 0;
 
   if(!input || STRINGD->is_whitespace(input)) {
-    send_string("Let's try that again.\r\n");
+    send_string("Spróbujmy to ponownie.\r\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1077,8 +1076,8 @@ static int prompt_volume_input(string input) {
     if(units[unitstr])
       value *= units[unitstr];
     else {
-      send_string("I don't recognize the units '" + unitstr
-		  + "' as units of volume.  Try again.\r\n");
+      send_string("Nie rozpoznaję jednostki '" + unitstr
+		  + "' jako jednostki objętości. Spróbuj ponownie.\r\n");
       send_string(blurb_for_substate(substate));
 
       return RET_NORMAL;
@@ -1087,16 +1086,15 @@ static int prompt_volume_input(string input) {
     use_parent = 1;
     value = -1.0;
   } else if(sscanf(input, "%f", value) != 1) {
-    send_string("Enter the value, optionally with units.  Something like:\r\n"
-		+ "  '1.2 liters' or '250 cc' or '35 cu dm'.  Try again.\r\n");
+    send_string("Wprowadź wartość, opcjonalnie z jednostkami. Coś jak:\r\n"
+		+ "  '1.2 liters' lub '250 cc' lub '35 cu dm'. Spróbuj ponownie.\r\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
   }
 
   if(value < 0.0 && !use_parent) {
-    send_string("You'll want to give a number no smaller than zero.  "
-		+ "Try again.\r\n");
+    send_string("Chcesz podać numer większy od zera. Spróbuj ponownie.\r\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1104,7 +1102,7 @@ static int prompt_volume_input(string input) {
 
   new_obj->set_volume(value);
 
-  send_string("Accepted volume.\r\n");
+  send_string("Objętość zaakceptowana.\r\n");
   substate = SS_PROMPT_LENGTH;
   send_string(blurb_for_substate(substate));
 
@@ -1121,7 +1119,7 @@ static int prompt_length_input(string input) {
   use_parent = 0;
 
   if(!input || STRINGD->is_whitespace(input)) {
-    send_string("Let's try that again.\r\n");
+    send_string("Spróbujmy ponownie.\r\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1158,8 +1156,8 @@ static int prompt_length_input(string input) {
     if(units[unitstr])
       value *= units[unitstr];
     else {
-      send_string("I don't recognize the units '" + unitstr
-		  + "' as units of length.  Try again.\r\n");
+      send_string("Nie rozpoznaję jednostki '" + unitstr
+		  + "' jako jednostek długości. Spróbuj ponownie.\r\n");
       send_string(blurb_for_substate(substate));
 
       return RET_NORMAL;
@@ -1168,16 +1166,15 @@ static int prompt_length_input(string input) {
     use_parent = 1;
     value = -1.0;
   } else if(sscanf(input, "%f", value) != 1) {
-    send_string("Enter the value, optionally with units.  Something like:\r\n"
-		+ "  '4.7 oz' or '3 tons' or '0.5 mg'.  Try again.\r\n");
+    send_string("Wprowadź wartość, opcjonalnie z jednostkami. Coś jak:\r\n"
+		+ "  '4.7 oz' lub '3 tons' lub '0.5 mg'. Spróbuj ponownie.\r\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
   }
 
   if(value < 0.0 && !use_parent) {
-    send_string("You'll want to give a number no smaller than zero.  "
-		+ "Try again.\r\n");
+    send_string("Chcesz podać numer większy niż zero. Spróbuj ponownie.\r\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1185,10 +1182,10 @@ static int prompt_length_input(string input) {
 
   new_obj->set_length(value);
 
-  send_string("Accepted length.\r\n");
+  send_string("Zaakceptowano długość.\r\n");
   substate = SS_PROMPT_CONTAINER;
 
-  push_new_state(US_ENTER_YN, "Is the object a container? ");
+  push_new_state(US_ENTER_YN, "Czy obiekt jest pojemnikiem? ");
 
   return RET_NORMAL;
 }
@@ -1196,7 +1193,7 @@ static int prompt_length_input(string input) {
 
 static void prompt_container_data(mixed data) {
   if(typeof(data) != T_INT) {
-    send_string("Internal error -- wrong type passed!\r\n");
+    send_string("Wewnętrzny błąd -- przekazano zły typ!\r\n");
     pop_state();
     return;
   }
@@ -1210,7 +1207,7 @@ static void prompt_container_data(mixed data) {
       }
     else
       {
-	send_string("Done with detail #" + new_obj->get_number() + ".\r\n");
+	send_string("Ukończono detal #" + new_obj->get_number() + ".\r\n");
 	pop_state();
       }
     return;
@@ -1220,12 +1217,12 @@ static void prompt_container_data(mixed data) {
 
   substate = SS_PROMPT_OPEN;
 
-  push_new_state(US_ENTER_YN, "Is the container open? ");
+  push_new_state(US_ENTER_YN, "Czy pojemnik jest otwarty? ");
 }
 
 static void prompt_open_data(mixed data) {
   if(typeof(data) != T_INT) {
-    send_string("Internal error -- wrong type passed!\r\n");
+    send_string("Wewnętrzny błąd -- przekazano zły typ!\r\n");
     pop_state();
     return;
   }
@@ -1238,12 +1235,12 @@ static void prompt_open_data(mixed data) {
   substate = SS_PROMPT_OPENABLE;
 
   push_new_state(US_ENTER_YN,
-		 "Is the container freely openable and closeable? ");
+		 "Czy pojemnik można swobodnie zamykać i otwierać? ");
 }
 
 static void prompt_openable_data(mixed data) {
   if(typeof(data) != T_INT) {
-    send_string("Internal error -- wrong type passed!\r\n");
+    send_string("Wewnętrzny błąd -- przekazano zły typ!\r\n");
     pop_state();
     return;
   }
@@ -1266,7 +1263,7 @@ static int prompt_weight_capacity_input(string input) {
   use_parent = 0;
 
   if(!input || STRINGD->is_whitespace(input)) {
-    send_string("Let's try that again.\r\n");
+    send_string("Spróbujmy ponownie.\r\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1298,8 +1295,8 @@ static int prompt_weight_capacity_input(string input) {
     if(units[unitstr])
       value *= units[unitstr];
     else {
-      send_string("I don't recognize the units '" + unitstr
-		  + "' as units of weight or mass.  Try again.\r\n");
+      send_string("Nie rozpoznaję jednostki '" + unitstr
+		  + "' jako jednostki masy bądź wagi. Spróbuj ponownie.\r\n");
       send_string(blurb_for_substate(substate));
 
       return RET_NORMAL;
@@ -1308,16 +1305,15 @@ static int prompt_weight_capacity_input(string input) {
     use_parent = 1;
     value = -1.0;
   } else if(sscanf(input, "%f", value) != 1) {
-    send_string("Enter the value, optionally with units.  Something like:\r\n"
-		+ "  '4.7 oz' or '3 tons' or '0.5 mg'.  Try again.\r\n");
+    send_string("Wprowadź wartość, opcjonalnie z jednostkami. Coś jak:\r\n"
+		+ "  '4.7 oz' lub '3 tons' lub '0.5 mg'. Spróbuj ponownie.\r\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
   }
 
   if(value < 0.0 && !use_parent) {
-    send_string("You'll want to give a number no smaller than zero.  "
-		+ "Try again.\r\n");
+    send_string("Chcesz podać numer większy niż zero. Spróbuj ponownie.\r\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1325,7 +1321,7 @@ static int prompt_weight_capacity_input(string input) {
 
   new_obj->set_weight_capacity(value);
 
-  send_string("Accepted weight capacity.\r\n");
+  send_string("Zaakceptowano udźwig.\r\n");
   substate = SS_PROMPT_VOLUME_CAPACITY;
   send_string(blurb_for_substate(substate));
 
@@ -1342,7 +1338,7 @@ static int prompt_volume_capacity_input(string input) {
   use_parent = 0;
 
   if(!input || STRINGD->is_whitespace(input)) {
-    send_string("Let's try that again.\r\n");
+    send_string("Spróbujmy ponownie.\r\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1394,8 +1390,8 @@ static int prompt_volume_capacity_input(string input) {
     if(units[unitstr])
       value *= units[unitstr];
     else {
-      send_string("I don't recognize the units '" + unitstr
-		  + "' as units of volume.  Try again.\r\n");
+      send_string("Nie rozpoznaję jednostki '" + unitstr
+		  + "' jako jednostek objętości. Spróbuj ponownie.\r\n");
       send_string(blurb_for_substate(substate));
 
       return RET_NORMAL;
@@ -1404,16 +1400,15 @@ static int prompt_volume_capacity_input(string input) {
     use_parent = 1;
     value = -1.0;
   } else if(sscanf(input, "%f", value) != 1) {
-    send_string("Enter the value, optionally with units.  Something like:\r\n"
-		+ "  '1.2 liters' or '250 cc' or '35 cu dm'.  Try again.\r\n");
+    send_string("Wprowadź wartość, opcjonalnie z jednostkami. Coś jak:\r\n"
+		+ "  '1.2 liters' lub '250 cc' lub '35 cu dm'. Spróbuj ponownie.\r\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
   }
 
   if(value < 0.0 && !use_parent) {
-    send_string("You'll want to give a number no smaller than zero.  "
-		+ "Try again.\r\n");
+    send_string("Chcesz podać wartość większą niż zero. Spróbuj ponownie.\r\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1421,7 +1416,7 @@ static int prompt_volume_capacity_input(string input) {
 
   new_obj->set_volume_capacity(value);
 
-  send_string("Accepted volume capacity.\r\n");
+  send_string("Zaakceptowano pojemność.\r\n");
   substate = SS_PROMPT_LENGTH_CAPACITY;
   send_string(blurb_for_substate(substate));
 
@@ -1438,7 +1433,7 @@ static int prompt_length_capacity_input(string input) {
   use_parent = 0;
 
   if(!input || STRINGD->is_whitespace(input)) {
-    send_string("Let's try that again.\r\n");
+    send_string("Spróbujmy ponownie.\r\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1475,8 +1470,8 @@ static int prompt_length_capacity_input(string input) {
     if(units[unitstr])
       value *= units[unitstr];
     else {
-      send_string("I don't recognize the units '" + unitstr
-		  + "' as units of length.  Try again.\r\n");
+      send_string("Nie rozpoznaję jednostki '" + unitstr
+		  + "' jako jednostek długości. Spróbuj ponownie.\r\n");
       send_string(blurb_for_substate(substate));
 
       return RET_NORMAL;
@@ -1485,16 +1480,15 @@ static int prompt_length_capacity_input(string input) {
     use_parent = 1;
     value = -1.0;
   } else if(sscanf(input, "%f", value) != 1) {
-    send_string("Enter the value, optionally with units.  Something like:\r\n"
-		+ "  '4.7 oz' or '3 tons' or '0.5 mg'.  Try again.\r\n");
+    send_string("Wprowadź wartość, opcjonalnie z jednostkami. Coś jak:\r\n"
+		+ "  '4.7 oz' lub '3 tons' lub '0.5 mg'. Spróbuj ponownie.\r\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
   }
 
   if(value < 0.0 && !use_parent) {
-    send_string("You'll want to give a number no smaller than zero.  "
-		+ "Try again.\r\n");
+    send_string("Chcesz podać wartość większą od zera. Spróbuj ponownie.\r\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1502,7 +1496,7 @@ static int prompt_length_capacity_input(string input) {
 
   new_obj->set_length_capacity(value);
 
-  send_string("Accepted length capacity.\r\n\r\n");
+  send_string("Zaakceptowano maksymalną długość przedmiotów w pojemniku.\r\n\r\n");
   substate = SS_PROMPT_CONTAINER;
 
   if(obj_type == OT_PORTABLE)
@@ -1513,7 +1507,7 @@ static int prompt_length_capacity_input(string input) {
     }
   else
     {
-      send_string("Done with detail #" + new_obj->get_number() + ".\r\n");
+      send_string("Ukończono detal #" + new_obj->get_number() + ".\r\n");
     }
 
   return RET_POP_STATE;
@@ -1523,7 +1517,7 @@ static void prompt_weapon_data(mixed data)
 {
   if(typeof(data) != T_INT)
     {
-      send_string("Internal error -- wrong type passed!\r\n");
+      send_string("Wewnętrzny błąd -- przekazano zły typ!\r\n");
       pop_state();
       return;
     }
@@ -1588,7 +1582,7 @@ static void prompt_wearable_data(mixed data)
 {
   if(typeof(data) != T_INT)
     {
-      send_string("Internal error -- wrong type passed!\r\n");
+      send_string("Wewnętrzny błąd -- przekazano zły typ!\r\n");
       pop_state();
       return;
     }

@@ -85,7 +85,7 @@ static void scroll_page(void) {
   send_string(text);
 
   /* Print prompt at bottom */
-  send_string("*** (enter to scroll forward, q to quit) ***\r\n");
+  send_string("*** (enter aby przewinąć dalej, q aby wyjść) ***\r\n");
 }
 
 
@@ -109,7 +109,7 @@ int from_user(string input) {
     return MODE_ECHO;
   }
 
-  send_string("*** Don't recognize command: " + input + "\r\n");
+  send_string("*** Nie rozpoznaję komendy: " + input + "\r\n");
   return MODE_ECHO;
 }
 
