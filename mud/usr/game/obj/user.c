@@ -324,16 +324,15 @@ static void player_logout(void)
 
   /* Teleport body to meat locker */
   if(body)
-    {
+    {      
+      object meat_locker;
+      object mobile;
 
       if (TAGD->get_tag_value(body, "Combat"))
 	{
 	  COMBAT->stop_combat();
 	  message("Uciekasz z walki.\n");
 	}
-      
-      object meat_locker;
-      object mobile;
 
       if(meat_locker_rn >= 0)
 	{

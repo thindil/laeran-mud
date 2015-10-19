@@ -53,6 +53,7 @@ private float weight_capacity, volume_capacity, length_capacity;
 private int damage, armor, price, hp, combat_rating;
 private int* wearlocations;
 private string* body_locations;
+private string skill;
 
 /* These are the total current amount of weight and volume
    being held in the object. */
@@ -74,6 +75,7 @@ static void create(varargs int clone) {
     damage = armor = price = hp = combat_rating = 0;
     wearlocations = ({ });
     body_locations = ({ });
+    skill = "";
 
     pending_parents = nil;
     pending_location = -1;
@@ -248,6 +250,14 @@ string* get_body_locations(void)
   return body_locations;
 }
 
+string get_skill(void)
+{
+  if(skill == "" && sizeof(obj::get_archetypes()))
+    return obj::get_archetypes()[0]->get_skill();
+
+  return skill;
+}
+
 void set_weight(float new_weight) {
   object loc;
 
@@ -361,6 +371,13 @@ void set_body_locations(string* new_body_locations) {
     error("Only authorized code can set length capacities!");
 
   body_locations = new_body_locations;
+}
+
+void set_skill(string new_skill) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can set length capacities!");
+
+  skill = new_skill;
 }
 
 /*** Functions dealing with Exits ***/
@@ -1088,6 +1105,10 @@ string to_unq_flags(void) {
     {
       ret += "  ~body_locations{" + serialize_list(body_locations) + "}\n";
     }
+  if (skill != "")
+    {
+      ret += "  ~skill{" + skill + "}\n";
+    }
 
   rem = get_removed_details();
   if(rem && sizeof(rem)) {
@@ -1262,6 +1283,9 @@ void from_dtd_tag(string tag, mixed value) {
       break;
     case "combat_rating":
       combat_rating = value;
+      break;
+    case "skill":
+      skill = value;
       break;
     case "wearlocations":
       value = explode(value, ", ");

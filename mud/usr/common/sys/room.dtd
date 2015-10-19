@@ -5,7 +5,7 @@
        exit*,newexit*,flags?,weight?,volume?,length?,
        weight_capacity?,volume_capacity?,length_capacity?,removed_details?,
        tags?,data?,damage?,wearlocations?,armor?,price?,hp?,combat_rating?,
-       body_locations?}
+       body_locations?,skill?}
   ~object:obj{}
   ~obj_type{string}
   ~number{int}
@@ -39,6 +39,7 @@
   ~hp{int}
   ~combat_rating{int}
   ~body_locations{string}
+  ~skill{string}
   ~newexit{rnumber,direction,destination,return,type,rbdesc?,rgdesc?,
            rldesc?,redesc?,rnouns?,radjectives?,rflags?}
   ~rnumber{int}

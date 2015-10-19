@@ -58,6 +58,7 @@ private object obj_detail_of;
 #define SS_PROMPT_HP               32
 #define SS_PROMPT_COMBAT_RATING    33
 #define SS_PROMPT_BODY_LOCATIONS   34
+#define SS_PROMPT_SKILL            35
 
 
 /* Input function return values */
@@ -94,6 +95,7 @@ static int  prompt_price_input(string input);
 static int  prompt_hp_input(string input);
 static int  prompt_combat_rating_input(string input);
 static int  prompt_body_locations_input(string input);
+static int  prompt_skill_input(string input);
 
 private string blurb_for_substate(int substate);
 
@@ -216,6 +218,9 @@ int from_user(string input) {
     break;
   case SS_PROMPT_BODY_LOCATIONS:
     ret = prompt_body_locations_input(input);
+    break;
+  case SS_PROMPT_SKILL:
+    ret = prompt_skill_input(input);
     break;
   case SS_PROMPT_LOOK_DESC:
   case SS_PROMPT_EXAMINE_DESC:
@@ -442,10 +447,16 @@ private string blurb_for_substate(int substate) {
     return "Wprowadź poziom bojowy obiektu.\n";
   case SS_PROMPT_BODY_LOCATIONS:
     if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Wprowadź lokacje ciała oddzielone spacjami albo wpisz 'none aby przyjąć wartość z archetypu.\n"
+      return "Wprowadź lokacje ciała oddzielone spacjami albo wpisz 'none' aby przyjąć wartość z archetypu.\n"
 	+ "Przykład: głowa, korpus, przednia łapa, tylnia łapa\n";
     return "Wprowadź lokacje ciała oddzielone spacjami.\n"
       + "Przykład: głowa, korpus, przednia łapa, tylnia łapa\n";
+  case SS_PROMPT_SKILL:
+    if(new_obj && sizeof(new_obj->get_archetypes()))
+      return "Podaj nazwę umiejętności potrzebną do używania tego obiektu albo wpisz 'none' aby przyjąć\n"
+	+ "wartość z archetypu. Aby pominąć ten krok, wciśnij enter. \n";
+    return "Podaj nazwę umiejętności potrzebną do używania tego obiektu. Aby pominąć ten krok, wciśnij"
+      + "enter.\n";
   default:
     return "<NIEZNANY STAN>\r\n";
   }
@@ -1848,9 +1859,10 @@ static int prompt_combat_rating_input(string input)
   new_obj->set_combat_rating(value);
 
   send_string("Zaakceptowano poziom bojowy obiektu.\n\n");
-  send_string("Zakończono prace nad przenośnym obiektem #" + new_obj->get_number() + ".\n");
+  substate = SS_PROMPT_BODY_LOCATIONS;
+  send_string(blurb_for_substate(substate));
 
-  return RET_POP_STATE;
+  return RET_NORMAL;
 }
 
 static int prompt_body_locations_input(string input)
@@ -1874,6 +1886,21 @@ static int prompt_body_locations_input(string input)
   new_obj->set_body_locations(locations);
 
   send_string("Zaakceptowano lokacje ciała.\n\n");
+  substate = SS_PROMPT_SKILL;
+  send_string(blurb_for_substate(substate));
+
+  return RET_NORMAL;
+}
+
+static int prompt_skill_input(string input)
+{
+  if (input = "none")
+    {
+      input = "";
+    }
+  new_obj->set_skill(input);
+
+  send_string("Zaakceptowano umiejętność.\n\n");
   send_string("Zakończono prace nad przenośnym obiektem #" + new_obj->get_number() + ".\n");
 
   return RET_POP_STATE;

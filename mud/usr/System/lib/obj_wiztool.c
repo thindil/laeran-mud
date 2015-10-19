@@ -386,6 +386,10 @@ static void cmd_stat(object user, string cmd, string str) {
     {
       tmp += "Lokacje ciała: " + implode(obj->get_body_locations(), ", ") + "\n";
     }
+  if (obj->get_skill())
+    {
+      tmp += "Umiejętność: " + obj->get_skill() + "\n";
+    }
 
   details = obj->get_immediate_details();
   if(details && sizeof(details)) {
