@@ -120,6 +120,8 @@ void upgraded(varargs int clone) {
 		     "zaloz"     : "cmd_wear",
 		     "zdejmij"   : "cmd_takeoff",
 
+		     "at"        : "cmd_attack",
+		     "atak"      : "cmd_attack",
 		     "atakuj"    : "cmd_attack"
 
     ]);
@@ -470,6 +472,34 @@ int process_command(string str)
 
   /* All is well, just print a prompt and wait for next command */
   return -1;
+}
+
+int get_stat_val(string name)
+{
+  return stats[name][0];
+}
+
+int get_stat_exp(string name)
+{
+  return stats[name][1];
+}
+
+int get_skill_val(string name)
+{
+  if (!skills[name])
+    {
+      return 1;
+    }
+  return skills[name][0];
+}
+
+int get_skill_exp(string name)
+{
+  if (!skills[name])
+    {
+      return 0;
+    }
+  return skills[name][1];
 }
 
 
