@@ -1,0 +1,30 @@
+~name{walka}
+~desc{
+
+Na chwilę obecną na Laeranie możliwa jest tylko walka
+z NPC'kami.  Poniżej znajdziesz spis tematów związanych
+z walką:
+
+pomoc atakuj               Rozpoczynanie walki
+pomoc smierc               Co się dzieje w wypadku śmierci
+
+Z walki w każdej chwili można uciec poprzez wyjście z
+pokoju. Jednak w takim wypadku nie otrzyma się
+jakiejkolwiek nagrody za walkę. Jeżeli wygrasz walkę,
+na miejscu pojawią się zwłoki przeciwnika, z których
+(jeżeli to możliwe) będziesz mógł zebrać zdobycze.
+
+}
+
+~name{atak,atakować,atakowac,atakuj}
+~desc{
+
+Komenda 'atakuj' służy do rozpoczęcia walki z wybranym
+przeciwnikiem. Jej pełna forma to: 'atakuj <cel>' gdzie
+'cel' musi być żywą istotą (na chwilę obecną jest niemożliwe
+atakowanie innych graczy). Po wpisaniu tej komendy, jeżeli
+wszystko jest w porządku, po paru sekundach rozpoczyna się
+walka.
+
+Zobacz również: śmierć
+}

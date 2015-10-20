@@ -14,6 +14,7 @@ pomoc smierc                Niezwykły charakter śmierci na Laeranie
 pomoc kontakt               Kontakt z administracją Laeranu
 pomoc prawne                Licencje itp prawne aspekty
 pomoc zaslugi               Kto jest odpowiedzialny za to wszytko
+pomoc walka                 Ogólne informacje o walce
 }
 
 ~name{main,pomoc_gracza,indeks}
