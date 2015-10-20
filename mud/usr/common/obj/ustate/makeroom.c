@@ -447,9 +447,9 @@ private string blurb_for_substate(int substate) {
     return "Wprowadź poziom bojowy obiektu.\n";
   case SS_PROMPT_BODY_LOCATIONS:
     if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Wprowadź lokacje ciała oddzielone spacjami albo wpisz 'none' aby przyjąć wartość z archetypu.\n"
+      return "Wprowadź lokacje ciała oddzielone przecinkami albo wpisz 'none' aby przyjąć wartość z archetypu.\n"
 	+ "Aby pominąć ten krok, wciśnij enter. Przykład: głowa, korpus, przednia łapa, tylnia łapa\n";
-    return "Wprowadź lokacje ciała oddzielone spacjami. Aby pominąć ten krok, wciśnij enter.\n"
+    return "Wprowadź lokacje ciała oddzielone przecinkami. Aby pominąć ten krok, wciśnij enter.\n"
       + "Przykład: głowa, korpus, przednia łapa, tylnia łapa\n";
   case SS_PROMPT_SKILL:
     if(new_obj && sizeof(new_obj->get_archetypes()))
@@ -1875,7 +1875,7 @@ static int prompt_body_locations_input(string input)
     }
   else
     {
-      locations = explode(input, " ");
+      locations = explode(input, ", ");
     }
   if (sizeof(locations) && locations[0] == "none")
     {
