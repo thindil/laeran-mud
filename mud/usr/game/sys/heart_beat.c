@@ -139,7 +139,7 @@ void heart_beat_func(void)
 	  mobile->assign_body(body);
 	}
       /* heal wounded mobiles (and players) */
-      if (mobile->get_body() && TAGD->get_tag_value(mobile->get_body(), "Hp"))
+      if (mobile->get_body() && TAGD->get_tag_value(mobile->get_body(), "Hp") && !TAGD->get_tag_value(mobile->get_body(), "Combat"))
 	{
 	  TAGD->set_tag_value(mobile->get_body(), "Hp", nil);
 	  if (mobile->get_user())
