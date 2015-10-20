@@ -37,7 +37,6 @@ static void cmd_social(object user, string cmd, string str);
 /* This is the mobile we'll use for the user. */
 #define USER_MOBILE "/usr/common/obj/user_mobile"
 
-int meat_locker_rn;
 int current_room;
 mapping stats;
 mapping skills;
@@ -49,8 +48,6 @@ mapping skills;
 static void create(int clone)
 {
   ::create(clone);
-
-  meat_locker_rn = 1;
 }
 
 void upgraded(varargs int clone) {
@@ -168,7 +165,7 @@ void player_login(int first_time)
   body = nil;
 
   /* Set up location, body, etc */
-  start_room_num = 100;
+  start_room_num = START_ROOM;
   start_room = MAPD->get_room_by_num(start_room_num);
 
   /* If start room can't be found, set the start room to the void */
@@ -308,9 +305,10 @@ void player_login(int first_time)
     mobile->teleport(location, 1);
 
     /* Move body to start room */
-    if(location->get_number() <= meat_locker_rn) {
-      mobile->teleport(start_room, 1);
-    }
+    if(location->get_number() <= LOCKER_ROOM)
+      {
+	mobile->teleport(start_room, 1);
+      }
   }
 
   /* Show room to player */
@@ -341,9 +339,9 @@ static void player_logout(void)
 	  message("Uciekasz z walki.\n");
 	}
 
-      if(meat_locker_rn >= 0)
+      if(LOCKER_ROOM >= 0)
 	{
-	  meat_locker = MAPD->get_room_by_num(meat_locker_rn);
+	  meat_locker = MAPD->get_room_by_num(LOCKER_ROOM);
 	  if(meat_locker)
 	    {
 	      if (location)
@@ -355,8 +353,7 @@ static void player_logout(void)
 	    }
 	  else
 	    {
-	      LOGD->write_syslog("Can't find room #" + meat_locker_rn
-				 + " as meat locker!", LOG_ERR);
+	      LOGD->write_syslog("Can't find room #" + LOCKER_ROOM + " as meat locker!", LOG_ERR);
 	    }
 	}
     }

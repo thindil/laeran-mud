@@ -18,3 +18,7 @@
 #define GAME_WIZTOOL           "/usr/game/obj/wiztool"
 #define HEART_BEAT             "/usr/game/sys/heart_beat"
 #define COMBAT                 "/usr/game/obj/combat"
+
+#define START_ROOM             100
+#define LOCKER_ROOM            1
+#define HOSPITAL_ROOM          100
