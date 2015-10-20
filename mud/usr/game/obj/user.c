@@ -873,6 +873,7 @@ static void cmd_remove(object user, string cmd, string str) {
     user->send_phrase(port->get_brief());
     user->message(" z ");
     user->send_phrase(cont->get_brief());
+    user->message(".\n");
   } else {
     user->message(err + "\n");
   }
