@@ -259,11 +259,6 @@ private int assign_room_to_zone(int num, object room, int req_zone) {
 	    + ", zone #" + zone + ") not in requested zone (#" + req_zone
 	    + ") in assign_room_to_zone!");
 
-    if(zone < 0) {
-      error("Illegal zone in assign_room_to_zone(" + num
-	    + ", <room>, " + req_zone + ")!");
-    }
-
     OBJNUMD->allocate_in_segment(segnum, num, room);
 
     return num;

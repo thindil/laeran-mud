@@ -146,7 +146,7 @@ static void cmd_list_room(object user, string cmd, string str) {
 static void cmd_new_room(object user, string cmd, string str) {
   object room;
   int    roomnum, zonenum;
-  string segown;
+  string segown, zonename;
 
   if(!str || STRINGD->is_whitespace(str)) {
     roomnum = -1;
@@ -181,9 +181,17 @@ static void cmd_new_room(object user, string cmd, string str) {
   MAPD->add_room_to_zone(room, roomnum, zonenum);
 
   zonenum = ZONED->get_zone_for_room(room);
-  user->message("Added room #" + room->get_number()
-		+ " to zone #" + zonenum
-		+ " (" + ZONED->get_name_for_zone(zonenum) + ")" + ".\n");
+  if (zonenum < 0)
+    {
+      zonename = "nowa strefa";
+    }
+  else
+    {
+      zonename = ZONED->get_name_for_zone(zonenum);
+    }
+  user->message("Added room #" + (string)room->get_number()
+		+ " to zone #" + (string)zonenum
+		+ " (" + zonename + ")" + ".\n");
 }
 
 
