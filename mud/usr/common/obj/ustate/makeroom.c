@@ -1871,13 +1871,12 @@ static int prompt_body_locations_input(string input)
 
   if(!input || STRINGD->is_whitespace(input))
     {
-      send_string("Spróbujmy ponownie.\r\n");
-      send_string(blurb_for_substate(substate));
-
-      return RET_NORMAL;
+      locations = nil;
     }
-
-  locations = explode(input, " ");
+  else
+    {
+      locations = explode(input, " ");
+    }
   if (locations[0] == "none")
     {
       locations = nil;
