@@ -700,7 +700,14 @@ static void cmd_look(object user, string cmd, string str) {
       return;
     }
 
-    objs = tmp[0]->objects_in_container();
+    if ((!tmp[0]->get_mobile()) || (user->is_admin()))
+      {
+	objs = tmp[0]->objects_in_container();
+      }
+    else
+      {
+	objs = nil;
+      }
     if(objs && sizeof(objs)) {
       for(ctr = 0; ctr < sizeof(objs); ctr++) {
         user->message("- ");
@@ -789,6 +796,18 @@ static void cmd_put(object user, string cmd, string str) {
 
   contlist = find_first_objects(obj2, LOC_INVENTORY, LOC_CURRENT_ROOM,
 				LOC_BODY);
+  if (!is_admin())
+    {
+      ctr = 0;
+      while (ctr < sizeof(contlist))
+	{
+	  if (contlist[0]->get_mobile())
+	    {
+	      contlist = contlist[0..(ctr - 1)] + contlist[(ctr + 1)..];
+	    }
+	  ctr++;
+	}
+    }
   if(!contlist || !sizeof(contlist)) {
     user->message("Nie możesz znaleźć żadnego '" + obj2 + "' w okolicy.\n");
     return;
@@ -796,12 +815,12 @@ static void cmd_put(object user, string cmd, string str) {
 
   if(sizeof(portlist) > 1) {
     user->message("Jest więcej niż jeden obiekt pasujący do '" + obj1 + "'.  "
-		  + "Wybrałeś " + portlist[0]->get_brief() + ".\n");
+		  + "Wybrałeś " + portlist[0]->get_brief()->to_string(user) + ".\n");
   }
 
   if(sizeof(contlist) > 1) {
     user->message("Jest więcej niż jeden obiekt pasujący do '" + obj2 + "'.  "
-		  + "Wybrałeś " + portlist[0]->get_brief() + ".\n");
+		  + "Wybrałeś " + contlist[0]->get_brief()->to_string(user) + ".\n");
   }
 
   port = portlist[0];

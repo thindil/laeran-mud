@@ -380,26 +380,33 @@ static object* search_contained_objects(object* objs, string str,
     temp2 = 1;
   }
 
-  while(sizeof(objs)) {
-    if(objs[0] == location
-       || (!only_details
-	   && objs[0]->is_container() && objs[0]->is_open())) {
-      contents = objs[0]->objects_in_container();
-      if(contents)
-	objs += contents;
-    }
+  while(sizeof(objs))
+    {
+      if(objs[0] == location || (!only_details && objs[0]->is_container() && objs[0]->is_open()))
+	{
+	  if (!objs[0]->get_mobile() || is_admin())
+	    {
+	      contents = objs[0]->objects_in_container();
+	      if(contents)
+		{
+		  objs += contents;
+		}
+	    }
+	}
+      
+      if(objs[0]->match_words(this_object(), words))
+	{
+	  ret += ({ objs[0] });
+	}
 
-    if(objs[0]->match_words(this_object(), words)) {
-      ret += ({ objs[0] });
-    }
+      details = objs[0]->get_details();
+      if(details && sizeof(details))
+	{
+	  objs += details;
+	}
 
-    details = objs[0]->get_details();
-    if(details && sizeof(details)) {
-      objs += details;
+      objs = objs[1..];
     }
-
-    objs = objs[1..];
-  }
 
   return sizeof(ret) ? ret : nil;
 }

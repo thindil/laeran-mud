@@ -511,6 +511,11 @@ object* find_contained_objects(object user, string namestr) {
   object* ret;
   int     ctr;
 
+  if (get_mobile() && !user->is_admin())
+    {
+      return nil;
+    }
+  
   words = explode(namestr, " ");
 
   /* Trim */
