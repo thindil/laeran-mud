@@ -30,6 +30,7 @@ static object combat;
 /* Prototypes */
        void upgraded(varargs int clone);
 static void cmd_social(object user, string cmd, string str);
+       void death(void);
 
 /* Macros */
 #define NEW_PHRASE(x) PHRASED->new_simple_english_phrase(x)
@@ -336,7 +337,7 @@ static void player_logout(void)
 	{
 	  combat->stop_combat();
 	  destruct_object(combat);
-	  message("Uciekasz z walki.\n");
+	  death();
 	}
 
       if(LOCKER_ROOM >= 0)
@@ -504,7 +505,42 @@ int get_skill_exp(string name)
 
 void death()
 {
-  message("Giniesz.\n");
+  object PHRASE phr;
+  object new_body;
+  
+  message("GINIESZ.\n");
+ 
+  current_room = HOSPITAL_ROOM;
+  new_body = clone_object(SIMPLE_ROOM);
+  new_body->set_brief(body->get_brief());
+  new_body->set_look(body->get_look());
+  new_body->set_container(1);
+  new_body->set_open(1);
+  new_body->set_openable(0);
+  new_body->set_weight(body->get_weight());
+  new_body->set_length(body->get_length());
+  new_body->set_volume(body->get_volume());
+  new_body->set_weight_capacity(50.0);
+  new_body->set_volume_capacity(20.0);
+  new_body->set_length_capacity(300.0);
+  new_body->set_hp(10);
+  new_body->add_noun(NEW_PHRASE(STRINGD->to_lower(Name)));
+  new_body->set_price(body->get_price());
+  MAPD->add_room_to_zone(new_body, -1, ZONED->get_zone_for_room(location));
+  mobile->assign_body(new_body);
+  
+  phr = PHRASED->new_simple_english_phrase("zwłoki " + Name);
+  body->set_brief(phr);
+  phr = PHRASED->new_simple_english_phrase("zwłoki " + Name + " leżą tutaj.");
+  body->set_look(phr);
+  body->clear_nouns();
+  phr = PHRASED->new_simple_english_phrase("zwłoki, zwloki");
+  body->add_noun(phr);
+  TAGD->set_tag_value(body, "DropTime", time() + 3600);
+  body = new_body;
+  location = MAPD->get_room_by_num(current_room);
+  mobile->teleport(location, 1);
+  show_room_to_player(location);
 }
 
 void gain_exp(string skill, int value)
