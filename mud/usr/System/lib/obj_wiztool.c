@@ -169,17 +169,17 @@ static void cmd_stat(object user, string cmd, string str) {
   object *details, *archetypes;
 
   if(!str || STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + " #<obj num>\n");
-    user->message("       " + cmd + " <object description>\n");
+    user->message("Użycie: " + cmd + " #<numer obiektu>\n");
+    user->message("        " + cmd + " <opis obiektu>\n");
     return;
   }
 
   if(sscanf(str, "#%d", objnum) != 1) {
     str = STRINGD->trim_whitespace(str);
 
-    if(!STRINGD->stricmp(str, "here")) {
+    if(!STRINGD->stricmp(str, "tutaj")) {
       if(!user->get_location()) {
-	user->message("You aren't anywhere!\n");
+	user->message("Jesteś w pustce!\n");
 	return;
       }
       objnum = user->get_location()->get_number();
@@ -188,13 +188,12 @@ static void cmd_stat(object user, string cmd, string str) {
       objs = user->find_first_objects(str, LOC_INVENTORY, LOC_CURRENT_ROOM,
 				      LOC_BODY, LOC_CURRENT_EXITS);
       if(!objs) {
-	user->message("You don't find any object matching '"
-		      + str + "' here.\n");
+	user->message("Nie możesz znaleźć jakiegokolwiek '" + str + "' tutaj.\n");
 	return;
       }
 
       if(sizeof(objs) > 1) {
-	user->message("More than one object matches.  You choose one.\n");
+	user->message("Więcej niż jeden obiekt pasuje. Wybierasz pierwszy.\n");
       }
 
       objnum = objs[0]->get_number();
@@ -212,19 +211,18 @@ static void cmd_stat(object user, string cmd, string str) {
     mob = MOBILED->get_mobile_by_num(objnum);
 
     if(!mob) {
-      user->message("No object #" + objnum
-		    + " found registered with MAPD, EXITD or MOBILED.\n");
+      user->message("Nie znaleziono obiektu #" + objnum+ " zarejestrowanego z MAPD, EXITD lub MOBILED.\n");
       return;
     }
     priv_mob_stat(user, mob);
     return;
   }
 
-  tmp  = "Number: " + obj->get_number() + "\n";
+  tmp  = "Numer: " + obj->get_number() + "\n";
   if(obj->get_detail_of()) {
-    tmp += "Detail of: ";
+    tmp += "Detal z: ";
   } else {
-    tmp += "Location: ";
+    tmp += "Lokacja: ";
   }
   location = obj->get_location();
   if(location) {
@@ -240,50 +238,50 @@ static void cmd_stat(object user, string cmd, string str) {
 	tmp += "\n";
       }
     } else {
-      tmp += " (unregistered)\n";
+      tmp += " (niezarejestrowany)\n";
     }
   } else {
-    tmp += " (none)\n";
+    tmp += " (żaden)\n";
   }
 
-  tmp += "Descriptions ("
+  tmp += "Opisy ("
 		+ PHRASED->locale_name_for_language(user->get_locale())
 		+ ")\n";
 
-  tmp += "Brief: ";
+  tmp += "Krótki (Brief): ";
   if(obj->get_brief()) {
     tmp += "'" + obj->get_brief()->to_string(user) + "'\n";
   } else {
-    tmp += "(none)\n";
+    tmp += "(brak)\n";
   }
 
-  tmp += "Look:\n  ";
+  tmp += "Patrz (Look):\n  ";
   if(obj->get_look()) {
     tmp += "'" + obj->get_look()->to_string(user) + "'\n";
   } else {
-    tmp += "(none)\n";
+    tmp += "(brak)\n";
   }
 
-  tmp += "Examine:\n  ";
+  tmp += "Zbadaj (Examine):\n  ";
   if(obj->get_examine()) {
     if(obj->get_examine() == obj->get_look()) {
-      tmp += "(defaults to Look desc)\n";
+      tmp += "(tak sam jak opis Patrz)\n";
     } else {
       tmp += "'" + obj->get_examine()->to_string(user) + "'\n";
     }
   } else {
-    tmp += "(none)\n";
+    tmp += "(brak)\n";
   }
 
   /* Show user the nouns and adjectives */
-  tmp += "Nouns ("
+  tmp += "Rzeczowniki ("
     + PHRASED->locale_name_for_language(user->get_locale())
     + "): ";
   words = obj->get_nouns(user->get_locale());
   tmp += implode(words, ", ");
   tmp += "\n";
 
-  tmp += "Adjectives ("
+  tmp += "Przymiotniki ("
     + PHRASED->locale_name_for_language(user->get_locale())
     + "): ";
   words = obj->get_adjectives(user->get_locale());
@@ -291,42 +289,62 @@ static void cmd_stat(object user, string cmd, string str) {
   tmp += "\n\n";
 
   if(function_object("get_weight", obj)) {
-    tmp += "Its weight is " + obj->get_weight() + " kilograms.\n";
-    tmp += "Its volume is " + obj->get_volume() + " liters.\n";
-    tmp += "Its length is " + obj->get_length() + " centimeters.\n";
+    tmp += "Jego waga to " + obj->get_weight() + " kilogramy.\n";
+    tmp += "Jego objętość to " + obj->get_volume() + " litry.\n";
+    tmp += "Jego długość to " + obj->get_length() + " centymetry.\n";
   }
+
+  if(function_object("is_locked", obj))
+    {
+      if (obj->is_locked())
+	{
+	  tmp += "Obiekt jest zablokowany.\n";
+	}
+      else
+	{
+	  tmp += "Obiekt jest odblokowany.\n";
+	}
+      if (obj->lockable())
+	{
+	  tmp += "Obiekt można swobodnie odblokowywać i zablokowywać.\n";
+	}
+      else
+	{
+	  tmp += "Obiekt nie można swobodnie odblokowywać i zablokowywać.\n";
+	}
+    }
 
   if(function_object("is_container", obj)) {
     if(obj->is_container()) {
       if(obj->is_open()) {
-	tmp += "The object is an open container.\n";
+	tmp += "Obiekt jest otwartym pojemnikiem.\n";
       } else {
-	tmp += "The object is a closed container.\n";
+	tmp += "Obiekt jest zamkniętym pojemnikiem.\n";
       }
       if(obj->is_openable()) {
-	tmp += "The object may be freely opened and closed.\n";
+	tmp += "Obiekt może być swobodnie zamykany bądź otwierany.\n";
       } else {
-	tmp += "The object may not be freely opened and closed.\n";
+	tmp += "Obiekt nie może być swobodnie zamykany bądź otwierany.\n";
       }
       if(function_object("get_weight_capacity", obj)) {
-	tmp += "It contains " + obj->get_current_weight()
-	  + " of a max of " + obj->get_weight_capacity()
-	  + " kilograms.\n";
-	tmp += "It contains " + obj->get_current_volume()
-	  + " of a max of " + obj->get_volume_capacity()
-	  + " liters.\n";
-	tmp += "Its maximum height/length is " + obj->get_length_capacity()
-	  + " centimeters.\n";
+	tmp += "Zawiera " + obj->get_current_weight()
+	  + " kg z maksymalnie " + obj->get_weight_capacity()
+	  + " kilogramów.\n";
+	tmp += "Zawiera " + obj->get_current_volume()
+	  + " l z maksymalnie " + obj->get_volume_capacity()
+	  + " litrów.\n";
+	tmp += "Jego maksymalna długość/szerokość zawartości to " + obj->get_length_capacity()
+	  + " centymetrów.\n";
       }
     } else {
-      tmp += "The object is not a container.\n";
+      tmp += "Obiekt nie jest pojemnikiem.\n";
     }
   }
 
   tmp += "\n";
 
   if(function_object("num_objects_in_container", obj)) {
-    tmp += "Contains objects [" + obj->num_objects_in_container()
+    tmp += "Zawiera obiekty [" + obj->num_objects_in_container()
 		  + "]: ";
     objs = obj->objects_in_container();
     for(ctr = 0; ctr < sizeof(objs); ctr++) {
@@ -334,11 +352,11 @@ static void cmd_stat(object user, string cmd, string str) {
 	 && objs[ctr]->get_number() != -1) {
 	tmp += "#" + objs[ctr]->get_number() + " ";
       } else {
-	tmp += "<unreg> ";
+	tmp += "<nierejestrowany> ";
       }
     }
-    tmp += "\nContains " + sizeof(obj->mobiles_in_container())
-		  + " mobiles.\n\n";
+    tmp += "\nZawiera " + sizeof(obj->mobiles_in_container())
+		  + " mobków.\n\n";
   }
 
   if(function_object("is_weapon", obj)) 
@@ -395,13 +413,13 @@ static void cmd_stat(object user, string cmd, string str) {
   if(details && sizeof(details)) {
     object detail;
 
-    tmp += "Has immediate details [" + sizeof(details) + "]: ";
+    tmp += "Zawiera natychmiastowe detale [" + sizeof(details) + "]: ";
     for(ctr = 0; ctr < sizeof(details); ctr++) {
       detail = details[ctr];
       if(detail) {
 	tmp += "#" + detail->get_number() + " ";
       } else {
-	tmp += "<unreg> ";
+	tmp += "<bez numeru> ";
       }
     }
     tmp += "\n";
@@ -411,13 +429,13 @@ static void cmd_stat(object user, string cmd, string str) {
   if(sizeof(archetypes) && sizeof(details)) {
     object detail;
 
-    tmp += "Has complete details [" + sizeof(details) + "]: ";
+    tmp += "Zawiera kompletne detale [" + sizeof(details) + "]: ";
     for(ctr = 0; ctr < sizeof(details); ctr++) {
       detail = details[ctr];
       if(detail) {
 	tmp += "#" + detail->get_number() + " ";
       } else {
-	tmp += "<unreg> ";
+	tmp += "<bez numeru> ";
       }
     }
     tmp += "\n";
@@ -425,9 +443,9 @@ static void cmd_stat(object user, string cmd, string str) {
 
   tags = TAGD->object_all_tags(obj);
   if(!sizeof(tags)) {
-    tmp += "\nNo tags set.\n";
+    tmp += "\nNie ma ustawionych tagów.\n";
   } else {
-    tmp += "\nTag Name: Value\n";
+    tmp += "\nNazwa tagu: Wartość\n";
     for(ctr = 0; ctr < sizeof(tags); ctr+=2) {
       tmp += "  " + tags[ctr] + ": " + STRINGD->mixed_sprint(tags[ctr + 1])
 	+ "\n";
@@ -436,16 +454,16 @@ static void cmd_stat(object user, string cmd, string str) {
   tmp += "\n";
 
   if(obj->get_mobile()) {
-    tmp += "Object is sentient.\n";
+    tmp += "Obiekt jest istotą.\n";
     if(obj->get_mobile()->get_user()) {
-      tmp += "Object is "
+      tmp += "Obiekt jest ciałem gracza "
 	+ obj->get_mobile()->get_user()->query_name()
-	+ "'s body.\n";
+	+ ".\n";
     }
   }
 
   if(sizeof(archetypes)) {
-    tmp += "Instance of archetype(s): ";
+    tmp += "Jest potomkiem obiektów: ";
     for(ctr = 0; ctr < sizeof(archetypes); ctr++) {
       tmp += "#" + archetypes[ctr]->get_number()
 	+ " (" + archetypes[ctr]->get_brief()->to_string(user)
@@ -454,10 +472,10 @@ static void cmd_stat(object user, string cmd, string str) {
     tmp += ".\n";
   }
   if(room) {
-    tmp += "Registered with MAPD as a room or portable.\n";
+    tmp += "Zarejestrowany z MAPD jako pokój bądź przenośny.\n";
   }
   if(exit) {
-    tmp += "Registered with EXITD as an exit.\n";
+    tmp += "Zarejestrowany z EXITD jako wyjście.\n";
   }
 
   user->message_scroll(tmp);
