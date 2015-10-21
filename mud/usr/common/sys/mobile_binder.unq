@@ -22,3 +22,8 @@
   ~tag{simple}
   ~code{/usr/common/obj/simple_mobile}
 }
+
+~bind{
+  ~tag{townhall}
+  ~code{/usr/common/obj/townhall_mobile}
+}
