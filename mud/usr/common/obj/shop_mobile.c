@@ -30,7 +30,7 @@ string get_type(void) {
 void hook_social(object body, object target, string verb)
 {
   whisper(body, "Witaj w moim sklepie. Jeżeli chcesz zobaczyć listę towarów, szepnij do mnie 'lista'. \n"
-	  + " Jeżli chcesz obejrzeć przedmiot, szepnij do mnie 'zobacz <nazwa przedmiotu>'.\n"
+	  + " Jeżeli chcesz obejrzeć przedmiot, szepnij do mnie 'zobacz <nazwa przedmiotu>'.\n"
 	  + " Jeżeli chcesz coś kupić, szepnij do mnie 'kupuje <nazwa przedmiotu>'.\n"
 	  + " Jeżeli chcesz coś sprzedać, szepnij do mnie 'sprzedaje <nazwa przedmiotu>'.\n");
 }
@@ -164,7 +164,7 @@ void hook_whisper(object body, string message)
 	return;
     default:
       whisper(body, "Witaj w moim sklepie. Jeżeli chcesz zobaczyć listę towarów, szepnij do mnie 'lista'. \n"
-	  + " Jeżli chcesz obejrzeć przedmiot, szepnij do mnie 'zobacz <nazwa przedmiotu>'.\n"
+	  + " Jeżeli chcesz obejrzeć przedmiot, szepnij do mnie 'zobacz <nazwa przedmiotu>'.\n"
 	  + " Jeżeli chcesz coś kupić, szepnij do mnie 'kupuje <nazwa przedmiotu>'.\n"
 	  + " Jeżeli chcesz coś sprzedać, szepnij do mnie 'sprzedaje <nazwa przedmiotu>'.\n");
       return;
