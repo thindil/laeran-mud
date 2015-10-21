@@ -558,6 +558,11 @@ void gain_exp(string skill, int value)
 	  stats[skill][0] ++;
 	}
       stats[skill][1] = exp;
+      if (stats[skill][0] > 50)
+	{
+	  stats[skill][0] = 50;
+	  stats[skill][1] = 0;
+	}
       return;
     }
 
@@ -577,6 +582,11 @@ void gain_exp(string skill, int value)
     {
       exp -= needexp;
       level ++;
+    }
+  if (level > 100)
+    {
+      level = 100;
+      exp = 0;
     }
   skills[skill] = ({ level, exp });
 }
