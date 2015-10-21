@@ -29,10 +29,13 @@ string get_type(void) {
 /* Initiate communication */
 void hook_social(object body, object target, string verb)
 {
-  whisper(body, "Witaj w moim sklepie. Jeżeli chcesz zobaczyć listę towarów, szepnij do mnie 'lista'. \n"
-	  + " Jeżeli chcesz obejrzeć przedmiot, szepnij do mnie 'zobacz <nazwa przedmiotu>'.\n"
-	  + " Jeżeli chcesz coś kupić, szepnij do mnie 'kupuje <nazwa przedmiotu>'.\n"
-	  + " Jeżeli chcesz coś sprzedać, szepnij do mnie 'sprzedaje <nazwa przedmiotu>'.\n");
+  if (this_object()->get_number() == target->get_mobile()->get_number())
+    {
+      whisper(body, "Witaj w moim sklepie. Jeżeli chcesz zobaczyć listę towarów, szepnij do mnie 'lista'. \n"
+	      + " Jeżeli chcesz obejrzeć przedmiot, szepnij do mnie 'zobacz <nazwa przedmiotu>'.\n"
+	      + " Jeżeli chcesz coś kupić, szepnij do mnie 'kupuje <nazwa przedmiotu>'.\n"
+	      + " Jeżeli chcesz coś sprzedać, szepnij do mnie 'sprzedaje <nazwa przedmiotu>'.\n");
+    }
 }
 
 /* Trader iteraction */
