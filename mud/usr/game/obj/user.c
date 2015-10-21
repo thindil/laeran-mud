@@ -956,13 +956,18 @@ static void cmd_users(object user, string cmd, string str) {
   users = users();
   message("Zalogowani: \n");
   str = "";
-  for (i = 0, sz = sizeof(users); i < sz; i++) {
-    name_idx = users[i]->query_name();
-    if (name_idx) {
-      str += "   " + name_idx + "       Bezczynny: " + users[i]->get_idle_time()
-	+ " sekund\n";
+  for (i = 0, sz = sizeof(users); i < sz; i++)
+    {
+      name_idx = users[i]->query_name();
+      if (name_idx)
+	{
+	  if (users[i]->is_admin())
+	    {
+	      name_idx += " (Opiekun)";
+	    }
+	  str += "   " + name_idx + "       Bezczynny(a): " + users[i]->get_idle_time() + " sekund\n";
+	}
     }
-  }
   message(str + "\n");
 }
 
