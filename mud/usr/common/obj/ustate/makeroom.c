@@ -301,11 +301,19 @@ private string blurb_for_substate(int substate) {
       + "Rodzice są jak Skotos ur-objects (zobacz pomoc set_obj_parent).\r\n";
 
   case SS_PROMPT_BRIEF_DESC:
+    if(new_obj && sizeof(new_obj->get_archetypes()))
+      return "Następnie, proszę wprowadzić jednoliniowy opis albo wpisać 'none' dla wartości z rodzica.\r\n"
+	+ "Przykłady krótkiego(brief) opisu:  "
+	+ "'miecz', 'John', 'trochę bekonu'.\r\n";
     return "Następnie, proszę wprowadzić jednoliniowy opis.\r\n"
       + "Przykłady krótkiego(brief) opisu:  "
       + "'miecz', 'John', 'trochę bekonu'.\r\n";
 
   case SS_PROMPT_LOOK_DESC:
+    if(new_obj && sizeof(new_obj->get_archetypes()))
+      return "Teraz wprowadź wieloliniowy opis dla 'patrz'('look'). To jest to co gracz\n"
+	+ " zobaczy przy pomocy komendy 'patrz'. Możesz też pisać 'none' dla przyjęcia\n"
+	+ " wartości z rodzica.\n";
     return "Teraz wprowadź wieloliniowy opis dla 'patrz'('look'). To jest to co gracz"
       + " zobaczy przy pomocy komendy 'patrz'.\r\n";
 
@@ -762,35 +770,42 @@ static int prompt_obj_parent_input(string input) {
   }
 
   parent_strings = explode(input, " ");
-  for(ctr = 0; ctr < sizeof(parent_strings); ctr++) {
-    if(parent_strings[ctr] == "#")
-      continue;
+  obj_parents = ({ });
+  for(ctr = 0; ctr < sizeof(parent_strings); ctr++)
+    {
+      if(parent_strings[ctr] == "#")
+	{
+	  continue;
+	}
 
-    if((!sscanf(parent_strings[ctr], "#%d", parnum)
-	&& !sscanf(parent_strings[ctr], "%d", parnum))
-       || (parnum < 0)) {
-      send_string("Każdy rodzić musi być wartością większą od zera\r\n poprzedzoną znakiem #.\r\n");
-      send_string("'" + parent_strings[ctr] + "' nie jest.\r\n");
+      if((!sscanf(parent_strings[ctr], "#%d", parnum) && !sscanf(parent_strings[ctr], "%d", parnum)) || (parnum < 0))
+	{
+	  send_string("Każdy rodzić musi być wartością większą od zera\r\n poprzedzoną znakiem #.\r\n");
+	  send_string("'" + parent_strings[ctr] + "' nie jest.\r\n");
+	  send_string(blurb_for_substate(substate));
+	  return RET_NORMAL;
+	}
+
+      if(!(obj_parent = MAPD->get_room_by_num(parnum)))
+	{
+	  send_string("Nie ma obiektu #" + parnum + ".\r\n");
+	  send_string(blurb_for_substate(substate));
+	  return RET_NORMAL;
+	}
+
+      obj_parents += ({ obj_parent });
+    }
+
+  if(sizeof(obj_parents))
+    {
+      new_obj->set_archetypes(obj_parents);
+    }
+  else
+    {
+      send_string("Wewnętrzny błąd. Dziwne. Spróbuj ponownie.\r\n");
       send_string(blurb_for_substate(substate));
       return RET_NORMAL;
     }
-
-    if(!(obj_parent = MAPD->get_room_by_num(parnum))) {
-      send_string("Nie ma obiektu #" + parnum + ".\r\n");
-      send_string(blurb_for_substate(substate));
-      return RET_NORMAL;
-    }
-
-    obj_parents += ({ obj_parent });
-  }
-
-  if(obj_parents && sizeof(obj_parents)) {
-    new_obj->set_archetypes(obj_parents);
-  } else {
-    send_string("Wewnętrzny błąd. Dziwne. Spróbuj ponownie.\r\n");
-    send_string(blurb_for_substate(substate));
-    return RET_NORMAL;
-  }
 
   substate = SS_PROMPT_BRIEF_DESC;
   send_string(blurb_for_substate(substate));
@@ -809,8 +824,15 @@ static int prompt_brief_desc_input(string input) {
   }
 
   input = STRINGD->trim_whitespace(input);
-  phr = new_obj->get_brief();
-  phr->from_unq(input);
+  if (input == "none")
+    {
+      new_obj->set_brief(nil);
+    }
+  else
+    {
+      phr = new_obj->get_brief();
+      phr->from_unq(input);
+    }
 
   substate = SS_PROMPT_LOOK_DESC;
 
@@ -839,8 +861,15 @@ static void prompt_look_desc_data(mixed data) {
   }
 
   data = STRINGD->trim_whitespace(data);
-  phr = new_obj->get_look();
-  phr->from_unq(data);
+  if (data == "none")
+    {
+      new_obj->set_look(nil);
+    }
+  else
+    {
+      phr = new_obj->get_look();
+      phr->from_unq(data);
+    }
 
   substate = SS_PROMPT_EXAMINE_DESC;
   send_string("\r\nOpis 'patrz' (look) zaakceptowany.\r\n");
