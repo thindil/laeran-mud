@@ -869,6 +869,12 @@ static void cmd_put(object user, string cmd, string str) {
   port = portlist[0];
   cont = contlist[0];
 
+  if (port->is_dressed())
+    {
+      port->set_dressed(0);
+      message("Zdejmujesz " + port->get_brief()->to_string(user) + ".\n");
+    }
+
   if (!(err = mobile->place(port, cont))) {
     user->message("Wkładasz ");
     user->send_phrase(port->get_brief());
@@ -1107,6 +1113,12 @@ static void cmd_drop(object user, string cmd, string str) {
     {
       message("Masz więcej niż jedną taką rzecz.\n");
       message("Wybierasz " + tmp[0]->get_brief()->to_string(user) + ".\n");
+    }
+
+  if (tmp[0]->is_dressed())
+    {
+      tmp[0]->set_dressed(0);
+      message("Zdejmujesz " + tmp[0]->get_brief()->to_string(user) + ".\n");
     }
 
   if (!(err = mobile->place(tmp[0], location)))
