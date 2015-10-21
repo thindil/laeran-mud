@@ -29,7 +29,7 @@ string get_type(void) {
 /* Initiate communication */
 void hook_social(object body, object target, string verb)
 {
-  if (this_object()->get_number() == target->get_mobile()->get_number())
+  if (get_number() == target->get_mobile()->get_number())
     {
       whisper(body, "Witaj w moim sklepie. Jeżeli chcesz zobaczyć listę towarów, szepnij do mnie 'lista'. \n"
 	      + " Jeżeli chcesz obejrzeć przedmiot, szepnij do mnie 'zobacz <nazwa przedmiotu>'.\n"
@@ -55,7 +55,7 @@ void hook_whisper(object body, string message)
     case "lista":
       for (i = 0; i < sizeof(objs); i++)
 	{
-	  items += "- " + objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) + " cena: " + (string)objs[i]->get_armor() + " miedziaków\n";
+	  items += "- " + objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) + " cena: " + (string)objs[i]->get_price() + " miedziaków\n";
 	}
       body->get_mobile()->get_user()->message_scroll(items);
       return;
