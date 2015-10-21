@@ -988,9 +988,23 @@ static void cmd_socials(object user, string cmd, string str)
 }
 
 static void cmd_movement(object user, string cmd, string str) {
-  int    dir;
+  int    dir, fatigue;
   string reason;
 
+  if (TAGD->get_tag_value(body, "Fatigue"))
+    {
+      fatigue = TAGD->get_tag_value(body, "Fatigue");
+    }
+  else
+    {
+      fatigue = 0;
+    }
+  if (fatigue >= (stats["kondycja"][0] * 10))
+    {
+      message("Jesteś zbyt zmęczony aby podróżować. Odpocznij chwilę.\n");
+      return;
+    }
+  
   /* Currently, we ignore modifiers (str) and just move */
 
   dir = EXITD->direction_by_string(cmd);
@@ -1006,6 +1020,10 @@ static void cmd_movement(object user, string cmd, string str) {
     return;
   }
 
+  fatigue++;
+  TAGD->set_tag_value(body, "Fatigue", fatigue);
+  gain_exp("kondycja", 1);
+  
   if (TAGD->get_tag_value(body, "Combat"))
     {
       combat->stop_combat();

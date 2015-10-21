@@ -13,3 +13,8 @@
   ~type{1}
 }
 
+~object_tag{
+  ~name{Fatigue}
+  ~type{1}
+}
+

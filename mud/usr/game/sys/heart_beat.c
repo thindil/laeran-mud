@@ -147,6 +147,12 @@ void heart_beat_func(void)
 	      mobile->get_user()->message("Jesteś już kompletnie zdrowy.\n");
 	    }
 	}
+      /* rest for tired playres */
+      if (mobile->get_body() && TAGD->get_tag_value(mobile->get_body(), "Fatigue") && !TAGD->get_tag_value(mobile->get_body(), "Combat"))
+	{
+	  TAGD->set_tag_value(mobile->get_body(), "Fatigue", nil);
+	  mobile->get_user()->message("Jesteś już kompletnie wypoczęty.\n");
+	}
     }
 }
 
