@@ -776,16 +776,10 @@ void append_to_container(object obj) {
   obj_weight = obj->get_weight();
   if(obj_weight >= 0.0)
     current_weight += obj_weight;
-  else
-    LOGD->write_syslog("Negative weight in append_to_container!",
-		       LOG_WARN);
 
   obj_volume = obj->get_volume();
   if(obj_volume >= 0.0)
     current_volume += obj_volume;
-  else
-    LOGD->write_syslog("Negative volume in append_to_container!",
-		       LOG_WARN);
 
   obj::append_to_container(obj);
 }
@@ -817,16 +811,10 @@ void remove_from_container(object obj) {
   obj_weight = obj->get_weight();
   if(obj_weight >= 0.0)
     current_weight -= obj_weight;
-  else
-    LOGD->write_syslog("Negative weight in remove_from_container!",
-		       LOG_WARN);
 
   obj_volume = obj->get_volume();
   if(obj_volume >= 0.0)
     current_volume -= obj_volume;
-  else
-    LOGD->write_syslog("Negative volume in remove_from_container!",
-		       LOG_WARN);
 
   obj::remove_from_container(obj);
 }
