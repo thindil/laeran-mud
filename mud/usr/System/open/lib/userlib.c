@@ -155,7 +155,7 @@ static string username_to_filename(string str) {
   return ret;
 }
 
-static void save_user_to_file() {
+void save_user_to_file() {
   string  user_filename;
   mixed*  chanlist;
   int     subcode, ctr;

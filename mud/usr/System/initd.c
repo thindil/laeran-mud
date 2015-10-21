@@ -37,6 +37,7 @@ static  void __co_write_mobs(object user, int* objects, int ctr,
 			     string mobfile, string zonefile);
 static  void __co_write_zones(object user, int* objects, int ctr,
 			      string zonefile);
+static  void __co_write_users(object user);
 static  void __reboot_callback(void);
 static  void __shutdown_callback(void);
         void set_path_special_object(object new_obj);
@@ -586,6 +587,27 @@ static void __co_write_zones(object user, int* objects, int ctr,
     return;
   }
 
+  /* Done with mobiles, start on zones */
+  LOGD->write_syslog("Writing users to files.", LOG_VERBOSE);
+
+  if(call_out("__co_write_users", 0, user) < 1)
+    {
+      release_system();
+      error("Can't schedule call_out to start writing users!");
+    }
+}
+
+static void __co_write_users(object user)
+{
+  object *users;
+  int i;
+
+  users = users();
+  for (i = 0; i < sizeof(users); i++)
+    {
+      users[i]->save_user_to_file();
+    }
+
   /* This is the callback from %shutdown or %reboot or whatever,
      it's the function to call after all data has successfully
      been saved. */
@@ -602,9 +624,8 @@ static void __co_write_zones(object user, int* objects, int ctr,
 
   release_system();
   LOGD->write_syslog("Finished writing saved data...", LOG_NORMAL);
-  if(user) user->message("Finished writing data.\n");
+  if(user) user->message("Finished writing data.\n"); 
 }
-
 
 static void __shutdown_callback(void) {
   ::shutdown();
