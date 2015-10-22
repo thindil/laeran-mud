@@ -5,7 +5,7 @@
        exit*,newexit*,flags?,weight?,volume?,length?,
        weight_capacity?,volume_capacity?,length_capacity?,removed_details?,
        tags?,data?,damage?,wearlocations?,armor?,price?,hp?,combat_rating?,
-       body_locations?,skill?}
+       body_locations?,skill?,current_weight?,current_volume?}
   ~object:obj{}
   ~obj_type{string}
   ~number{int}
@@ -29,6 +29,8 @@
   ~weight_capacity{float}
   ~length_capacity{float}
   ~volume_capacity{float}
+  ~current_weight{float}
+  ~current_volume{float}
   ~removed_details{int*}
   ~tags{unq}
   ~data{unq}

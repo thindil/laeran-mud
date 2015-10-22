@@ -810,11 +810,23 @@ void remove_from_container(object obj) {
 
   obj_weight = obj->get_weight();
   if(obj_weight >= 0.0)
-    current_weight -= obj_weight;
+    {
+      current_weight -= obj_weight;
+      if (current_weight < 0.0)
+	{
+	  current_weight = 0.0;
+	}
+    }
 
   obj_volume = obj->get_volume();
   if(obj_volume >= 0.0)
-    current_volume -= obj_volume;
+    {
+      current_volume -= obj_volume;
+      if (current_volume < 0.0)
+	{
+	  current_volume = 0.0;
+	}
+    }
 
   obj::remove_from_container(obj);
 }
@@ -1064,6 +1076,14 @@ string to_unq_flags(void) {
     if(length_capacity >= 0.0)
       ret += "  ~length_capacity{" + length_capacity + "}\n";
   }
+  if (current_weight > 0.0)
+    {
+      ret += "  ~current_weight{" + current_weight + "}\n";
+    }
+  if (current_volume > 0.0)
+    {
+      ret += "  ~current_volume{" + current_volume + "}\n";
+    }
 
   if (damage > 0)
     {
@@ -1256,6 +1276,12 @@ void from_dtd_tag(string tag, mixed value) {
       break;
     case "length_capacity":
       length_capacity = value;
+      break;
+    case "current_weight":
+      current_weight = value;
+      break;
+    case "current_volume":
+      current_volume = value;
       break;
     case "damage":
       damage = value;
