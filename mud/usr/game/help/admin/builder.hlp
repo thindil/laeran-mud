@@ -1,7 +1,6 @@
-~name{~enUS{builder, builders}}
+~name{budowniczy}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
 The builder commands play with rooms, exits, mobiles and portables.
 Help on the following major topics is available:
@@ -18,7 +17,7 @@ A big resource on building can be found at
 
 http://phantasmal.sourceforge.net/OLC
 
-}}
+}
 
 
 ~name{~enUS{exit,exits,door,doors,passage,passages}}

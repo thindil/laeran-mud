@@ -1,7 +1,6 @@
-~name{~enUS{gritty,guts,weird,low-level,low level,recompile}}
+~name{bebechy}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
 There are a number of commands that deal with LPC programs
 individually.  Note that in LPC, "program" is synonymous with "source
@@ -34,7 +33,7 @@ cd               Various file commands, like in DOS or Unix
 
 daemons          Daemons providing MUD services
 
-}}
+}
 
 
 ~name{~enUS{history,%history,command history,compile history,clone history,

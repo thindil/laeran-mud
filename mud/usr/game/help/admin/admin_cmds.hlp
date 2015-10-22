@@ -1,49 +1,49 @@
-~name{~enUS{admin,administrator}}
+~name{admin,administrator}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-You can get help on the various commands individually as well.  Many
-require privilege on the caller's part to perform successfully.
+Otrzymasz tutaj pomoc na temat poszczególnych komend. Wiele z nich
+wymaga odpowiednich uprawnień aby mogły być wykonane pomyślnie.
 
-%shutdown           Shut down the MUD
-%reboot             Reboot the MUD
-%swapout            Swap out MUD objects
-%statedump          Dump the MUD's full state to a file
-%save               Write the objectfiles (as if on shutdown)
-%safesave           Write safe-backup copies of object files
+%shutdown           Wyłącza MUDa
+%reboot             Rebootuje MUDa
+%swapout            Wymiana obiektów MUDa
+%statedump          Zrzuca pełny stan MUDa do pliku
+%save               Zapisuje obiekty i graczy (jak przy wyłączeniu)
+%safesave           Zapisuje bezpieczną kopię plików obiektów
 
-%status             Give the status of the MUDLib & server
+%status             Podaje status MUDLiba i serwera
 
-%who                Show those logged on, with IP addrs
-%log                Writes events to the system log
-%log_subscribe      Choose what log events get written to file
+%who                Pokazuje kto jest zalogowany z adresem IP
+%log                Zapisuje wydarzenia do logów systemowych
+%log_subscribe      Wybiera jakie wydarzenia z dziennika są zapisywane
+                    do pliku
 %zgloszenia         Zobacz zgłoszenia błędów/literówek/pomysłów
 
-}}
+}
 
 
-~name{~enUS{%shutdown,shut down}}
+~name{%shutdown}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The %shutdown command will save the state of the MUD including things
-like rooms, exits and portables.  Then it will normally cause the MUD
-to stop running and the driver process to exit on the host machine.
+Komenda %shutdown zapisze cały stan gry, włączając w to rzeczy takie
+jak pokoje, wyjścia i przenośne. Następnie po prostu sprawi, że MUD
+przestanie działać i proces drivera zostanie zakończony na komputerze.
 
-If an error occurs during the saving of objects, normally the MUD will
-NOT continue shutting down -- you may correct this error and then shut
-down the MUD again.  Since Phantasmal and DGD allow you to recompile
-code so easily, such a small error is usually insufficient reason to
-give up and die without saving your data.
+Jeżeli wystąpi błąd podczas zapisywania obiektów, MUD NIE będzie
+kontynuować procesu wyłączania. Możesz poprawić ten błąd i wtedy
+spróbować wyłączyć grę ponownie. Ponieważ Phantasmal i DGD pozwalają
+Tobie rekompilować kod bez problemu, tak mały błąd jest zazwyczaj
+nie wystarczającym powodem aby poddać się i wyłączyć grę bez zapisu
+danych.
 
-However, if you really need to, you can type "%shutdown force" to shut
-down the MUD *without* saving your data.
+Jeżeli jednak naprawdę tego chcesz, możesz wpisać "%shutdown force"
+aby wyłączyć Laeran *bez* zapisywania jakichkolwiek danych.
 
-See also %reboot.
+Zobacz rówież %reboot.
 
-}}
+}
 
 ~name{~enUS{%reboot,restart}}
 ~keywords{admin}
@@ -266,20 +266,20 @@ See also:  logfile, %log_subscribe
 
 }}
 
-~name{~enUS{zgloszenia, zgłoszenia}}
+~name{zgloszenia, zgłoszenia}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
 Administratorzy mogą przeglądać wszystkie zgłoszenia błędów, literówek
 czy pomysłów, które zostały wysłane przez graczy. Aby zobaczyć wybrane
 zgłoszenia należy podać rodzaj zgłoszeń. Użycie:
 
-zgloszenia bug - pokaże zgłoszenia wszytkich błędów
-zgloszenia idea - pokaże wszystkie zgłoszone propozycje
-zgloszenia literowka - pokaże wszystkie zgłoszenia literówek
+zgloszenia bug          pokaże zgłoszenia wszytkich błędów
+zgloszenia idea         pokaże wszystkie zgłoszone propozycje
+zgloszenia literowka    pokaże wszystkie zgłoszenia literówek
+zgloszenia pomoc        pokaże wszystkie zgłoszenia brakującej pomocy
 
 Wpisanie samej komendy czy też komendy z nieprawidłową opcją, pokaże
 wszystkie dostępne opcje dla komendy.
 
-}}
+}

@@ -1,38 +1,37 @@
-~name{~enUS{main_admin}}
+~name{main_admin}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-As an administrator and/or builder, you'll need to know about the
-various commands you can use.  Many of these commands are prefixed
-with a @ or % to distinguish them from normal commands and remind you
-of the harm they can do if used carelessly.  Any of these helpfiles
-must be accessed with the help command.
+Jako administrator i/lub budowniczy, musisz wiedzieć o różnych
+komendach, których możesz używać. Wiele z tych komend jest
+poprzedzona znakiem @ lub % aby odróżnić je od normalnych komend
+i przypomnieć Ci o zagrożeniach jakie mogą wywołać kiedy są
+używane bezrozumnie. Dowolny z tych plików pomocy jest dostępny
+przez komedę pomoc.
 
-help builder        Builder commands
-help admin          Administrator commands
-help resource       Resource and quota commands
-help guts           Commands dealing directly with LPC
+pomoc budowniczy    Komendy budowniczego
+pomoc admin         Komendy administracyjne
+pomoc zasoby        Zarządzanie zasobami serwera
+pomoc bebechy       Komendy związane bezpośrednio z LPC
 
-help syntax         Using any commands
+pomoc skladnia      Używanie dowolnej komendy
 
-For the "normal help" screen, type "pomoc pomoc_gracza".
+Aby zobaczyć ekran "normalnej pomocy", wpisz "pomoc pomoc_gracza".
 
-Go to http://phantasmal.sourceforge.net/Tutorial/index.html
-for an online tutorial of building inside phantasmal.
+Udaj się na http://phantasmal.sourceforge.net/Tutorial/index.html
+aby zobaczyć samouczek na temat budowania w grze (angielski).
 
-}}
+}
 
-~name{~enUS{syntax,usage}}
+~name{skladnia,składnia,uzycie,użycie}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-Many commands require an object number of some kind, such as a room
-number.  In general, you'll want to preface that number with an
-octothorpe (hash or pound sign).  For instance,
+Wiele komend wymaga podania jakiegoś rodzaju numeru obiektu, na
+przykład numer pokoju. Ogólnie, taki numer podaje się poprzedzając
+go znakiem hash #. Na przykład:
 
   @goto_room #34
 
-This will go to room #34.
-}}
+Udasz się do pokoju numer 34.
+}

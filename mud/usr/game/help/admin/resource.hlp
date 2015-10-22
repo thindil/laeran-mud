@@ -1,7 +1,6 @@
-~name{~enUS{resource,quotas,resources,permissions,security}}
+~name{zasoby,dostep,dostęp}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
 The Security, resource and quota command set is copied from DGD's
 Kernel MUDLib's versions of the same functionality.  Those commands
@@ -13,7 +12,7 @@ help %rsrc              Shows an admin's resource limits or usage
 help %grant             Grants an admin additional access
 help %ungrant           Removes existing access
 
-}}
+}
 
 
 ~name{~enUS{%rsrc,@rsrc,rsrc}}

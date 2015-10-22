@@ -28,8 +28,8 @@ int from_user(string input) {
   return MODE_ECHO;
 }
 
-void switch_to(int pushp) {
-  send_string("Enter text at the prompt.  Enter ~ on a line by itself to " +
-	      "end.\r\n");
+void switch_to(int pushp)
+{
+  send_string("Wprowadź tekst. Wpisz ~ w nowej linii aby zakończyć.\n");
   send_string(" > ");
 }
