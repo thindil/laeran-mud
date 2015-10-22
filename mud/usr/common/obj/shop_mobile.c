@@ -29,7 +29,7 @@ string get_type(void) {
 /* Initiate communication */
 void hook_social(object body, object target, string verb)
 {
-  if (get_number() == target->get_mobile()->get_number())
+  if (get_number() == target->get_mobile()->get_number() && verb == "pozdrow")
     {
       whisper(body, "Witaj w moim sklepie. Jeżeli chcesz zobaczyć listę towarów, szepnij do mnie 'lista'. \n"
 	      + " Jeżeli chcesz obejrzeć przedmiot, szepnij do mnie 'zobacz <nazwa przedmiotu>'.\n"
