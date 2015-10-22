@@ -144,7 +144,7 @@ void heart_beat_func(void)
 	  TAGD->set_tag_value(mobile->get_body(), "Hp", nil);
 	  if (mobile->get_user())
 	    {
-	      mobile->get_user()->message("\nJesteś już kompletnie zdrowy.\n");
+	      mobile->get_user()->message("Jesteś już kompletnie zdrowy.\n");
 	      mobile->get_user()->set_health(mobile->get_body()->get_hp());
 	    }
 	}
@@ -152,7 +152,7 @@ void heart_beat_func(void)
       if (mobile->get_body() && TAGD->get_tag_value(mobile->get_body(), "Fatigue") && !TAGD->get_tag_value(mobile->get_body(), "Combat"))
 	{
 	  TAGD->set_tag_value(mobile->get_body(), "Fatigue", nil);
-	  mobile->get_user()->message("\nJesteś już kompletnie wypoczęty.\n");
+	  mobile->get_user()->message("Jesteś już kompletnie wypoczęty.\n");
 	  mobile->get_user()->set_condition(mobile->get_user()->get_stat_val("kondycja") * 10);
 	}
     }

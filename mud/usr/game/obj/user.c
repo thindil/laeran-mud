@@ -683,7 +683,7 @@ void print_prompt(void)
     }
   else
     {
-      message("[" + health + "] [" + condition + "]");
+      message("[" + health + "] [" + condition + "]\n");
     }
 }
 
