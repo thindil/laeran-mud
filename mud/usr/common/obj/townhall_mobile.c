@@ -37,7 +37,8 @@ void hook_social(object body, object target, string verb)
 	      + "dowód do mnie. Jeżeli chcesz się dowiedzieć dokładnie jakie dowody, szepnij\n"
 	      + "do mnie 'lista' aby zobaczyć ich listę wraz z ofertą ile płacimy za nie.\n"
 	      + "Jeżeli masz przy sobie to czego potrzebujemy, szepnij do mnie 'mam <nazwa \n"
-	      + "przedmiotu>. Wtedy wymienimy Twoje przedmioty na gotówkę.\n");
+	      + "przedmiotu>. Wtedy wymienimy Twoje przedmioty na gotówkę. Jeżeli potrzebujesz\n"
+	      + "jakiś porad, szepnij do mnie 'porady'.\n");
     }
 }
 
@@ -61,7 +62,7 @@ void hook_whisper(object body, string message)
 	  items += "- " + objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) + ", oferujemy: " + (string)objs[i]->get_price() + " miedziaków\n";
 	}
       body->get_mobile()->get_user()->message_scroll(items);
-      return;
+      break;
     case "mam":
 	if (sizeof(parts) < 2 || parts[1] == "")
 	{
@@ -105,16 +106,22 @@ void hook_whisper(object body, string message)
 	  {
 	    whisper(body, "Widzę, że nie masz takiego przedmiotu do zaoferowania.");
 	  }
-	return;
+	break;
+    case "porady":
+      whisper(body, "Proszę bardzo: sklepy, w których znajdziesz ekwipunek znajdują się na wschód\n"
+	      + "od ratusza. Dokładnie na zachód od ratusza (wejście od strony placu) jest bar\n"
+	      + "gdzie można spotkać innych poszukiwaczy przygód. Natomiast jeżeli pójdziesz na \n"
+	      + "zachód od ratusza ulicą, trafisz na szpital.\n");
+      break;
     default:
       whisper(body, "Witaj, widzę, że jesteś nieco zagubiony. Oto kilka wskazówek, które mogę Ci\n"
 	  + "dać. Jeżeli potrzebujesz pieniędzy, płacimy tutaj w ratuszu za zabicie\n"
 	  + "określonych istot. Aby otrzymać wynagrodzenie za daną istotę, musisz przynieść\n"
 	  + "dowód do mnie. Jeżeli chcesz się dowiedzieć dokładnie jakie dowody, szepnij\n"
 	  + "do mnie 'lista' aby zobaczyć ich listę wraz z ofertą ile płacimy za nie.\n"
-	  + "Jeżeli masz przy sobie to czego potrzebujemy, szepnij do mnie 'mam <nazwa \n"
-	  + "przedmiotu>. Wtedy wymienimy Twoje przedmioty na gotówkę.\n");
-      return;
+	  + "przedmiotu>. Wtedy wymienimy Twoje przedmioty na gotówkę. Jeżeli potrzebujesz\n"
+	      + "jakiś porad, szepnij do mnie 'porady'.\n");
+      break;
     }
 }
 
