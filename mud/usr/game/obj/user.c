@@ -511,6 +511,10 @@ void death()
   message("GINIESZ.\n");
  
   current_room = HOSPITAL_ROOM;
+  if (!MAPD->get_room_by_num(current_room))
+    {
+      current_room = START_ROOM;
+    }
   new_body = clone_object(SIMPLE_ROOM);
   new_body->set_brief(body->get_brief());
   new_body->set_look(body->get_look());
