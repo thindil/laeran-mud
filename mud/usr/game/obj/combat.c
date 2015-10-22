@@ -165,6 +165,10 @@ void combat_round(void)
       evade = (combat_info2["evade"] / 2) + (random(50) / 2);
     }
   combat_info1["stamina"] -= combat_info1["stam_cost"];
+  if (combat_info1["stamina"] < 0)
+    {
+      combat_info1["stamina"] = 0;
+    }
   message = "Atakujesz " + combat_info2["name"];
   message2 = combat_info1["name"] + " atakuje Ciebie";
   if (hit > evade)
@@ -191,6 +195,10 @@ void combat_round(void)
       message2 += " ale udaje Ci się uniknąć ciosu.";
       combat_info2["dodge"] = 1;
       combat_info2["stamina"]--;
+      if (combat_info2["stamina"] < 0)
+	{
+	  combat_info2["stamina"] = 0;
+	}
     }
   fighter1->get_mobile()->get_user()->message(message + "\n");
   if (fighter2->get_mobile()->get_user())
@@ -214,6 +222,10 @@ void combat_round(void)
       evade = (combat_info1["evade"] / 2) + (random(50) / 2);
     }
   combat_info2["stamina"] -= combat_info2["stam_cost"];
+  if (combat_info2["stamina"] < 0)
+    {
+      combat_info2["stamina"] = 0;
+    }
   message2 = "Atakujesz " + combat_info1["name"];
   message = combat_info2["name"] + " atakuje Ciebie";
   if (hit > evade)
@@ -240,13 +252,23 @@ void combat_round(void)
       message += " ale udaje Ci się uniknąć ciosu.";
       combat_info1["dodge"] = 1;
       combat_info1["stamina"]--;
+      if (combat_info1["stamina"] < 0)
+	{
+	  combat_info1["stamina"] = 0;
+	}
     }
   fighter1->get_mobile()->get_user()->message(message + "\n");
+  fighter1->get_mobile()->get_user()->set_condition(combat_info1["stamina"]);
+  fighter1->get_mobile()->get_user()->set_health(combat_info1["hp"]);
   fighter1->get_mobile()->get_user()->print_prompt();
+  fighter1->get_mobile()->get_user()->message("\n");
   if (fighter2->get_mobile()->get_user())
     {
       fighter2->get_mobile()->get_user()->message(message2 + "\n");
+      fighter2->get_mobile()->get_user()->set_condition(combat_info2["stamina"]);
+      fighter2->get_mobile()->get_user()->set_health(combat_info2["hp"]);
       fighter2->get_mobile()->get_user()->print_prompt();
+      fighter2->get_mobile()->get_user()->message("\n");
     }
   if (combat_info1["hp"] < 1)
     {
@@ -304,7 +326,6 @@ void stop_combat()
       if (combat_info1["hp"] < fighter1->get_hp())
 	{
 	  TAGD->set_tag_value(fighter1, "Hp", combat_info1["hp"]);
-	  fighter1->get_mobile()->get_user()->set_health(combat_info1["hp"]);
 	}
       fatigue = (fighter1->get_mobile()->get_user()->get_stat_val("kondycja") * 10) - combat_info1["stamina"];
       if (fatigue < 0)
@@ -312,7 +333,6 @@ void stop_combat()
 	  fatigue = 0;
 	}
       TAGD->set_tag_value(fighter1, "Fatigue", fatigue);
-      fighter1->get_mobile()->get_user()->set_condition(fatigue);
     }
   if (combat_info2["hp"] > 0)
     {
@@ -322,17 +342,12 @@ void stop_combat()
 	}
       if (fighter2->get_mobile()->get_user())
 	{
-	  if (combat_info2["hp"] < fighter2->get_hp())
-	    {
-	      fighter2->get_mobile()->get_user()->set_health(combat_info2["hp"]);
-	    }
 	  fatigue = (fighter2->get_mobile()->get_user()->get_stat_val("kondycja") * 10) - combat_info2["stamina"];
 	  if (fatigue < 0)
 	    {
 	      fatigue = 0;
 	    }
 	  TAGD->set_tag_value(fighter2, "Fatigue", fatigue);
-	  fighter2->get_mobile()->get_user()->set_condition(fatigue);
 	}
     }
 }

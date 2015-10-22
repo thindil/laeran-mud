@@ -672,7 +672,7 @@ void set_condition(int fatigue)
 }
 
 /* Show prompt to user */
-static void print_prompt(void)
+void print_prompt(void)
 {
   string str;
 
