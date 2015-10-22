@@ -31,6 +31,8 @@ static object combat;
        void upgraded(varargs int clone);
 static void cmd_social(object user, string cmd, string str);
        void death(void);
+       void set_health(int hp);
+       void set_condition(int fatigue);
 
 /* Macros */
 #define NEW_PHRASE(x) PHRASED->new_simple_english_phrase(x)
@@ -41,6 +43,8 @@ static void cmd_social(object user, string cmd, string str);
 int current_room;
 mapping stats;
 mapping skills;
+string health;
+string condition;
 
 /*
  * NAME:	create()
@@ -214,6 +218,14 @@ void player_login(int first_time)
   if (skills == nil)
     {
       skills = ([ ]);
+    }
+  if (!health || health == "")
+    {
+      health = "Zdrowy";
+    }
+  if (!condition || condition == "")
+    {
+      condition = "Wypoczęty";
     }
 
   if(!body) {
@@ -595,11 +607,91 @@ void gain_exp(string skill, int value)
   skills[skill] = ({ level, exp });
 }
 
+/* Set string value of health for prompt */
+void set_health(int hp)
+{
+  float percent;
+  
+  percent = (float)((float)hp / (float)body->get_hp());
+  if (percent == 1.0)
+    {
+      health = "Zdrowy";
+    }
+  else if (percent < 1.0 && percent >= 0.8)
+    {
+      health = "Poturbowany";
+    }
+  else if (percent < 0.8 && percent >= 0.6)
+    {
+      health = "Lekko ranny";
+    }
+  else if (percent < 0.6 && percent >= 0.4)
+    {
+      health = "Ranny";
+    }
+  else if (percent < 0.4 && percent >= 0.2)
+    {
+      health = "Ciężko ranny";
+    }
+  else
+    {
+      health = "Na skraju śmierci";
+    }
+}
+
+/* Set string value of condition for prompt */
+void set_condition(int fatigue)
+{
+  float percent;
+
+  percent = (float)((float)fatigue / (float)(stats["kondycja"][0] * 10));
+  if (percent == 1.0)
+    {
+      condition = "Wypoczęty";
+    }
+  else if (percent < 1.0 && percent >= 0.8)
+    {
+      condition = "Nieco zmęczony";
+    }
+  else if (percent < 0.8 && percent >= 0.6)
+    {
+      condition = "Zmęczony";
+    }
+  else if (percent < 0.6 && percent >= 0.4)
+    {
+      condition = "Bardzo zmęczony";
+    }
+  else if (percent < 0.4 && percent >= 0.2)
+    {
+      condition = "Wykończony";
+    }
+  else
+    {
+      condition = "Padnięty";
+    }
+}
+
+/* Show prompt to user */
+static void print_prompt(void)
+{
+  string str;
+
+  str = (wiztool) ? query_editor(wiztool) : nil;
+  if (str)
+    {
+      message(":");
+    }
+  else
+    {
+      message("[" + health + "] [" + condition + "]");
+    }
+}
+
 /************** User-level commands *************************/
 
 static void cmd_ooc(object user, string cmd, string str) {
   if (!str || str == "") {
-    message("Uzycie: " + cmd + " <tekst>\n");
+    message("Użycie: " + cmd + " <tekst>\n");
     return;
   }
 
@@ -991,6 +1083,7 @@ static void cmd_movement(object user, string cmd, string str) {
   fatigue++;
   TAGD->set_tag_value(body, "Fatigue", fatigue);
   gain_exp("kondycja", 1);
+  set_condition((stats["kondycja"][0] * 10) - fatigue);
   
   if (TAGD->get_tag_value(body, "Combat"))
     {
