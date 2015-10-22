@@ -81,6 +81,11 @@ static void create(int clone)
   } else {
     upgraded(clone);
   }
+
+  if(!find_object(US_REPORT_BUG))
+    {
+      compile_object(US_REPORT_BUG);
+    }
 }
 
 void upgraded(varargs int clone) {

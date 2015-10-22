@@ -86,9 +86,9 @@ void upgraded(varargs int clone) {
 		     "pomoc"     : "cmd_help",
 		     "kto"       : "cmd_users",
 		     "omnie"     : "cmd_whoami",
-		     "bug"       : "cmd_bug",
-		     "literowka" : "cmd_typo",
-		     "idea"      : "cmd_idea",
+		     "bug"       : "cmd_report",
+		     "literowka" : "cmd_report",
+		     "idea"      : "cmd_report",
 		     "powiedz"   : "cmd_tell",
 		     "szepnij"   : "cmd_whisper",
 		     "pp"        : "cmd_ooc",
@@ -660,42 +660,6 @@ static void cmd_whisper(object self, string cmd, string str)
     {
       mobile->whisper(user[0], str);
     }
-}
-
-/* Report bug */
-static void cmd_bug(object user, string cmd, string str)
-{
-  if (!str || str == "")
-    {
-      message("Użycie: " + cmd + " <tekst>\n");
-      return;
-    }
-  write_file("/usr/game/text/bug_reports.txt", Name + ": " + str + "\n\n");
-  message("Dziękujemy za zgłoszenie błędu.\n");
-}
-
-/* Report typo */
-static void cmd_typo(object user, string cmd, string str)
-{
-  if (!str || str == "")
-    {
-      message("Użycie: " + cmd + " <tekst>\n");
-      return;
-    }
-  write_file("/usr/game/text/typo_reports.txt", Name + ": " + str + "\n\n");
-  message("Dziękujemy za zgłoszenie literówki.\n");
-}
-
-/* Propose idea */
-static void cmd_idea(object user, string cmd, string str)
-{
-  if (!str || str == "")
-    {
-      message("Użycie: " + cmd + " <tekst>\n");
-      return;
-    }
-  write_file("/usr/game/text/idea_reports.txt", Name + ": " + str + "\n\n");
-  message("Dziękujemy za propozycję.\n");
 }
 
 static void cmd_whoami(object user, string cmd, string str) {
@@ -1483,4 +1447,40 @@ static void cmd_attack(object user, string cmd, string str)
   message("Atakujesz " + tmp[number]->get_brief()->to_string(user) + "...\n");
   combat = clone_object(COMBAT);
   combat->start_combat(body, tmp[number]);
+}
+
+/* Report bug, typo or propose idea */
+void cmd_report(object user, string cmd, string str)
+{
+  string filename, rtype;
+
+  switch (cmd)
+    {
+    case "bug":
+      filename = "/usr/game/text/bug_reports.txt";
+      rtype = "błędu";
+      break;
+    case "literowka":
+      filename = "/usr/game/text/typo_reports.txt";
+      rtype = "literówki";
+      break;
+    case "idea":
+      filename = "/usr/game/text/idea_reports.txt";
+      rtype = "pomysłu";
+      break;
+    default:
+      message("Ups, coś poszło nie tak.\n");
+      return;
+    }
+  if (!str || str == "")
+    {
+      push_new_state(US_REPORT_BUG, cmd, user);
+      push_new_state(US_ENTER_DATA);
+      return;
+    }
+  else
+    {
+      write_file(filename, Name + ": " + str + "\n");
+    }
+  message("Dziękujemy za zgłoszenie " + rtype  + ".\n");
 }

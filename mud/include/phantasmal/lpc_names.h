@@ -81,6 +81,7 @@
 #define US_SCROLL_TEXT      "/usr/common/obj/ustate/scroll_text"
 #define US_OLC_ATTRIB       "/usr/common/obj/ustate/olcattrib"
 #define US_MAKE_ROOM        "/usr/common/obj/ustate/makeroom"
+#define US_REPORT_BUG       "/usr/common/obj/ustate/report_bug"
 
 /* Telnet Option Handlers */
 #define TELOPT_DEFAULT_HANDLER  "/usr/common/obj/telopt/default_dgd"
