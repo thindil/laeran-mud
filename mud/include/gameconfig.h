@@ -21,4 +21,4 @@
 
 #define START_ROOM             100
 #define LOCKER_ROOM            1
-#define HOSPITAL_ROOM          100
+#define HOSPITAL_ROOM          417
