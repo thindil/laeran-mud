@@ -32,7 +32,8 @@ private void suspend_system();
 private void release_system();
 static  void __co_write_rooms(object user, int* objects, int* zones,
 			      int ctr, int zone_ctr, string roomfile,
-			      string mobfile, string zonefile);
+			      string mobfile, string zonefile,
+			      int filesize, int extension);
 static  void __co_write_mobs(object user, int* objects, int ctr,
 			     string mobfile, string zonefile);
 static  void __co_write_zones(object user, int* objects, int ctr,
@@ -344,7 +345,7 @@ void save_mud_data(object user, string room_dirname, string mob_filename,
   }
 
   cohandle = call_out("__co_write_rooms", 0, user, objects, save_zones,
-		      0, 0, room_dirname, mob_filename, zone_filename);
+		      0, 0, room_dirname, mob_filename, zone_filename, 0, -1);
   if(cohandle < 1) {
     error("Can't schedule call_out to save objects!");
   } else {
@@ -450,12 +451,23 @@ private void release_system() {
 
 static void __co_write_rooms(object user, int* objects, int* save_zones,
 			     int ctr, int zone_ctr, string roomdir,
-			     string mobfile, string zonefile) {
+			     string mobfile, string zonefile, int filesize,
+			     int extension)
+{
   string unq_str, roomfile, err;
   object obj;
-  int    chunk_ctr;
+  int    chunk_ctr, index;
+  string *file_ext;
 
-  roomfile = roomdir + "/zone" + save_zones[zone_ctr] + ".unq";
+  file_ext = ({ "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" });
+  if (extension == -1)
+    {
+      roomfile = roomdir + "/zone" + save_zones[zone_ctr] + ".unq";
+    }
+  else
+    {
+      roomfile = roomdir + "/zone" + save_zones[zone_ctr] + file_ext[extension] + ".unq";
+    }
 
   catch {
     chunk_ctr = 0;
@@ -469,6 +481,14 @@ static void __co_write_rooms(object user, int* objects, int* save_zones,
 	obj = MAPD->get_room_by_num(objects[ctr]);
 
 	err = catch(unq_str = obj->to_unq_text());
+
+	filesize += strlen(unq_str);
+	if (filesize > 64000)
+	  {
+	    extension ++;
+	    roomfile = roomdir + "/zone" + save_zones[zone_ctr] + file_ext[extension] + ".unq";
+	    filesize = strlen(unq_str);
+	  }
 
 	if(err || !write_file(roomfile, unq_str)) {
 	  LOGD->write_syslog("Couldn't write room " + objects[ctr]
@@ -488,6 +508,8 @@ static void __co_write_rooms(object user, int* objects, int* save_zones,
 	  roomfile = roomdir + "/zone" + save_zones[zone_ctr] + ".unq";
 	  objects = MAPD->rooms_in_zone(save_zones[zone_ctr]);
 	  ctr = 0;
+	  filesize = 0;
+	  extension = -1;
 	}
       }
 
@@ -496,7 +518,7 @@ static void __co_write_rooms(object user, int* objects, int* save_zones,
     if((objects && ctr < sizeof(objects)) || zone_ctr < sizeof(save_zones)) {
       /* Still saving rooms... */
       if(call_out("__co_write_rooms", 0, user, objects, save_zones,
-		  ctr, zone_ctr, roomdir, mobfile, zonefile) < 1) {
+		  ctr, zone_ctr, roomdir, mobfile, zonefile, filesize, extension) < 1) {
 	error("Can't schedule call_out to continue writing rooms!");
       }
       return;
