@@ -216,7 +216,7 @@ int new_in_segment(int segment, object obj) {
     seg = segments[segment];
   }
   if(owners[seg[0]] != previous_program())
-    error("Can't allocate in segment you don't own!");
+    return -1;
 
   for(ctr = 0; ctr < sizeof(seg[1]); ctr++) {
     if(!seg[1][ctr]) {
