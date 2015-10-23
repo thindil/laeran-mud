@@ -155,6 +155,11 @@ void heart_beat_func(void)
 	  mobile->get_user()->message("Jesteś już kompletnie wypoczęty.\n");
 	  mobile->get_user()->set_condition(mobile->get_user()->get_stat_val("kondycja") * 10);
 	}
+      /* Move wander type mobiles */
+      if (mobile->get_type() == "wander" && !TAGD->get_tag_value(mobile->get_body(), "Combat"))
+	{
+	  mobile->random_move();
+	}
     }
 }
 
