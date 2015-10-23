@@ -617,7 +617,10 @@ string to_unq_text(void) {
 
   ret  = "~mobile{\n";
   ret += "  ~type{" + this_object()->get_type() + "}\n";
-  ret += "  ~name{" + body->get_brief()->as_unq() + "}\n";
+  if (bodynum > -1)
+    {
+      ret += "  ~name{" + body->get_brief()->as_unq() + "}\n";
+    }
   ret += "  ~number{" + number + "}\n";
   ret += "  ~body{" + bodynum + "}\n";
   if (parentbody > 0)
