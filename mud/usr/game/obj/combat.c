@@ -326,6 +326,7 @@ void stop_combat()
       if (combat_info1["hp"] < fighter1->get_hp())
 	{
 	  TAGD->set_tag_value(fighter1, "Hp", combat_info1["hp"]);
+	  fighter1->get_mobile()->get_user()->set_health(combat_info1["hp"]);
 	}
       fatigue = (fighter1->get_mobile()->get_user()->get_stat_val("kondycja") * 10) - combat_info1["stamina"];
       if (fatigue < 0)
@@ -333,6 +334,7 @@ void stop_combat()
 	  fatigue = 0;
 	}
       TAGD->set_tag_value(fighter1, "Fatigue", fatigue);
+      fighter1->get_mobile()->get_user()->set_condition(combat_info1["stamina"]);
     }
   if (combat_info2["hp"] > 0)
     {
@@ -342,12 +344,17 @@ void stop_combat()
 	}
       if (fighter2->get_mobile()->get_user())
 	{
+	  if (combat_info2["hp"] < fighter2->get_hp())
+	    {
+	      fighter1->get_mobile()->get_user()->set_health(combat_info1["hp"]);
+	    }
 	  fatigue = (fighter2->get_mobile()->get_user()->get_stat_val("kondycja") * 10) - combat_info2["stamina"];
 	  if (fatigue < 0)
 	    {
 	      fatigue = 0;
 	    }
 	  TAGD->set_tag_value(fighter2, "Fatigue", fatigue);
+	  fighter2->get_mobile()->get_user()->set_condition(combat_info2["stamina"]);
 	}
     }
 }
