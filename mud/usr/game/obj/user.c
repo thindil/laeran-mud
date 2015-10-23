@@ -1214,6 +1214,7 @@ static void cmd_social(object user, string cmd, string str) {
 static void cmd_get(object user, string cmd, string str) {
   object* tmp;
   string err;
+  int index;
 
   if(str)
     str = STRINGD->trim_whitespace(str);
@@ -1230,35 +1231,59 @@ static void cmd_get(object user, string cmd, string str) {
     return;
   }
 
+  if (sscanf(str, "%d %s", index, str) != 2)
+    {
+      index = 0;
+    }
+  index --;
+  if (index < -1)
+    {
+      message("W marzeniach.\n");
+      return;
+    }
+
   tmp = find_first_objects(str, LOC_CURRENT_ROOM, LOC_INVENTORY);
   if(!tmp || !sizeof(tmp)) {
     message("Nie możesz znaleźć jakiegokolwiek '" + str + "'.\n");
     return;
   }
 
-  if(sizeof(tmp) > 1) {
-    message("Więcej niż jedna z tych rzeczy leży w okolicy.\n");
-    message("Wybrałeś ");
-    send_phrase(tmp[0]->get_brief());
-    message(".\n");
-  }
+  if (index > sizeof(tmp))
+    {
+      message("Nie ma aż tyle '" + str + "' w okolicy.\n");
+      return;
+    }
 
-  if(tmp[0] == location) {
+  if(sizeof(tmp) > 1)
+    {
+      if (index == -1)
+	{
+	  message("Więcej niż jedna z tych rzeczy leży w okolicy.\n");
+	  index = 0;
+	}
+    message("Wybrałeś "+ tmp[index]->get_brief()->to_string(user) + ".\n");
+  }
+  if (index == -1)
+    {
+      index = 0;
+    }
+
+  if(tmp[index] == location) {
     message("Nie możesz tego zabrać. Znajdujesz się wewnątrz tego.\n");
     return;
   }
 
-  if(tmp[0]->get_detail_of()) {
+  if(tmp[index]->get_detail_of()) {
     message("Nie możesz tego wziąć. Jest częścią ");
-    send_phrase(tmp[0]->get_detail_of()->get_brief());
+    send_phrase(tmp[index]->get_detail_of()->get_brief());
     message(".\n");
     return;
   }
 
-  if(!(err = mobile->place(tmp[0], body)))
+  if(!(err = mobile->place(tmp[index], body)))
     {
-      message("Bierzesz " + tmp[0]->get_brief()->to_string(user) + ".\n");
-      TAGD->set_tag_value(tmp[0], "DropTime", nil);
+      message("Bierzesz " + tmp[index]->get_brief()->to_string(user) + ".\n");
+      TAGD->set_tag_value(tmp[index], "DropTime", nil);
     }
   else
     {
@@ -1266,16 +1291,29 @@ static void cmd_get(object user, string cmd, string str) {
     }
 }
 
-static void cmd_drop(object user, string cmd, string str) {
+static void cmd_drop(object user, string cmd, string str)
+{
   object* tmp;
   string err;
+  int index;
 
   if(str)
     str = STRINGD->trim_whitespace(str);
   if(!str || str == "") {
-    message("Użycie: " + cmd + " <obiekt>\n");
+    message("Użycie: " + cmd + " [numer] <obiekt>\n");
     return;
   }
+
+  if (sscanf(str, "%d %s", index, str) != 2)
+    {
+      index = 0;
+    }
+  index --;
+  if (index < -1)
+    {
+      message("W marzeniach.\n");
+      return;
+    }
 
   tmp = find_first_objects(str, LOC_INVENTORY, LOC_BODY);
   if(!tmp || !sizeof(tmp)) {
@@ -1283,22 +1321,36 @@ static void cmd_drop(object user, string cmd, string str) {
     return;
   }
 
+  if (index > sizeof(tmp))
+    {
+      message("Nie masz aż tyle '" + str + "' ze sobą.\n");
+      return;
+    }
+
   if(sizeof(tmp) > 1)
     {
-      message("Masz więcej niż jedną taką rzecz.\n");
-      message("Wybierasz " + tmp[0]->get_brief()->to_string(user) + ".\n");
+      if (index == -1)
+	{
+	  message("Masz więcej niż jedną taką rzecz.\n");
+	  index = 0;
+	}
+      message("Wybierasz " + tmp[index]->get_brief()->to_string(user) + ".\n");
+    }
+  if (index == -1)
+    {
+      index = 0;
     }
 
-  if (tmp[0]->is_dressed())
+  if (tmp[index]->is_dressed())
     {
-      tmp[0]->set_dressed(0);
-      message("Zdejmujesz " + tmp[0]->get_brief()->to_string(user) + ".\n");
+      tmp[index]->set_dressed(0);
+      message("Zdejmujesz " + tmp[index]->get_brief()->to_string(user) + ".\n");
     }
 
-  if (!(err = mobile->place(tmp[0], location)))
+  if (!(err = mobile->place(tmp[index], location)))
     {
-      message("Upuszczasz " + tmp[0]->get_brief()->to_string(user) + ".\n");
-      TAGD->set_tag_value(tmp[0], "DropTime", time());
+      message("Upuszczasz " + tmp[index]->get_brief()->to_string(user) + ".\n");
+      TAGD->set_tag_value(tmp[index], "DropTime", time());
     }
   else
     {

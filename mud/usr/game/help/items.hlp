@@ -17,13 +17,16 @@ zdejmij              Zdejmij noszony przedmiot
 }
 
 
-~name{wez,bierz,podnies,weź,podnieś}
+~name{wez,bierz,weź}
 ~desc{
 
 Po prostu wpisz "wez" a następnie opis przedmiotu aby go
 podnieść i zabrać ze sobą. Na przykład "wez purpurowa rzepa"
 albo "wez ser". Możesz brać przedmioty z pojemników poprzez
-napisanie "wez chleb z sakwa"
+napisanie "wez chleb z sakwa". Jeżeli posiadasz więcej niż
+jeden taki sam przedmiot, możesz podać jego numer aby wziąć ten
+wybrany. Na przykład, "wez 3 miecz" (czyli weź trzeci z kolei
+miecz).
 
 Zobacz również: wsadz, wyjmij, upusc
 
@@ -91,7 +94,10 @@ Zobacz również: wez, wsadz, upusc
 ~desc{
 
 Po prostu wpisz "upusc" a następnie nazwę przedmiotu aby go upuścić.
-Na przykład, "upusc goracy ziemniak".
+Na przykład, "upusc goracy ziemniak". Jeżeli posiadasz więcej niż
+jeden taki sam przedmiot, możesz podać jego numer aby upuścić ten
+wybrany. Na przykład, "upusc 3 miecz" (czyli upuszczasz trzeci
+z kolei miecz).
 
 Zobacz również: wez, wsadz, wyjmij
 
