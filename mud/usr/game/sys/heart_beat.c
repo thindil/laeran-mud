@@ -85,16 +85,16 @@ void heart_beat_func(void)
 	    {
 	      body->set_openable(1);
 	    }
-	  if (mobile->get_spawnroom())
+	  if (mobile->get_spawnroom() > 0)
 	    {
 	      room = MAPD->get_room_by_num(mobile->get_spawnroom());
 	      zone = ZONED->get_zone_for_room(room);
 	    }
 	  else
 	    {
-	      zone = ZONED->get_zone_for_room(mobile->get_parentbody());
+	      zone = ZONED->get_zone_for_room(parentbody->get_location());
 	      rooms = MAPD->rooms_in_zone(zone);
-	      roll = -1;
+	      roll = mobile->get_parentbody();
 	      while (roll == mobile->get_parentbody())
 		{
 		  roll = random(sizeof(rooms));
@@ -103,6 +103,7 @@ void heart_beat_func(void)
 		      roll = mobile->get_parentbody();
 		    }
 		}
+	      room = MAPD->get_room_by_num(rooms[roll]);
 	    }
 	  MAPD->add_room_to_zone(body, -1, zone);
 	  room->add_to_container(body);
