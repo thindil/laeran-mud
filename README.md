@@ -25,7 +25,7 @@ Wszystkie kroki/polecenia wykonujemy w terminalu. Oczywiście najpierw trzeba po
 
 		make install
 
-* Zauktualizuj plik konfiguracyjny gry
+* Zaktualizuj plik konfiguracyjny gry
 
 ## 4. Uruchamianie ##
 
@@ -33,4 +33,4 @@ W konsoli, przejdź do katalogu bin/ i wykonaj komendę:
 
 	./driver [nazwa pliku .dgd]
 
-Bądź edytuj dowolnym edytorem plik   run.sh  
+Bądź edytuj dowolnym edytorem plik *run.sh*
