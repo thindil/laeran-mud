@@ -531,10 +531,104 @@ static void cmd_remove_exit(object user, string cmd, string str) {
   user->message("Exit " + str + " destroyed.\n");
 }
 
+void list_exits(object user, int* exits, int ctr)
+{
+  int    dir, type, chunk_ctr;
+  string tmpstr;
+  object exit, dest, phr, from;
+
+   chunk_ctr = 0;
+   tmpstr = "";
+   while(chunk_ctr < 20  && (exits && ctr < sizeof(exits)))
+     {
+       for(; ctr < sizeof(exits) && chunk_ctr < 20; ctr++, chunk_ctr++)
+	 {
+	   exit = EXITD->get_exit_by_num(exits[ctr]);
+	   dest = exit->get_destination();
+	   from = exit->get_from_location();
+
+	   tmpstr += "Exit #" + exit->get_number();
+	   
+	   if(exit->get_brief())
+	     tmpstr += " (" + exit->get_brief()->to_string(user) + ") ";
+	   else
+	     tmpstr += " (no desc) ";
+	   
+	   dir = exit->get_direction();
+	   if(dir != -1) {
+	     phr = EXITD->get_name_for_dir(dir);
+	     if(!phr)
+	       tmpstr += "undef direction " + dir;
+	     else
+	       tmpstr += phr->to_string(user);
+	   } else
+	     tmpstr += "no direction";
+	   /* Show "from" location as number or commentary */
+	   tmpstr += " from #";
+	   if (!from)
+	     tmpstr += "<none>";
+	   else if (from->get_number() == -1)
+	     tmpstr += "<unregistered room>";
+	   else
+	     tmpstr += from->get_number();
+	   
+	   /* Show "to" location as number or commentary */
+	   tmpstr += " to #";
+	   if(!dest)
+	     tmpstr += "<none>";
+	   else if (dest->get_number() == -1)
+	     tmpstr += "<unregistered room>";
+	   else
+	     tmpstr += dest->get_number();
+	   /* Show type: one-way, two-way, other */
+	   tmpstr += " type: ";
+	   type = exit->get_exit_type();
+	   switch (type) {
+	   case 1: /* one-way */
+	     tmpstr += "one-way";
+	     break;
+	   case 2: /* two-way */
+	     tmpstr += "two-way";
+	     break;
+	   default: /* unknown */
+	     tmpstr += type;
+	     break;
+	   }
+	   
+	   /* Show "link" location as number or commentary */
+	   tmpstr += " link #";
+	   tmpstr += exit->get_link();
+	   
+	   if (exit->is_open())
+	     tmpstr += " Open";
+	   else
+	     tmpstr += " Closed";
+	   
+	   if (exit->is_openable())
+	     tmpstr += " Openable";
+	   
+	   if (exit->is_container())
+	     tmpstr += " Container";
+	   
+	   if (exit->is_locked())
+	     tmpstr += " Locked";
+	   
+	   if (exit->is_lockable())
+	     tmpstr += " Lockable";
+	   
+	   tmpstr += "\n";
+	 }
+     }
+   user->message(tmpstr);
+   if(exits && ctr < sizeof(exits))
+     {
+       call_out("list_exits", 0, user, exits, ctr);
+     }
+}
+
 static void cmd_list_exits(object user, string cmd, string str) {
   int   *tmp, *segs, *exits;
   int    ctr;
-  string tmpstr;
 
   if(str && !STRINGD->is_whitespace(str)) {
     user->message("Usage: " + cmd + "\n");
@@ -557,16 +651,7 @@ static void cmd_list_exits(object user, string cmd, string str) {
   }
 
   user->message("Exits:\n");
-  tmpstr = "";
-  for(ctr = 0; ctr < sizeof(exits); ctr++) {
-    object exit;
-
-    exit = EXITD->get_exit_by_num(exits[ctr]);
-
-    tmpstr = "#";
-    tmpstr += exit->get_number();
-    cmd_list_exit(user, "cmd_list_exit", tmpstr);
-  }
+  call_out("list_exits", 0, user, exits, 0);
 
   ctr = EXITD->num_deferred_exits();
   if(ctr)
