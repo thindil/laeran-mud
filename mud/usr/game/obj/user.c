@@ -572,6 +572,10 @@ void gain_exp(string skill, int value)
 	{
 	  exp -= needexp;
 	  stats[skill][0] ++;
+	  if (skill == "siła" && stats[skill][0] < 51)
+	    {
+	      body->set_weight_capacity(50.0 + (float)stats[skill][0]);
+	    }
 	}
       stats[skill][1] = exp;
       if (stats[skill][0] > 50)
