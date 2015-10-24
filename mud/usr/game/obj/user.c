@@ -968,7 +968,7 @@ static void cmd_put(object user, string cmd, string str) {
   string  obj1, obj2;
   object* portlist, *contlist, *tmp;
   object  port, cont;
-  int     ctr;
+  int     ctr, portindex, contindex;
   string err;
 
   if(str)
@@ -984,12 +984,39 @@ static void cmd_put(object user, string cmd, string str) {
     return;
   }
 
+  if (sscanf(obj1, "%d %s", portindex, obj1) != 2)
+    {
+      portindex = 0;
+    }
+  portindex --;
+  if (portindex < -1)
+    {
+      message("W marzeniach.\n");
+      return;
+    }
+
+  if (sscanf(obj2, "%d %s", contindex, obj2) != 2)
+    {
+      contindex = 0;
+    }
+  contindex --;
+  if (contindex < -1)
+    {
+      message("W marzeniach.\n");
+      return;
+    }
+
   portlist = find_first_objects(obj1, LOC_INVENTORY, LOC_CURRENT_ROOM,
 				LOC_BODY);
   if(!portlist || !sizeof(portlist)) {
     user->message("Nie możesz znaleźć żadnego '" + obj1 + "' w okolicy.\n");
     return;
   }
+  if (portindex >= sizeof(portlist))
+    {
+      message("Nie ma aż tyle '" + obj1 + "' w okolicy.\n");
+      return;
+    }
 
   contlist = find_first_objects(obj2, LOC_INVENTORY, LOC_CURRENT_ROOM,
 				LOC_BODY);
@@ -1009,19 +1036,42 @@ static void cmd_put(object user, string cmd, string str) {
     user->message("Nie możesz znaleźć żadnego '" + obj2 + "' w okolicy.\n");
     return;
   }
+  if (contindex >= sizeof(contlist))
+    {
+      message("Nie ma aż tyle '" + obj2 + "' w okolicy.\n");
+      return;
+    }
 
-  if(sizeof(portlist) > 1) {
-    user->message("Jest więcej niż jeden obiekt pasujący do '" + obj1 + "'.  "
-		  + "Wybrałeś " + portlist[0]->get_brief()->to_string(user) + ".\n");
+  if(sizeof(portlist) > 1)
+    {
+      if (portindex == -1)
+	{
+	  message("Jest więcej niż jeden obiekt pasujący do '" + obj1 + "'.\n");
+	  portindex = 0;
+	}
+      message("Wybrałeś " + portlist[portindex]->get_brief()->to_string(user) + ".\n");
   }
+  if (portindex == -1)
+    {
+      portindex = 0;
+    }
 
-  if(sizeof(contlist) > 1) {
-    user->message("Jest więcej niż jeden obiekt pasujący do '" + obj2 + "'.  "
-		  + "Wybrałeś " + contlist[0]->get_brief()->to_string(user) + ".\n");
+  if(sizeof(contlist) > 1)
+    {
+      if (contindex == -1)
+	{
+	  message("Jest więcej niż jeden obiekt pasujący do '" + obj2 + "'.\n");
+	  contindex = 0;
+	}
+      message("Wybrałeś " + contlist[contindex]->get_brief()->to_string(user) + ".\n");
   }
+  if (contindex == -1)
+    {
+      contindex = 0;
+    }
 
-  port = portlist[0];
-  cont = contlist[0];
+  port = portlist[portindex];
+  cont = contlist[contindex];
 
   if (port->is_dressed())
     {
@@ -1045,7 +1095,7 @@ static void cmd_remove(object user, string cmd, string str) {
   string  obj1, obj2;
   object* portlist, *contlist, *tmp;
   object  port, cont;
-  int     ctr;
+  int     ctr, portindex, contindex;
   string err;
 
   if(str)
@@ -1063,18 +1113,54 @@ static void cmd_remove(object user, string cmd, string str) {
     return;
   }
 
+  if (sscanf(obj1, "%d %s", portindex, obj1) != 2)
+    {
+      portindex = 0;
+    }
+  portindex --;
+  if (portindex < -1)
+    {
+      message("W marzeniach.\n");
+      return;
+    }
+
+  if (sscanf(obj2, "%d %s", contindex, obj2) != 2)
+    {
+      contindex = 0;
+    }
+  contindex --;
+  if (contindex < -1)
+    {
+      message("W marzeniach.\n");
+      return;
+    }
+
   contlist = find_first_objects(obj2, LOC_INVENTORY, LOC_CURRENT_ROOM,
 				LOC_BODY);
   if(!contlist || !sizeof(contlist)) {
     user->message("Nie możesz znaleźć jakiegokolwiek '" + obj2 + "' w okolicy.\n");
     return;
   }
+  if (contindex >= sizeof(contlist))
+    {
+      message("Nie ma aż tyle '" + obj2 + "' w okolicy.\n");
+      return;
+    }
 
-  if(sizeof(contlist) > 1) {
-    user->message("Więcej niż jeden pojemnik pasuje do '" + obj2 + "'.\n");
-    user->message("Wybrałeś " + contlist[0]->get_brief() + ".\n");
-  }
-  cont = contlist[0];
+  if(sizeof(contlist) > 1)
+    {
+      if (contindex == -1)
+	{
+	  message("Jest więcej niż jeden obiekt pasujący do '" + obj2 + "'.\n");
+	  contindex = 0;
+	}
+      message("Wybrałeś " + contlist[contindex]->get_brief()->to_string(user) + ".\n");
+    }
+  if (contindex == -1)
+    {
+      contindex = 0;
+    }
+  cont = contlist[contindex];
 
   portlist = cont->find_contained_objects(user, obj1);
   if(!portlist || !sizeof(portlist)) {
@@ -1083,12 +1169,26 @@ static void cmd_remove(object user, string cmd, string str) {
     user->message(".\n");
     return;
   }
+  if (portindex >= sizeof(portlist))
+    {
+      message("Nie ma aż tyle '" + obj1 + "' w okolicy.\n");
+      return;
+    }
 
-  if(sizeof(portlist) > 1) {
-    user->message("Więcej niż jedna rzecz pasuje do '" + obj1 + "'.\n");
-    user->message("Wybrałeś " + portlist[0]->get_brief() + ".\n");
+  if(sizeof(portlist) > 1)
+    {
+      if (portindex == -1)
+	{
+	  message("Jest więcej niż jeden obiekt pasujący do '" + obj1 + "'.\n");
+	  portindex = 0;
+	}
+      message("Wybrałeś " + portlist[portindex]->get_brief()->to_string(user) + ".\n");
   }
-  port = portlist[0];
+  if (portindex == -1)
+    {
+      portindex = 0;
+    }
+  port = portlist[portindex];
 
   if (!(err = mobile->place(port, body))) {
     user->message("Wziąłeś ");
@@ -1252,7 +1352,7 @@ static void cmd_get(object user, string cmd, string str) {
     return;
   }
 
-  if (index > sizeof(tmp))
+  if (index >= sizeof(tmp))
     {
       message("Nie ma aż tyle '" + str + "' w okolicy.\n");
       return;
@@ -1325,7 +1425,7 @@ static void cmd_drop(object user, string cmd, string str)
     return;
   }
 
-  if (index > sizeof(tmp))
+  if (index >= sizeof(tmp))
     {
       message("Nie masz aż tyle '" + str + "' ze sobą.\n");
       return;

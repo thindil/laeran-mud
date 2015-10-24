@@ -38,7 +38,12 @@ Zobacz również: wsadz, wyjmij, upusc
 
 Możesz wkładać przedmioty do innych przedmiotów poprzez napisanie
 "wsadz" bądź "umiesc" -- na przykład "wsadz miecz do skrzynia" lub
-"umiesc tarcza w woz".
+"umiesc tarcza w woz". Jeżeli jest więcej niż jeden przedmiot o tej
+samej nazwie, który chcesz włożyć, możesz podać jego numer, np
+"wsadz 1 miecz do skrzynia". Jeżeli jest wiecej niż jeden pojemnij,
+możesz również użyć numeru aby wsadzić w ten wybrany, np "umiesc
+miecz w 2 skrzynia". Oczywiście możesz też połączyć oba np "wsadz
+2 miecz w 1 skrzynia".
 
 Zobacz również: wez, wyjmij, upusc, otworz, zamknij
 
@@ -72,7 +77,12 @@ Zobacz również: wez, wsadz, wyjmij, upusc, otworz
 
 Możesz wziąć obiekt z pojemnika poprzez napisanie "wyjmij zolw z
 mala miska" albo "wyjmij Bob ze skrzynia". Standardowa komenda
-"wez" też powinna działać.
+"wez" też powinna działać. Jeżeli jest więcej niż jeden przedmiot
+w okolicy o tej samej nazwie, który chcesz wyjąć, wpisz jego
+numer, np "wyjmij 2 zolw ze skrzynia". Jeżeli w okolicy jest
+więcej pojemników o tej samej nazwie, również możesz je numerować,
+np "wyjmij zolw ze 3 skrzynia". Oczywiście możesz też wybrać i
+przedmiot i pojemnik na raz: "wyjmij 1 zolw ze 1 skrzynia".
 
 Zobacz również: wez, wsadz, upusc, otworz, zamknij
 
