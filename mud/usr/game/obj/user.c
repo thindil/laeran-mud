@@ -1465,14 +1465,25 @@ static void cmd_drop(object user, string cmd, string str)
 static void cmd_open(object user, string cmd, string str) {
   object* tmp;
   string  err;
-  int     ctr;
+  int     ctr, index;
 
   if(str)
     str = STRINGD->trim_whitespace(str);
   if(!str || str == "") {
-    message("Użycie: " + cmd + " <obiekt>\n");
+    message("Użycie: " + cmd + " [numer] <obiekt>\n");
     return;
   }
+
+  if (sscanf(str, "%d %s", index, str) != 2)
+    {
+      index = 0;
+    }
+  index --;
+  if (index < -1)
+    {
+      message("W marzeniach.\n");
+      return;
+    }
 
   tmp = find_first_objects(str, LOC_CURRENT_ROOM, LOC_INVENTORY, LOC_CURRENT_EXITS);
   if(!tmp || !sizeof(tmp)) {
@@ -1480,22 +1491,35 @@ static void cmd_open(object user, string cmd, string str) {
     return;
   }
 
-  ctr = 0;
-  if(sizeof(tmp) > 1) {
-    for(ctr = 0; ctr < sizeof(tmp); ctr++) {
-      if(tmp[ctr]->is_openable())
-	break;
-    }
-    if(ctr >= sizeof(tmp)) {
-      message("Żadne z wybranych nie może być otwarte.\n");
+  if (index >= sizeof(tmp))
+    {
+      message("Nie ma aż tyle '" + str + "' w okolicy.\n");
       return;
     }
 
-    message("Więcej niż jedno takie jest w okolicy.\n");
-    message("Wybierasz ");
-    send_phrase(tmp[ctr]->get_brief());
-    message(".\n");
-  }
+  ctr = 0;
+  if(sizeof(tmp) > 1)
+    {
+      for(ctr = 0; ctr < sizeof(tmp); ctr++)
+	{
+	  if(tmp[ctr]->is_openable())
+	    break;
+	}
+      if(ctr >= sizeof(tmp))
+	{
+	  message("Żadne z wybranych nie może być otwarte.\n");
+	  return;
+	}
+      if (index == -1)
+	{
+	  message("Więcej niż jedno takie jest w okolicy.\n");
+	}
+      else
+	{
+	  ctr = index;
+	}
+      message("Wybierasz " + tmp[ctr]->get_brief()->to_string(user) + ".\n");
+    }
 
   if(!tmp[ctr]->is_openable()) {
     message("Nie możesz tego otworzyć!\n");
@@ -1514,36 +1538,60 @@ static void cmd_open(object user, string cmd, string str) {
 static void cmd_close(object user, string cmd, string str) {
   object* tmp;
   string  err;
-  int     ctr;
+  int     ctr, index;
 
   if(str)
     str = STRINGD->trim_whitespace(str);
   if(!str || str == "") {
-    message("Użycie: " + cmd + " <obiekt>\n");
+    message("Użycie: " + cmd + " [numer] <obiekt>\n");
     return;
   }
 
+  if (sscanf(str, "%d %s", index, str) != 2)
+    {
+      index = 0;
+    }
+  index --;
+  if (index < -1)
+    {
+      message("W marzeniach.\n");
+      return;
+    }
+  
   tmp = find_first_objects(str, LOC_CURRENT_ROOM, LOC_CURRENT_EXITS);
   if(!tmp || !sizeof(tmp)) {
     message("Nie możesz znaleźć jakiegokolwiek '" + str + "'.\n");
     return;
   }
 
-  ctr = 0;
-  if(sizeof(tmp) > 1) {
-    for(ctr = 0; ctr < sizeof(tmp); ctr++) {
-      if(tmp[ctr]->is_openable())
-	break;
-    }
-    if(ctr >= sizeof(tmp)) {
-      message("Żadne z tych nie może być zamknięte.\n");
+  if (index >= sizeof(tmp))
+    {
+      message("Nie ma aż tyle '" + str + "' w okolicy.\n");
       return;
     }
-
-    message("Więcej niż jedno takie jest w okolicy.\n");
-    message("Wybierasz ");
-    send_phrase(tmp[ctr]->get_brief());
-    message(".\n");
+  
+  ctr = 0;
+  if(sizeof(tmp) > 1)
+    {
+      for(ctr = 0; ctr < sizeof(tmp); ctr++)
+	{
+	  if(tmp[ctr]->is_openable())
+	    break;
+	}
+      if(ctr >= sizeof(tmp))
+	{
+	  message("Żadne z tych nie może być zamknięte.\n");
+	  return;
+	}
+      if (index == -1)
+	{
+	  message("Więcej niż jedno takie jest w okolicy.\n");
+	}
+      else
+	{
+	  ctr = index;
+	}
+      message("Wybierasz " + tmp[ctr]->get_brief()->to_string(user) + ".\n");
   }
 
   if(!tmp[ctr]->is_openable()) {

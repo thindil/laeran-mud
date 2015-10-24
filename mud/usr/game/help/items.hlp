@@ -54,7 +54,10 @@ Zobacz również: wez, wyjmij, upusc, otworz, zamknij
 ~desc{
 
 Możesz otworzyć otwieralny pojemnik poprzez wpisanie "otworz" --
-na przykład "otworz skrzynia" lub "otworz plecak".
+na przykład "otworz skrzynia" lub "otworz plecak". Jeżeli jest
+więcej niż jeden pojemnik tego typu w okolicy, możesz podać
+numer pojemnika, który chcesz otworzyć. Na przykład: "otworz
+ 2 skrzynia".
 
 Zobacz również: wez, wsadz, wyjmij, upusc, zamknij
 
@@ -65,7 +68,9 @@ Zobacz również: wez, wsadz, wyjmij, upusc, zamknij
 ~desc{
 
 Możesz zamknąć zamykalny pojemnik poprzez napisanie "zamknij" -- na
-przykład "zamknij skrzynia" lub "zamknij plecak".
+przykład "zamknij skrzynia" lub "zamknij plecak". Jeżeli jest więcej
+niż jeden pojemnik tego typu w okolicy, możesz podać numer
+pojemnika, który chcesz zamknąć. Na przykład: "zamknij 3 plecak".
 
 Zobacz również: wez, wsadz, wyjmij, upusc, otworz
 
