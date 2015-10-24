@@ -1,5 +1,4 @@
-~name{~enUS{mobile,mobiles,mob,mobs,creature,creatures,npc,npcs,NPC,NPCs,NPCS,
-            monster,monsters}}
+~name{mobki,mob,moby,npc,npcs,NPC,NPCs,NPCS}
 ~keywords{admin}
 ~desc{
   ~enUS{

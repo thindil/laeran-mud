@@ -2,25 +2,26 @@
 ~keywords{admin}
 ~desc{
 
-The builder commands play with rooms, exits, mobiles and portables.
-Help on the following major topics is available:
+Komendy budowniczego pozwalają na zabawę z pokojami, wyjściami,
+mobkami i przenośnymi. Dostępna jest pomoc na następujące ważne
+tematy:
 
-help objects
-help rooms
-help zones
-help exits
-help mobiles
-help portables
-help segments
+pomoc obiekty
+pomoc pokoje
+pomoc strefy
+pomoc wyjścia
+pomoc moby
+pomoc przenośne
+pomoc segmenty
 
-A big resource on building can be found at
+Dużo informacji na temat budowania można znaleźć na:
 
 http://phantasmal.sourceforge.net/OLC
 
 }
 
 
-~name{~enUS{exit,exits,door,doors,passage,passages}}
+~name{wyjścia,wyjscia,wyjscie,wyjście,drzwi}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -150,7 +151,7 @@ destination room has been loaded.
 
 }}
 
-~name{~enUS{zone,zones}}
+~name{strefy,strefa}
 ~keywords{admin}
 ~desc{
   ~enUS{

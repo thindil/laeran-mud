@@ -41,7 +41,7 @@ danych.
 Jeżeli jednak naprawdę tego chcesz, możesz wpisać "%shutdown force"
 aby wyłączyć Laeran *bez* zapisywania jakichkolwiek danych.
 
-Zobacz rówież %reboot.
+Zobacz również %reboot.
 
 }
 
@@ -90,7 +90,7 @@ Zobacz również: %statedump, %save, %shutdown, %reboot
 Komenda %statedump wykona zrzut pamięci środowiska LPC MUDa do pliku,
 który można później ponownie załadować. To jest dużo bardziej
 kompletne i mniej podatne na błędy zachowanie aby wyłączyć i włączyć
-grę ponownie niż mechanizm %shutdown połączony z autoładowaniem
+grę ponownie niż mechanizm %shutdown połączony z auto-ładowaniem
 obiektów. Jednakże może to pogorszyć niektóre błędy programistyczne
 ze względu na trwały model gry. Aby dowiedzieć się więcej na ten
 temat, zajrzyj na listę dyskusyjną DGD. Tego typu MUDy zostały tam
@@ -141,7 +141,7 @@ Zobacz również: %shutdown, %reboot, %safesave, %statedump
 Komenda %staus podaje niskopoziomowe informacje o procesie drivera
 DGD, włączając jaka wersja DGD jest używana, statystyki przestrzeni
 wymiany oraz pamięci, jak wiele dozwolonych obiektów, calloutów i
-połączeń jest używanych oraz czas startu i uptime.
+połączeń jest używanych oraz czas startu i up-time.
 
 }
 
@@ -162,12 +162,12 @@ wraz z ich adresami IP z których obecnie są zalogowani.
 Komenda @log (zwana również %log lub %writelog) pobiera pojedynczy
 argument tekstowy, podobnie jak komenda "mow". Jednakże ta zapisuje
 ten teks wraz z Twoim imieniem do logów systemowych. Generalnie,
-jest to bardzo prosta metoda wysłania czegoś na kształt emaila, za
+jest to bardzo prosta metoda wysłania czegoś na kształt maila, za
 wyjątkiem dużych MUDów, ponieważ przez większość czasu logi są
 regularnie czytane (bądź nie) i czyszczone aby zrobić miejsce dla
 nowych.
 
-Zobacz również:  %log_subscribe, logi, kanał log
+Zobacz również:  %log_subscribe, log systemowy, kanał log
 
 }
 
@@ -197,62 +197,58 @@ itd) zamiast numeru aby ustawić poziom wiadomości.
 
 }
 
-~name{~enUS{log file, file log, logfile, file}}
+~name{logfile,log systemowy}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The log file keeps track of what's going on in the MUD.
-Administrators can see entries as they are made on the log channel.
-They can choose what goes into it with the %log_subscribe command.
-Its current default location is /log/System.log in the Phantasmal
-directory tree.
+W logu systemowym znajduje się informacja co się dzieje w grze.
+Administratorzy mogą zobaczyć wpisy kiedy są zapisani do kanału
+Log. Mogą wybrać co idzie do dziennika przy pomocy komendy
+%log_subscribe. Domyślna lokacja logu systemowego dla Phantasmal
+to /log/System.log.
 
-See also:  log channel, %log_subscribe
+Zobacz również:  kanał log, %log_subscribe
 
-}}
+}
 
 
-~name{~enUS{log channel, channel log, logchannel}}
+~name{kanal log,kanał log,log kanal,log kanał}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-Administrators can subscribe to the log channel with the channels
-command.  You can also subscribe at a particular level of severity
-with the same command.  For instance:
+Administratorzy mogą włączyć kanał Log przy pomocy komendy 'kanaly'.
+Możesz również wybrać poziom ważności wpisów jakie chcesz
+obserwować, przy pomocy tej samej komendy. Na przykład:
 
-channel log on verbose
-channel log on error
+kanal log wl verbose
+kanal log wl error
 
-You'll get all notifications at that level and above (so "verbose"
-gives lots), even if the logfile isn't actually receiving them
-because of its %log_subscribe settings.
+Dostaniesz wszystkie powiadomienia na tym poziomie i wyższym (czyli
+"verbose" da całkiem sporo), nawet jeżeli log systemowy nie
+otrzymuje ich ze względu na ustawienia %log_subscribe.
 
-See also:  logfile, %log_subscribe
+Zobacz również:  logfile, %log_subscribe
 
-}}
+}
 
 
-~name{~enUS{error channel, channel error, errorchannel}}
+~name{kanał error,kanal error,error kanał,error kanal}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-Administrators can subscribe to the error channel with the channels
-command.  You can also subscribe at a particular level of severity
-with the same command.  For instance:
+Administratorzy mogą włączyć kanał Error (błędów) przy pomocy
+komendy 'kanaly'. Możesz również wybrać poziom ważności wpisów
+jakie chcesz obserwować, przy pomocy tej samej komendy. Na przykład:
 
-channel error on verbose
-channel error on error
+kanal error wl verbose
+kanal error wl error
 
-Currently errors aren't divided by severity, so any subscription to
-the channel will send you all uncaught errors that the ErrorD
-receives.
+Obecnie błędy nie są dzielone ze względu na powagę, więc dowolny
+poziom na kanale wyśle Tobie wszystkie błędy jakie ErrorD otrzyma.
 
-See also:  logfile, %log_subscribe
+Zobacz również:  logfile, %log_subscribe
 
-}}
+}
 
 ~name{zgloszenia, zgłoszenia}
 ~keywords{admin}
@@ -262,7 +258,7 @@ Administratorzy mogą przeglądać wszystkie zgłoszenia błędów, literówek
 czy pomysłów, które zostały wysłane przez graczy. Aby zobaczyć wybrane
 zgłoszenia należy podać rodzaj zgłoszeń. Użycie:
 
-zgloszenia bug          pokaże zgłoszenia wszytkich błędów
+zgloszenia bug          pokaże zgłoszenia wszystkich błędów
 zgloszenia idea         pokaże wszystkie zgłoszone propozycje
 zgloszenia literowka    pokaże wszystkie zgłoszenia literówek
 zgloszenia pomoc        pokaże wszystkie zgłoszenia brakującej pomocy

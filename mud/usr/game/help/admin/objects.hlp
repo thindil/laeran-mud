@@ -1,4 +1,4 @@
-~name{~enUS{object,objects,obj,objs}}
+~name{obiekty,obiekt}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -33,7 +33,7 @@ specific to those objects.
 }}
 
 
-~name{~enUS{segment,segments,seg,segs}}
+~name{segment,segmenty,seg}
 ~keywords{admin}
 ~desc{
   ~enUS{
