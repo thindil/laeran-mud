@@ -531,19 +531,67 @@ static void cmd_remove_exit(object user, string cmd, string str) {
   user->message("Exit " + str + " destroyed.\n");
 }
 
-static string exit_info(int exitnum, object user)
-{
-  int    dir, type;
+static void cmd_list_exits(object user, string cmd, string str) {
+  int   *tmp, *segs, *exits;
+  int    ctr;
+  string tmpstr;
+
+  if(str && !STRINGD->is_whitespace(str)) {
+    user->message("Usage: " + cmd + "\n");
+    return;
+  }
+
+  /* Ignore cmd, str for the moment */
+  segs = EXITD->get_exit_segments();
+  if(!segs) {
+    user->message("Can't get segments for exits!\n");
+    return;
+  }
+
+  tmp = ({ });
+  exits = ({ });
+  for(ctr = 0; ctr < sizeof(segs); ctr++) {
+    tmp = EXITD->exits_in_segment(segs[ctr]);
+    if(tmp && sizeof(tmp))
+      exits += tmp;
+  }
+
+  user->message("Exits:\n");
+  tmpstr = "";
+  for(ctr = 0; ctr < sizeof(exits); ctr++) {
+    object exit;
+
+    exit = EXITD->get_exit_by_num(exits[ctr]);
+
+    tmpstr = "#";
+    tmpstr += exit->get_number();
+    cmd_list_exit(user, "cmd_list_exit", tmpstr);
+  }
+
+  ctr = EXITD->num_deferred_exits();
+  if(ctr)
+    user->message(ctr + " deferred exits pending.\n");
+
+}
+
+static void cmd_list_exit(object user, string cmd, string str) {
+  int    objnum, dir, type;
   string tmpstr;
   object exit, dest, phr, from;
-  
+
+  if(!str || sscanf(str, "#%d", objnum) != 1) {
+    user->message("Usage: " + cmd + " #<exit num>\n");
+    return;
+  }
+
+  /* Ignore cmd, str for the moment */
   tmpstr = "";
 
-  exit = EXITD->get_exit_by_num(exitnum);
-  if(!exit)
-    {
-      return "";
-    }
+  exit = EXITD->get_exit_by_num(objnum);
+  if(!exit) {
+    user->message("Can't find exit #" + objnum + " \n");
+    return;
+  }
 
   dest = exit->get_destination();
   from = exit->get_from_location();
@@ -556,15 +604,13 @@ static string exit_info(int exitnum, object user)
     tmpstr += " (no desc) ";
 
   dir = exit->get_direction();
-  if(dir != -1)
-    {
-      phr = EXITD->get_name_for_dir(dir);
-      if(!phr)
-	tmpstr += "undef direction " + dir;
-      else
-	tmpstr += phr->to_string(user);
-    }
-  else
+  if(dir != -1) {
+    phr = EXITD->get_name_for_dir(dir);
+    if(!phr)
+      tmpstr += "undef direction " + dir;
+    else
+      tmpstr += phr->to_string(user);
+  } else
     tmpstr += "no direction";
   /* Show "from" location as number or commentary */
   tmpstr += " from #";
@@ -620,68 +666,6 @@ static string exit_info(int exitnum, object user)
     tmpstr += " Lockable";
 
   tmpstr += "\n";
-
-  return tmpstr;
-}
-
-static void cmd_list_exits(object user, string cmd, string str) {
-  int   *tmp, *segs, *exits;
-  int    ctr;
-  string tmpstr;
-
-  if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\n");
-    return;
-  }
-
-  /* Ignore cmd, str for the moment */
-  segs = EXITD->get_exit_segments();
-  if(!segs) {
-    user->message("Can't get segments for exits!\n");
-    return;
-  }
-
-  tmp = ({ });
-  exits = ({ });
-  for(ctr = 0; ctr < sizeof(segs); ctr++) {
-    tmp = EXITD->exits_in_segment(segs[ctr]);
-    if(tmp && sizeof(tmp))
-      exits += tmp;
-  }
-
-  user->message("Exits:\n");
-  tmpstr = "";
-  for(ctr = 0; ctr < sizeof(exits); ctr++) {
-    object exit;
-
-    exit = EXITD->get_exit_by_num(exits[ctr]);
-
-    tmpstr += exit_info(exit->get_number(), user);
-  }
-
-  ctr = EXITD->num_deferred_exits();
-  if(ctr)
-    user->message(ctr + " deferred exits pending.\n");
-
-  user->message_scroll(tmpstr);
-
-}
-
-static void cmd_list_exit(object user, string cmd, string str) {
-  int    objnum;
-  string tmpstr;
-
-  if(!str || sscanf(str, "#%d", objnum) != 1) {
-    user->message("Usage: " + cmd + " #<exit num>\n");
-    return;
-  }
-
-  tmpstr = exit_info(objnum, user);
-
-  if (tmpstr == "")
-    {
-      user->message("Nie mogę znaleźć wjścia #" + objnum + "\n");
-    }
 
   user->message(tmpstr);
 }
