@@ -6,3 +6,4 @@ mud/usr/game/object/**
 mud/usr/game/users/*.*
 mud/usr/System/keys/**
 mud/usr/game/text/*_reports.txt
+snapshot*

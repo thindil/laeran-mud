@@ -2113,6 +2113,6 @@ static void cmd_reboot(object user, string cmd, string str)
 	message("Permission denied.\n");
     } else {
 	::dump_state();
-	::shutdown();
+	::shutdown(1);
     }
 }
