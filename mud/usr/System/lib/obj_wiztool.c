@@ -130,25 +130,33 @@ private void priv_mob_stat(object user, object mob) {
 
   tmp = "";
 
-  tmp = "Body: ";
+  tmp = "Ciało: ";
   if(mobbody) {
     tmp += "#" + mobbody->get_number() + " (";
     tmp += mobbody->get_brief()->to_string(user);
     tmp += ")\n";
   } else {
-    tmp += "(none)\n";
+    tmp += "(brak)\n";
   }
 
-  tmp += "User: ";
+  tmp += "Użytkownik: ";
   if(mobuser) {
     tmp += mobuser->get_name() + "\n";
   } else {
-    tmp += "(NPC, not player)\n";
+    tmp += "(NPC, nie gracz)\n";
   }
+
+  tmp += "Typ: " + mob->get_type() + "\n";
+
+    if (mob->get_parentbody())
+        tmp += "Ciało archetypu: " + mob->get_parentbody() + "\n";
+
+    if (mob->spawnroom())
+        tmp += "Pokój w którym się pojawia: " + mob->get_spwanroom() + "\n";
 
   tags = TAGD->mobile_all_tags(mob);
   if(!sizeof(tags)) {
-    tmp += "\nNo tags set.\n";
+    tmp += "\nBrak tagów.\n";
   } else {
     for(ctr = 0; ctr < sizeof(tags); ctr+=2) {
       tmp += "  " + tags[ctr] + ": " + STRINGD->mixed_sprint(tags[ctr + 1])
