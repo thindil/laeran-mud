@@ -963,16 +963,16 @@ static void cmd_set_obj_flag(object user, string cmd, string str) {
   mapping valmap;
 
   if(str) str = STRINGD->trim_whitespace(str);
-  if(str && !STRINGD->stricmp(str, "flagnames")) {
-    user->message("Flag names:  cont container open openable locked lockable\n");
+  if(str && !STRINGD->stricmp(str, "flagi")) {
+    user->message("Nazwy flag:  cont container open openable locked lockable weapon wearable\n");
     return;
   }
 
   if(!str || sscanf(str, "%*s %*s %*s %*s") == 4
      || (sscanf(str, "#%d %s %s", objnum, flagname, flagstring) != 3
 	 && sscanf(str, "#%d %s", objnum, flagname) != 2)) {
-    user->message("Usage: " + cmd + " #<obj> flagname [flagvalue]\n");
-    user->message("       " + cmd + " flagnames\n");
+    user->message("Użycie: " + cmd + " #<obiekt> flaga [wartość]\n");
+    user->message("       " + cmd + " flagi\n");
     return;
   }
 
@@ -980,7 +980,7 @@ static void cmd_set_obj_flag(object user, string cmd, string str) {
   if(!obj) {
     obj = EXITD->get_exit_by_num(objnum);
     if (!obj) {
-      user->message("Can't find object #" + objnum + "!\n");
+      user->message("Nie mogę znaleźć obiektu #" + objnum + "!\n");
       return;
     }
   }
@@ -997,28 +997,43 @@ static void cmd_set_obj_flag(object user, string cmd, string str) {
     if( ({ flagstring }) & map_indices(valmap) ) {
       flagval = valmap[flagstring];
     } else {
-      user->message("I can't tell if value '" + flagstring
-		    + "' is true or false!\n");
+      user->message("Nie wiem czy wartość '" + flagstring + "' jest prawdą czy fałszem!\n");
       return;
     }
   } else {
     flagval = 1;
   }
 
-  if(!STRINGD->stricmp(flagname, "cont")
-     || !STRINGD->stricmp(flagname, "container")) {
-    obj->set_container(flagval);
-  } else if(!STRINGD->stricmp(flagname, "open")) {
-    obj->set_open(flagval);
-  } else if(!STRINGD->stricmp(flagname, "openable")) {
-    obj->set_openable(flagval);
-  } else if(!STRINGD->stricmp(flagname, "locked")) {
-    obj->set_locked(flagval);
-  } else if(!STRINGD->stricmp(flagname, "lockable")) {
-    obj->set_lockable(flagval);
+  flagname = STRINGD->to_lower(flagname);
+  switch (flagname) {
+      case "cont":
+      case "container":
+          obj->set_container(flagval);
+          break;
+      case "open":
+          obj->set_open(flagval);
+          break;
+      case "openable":
+          obj->set_openable(flagval);
+          break;
+      case "locked":
+          obj->set_locked(flagval);
+          break;
+      case "lockable":
+          obj->set_lockable(flagval);
+          break;
+      case "weapon":
+          obj->set_weapon(flagval);
+          break;
+      case "wearable":
+          obj->set_wearable(flagval);
+          break;
+      default:
+          user->message("Nieznana flaga " + flagname + "\n");
+          return;
   }
 
-  user->message("Done.\n");
+  user->message("Wykonano.\n");
 }
 
 
