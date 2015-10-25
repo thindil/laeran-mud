@@ -361,13 +361,12 @@ static void cmd_stat(object user, string cmd, string str) {
 
   if(function_object("is_weapon", obj)) 
     {
-      if (obj->is_weapon())
-	{
-	  tmp += "Obiekt jest bronią.\n";
-	}
+        if (obj->is_weapon())
+            tmp += "Obiekt jest bronią.\n";
     }
 
-  tmp += "Zadaje " + (string)obj->get_damage() + " obrażeń.\n";
+  if (function_object("get_damage", obj))
+    tmp += "Zadaje " + (string)obj->get_damage() + " obrażeń.\n";
 
   if(function_object("is_wearable", obj))
     {
@@ -395,12 +394,16 @@ static void cmd_stat(object user, string cmd, string str) {
 	}
     }
 
-  tmp += "Zbroja obiektu wynosi: " + (string)obj->get_armor() + "\n";
-  tmp += "Cena za obiekt wynosi: " + (string)obj->get_price() + "\n";
-  tmp += "Punkty życia obiektu: " + (string)obj->get_hp() + "\n";
-  tmp += "Poziom bojowy obiektu: " + (string)obj->get_combat_rating() + "\n";
+  if (function_object("get_armor", obj))
+    tmp += "Zbroja obiektu wynosi: " + (string)obj->get_armor() + "\n";
+  if (function_object("get_price", obj))
+    tmp += "Cena za obiekt wynosi: " + (string)obj->get_price() + "\n";
+  if (function_object("get_hp", obj))
+    tmp += "Punkty życia obiektu: " + (string)obj->get_hp() + "\n";
+  if (function_object("get_combat_rating", obj))
+    tmp += "Poziom bojowy obiektu: " + (string)obj->get_combat_rating() + "\n";
 
-  if (sizeof(obj->get_body_locations()))
+  if (function_object("get_body_locations", obj) && sizeof(obj->get_body_locations()))
     {
       tmp += "Lokacje ciała: " + implode(obj->get_body_locations(), ", ") + "\n";
     }
