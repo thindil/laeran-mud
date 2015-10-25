@@ -747,12 +747,124 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
   user->message("Done setting parents.\n");
 }
 
+static void cmd_set_obj_wearlocations(object user, string cmd, string str) 
+{
+    object obj;
+    int objnum, i;
+    string locations;
+    string *value;
+    int *newvalue;
+
+    
+    if(!str || sscanf(str, "#%d %s", objnum, locations) < 1) {
+        user->message("Użycie: " + cmd + " #<obiekt> [wartość]\n");
+        return;
+    }
+    if (!locations)
+        locations = "";
+    value = explode(locations, ", ");
+
+    newvalue = ({ });
+    for (i = 0; i < sizeof(value); i++) {
+        switch (value[i]) {
+        case "głowa":
+            newvalue += ({0});
+            break;
+        case "tułów":
+            newvalue += ({1});
+            break;
+        case "ręce":
+            newvalue += ({2});
+            break;
+        case "dłonie":
+            newvalue += ({3});
+            break;
+        case "nogi":
+            newvalue += ({4});
+            break;
+        default:
+            break;
+        }
+    }
+
+    obj = MAPD->get_room_by_num(objnum);
+    if(!obj) {
+        user->message("The object must be a room or portable.  Obj #"
+		      + objnum + " is not.\n");
+        return;
+    }
+
+    call_other(obj, "set_wearlocations", newvalue);
+
+    user->message("Wykonane.\n");
+}
+
+static void cmd_set_obj_body_locations(object user, string cmd, string str) 
+{
+  object  obj;
+  int     objnum;
+  string  value;
+  string  *newvalue;
+
+  if(!str || sscanf(str, "#%d %s", objnum, value) < 1) {
+    user->message("Użycie: " + cmd + " #<obiekt> [wartość]\n");
+    return;
+  }
+
+  if (!value)
+      value = "";
+
+  obj = MAPD->get_room_by_num(objnum);
+  if(!obj) {
+    user->message("The object must be a room or portable.  Obj #"
+		  + objnum + " is not.\n");
+    return;
+  }
+
+  newvalue = explode(value, ", ");
+  call_other(obj, "set_body_locations", newvalue);
+
+  user->message("Wykonane.\n");
+}
+
+/* Set object values for string based fields. */
+static void cmd_set_obj_string_value(object user, string cmd, string str) 
+{
+  object  obj;
+  int     objnum;
+  string  cmd_value_name, newvalue;
+
+  if(!str || sscanf(str, "%*s %*s %*s") == 3
+     || sscanf(str, "#%d %s", objnum, newvalue) < 1) {
+    user->message("Użycie: " + cmd + " #<obiekt> [wartość]\n");
+    return;
+  }
+
+  if (!newvalue)
+      newvalue = "";
+
+  if (sscanf(cmd, "%*s_%*s_%s", cmd_value_name) != 3) {
+    user->message("Wewnętrzny błąd w komendzie '" + cmd + "'.\n");
+    return;
+  }
+
+  obj = MAPD->get_room_by_num(objnum);
+  if(!obj) {
+    user->message("The object must be a room or portable.  Obj #"
+		  + objnum + " is not.\n");
+    return;
+  }
+
+  call_other(obj, "set_" + cmd_value_name, newvalue);
+
+  user->message("Wykonane.\n");
+}
 /* Set object values for int based fields. */
 static void cmd_set_obj_int_value(object user, string cmd, string str) 
 {
   object  obj;
   int     objnum, newvalue;
-  string  cmd_value_name, cmd_norm_name;
+  string  cmd_value_name;
 
   if(!str || sscanf(str, "%*s %*s %*s") == 3
      || sscanf(str, "#%d %d", objnum, newvalue) != 2) {

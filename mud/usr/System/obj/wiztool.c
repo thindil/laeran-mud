@@ -83,11 +83,16 @@ void upgraded(varargs int clone) {
 	"@set_obj_length_cap"         : ({ "cmd_set_obj_value" }),
 	"@set_obj_len_cap"            : ({ "cmd_set_obj_value" }),
 	"@set_obj_height_cap"         : ({ "cmd_set_obj_value" }),
+
     "@set_obj_damage"             : ({ "cmd_set_obj_int_value" }),
     "@set_obj_armor"              : ({ "cmd_set_obj_int_value" }),
     "@set_obj_price"              : ({ "cmd_set_obj_int_value" }),
     "@set_obj_hp"                 : ({ "cmd_set_obj_int_value" }),
-    "@set_obj_combat_rating"             : ({ "cmd_set_obj_int_value" }),
+    "@set_obj_combat_rating"      : ({ "cmd_set_obj_int_value" }),
+
+    "@set_obj_skill"              : ({ "cmd_set_obj_string_value" }),
+    "@set_obj_wearlocations"      : ({ "cmd_set_obj_wearlocations" }),
+    "@set_obj_body_locations"     : ({ "cmd_set_obj_body_locations" }),
 
 	"@set_obj_weight"             : ({ "cmd_set_obj_value" }),
 	"@set_obj_volume"             : ({ "cmd_set_obj_value" }),
