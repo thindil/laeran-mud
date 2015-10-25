@@ -744,6 +744,41 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
   user->message("Done setting parents.\n");
 }
 
+/* Set object values for int based fields. */
+static void cmd_set_obj_int_value(object user, string cmd, string str) 
+{
+  object  obj;
+  int     objnum, newvalue;
+  string  cmd_value_name, cmd_norm_name;
+
+  if(!str || sscanf(str, "%*s %*s %*s") == 3
+     || sscanf(str, "#%d %d", objnum, newvalue) != 2) {
+    user->message("Użycie: " + cmd + " #<obiekt> <wartość>\n");
+    return;
+  }
+
+  if (sscanf(cmd, "%*s_%*s_%s", cmd_value_name) != 3) {
+    user->message("Wewnętrzny błąd w komendzie '" + cmd + "'.\n");
+    return;
+  }
+
+  obj = MAPD->get_room_by_num(objnum);
+  if(!obj) {
+    user->message("The object must be a room or portable.  Obj #"
+		  + objnum + " is not.\n");
+    return;
+  }
+
+  if(newvalue < 0) {
+    user->message("Wartości muszą być dodatnie, " + newvalue + " nie jest.\n");
+    return;
+  }
+
+  call_other(obj, "set_" + cmd_value_name, newvalue);
+
+  user->message("Wykonane.\n");
+}
+
 
 /* This function is called for set_obj_weight, set_obj_volume,
    and set_obj_height and their synonyms, as well as
