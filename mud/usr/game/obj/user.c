@@ -939,6 +939,18 @@ static void cmd_look(object user, string cmd, string str) {
   user->message("\n");
 }
 
+/*
+ * NAME:	lalign()
+ * DESCRIPTION:	return a string as a left-aligned string
+ */
+private string lalign(string num, int width)
+{
+    string str;
+
+    str = num + "                         ";
+    return str[0..width];
+}
+
 static void cmd_inventory(object user, string cmd, string str) {
   int    ctr;
   mixed* objs;
@@ -1616,25 +1628,26 @@ static void cmd_commands(object user, string cmd, string str)
   mixed indices;
 
   /* Standard commands */
-  msg = "Dostępne komendy: \n";
+  msg = "Dostępne komendy:";
   indices = map_indices(commands_map);
-  for (i = 0; i < sizeof(indices); i++)
-    {
-      msg += indices[i] + " ";
+  for (i = 0; i < sizeof(indices); i++) {
+      if (!(i % 5))
+          msg += "\n";
+      msg += lalign(indices[i], 20);
     }
-  msg += "wyloguj \n";
+  msg += lalign("wyloguj \n\n", 23);
   /* Admin commands */
-  if (is_admin())
-    {
+  if (is_admin()) {
       mixed* admin_commands;
-      msg += "Komendy administracyjne: \n";
+      msg += "Komendy administracyjne:";
       admin_commands = SYSTEM_WIZTOOL->get_command_sets(this_object());
       indices = map_indices(admin_commands[0]);
-      for (i = 0; i < sizeof(indices); i++)
-	{
-	  msg += indices[i] + " ";
-	}
-	msg += "\n";
+      for (i = 0; i < sizeof(indices); i++) {
+          if (!(i % 5))
+              msg += "\n";
+    	  msg += lalign(indices[i], 20);
+	    }
+      msg += "\n";
     }
   message_scroll(msg);
 }
