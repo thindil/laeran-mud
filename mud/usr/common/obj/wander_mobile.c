@@ -38,23 +38,20 @@ void random_move(void)
 
       ctr = random(num_ex + 10);
       if (ctr >= (num_ex - 1))
-	{
-	  return;
-	}
+          return;
       exit = location->get_exit_num(ctr);
       if(!exit)
-	{
-	  error("Internal error!  Can't get exit!");
-	}
+          error("Internal error!  Can't get exit!");
       
       dir = exit->get_direction();
       dest = exit->get_destination();
+
+      if (ZONED->get_zone_for_room(dest) != ZONED->get_zone_for_room(location))
+          return;
       
       reason = this_object()->move(dir);
       if(reason)
-	{
-	  error(reason);
-	}
+          error(reason);
     }
 }
 
