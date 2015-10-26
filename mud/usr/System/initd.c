@@ -35,7 +35,8 @@ static  void __co_write_rooms(object user, int* objects, int* zones,
 			      string mobfile, string zonefile,
 			      int filesize, int extension);
 static  void __co_write_mobs(object user, int* objects, int ctr,
-			     string mobfile, string zonefile);
+			     string mobfile, string zonefile, int filesize,
+                 int extension);
 static  void __co_write_zones(object user, int* objects, int ctr,
 			      string zonefile);
 static  void __co_write_users(object user);
@@ -274,7 +275,7 @@ static void create(varargs int clone)
   ERRORD->done_with_init();
 }
 
-void save_mud_data(object user, string room_dirname, string mob_filename,
+void save_mud_data(object user, string room_dirname, string mob_dirname,
 		   string zone_filename, string callback) {
   int   *objects, *save_zones;
   int    cohandle, iter;
@@ -302,16 +303,16 @@ void save_mud_data(object user, string room_dirname, string mob_filename,
 
   LOGD->write_syslog("Writing World Data to files...", LOG_NORMAL);
   LOGD->write_syslog("Rooms: '" + room_dirname + "/*', Mobiles: '"
-		     + mob_filename + "', Zones: '"
+		     + mob_dirname + "/*', Zones: '"
 		     + zone_filename + "'", LOG_VERBOSE);
 
   delete_directory(room_dirname + ".old");
   rename_file(room_dirname, room_dirname + ".old");
   delete_directory(room_dirname);
 
-  remove_file(mob_filename + ".old");
-  rename_file(mob_filename, mob_filename + ".old");
-  remove_file(mob_filename);
+  delete_directory(mob_dirname + ".old");
+  rename_file(mob_dirname, mob_dirname + ".old");
+  delete_directory(mob_dirname);
 
   remove_file(zone_filename + ".old");
   rename_file(zone_filename, zone_filename + ".old");
@@ -323,10 +324,11 @@ void save_mud_data(object user, string room_dirname, string mob_filename,
   }
   make_dir(room_dirname);
 
-  if(sizeof(get_dir(mob_filename)[0])) {
-    LOGD->write_syslog("Can't remove old mobfile -- trying to append!",
+  if(sizeof(get_dir(mob_dirname)[0])) {
+    LOGD->write_syslog("Can't remove old mobs directory -- trying to append!",
 		       LOG_FATAL);
   }
+  make_dir(mob_dirname);
 
   if(sizeof(get_dir(zone_filename)[0])) {
     LOGD->write_syslog("Can't remove old zonefile -- trying to append!",
@@ -345,7 +347,7 @@ void save_mud_data(object user, string room_dirname, string mob_filename,
   }
 
   cohandle = call_out("__co_write_rooms", 0, user, objects, save_zones,
-		      0, 0, room_dirname, mob_filename, zone_filename, 0, -1);
+		      0, 0, room_dirname, mob_dirname, zone_filename, 0, -1);
   if(cohandle < 1) {
     error("Can't schedule call_out to save objects!");
   } else {
@@ -378,7 +380,7 @@ void prepare_shutdown(void)
     LOGD->write_syslog("Shutting down MUD...", LOG_NORMAL);
   }
 
-  save_mud_data(this_user(), ROOM_DIR, MOB_FILE, ZONE_FILE,
+  save_mud_data(this_user(), ROOM_DIR, MOB_DIR, ZONE_FILE,
 		"__shutdown_callback");
 }
 
@@ -525,11 +527,11 @@ static void __co_write_rooms(object user, int* objects, int* save_zones,
     }
 
     /* Done with rooms, start on mobiles */
-    LOGD->write_syslog("Writing mobiles to file " + mobfile, LOG_VERBOSE);
+    LOGD->write_syslog("Writing mobiles to dir " + mobfile, LOG_VERBOSE);
 
     objects = MOBILED->all_mobiles();
     if(call_out("__co_write_mobs", 0, user, objects, 0, mobfile,
-		zonefile) < 1) {
+		zonefile, 0, 0) < 1) {
        error("Can't schedule call_out to start writing mobiles!");
      }
   } : {
@@ -540,10 +542,15 @@ static void __co_write_rooms(object user, int* objects, int* save_zones,
 }
 
 static void __co_write_mobs(object user, int* objects, int ctr,
-			    string mobfile, string zonefile) {
-  string unq_str, err;
+			    string mobsdir, string zonefile, int filesize, int extension) {
+  string unq_str, err, mobfile;
   object obj;
   int    chunk_ctr;
+
+    if (extension == 0)
+        mobfile = mobsdir + "/mobiles.unq";
+    else
+        mobfile = mobsdir + "/mobiles" + extension + ".unq";
 
   catch {
     for(chunk_ctr = 0; ctr < sizeof(objects) && chunk_ctr < SAVE_CHUNK;
@@ -551,6 +558,12 @@ static void __co_write_mobs(object user, int* objects, int ctr,
       obj = MOBILED->get_mobile_by_num(objects[ctr]);
 
       err = catch(unq_str = obj->to_unq_text());
+      filesize += strlen(unq_str);
+      if (filesize > 64000) {
+          extension ++;
+          mobfile = mobsdir + "/mobiles" + extension + ".unq";
+          filesize = strlen(unq_str);
+      }
 
       if(err || !write_file(mobfile, unq_str)) {
 	LOGD->write_syslog("Couldn't write mobile " + objects[ctr]
@@ -562,7 +575,7 @@ static void __co_write_mobs(object user, int* objects, int ctr,
     if(ctr < sizeof(objects)) {
       /* Still saving mobiles... */
       if(call_out("__co_write_mobs", 0, user, objects, ctr,
-		  mobfile, zonefile) < 1) {
+		  mobsdir, zonefile, filesize, extension) < 1) {
 	error("Can't schedule call_out to continue writing mobiles!");
       }
       return;
