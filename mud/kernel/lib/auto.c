@@ -737,8 +737,8 @@ static void swapout()
  */
 static void dump_state(varargs int incr)
 {
-    if (creator != "System" || !this_object()) {
-	error("Permission denied");
+    if ((creator != "System" && creator != "game") || !this_object()) {
+	    error("Permission denied");
     }
     rlimits (-1; -1) {
 	::find_object(DRIVER)->prepare_reboot();

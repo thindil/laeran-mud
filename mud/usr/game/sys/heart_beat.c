@@ -1,3 +1,4 @@
+#include <kernel/kernel.h>
 #include <phantasmal/lpc_names.h>
 #include <phantasmal/timed.h>
 
@@ -14,6 +15,7 @@ void set_up_heart_beat(void)
     {
       TIMED->set_heart_beat(TIMED_TEN_MINUTES, "heart_beat_clear");
       TIMED->set_heart_beat(TIMED_HALF_MINUTE, "heart_beat_func");
+      TIMED->set_heart_beat(TIMED_ONE_HOUR, "heart_beat_dump");
       TIMED->set_heart_beat(TIMED_ONE_DAY, "heart_beat_save");
     }
 }
@@ -167,4 +169,9 @@ void heart_beat_func(void)
 void heart_beat_save(void)
 {
   find_object(INITD)->save_mud_data(nil, ROOM_DIR, MOB_FILE, ZONE_FILE,nil);
+}
+
+void heart_beat_dump(void)
+{
+    dump_state();
 }
