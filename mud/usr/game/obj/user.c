@@ -952,8 +952,10 @@ private string lalign(string num, int width)
 }
 
 static void cmd_inventory(object user, string cmd, string str) {
-  int    ctr;
+  int    ctr, size;
   mixed* objs;
+  string *inv, *weared;
+  string msg;
 
   if(str && !STRINGD->is_whitespace(str)) {
     user->message("Użycie: " + cmd + "\n");
@@ -962,18 +964,34 @@ static void cmd_inventory(object user, string cmd, string str) {
 
   objs = body->objects_in_container();
   if(!objs || !sizeof(objs)) {
-    user->message("Nic nie posiadasz przy sobie.\n");
+    user->message("Nic nie nosisz przy sobie.\n");
     return;
   }
+  inv = weared = ({ });
   for(ctr = 0; ctr < sizeof(objs); ctr++) {
-    user->message("- ");
-    user->send_phrase(objs[ctr]->get_brief());
-    if (objs[ctr]->is_dressed())
-      {
-	user->message(" (założony)");
-      }
-    user->message("\n");
+      if (objs[ctr]->is_dressed())
+          weared += ({ lalign("- " + objs[ctr]->get_brief()->to_string(user) + "\n", 25) });
+      else
+          inv += ({ lalign("- " + objs[ctr]->get_brief()->to_string(user), 25) });
   }
+  if (sizeof(weared) > sizeof(inv))
+      size = sizeof(weared);
+  else
+      size = sizeof(inv);
+  msg = lalign("=Inwentarz=", 25) + lalign("=Założone=", 25) + "\n";
+  for (ctr = 0; ctr < size; ctr ++) {
+      if (ctr < sizeof(inv))
+          msg += inv[ctr];
+      else
+          msg += lalign("            ", 25);
+      if (ctr < sizeof(weared))
+          msg += weared[ctr];
+      else
+          msg += "\n";
+  }
+  msg += "\nPosiadasz " + body->get_price() + " miedziaków.\n"
+    + "Niesiesz " + body->get_current_weight() + " kg ekwipunku na " + body->get_weight_capacity() + " kg możliwych.\n\n";
+  message_scroll(msg);
 }
 
 static void cmd_put(object user, string cmd, string str) {
