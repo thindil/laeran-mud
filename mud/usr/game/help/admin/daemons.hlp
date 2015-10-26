@@ -1,109 +1,88 @@
-~name{~enUS{OBJECTD,objectd,object daemon,object demon}}
+~name{OBJECTD,objectd,object daemon,object demon}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The objectd keeps track of LPC programs, including when they get
-compiled, destructed and cloned.  Its activities occur entirely
-automatically, and it can be queried about an object or instance with
-the %od_report command.
+Objectd śledzi programy LPC włącznie z tym, kiedy były kompilowane,
+niszczone bądź klonowane. Jest całkowicie automatyczny i może być
+przeszukiwany dla obiektów czy instancji przy pomocy komendy
+%od_report.
 
-It tracks DGD issue indices as returned by the status() DGD kfun with
-offset O_INDEX into the returned array.  These are separate from, and
-may collide with, objregd's object numbers.
+Śledzi również wskaźniki emisji DGD tak jak zwrócone przez DGD kfun
+status() z offsetem O_INDEX w zwróconej tablicy. Te są oddzielone od
+i mogą kolidować z numerami obiektów z objregd.
 
-}}
+}
 
 
-~name{~enUS{MAPD,mapd,map daemon,MAP daemon}}
+~name{MAPD,mapd,map daemon,MAP daemon}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The Map Daemon, or MAPD, is an internal component of the MUD that
-keeps track of rooms, zones, exits, etc.  Objects can have exits, you
-can stand in them, and they can otherwise be entirely roomlike without
-being exactly rooms -- think of a car, or being on a motorcycle, or in
-a pup tent.  Whether something is, in the MUD's estimation, a room is
-determined by whether it is registered with MAPD.  Any room registered
-with MAPD is likely to use the OBJREGD numbering scheme.
+Demon Map albo MAPD jest wewnętrznym komponentem MUDa, który śledzi
+pokoje, strefy, wyjścia itd. Obiekty mogą mieć wyjścia, możesz stać w
+nich i ogólnie mogą być pokojopodobne bez bycia dokładnie pokojami --
+pomyśl o samochodzie, motocyklu bądź budzie dla psa. Cokolwiek to jest,
+w ocenie MUDa, pokój jest określony przez cokolwiek co jest zarejestrowane
+z MAPD. Każdy pokój zarejestrowany z MAPD używa schematu numeracji
+OBJREGD.
 
-}}
+}
 
 
-~name{~enUS{CONFIGD,config daemon}}
+~name{CONFIGD,config daemon}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The Config Daemon, or ConfigD, exists only to read some settings from
-a file and keep them around.  You can see the results by typing
-%get_config.
+Demon Config albo ConfigD istnieje tylko po to aby odczytywać
+niektóre ustawienia z pliku i przekazywać je dalej.
 
-See also:  daemons, %get_config
+Zobacz również:  demony
 
-}}
+}
 
 
-~name{~enUS{get configuration, configuration, get config, get_config}}
+~name{EXITD,exitd,exit daemon,EXIT daemon}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The %get_config command shows the data currently in the ConfigD.
+Demon Exit albo EXITD jest wewnętrznym komponentem MUDa który
+przechowuje informacje o wyjściach. Wyjście może być używane do
+przechodzenia z pokoju do pokoju, jednakże wyjście nie musi mieć
+jednego, stałego miejsca docelowego.
 
-See also: ConfigD
-
-}}
+}
 
 
-~name{~enUS{EXITD,exitd,exit daemon,EXIT daemon}}
+~name{OBJREGD,objregd,object registration daemon,objreg daemon,
+            objectreg daemon, objreg demon, objectreg demon}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The Exit Daemon, or EXITD, is an internal component of the MUD that
-keeps track of exits.  An exit can be used to go from one room to
-another, though an exit is not guaranteed to always have a single,
-static destination.
+Demon Object Registration lub objregd przechowuje informacje o numerach
+obiektów. MAPD generalnie upewnia się, że pokoje są zarejestrowane
+z objregd automatycznie. Inne obiekty będą odpowiednio zarejestrowane
+jak tylko zostaną ponumerowane (i zaimplementowane!). To daje pewność
+że nie ma kolizji pomiędzy numerami przenośnych, pokoi, wyjść itd.
+Normalnie objregd przypisuje te numery w segmentach ze 100, czyli
+na przykład, numery 0-99 będą pokojami, 100-199 będą wyjściami, itd.
 
-}}
+Te numery są inne niż numery instacji objectd i *mogą* się pokrywać.
+Aby dowiedzieć się więcej, zobacz objectd.
+
+Dowolny numer objregd jest numerem obiektu. Te zarejestrowane z MAPD
+to także numer pokoju. Te pokrywające się z wyjściami to także numery
+wyjść, itd. Tak więc każdy numer wyjścia lub pokoju jest również
+numerem obiektu.
+
+}
 
 
-~name{~enUS{OBJREGD,objregd,object registration daemon,objreg daemon,
-            objectreg daemon, objreg demon, objectreg demon}}
+~name{daemon,daemons,demon,demony}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The Object Registration Daemon, or objregd, keeps track of numbering
-of objects.  MAPD generally makes sure that rooms get registered with
-this automatically.  Other objects will be appropriately registered
-with it as they are numbered (and implemented!).  This makes sure
-there are no collisions between portable numbers, room numbers, exit
-numbers, etc.  Normally, the objregd will allocate these numbers in
-segments of 100, so for instance numbers 0-99 will be rooms, 100-199
-might be exits, et cetera.
-
-These numbers are different from the objectd's instance numbers, which
-*can* overlap.  See objectd for details.
-
-Any objregd number is an object number.  One registered with MAPD is
-also a room number.  One that corresponds to an exit is also an exit
-number, and so on.  Every exit number and room number is thus an
-object number, and some object numbers may be, for instance, room
-numbers.
-
-}}
-
-
-~name{~enUS{daemon,daemons,demon,demons}}
-~keywords{admin}
-~desc{
-  ~enUS{
-
-Daemons are internal MUD components that track things or otherwise
-provide services.  The current set includes:
+Demony to wewnętrzne komponenty MUDa które śledzą rzeczy bądź
+dostarczają jakieś usługo. Obecny zestaw demonów zawiera:
 
 EXITD
 MAPD
@@ -112,4 +91,4 @@ OBJREGD
 OBJECTD
 CONFIGD
 
-}}
+}
