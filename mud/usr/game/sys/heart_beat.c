@@ -98,13 +98,11 @@ void heart_beat_func(void)
 	      rooms = MAPD->rooms_in_zone(zone);
 	      roll = mobile->get_parentbody();
 	      while (roll == mobile->get_parentbody())
-		{
-		  roll = random(sizeof(rooms));
-		  if (rooms[roll] == mobile->get_parentbody())
-		    {
-		      roll = mobile->get_parentbody();
-		    }
-		}
+          {
+              roll = random(sizeof(rooms));
+              if (MAPD->get_room_by_num(rooms[roll])->num_exits() < 1)
+                  roll = mobile->get_parentbody();
+          }
 	      room = MAPD->get_room_by_num(rooms[roll]);
 	    }
 	  MAPD->add_room_to_zone(body, -1, zone);
