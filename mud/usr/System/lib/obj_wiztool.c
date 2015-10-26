@@ -148,11 +148,11 @@ private void priv_mob_stat(object user, object mob) {
 
   tmp += "Typ: " + mob->get_type() + "\n";
 
-    if (mob->get_parentbody())
+    if (mob->get_parentbody() && mob->get_parentbody() > 0)
         tmp += "Ciało archetypu: " + mob->get_parentbody() + "\n";
 
-    if (mob->spawnroom())
-        tmp += "Pokój w którym się pojawia: " + mob->get_spwanroom() + "\n";
+    if (mob->get_spawnroom() && mob->get_spawnroom() > 0)
+        tmp += "Pokój w którym się pojawia: " + mob->get_spawnroom() + "\n";
 
   tags = TAGD->mobile_all_tags(mob);
   if(!sizeof(tags)) {
