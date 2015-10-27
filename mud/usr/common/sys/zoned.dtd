@@ -1,6 +1,4 @@
 ~DTD{
-  ~zones{segment*}
-  ~zonelist{zone*}
   ~zone{zonenum,name,attributes?}
   ~segment{segnum,zonenum}
   ~segnum{int}

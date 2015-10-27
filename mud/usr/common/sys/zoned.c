@@ -70,43 +70,30 @@ void init_from_file(string file) {
 /******* Functions for DTD_UNQABLE *************************/
 
 mixed* to_dtd_unq(void) {
-  int    ctr, highseg, zone, numzones;
-  mixed *tmp, *zonetmp;
+  int    ctr, highseg, zone;
+  mixed *zonetmp;
 
   if(!SYSTEM() && !COMMON())
     return nil;
 
   highseg = OBJNUMD->get_highest_segment();
 
-  zonetmp = ({ "zonelist", ({ }) });
-  numzones = sizeof(zone_table);
-  for(ctr = 0; ctr < numzones; ctr++){
-    zonetmp[1] +=  ({ ({ "zone",
-		        ({ ({ "zonenum", ctr }),
-			    ({ "name", zone_table[ctr][0] }),
-			    ({ "attributes", zone_table[ctr][2] })
-		         })
-	  	      })
-	            });
-  }
+  zonetmp = ({ });
+  for(ctr = 0; ctr < sizeof(zone_table); ctr++)
+    zonetmp +=  ({ "zone", ({ ({ "zonenum", ctr }), ({ "name", zone_table[ctr][0] }), 
+                    ({ "attributes", zone_table[ctr][2] }) }) });
 
-  tmp = ({ "zones", ({ }) });
   for(ctr = 0; ctr <= highseg; ctr++) {
     if(!OBJNUMD->get_segment_owner(ctr))
       continue;
 
     if(segment_map[ctr] != nil) {
       zone = segment_map[ctr];
-      tmp[1] += ({ ({ "segment",
-			({ ({ "segnum", ctr }),
-			     ({ "zonenum", zone })
-			     })
-			})
-		     });
+      zonetmp += ({ "segment", ({ ({ "segnum", ctr }), ({ "zonenum", zone }) }) });
     }
   }
 
-  return zonetmp + tmp;
+  return zonetmp;
 }
 
 string get_parse_error_stack(void) {
@@ -121,64 +108,32 @@ void from_dtd_unq(mixed* unq) {
   int segnum,zonenum;
   string zonename;
 
+  mixed *ctr;
+
   if(!SYSTEM() && !COMMON() && !GAME())
     error("Calling ZoneD:from_dtd_unq unprivileged!");
 
-  if(sizeof(unq) != 4)
-    error("There should be exactly one 'zones' and one 'zonelist'"
-	  + " section in the ZONED file!");
-
-  if(unq[0] != "zonelist")
-    error("Unrecognized section in ZONED file -- must start with"
-	  + " 'zonelist'!");
-  else if(unq[2] != "zones")
-    error("Unrecognized section in ZONED file -- second section"
-	  + " must be 'zones'!");
-
-  zones = unq[1]; /* load zonelist values */
-  while(sizeof(zones)) {
-    if( zones[0][0] == "zone" ){
-      segment_unq = zones[0][1];
-      zonenum = segment_unq[0][1];
-      zonename = segment_unq[1][1];
-      if (zonename != "Unzoned"){
-	zone_table += ({ ({ zonename, ([ ]), 0 }) });
-	/* Is this zone in the position expected in the table? */
-	if (zone_table[zonenum][0] != zonename){
-	  error("\nZONED: Incorrect zone table order or skipped number "
-		+ zonename + " #" + zonenum + "\n");
-	}
+  ctr = unq;
+  while (sizeof(ctr) > 0) {
+      switch (ctr[0]) {
+          case "zone":
+            segment_unq = ctr[1];
+            zonenum = segment_unq[0][1];
+            zonename = segment_unq[1][1];
+            if (zonename != "Unzoned")
+                zone_table += ({ ({ zonename, ([ ]), 0 }) });
+            break;
+          case "segment":
+            segment_unq = ctr[1];
+            segnum = segment_unq[0][1];
+            zonenum = segment_unq[1][1];
+            set_segment_zone(segnum, zonenum);
+            break;
+          default:
+            break;
       }
-    } else error("Non-zone in zonelist!");
-    /* Finished with that segment, move on */
-    zones = zones[1..];    
+      ctr = ctr[2..];
   }
-
-  zones = unq[3]; /* load zones values */
-  while(sizeof(zones)) {
-
-    /* Everything in the zones entry must be a segment. */
-    if(typeof(zones[0]) != T_ARRAY
-       || sizeof(zones[0]) < 2
-       || zones[0][0] != "segment" )
-      error("Format error in zone file, expected 'segment' section!");
-
-    segment_unq = zones[0][1];
-
-    if(sizeof(segment_unq) != 2
-       || segment_unq[0][0] != "segnum"
-       || segment_unq[1][0] != "zonenum") {
-      error("ZONED segment doesn't fit format "
-	    + "[segnum, <int>, zonenum, <int>]!");
-    }
-
-    segnum = segment_unq[0][1];
-    zonenum = segment_unq[1][1];
-    set_segment_zone(segnum, zonenum);
-
-    zones = zones[1..];    
-  }
-
 }
 
 void write_to_file(string filename) {
