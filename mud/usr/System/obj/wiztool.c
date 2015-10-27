@@ -103,8 +103,8 @@ void upgraded(varargs int clone) {
 
 	"@new_tag_type"               : ({ "cmd_new_tag_type" }),
 	"@list_tags"                  : ({ "cmd_list_tags" }),
-        "@set_tag"                    : ({ "cmd_set_tag" }),
-        "@set_obj_tag"                : ({ "cmd_set_tag" }),
+    "@set_tag"                    : ({ "cmd_set_tag" }),
+    "@set_obj_tag"                : ({ "cmd_set_tag" }),
 
 	"@add_noun"            : ({ "cmd_add_nouns" }),
 	"@add_nouns"           : ({ "cmd_add_nouns" }),
@@ -156,7 +156,7 @@ void upgraded(varargs int clone) {
 	"@segmap"              : ({ "cmd_segment_map" }),
 	"@set_seg_zone"        : ({ "cmd_set_segment_zone" }),
 	"@zonemap"             : ({ "cmd_zone_map" }),
-        "@new_zone"            : ({ "cmd_new_zone" }),
+    "@new_zone"            : ({ "cmd_new_zone" }),
 
 	"%od_report"           : ({ "cmd_od_report" }),
 	"%list_dest"           : ({ "cmd_list_dest" }),
@@ -179,6 +179,7 @@ void upgraded(varargs int clone) {
 	"@who"                 : ({ "cmd_people" }),
 	"%whoami"              : ({ "cmd_whoami" }),
 	"@whoami"              : ({ "cmd_whoami" }),
+    "%kick"                : ({ "cmd_kick" }),
 
 	"%status"              : ({ "cmd_status" }),
 

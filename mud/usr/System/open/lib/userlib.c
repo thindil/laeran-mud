@@ -635,21 +635,19 @@ int login(string str)
  */
 void logout(int quit)
 {
-  if (previous_program() == LIB_CONN && --nconn == 0) {
-    if (query_conn()) {
-      if (quit) {
-	message_all_users(Name + " wylogowuje się\n");
-      } else {
-	message_all_users(Name + " disconnected.\n");
-      }
+    if ((previous_program() == LIB_CONN || previous_program() == SYSTEM_WIZTOOLLIB) && --nconn == 0) {
+        if (query_conn()) {
+            if (quit) 
+                message_all_users(Name + " wylogowuje się\n");
+            else 
+                message_all_users(Name + " stracił połączenie.\n");
+        }
+        this_object()->player_logout();
+        ::logout();
+        if (wiztool) 
+            destruct_object(wiztool);
+        destruct_object(this_object());
     }
-    this_object()->player_logout();
-    ::logout();
-    if (wiztool) {
-      destruct_object(wiztool);
-    }
-    destruct_object(this_object());
-  }
 }
 
 

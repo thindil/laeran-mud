@@ -15,6 +15,7 @@ wymaga odpowiednich uprawnień aby mogły być wykonane pomyślnie.
 %status             Podaje status MUDLiba i serwera
 
 %who                Pokazuje kto jest zalogowany z adresem IP
+%kick               Wykopuje wybranego gracza z gry
 %log                Zapisuje wydarzenia do logów systemowych
 %log_subscribe      Wybiera jakie wydarzenia z dziennika są zapisywane
                     do pliku
@@ -22,6 +23,15 @@ wymaga odpowiednich uprawnień aby mogły być wykonane pomyślnie.
 
 }
 
+~name{%kick}
+~keywords{admin}
+~desc{
+
+Komenda %kick przyjmuje jako parametr imię postaci gracza do
+wyrzucenia z gry. Osoba zostaje tymczasowo wyrzucona z gry, ale
+może ponownie do niej się zalogować.
+
+}
 
 ~name{%shutdown}
 ~keywords{admin}

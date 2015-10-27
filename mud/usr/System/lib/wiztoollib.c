@@ -1025,3 +1025,38 @@ static void cmd_load_socials(object user, string cmd, string str)
   SOULD->from_unq_text(file_tmp);
   user->message("Przeładowano komendy socjalne.\n");
 }
+
+
+static void cmd_kick(object user, string cmd, string str)
+{
+    int i;
+    object *users;
+    string name;
+
+    if (!str || STRINGD->is_whitespace(str)) {
+        message("Użycie: " + cmd + " <imię postaci>\n");
+        return;
+    }
+
+    if (str == user->query_name()) {
+        message("Nie możesz wykopać samego siebie.\n");
+        return;
+    }
+
+    users = users();
+    str = STRINGD->to_lower(str);
+    for (i = 0; i < sizeof(users); i++) {
+        name = STRINGD->to_lower(users[i]->query_name());
+        if (str == name) {
+            if (users[i]->is_admin()) {
+                message("Nie możesz wykopać Opiekuna z gry.\n");
+                return;
+            }
+            users[i]->message("Zostałeś wyrzucony z gry przez " + user->query_name());
+            users[i]->logout(0);
+            message("Wykopałeś gracza: " + str + " z gry.\n");
+            return;
+        }
+    }
+    message("Nie ma w grze gracza o imieniu " + str + ".\n");
+}
