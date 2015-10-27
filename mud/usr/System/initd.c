@@ -38,7 +38,7 @@ static  void __co_write_mobs(object user, int* objects, int ctr,
 			     string mobfile, string zonefile, int filesize,
                  int extension);
 static  void __co_write_zones(object user, int* objects, int ctr,
-			      string zonefile);
+			      string zonefile, int filesize, int extension);
 static  void __co_write_users(object user);
 static  void __reboot_callback(void);
 static  void __shutdown_callback(void);
@@ -218,7 +218,7 @@ static void create(varargs int clone)
 
   /* Load zone name list information -- BEFORE first call to
      any MAPD function. */ 
-  zone_file = read_file(ZONE_FILE);
+  zone_file = read_file(ZONE_DIR + "/zones.unq");
   if(zone_file){
     ZONED->init_from_file(zone_file);
   } else {
@@ -276,7 +276,7 @@ static void create(varargs int clone)
 }
 
 void save_mud_data(object user, string room_dirname, string mob_dirname,
-		   string zone_filename, string callback) {
+		   string zone_dirname, string callback) {
   int   *objects, *save_zones;
   int    cohandle, iter;
   mixed  tmp;
@@ -304,7 +304,7 @@ void save_mud_data(object user, string room_dirname, string mob_dirname,
   LOGD->write_syslog("Writing World Data to files...", LOG_NORMAL);
   LOGD->write_syslog("Rooms: '" + room_dirname + "/*', Mobiles: '"
 		     + mob_dirname + "/*', Zones: '"
-		     + zone_filename + "'", LOG_VERBOSE);
+		     + zone_dirname + "/*'", LOG_VERBOSE);
 
   delete_directory(room_dirname + ".old");
   rename_file(room_dirname, room_dirname + ".old");
@@ -314,26 +314,24 @@ void save_mud_data(object user, string room_dirname, string mob_dirname,
   rename_file(mob_dirname, mob_dirname + ".old");
   delete_directory(mob_dirname);
 
-  remove_file(zone_filename + ".old");
-  rename_file(zone_filename, zone_filename + ".old");
-  remove_file(zone_filename);
+  delete_directory(zone_dirname + ".old");
+  rename_file(zone_dirname, zone_dirname + ".old");
+  delete_directory(zone_dirname);
 
-  if(sizeof(get_dir(room_dirname)[0])) {
+  if(sizeof(get_dir(room_dirname)[0])) 
     LOGD->write_syslog("Can't remove old room directory -- trying to append!",
 		       LOG_FATAL);
-  }
   make_dir(room_dirname);
 
-  if(sizeof(get_dir(mob_dirname)[0])) {
+  if(sizeof(get_dir(mob_dirname)[0])) 
     LOGD->write_syslog("Can't remove old mobs directory -- trying to append!",
 		       LOG_FATAL);
-  }
   make_dir(mob_dirname);
 
-  if(sizeof(get_dir(zone_filename)[0])) {
-    LOGD->write_syslog("Can't remove old zonefile -- trying to append!",
+  if(sizeof(get_dir(zone_dirname)[0])) 
+    LOGD->write_syslog("Can't remove old zones directory -- trying to append!",
 		       LOG_FATAL);
-  }
+    make_dir(zone_dirname);
 
   LOGD->write_syslog("Writing rooms to files " + room_dirname, LOG_VERBOSE);
 
@@ -347,7 +345,7 @@ void save_mud_data(object user, string room_dirname, string mob_dirname,
   }
 
   cohandle = call_out("__co_write_rooms", 0, user, objects, save_zones,
-		      0, 0, room_dirname, mob_dirname, zone_filename, 0, -1);
+		      0, 0, room_dirname, mob_dirname, zone_dirname, 0, -1);
   if(cohandle < 1) {
     error("Can't schedule call_out to save objects!");
   } else {
@@ -380,7 +378,7 @@ void prepare_shutdown(void)
     LOGD->write_syslog("Shutting down MUD...", LOG_NORMAL);
   }
 
-  save_mud_data(this_user(), ROOM_DIR, MOB_DIR, ZONE_FILE,
+  save_mud_data(this_user(), ROOM_DIR, MOB_DIR, ZONE_DIR,
 		"__shutdown_callback");
 }
 
@@ -584,7 +582,7 @@ static void __co_write_mobs(object user, int* objects, int ctr,
     /* Done with mobiles, start on zones */
     LOGD->write_syslog("Writing zones to file " + zonefile, LOG_VERBOSE);
 
-    if(call_out("__co_write_zones", 0, user, objects, 0, zonefile) < 1) {
+    if(call_out("__co_write_zones", 0, user, objects, 0, zonefile, 0, 0) < 1) {
        error("Can't schedule call_out to start writing zones!");
      }
   } : {
@@ -595,22 +593,40 @@ static void __co_write_mobs(object user, int* objects, int ctr,
 }
 
 static void __co_write_zones(object user, int* objects, int ctr,
-			     string zonefile) {
-  string unq_str;
+			     string zonedir, int filesize, int extension) {
+  string unq_str, zonefile;
+  int chunk_ctr, size;
 
-  /* TODO:  should eventually break up zone-save into chunks */
+    if (extension == 0)
+        zonefile = zonedir + "/zones.unq";
+    else
+        zonefile = zonedir + "/zones" + extension + ".ung";
+
+    size = ZONED->num_zones() + OBJNUMD->get_highest_segment() + 1;
+
   catch {
-    unq_str = ZONED->to_unq_text();
-    if(!unq_str) {
-      LOGD->write_syslog(ZONED->get_parse_error_stack());
-      error("Can't serialize ZONED to UNQ!");
-    }
-    write_file(zonefile, unq_str);
+      for (chunk_ctr = 0; ctr < size && chunk_ctr < SAVE_CHUNK; ctr++, chunk_ctr++) {
+          unq_str = ZONED->to_unq_text(ctr);
+          filesize += strlen(unq_str);
+          if (filesize > 64000) {
+              extension ++;
+              zonefile = zonedir + "/zones" + extension + ".unq";
+              filesize = strlen(unq_str);
+          }
+          write_file(zonefile, unq_str);
+      }
   } : {
     release_system();
     if(user) user->message("Error writing zones!\n");
     error("Error writing zones!");
   }
+
+    if (ctr < size)
+    {
+        if(call_out("__co_write_zones", 0, user, objects, ctr, zonedir, filesize, extension) < 1) 
+            error("Can't schedule call_out to start writing zones!");
+        return;
+    }
 
   if(errors_in_writing) {
     errors_in_writing = 0;

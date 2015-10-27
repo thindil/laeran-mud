@@ -69,31 +69,34 @@ void init_from_file(string file) {
 
 /******* Functions for DTD_UNQABLE *************************/
 
-mixed* to_dtd_unq(void) {
-  int    ctr, highseg, zone;
-  mixed *zonetmp;
+string to_unq_text(int number)
+{
+    string zonetmp;
 
-  if(!SYSTEM() && !COMMON())
-    return nil;
+    if (!SYSTEM() && !COMMON())
+        return nil;
 
-  highseg = OBJNUMD->get_highest_segment();
-
-  zonetmp = ({ });
-  for(ctr = 0; ctr < sizeof(zone_table); ctr++)
-    zonetmp +=  ({ "zone", ({ ({ "zonenum", ctr }), ({ "name", zone_table[ctr][0] }), 
-                    ({ "attributes", zone_table[ctr][2] }) }) });
-
-  for(ctr = 0; ctr <= highseg; ctr++) {
-    if(!OBJNUMD->get_segment_owner(ctr))
-      continue;
-
-    if(segment_map[ctr] != nil) {
-      zone = segment_map[ctr];
-      zonetmp += ({ "segment", ({ ({ "segnum", ctr }), ({ "zonenum", zone }) }) });
+    if (number < sizeof(zone_table)) {
+        zonetmp = "~zone{\n"
+                + "     ~zonenum{" + number + "}\n"
+                + "     ~name{" + zone_table[number][0] + "}\n"
+                + "     ~attributes{" + zone_table[number][2] + "}\n"
+                + "}\n";
+        return zonetmp;
     }
-  }
+    else
+        number -= sizeof(zone_table);
 
-  return zonetmp;
+    if (number <= OBJNUMD->get_highest_segment()) {
+        if (!OBJNUMD->get_segment_owner(number))
+            return nil;
+        zonetmp = "~segment{\n"
+                + "     ~segnum{" + number + "}\n"
+                + "     ~zonenum{" + segment_map[number] + "}\n"
+                + "}\n";
+        return zonetmp;
+    }
+    return nil;
 }
 
 string get_parse_error_stack(void) {

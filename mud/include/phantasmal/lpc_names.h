@@ -109,10 +109,10 @@
 /* Save locations, used by INITD and the wiztool */
 #define ROOM_DIR            "/usr/game/object/stuff"
 #define MOB_DIR             "/usr/game/object/mobiles"
-#define ZONE_FILE           "/usr/game/object/zonefile.unq"
+#define ZONE_DIR            "/usr/game/object/zones"
 #define SAFE_ROOM_DIR       "/usr/game/object/safe_stuff"
 #define SAFE_MOB_DIR        "/usr/game/object/safe_mobiles"
-#define SAFE_ZONE_FILE      "/usr/game/object/safe_zonefile.unq"
+#define SAFE_ZONE_DIR      "/usr/game/object/safe_zones"
 
 /* Other data files */
 #define SYSTEM_PHRASES      "/usr/System/obj/system.phr"
