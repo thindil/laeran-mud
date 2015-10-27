@@ -24,3 +24,30 @@
   ~other-only{~actor{} pozdrawia wszystkich.}
   ~other-target{~actor{} pozdrawia ~target{}.}
 }
+
+~social{
+  ~verb{przepros}
+  ~self-only{Przepraszasz za swoje zachowanie.}
+  ~self-target{Przepraszasz ~target{}.}
+  ~target{~actor{} przeprasza Ciebie.}
+  ~other-only{~actor{} przeprasza za swoje zachowanie.}
+  ~other-target{~actor{} przeprasza ~target{}.}
+}
+
+~social{
+  ~verb{szczeka}
+  ~self-only{HAU! HAU!}
+  ~self-target{Szczekasz na ~target{}.}
+  ~target{~actor{} szczeka na Ciebie.}
+  ~other-only{~actor{} szczeka.}
+  ~other-target{~actor{} szczeka na ~target{}.}
+}
+
+~social{
+  ~verb{piwo}
+  ~self-only{Wyciągasz butelkę piwa.}
+  ~self-target{Podajesz piwo ~target{}.}
+  ~target{~actor{} podaje Tobie piwo.}
+  ~other-only{~actor{} wyciąga piwo.}
+  ~other-target{~actor{} podaje piwo ~target{}.}
+}
