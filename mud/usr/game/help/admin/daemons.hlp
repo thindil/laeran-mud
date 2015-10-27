@@ -66,7 +66,7 @@ jak tylko zostaną ponumerowane (i zaimplementowane!). To daje pewność
 Normalnie objregd przypisuje te numery w segmentach ze 100, czyli
 na przykład, numery 0-99 będą pokojami, 100-199 będą wyjściami, itd.
 
-Te numery są inne niż numery instacji objectd i *mogą* się pokrywać.
+Te numery są inne niż numery instancji objectd i *mogą* się pokrywać.
 Aby dowiedzieć się więcej, zobacz objectd.
 
 Dowolny numer objregd jest numerem obiektu. Te zarejestrowane z MAPD
@@ -82,7 +82,7 @@ numerem obiektu.
 ~desc{
 
 Demony to wewnętrzne komponenty MUDa które śledzą rzeczy bądź
-dostarczają jakieś usługo. Obecny zestaw demonów zawiera:
+dostarczają jakieś usługi. Obecny zestaw demonów zawiera:
 
 EXITD
 MAPD
