@@ -68,6 +68,27 @@ static int delete_directory(string dirname) {
   return remove_dir(dirname);
 }
 
+static int read_zones_dir(void)
+{
+    mixed **dir;
+    int i;
+    string file;
+
+    dir = get_dir(ZONE_DIR + "/zones*.unq");
+    if (!sizeof(dir[0]))
+        return -1;
+
+    for (i = 0; i < sizeof(dir[0]); i++) {
+        if (dir[1][i] == -2)
+            continue;
+        file = read_file(ZONE_DIR + "/" + dir[0][i]);
+        if (!file || !strlen(file))
+            return -1;
+        ZONED->init_from_file(file);
+    }
+    return 0;
+}
+
 static void create(varargs int clone)
 {
   object driver, obj, the_void;
@@ -218,13 +239,11 @@ static void create(varargs int clone)
 
   /* Load zone name list information -- BEFORE first call to
      any MAPD function. */ 
-  zone_file = read_file(ZONE_DIR + "/zones.unq");
-  if(zone_file){
-    ZONED->init_from_file(zone_file);
-  } else {
-    DRIVER->message("Can't read zone list!  Starting blank!\n");
-    LOGD->write_syslog("Can't read zone list!  Starting blank!\n", LOG_WARN);
+  if (read_zones_dir() == -1) {
+      DRIVER->message("Can't read zone list!  Starting blank!\n");
+      LOGD->write_syslog("Can't read zone list!  Starting blank!\n", LOG_WARN);
   }
+
 
   /* Start up ChannelD, TimeD and SoulD so that they'll be available
      to GAME_INITD */
@@ -600,7 +619,7 @@ static void __co_write_zones(object user, int* objects, int ctr,
     if (extension == 0)
         zonefile = zonedir + "/zones.unq";
     else
-        zonefile = zonedir + "/zones" + extension + ".ung";
+        zonefile = zonedir + "/zones" + extension + ".unq";
 
     size = ZONED->num_zones() + OBJNUMD->get_highest_segment() + 1;
 

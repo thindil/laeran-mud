@@ -139,23 +139,6 @@ void from_dtd_unq(mixed* unq) {
   }
 }
 
-void write_to_file(string filename) {
-  string str;
-  string unq_str;
-
-  if(previous_program() != "/usr/System/initd")
-    error("Only INITD may instruct the ZONED to write files!");
-
-  unq_str = dtd::to_unq_text();
-  if(!unq_str)
-    error("To_unq_text() returned nil!");
-  if(!write_file(filename, unq_str)) {
-    error("Error writing file!");
-  }
-
-}
-
-
 /******* Regular ZONED functions ***************************/
 
 int num_zones(void) {
