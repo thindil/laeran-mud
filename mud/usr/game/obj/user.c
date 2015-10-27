@@ -1233,26 +1233,22 @@ static void cmd_remove(object user, string cmd, string str) {
 
 
 static void cmd_users(object user, string cmd, string str) {
-  int i, sz;
-  object* users;
-  string name_idx;
+    int i, sz;
+    object* users;
+    string name_idx;
 
-  users = users();
-  message("Zalogowani: \n");
-  str = "";
-  for (i = 0, sz = sizeof(users); i < sz; i++)
-    {
-      name_idx = users[i]->query_name();
-      if (name_idx)
-	{
-	  if (users[i]->is_admin())
-	    {
-	      name_idx += " (Opiekun)";
-	    }
-	  str += "   " + name_idx + "       Bezczynny(a): " + users[i]->get_idle_time() + " sekund\n";
-	}
+    users = users();
+    message("Zalogowani: \n");
+    str = "";
+    for (i = 0, sz = sizeof(users); i < sz; i++) {
+        name_idx = "* " + users[i]->query_name();
+        if (name_idx) {
+            if (users[i]->is_admin())
+                name_idx += " (Opiekun)";
+            str += lalign(name_idx, 25) + lalign("Bezczynny(a): " + users[i]->get_idle_time() + " sekund", 25) + "\n";
+        }
     }
-  message(str + "\n");
+    message(str + "\n");
 }
 
 /* List available social commands */
