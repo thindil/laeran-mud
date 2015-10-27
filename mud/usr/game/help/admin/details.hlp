@@ -1,80 +1,77 @@
-~name{~enUS{set_object_detail, set_object_det,
-            set_obj_detail, set_obj_det, set_detail, set_det}}
+~name{set_object_detail, set_object_det,set_obj_detail, set_obj_det, set_detail, set_det}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @set_obj_detail command is the low-level way to specify object
-details.  It's also the most flexible.
+Komenda @set_obj_detail jest niskopoziomową komendą do określenia
+detali obiektu. Jest również najbardziej elastyczna.
 
-To use it, simply create the detail object as a regular room or
-portable object in any normal way.  Choose the base object to
-receive that detail.  If your base object was #37 and your
-detail was #112, you'd type "@set_obj_detail #37 #112".  Voila!
+Aby używać jej, po prostu stwórz obiekt który ma być detalem
+jak zwykły pokój bądź przenośne. Wybierz obiekt, którego
+dopiero co stworzona rzecz ma być obiektem. Jeżeli bazowym
+obiektem będzie #37 a detalem będzie #112 wpisz
+"@set_obj_detail #37 #112". I gotowe!
 
-You can use it to remove a detail by choosing base object #-1.
-For instance:
+Możesz tego używać również do usuwania detali poprzez podane
+bazowego obiektu jako #-1. Na przykład:
 
 @set_obj_det #-1 #194
 
-This will make object #194 stop being a detail of anything at all.
+Ta komenda sprawi, że obiekt #194 przestanie być detalem
+czegokolwiek.
 
-Note that an object inherits the details of its parent.  You can
-remove a detail even if it's inherited from the parent, but if you
-remove it from the child then the parent keeps it.  This is a way to
-have a parent with a "recommended" set of details without forcing them
-on every child object.
+Uwaga, obiekty dziedziczą detale po swoich rodzicach. Możesz
+usunąć detal nawet jeżeli jest dziedziczony z rodziców, ale jeżeli
+usuniesz je z dzieci, rodzice nadal je zachowają. To jest droga
+do posiadania rodziców z "zalecanymi" detalami bez zmuszania do
+posiadania ich na każdym obiekcie potomnym.
 
-See also: objects, details, @set_object_parent
+Zobacz również: objekty, detale, @set_object_parent
 
-}}
+}
 
 
-~name{~enUS{detail, details}}
+~name{detal,detale}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-Details are what Phantasmal uses to represent individual but
-inseparable parts of objects.  The hilt of a sword, the scratches on a
-tabletop, the grass on the ground, and the ear of a dog are all fine
-examples of potential detail objects.
+Detale to coś co Phantasmal używa do reprezentowania indywidualnych
+ale nieodseparowanych cześci obiektu. To może być rękojeść miecza,
+zadrapania na stole, trawa na ziemii, ucho psa itp rzeczy mogą być
+detalami.
 
-Phantasmal implements details as regular objects, but those objects
-are made details of other objects at their creation or afterward.
-Thus, a detail may also be a container, may contain exits and may
-otherwise act in every way as a normal object.
+Phantasmal implementuje detale jako zwykłe obiekty, ale te obiekty
+są zmieniane na detale innych obiektów podczas ich tworzenia bądź
+później. Tak więc detal może być również pojemnikiem, może zawierać
+wyjścia i może zachowywać się na wszystkie sposoby jak normalny
+obiekt.
 
-Details cannot ordinarily be removed from the object they are part of.
+Detale nie mogą być normalnie usunięte z obiektu, którego są
+częścią.
 
-The following commands directly affect details:
+Następujące komendy wpływają bezpośrednio na detale:
 
-@make_detail              Create a new detail on an existing object
-@set_obj_detail           Make one object a detail of another
+@make_detail              Utwórz nowy detal na istniejącym obiekcie
+@set_obj_detail           Uczyń obiekt detalem innego
 
-See also: objects
+Zobacz również: obiekty
 
-}}
+}
 
 
-~name{~enUS{make_detail, makedetail, make_details,
-            makedetails, detailmake, detail_make
-            make_det, makedet, make_dets,
-            makedets, detmake, det_make }}
+~name{make_detail, makedetail, make_details,makedetails, detailmake,
+        detail_make,make_det, makedet, make_dets,makedets, detmake, det_make }
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @make_detail command asks a series of questions about the new
-object to be created.  It then creates the object that the questions
-describe.  It asks about descriptions, nouns, adjectives and so on.
+Komenda @make_detail zadaje serię pytań o nowy obiekt do utworzenia.
+Nastęnie tworzy ten obiekt tak jak opisano go w pytaniach. Pyta o
+opis, rzeczowniki, przymiotniki, numer, itd.
 
-Experimental object attributes aren't necessarily asked or set by this
-command when first implemented.  As they become useful and mainstream
-in Phantasmal they are added to the various @make commands.  For that
-reason, certain settings may require using the standard OLC commands
-rather than this one.
+Niektóre atrybuty obiektu nie są ustawiane przy pomocy tej komendy, ze
+względu, że detale ich nie potrzebują. Jeżeli jednak chcesz je również
+poustawiać, użyj w tym celu innej komendy @make do tworzenia obiektu,
+albo komend które bezpośrednio zmieniają wybrany atrybut.
 
-See also:  @make_room, @make_portable
+Zobacz również:  @make_room, @make_portable
 
-}}
+}
