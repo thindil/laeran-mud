@@ -1019,10 +1019,20 @@ static void cmd_reports(object user, string cmd, string str)
 
 static void cmd_load_socials(object user, string cmd, string str)
 {
-  string file_tmp;
+  mixed** dir;
+  int     ctr;
+  string  file;
 
-  file_tmp = read_file("/usr/game/sould.unq");
-  SOULD->from_unq_text(file_tmp);
+  dir = get_dir(SOCIAL_DIR + "/socials*.unq");
+
+  for(ctr = 0; ctr < sizeof(dir[0]); ctr++) {
+    /* Skip directories */
+    if(dir[1][ctr] == -2)
+      continue;
+    file = read_file(SOCIAL_DIR + "/" + dir[0][ctr]);
+    SOULD->from_unq_text(file);
+  }
+
   user->message("Przeładowano komendy socjalne.\n");
 }
 

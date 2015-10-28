@@ -32,6 +32,7 @@ static void create(varargs int clone) {
     error("Can't clone CONFIGD!");
   }
 
+  sould_strings = ([ ]);
   unq::create(clone);
   upgraded();
 }
@@ -93,43 +94,48 @@ void from_unq(mixed *unq) {
 }
 
 void from_dtd_unq(mixed* unq) {
-  if(!SYSTEM() && !COMMON() && !GAME())
-    return;
+    if(!SYSTEM() && !COMMON() && !GAME())
+        return;
 
-  /* Clear out Soul array before reloading */
-  sould_strings = ([ ]);
+    while(sizeof(unq) > 0) {
+        if(unq[0] == "social") {
+            mixed* entry, *soc_unq;
 
-  while(sizeof(unq) > 0) {
-    if(unq[0] == "social") {
-      mixed* entry, *soc_unq;
+            entry = allocate(SOULD_ARRAY_SIZE);
+            soc_unq = unq[1];
 
-      entry = allocate(SOULD_ARRAY_SIZE);
-      soc_unq = unq[1];
-
-      while(sizeof(soc_unq) > 0) {
-	if(soc_unq[0][0] == "verb") {
-	  sould_strings[soc_unq[0][1]] = entry;
-	} else if (soc_unq[0][0] == "self-only") {
-	  entry[SOULD_SELF_ONLY] = soc_unq[0][1];
-	} else if (soc_unq[0][0] == "self-target") {
-	  entry[SOULD_SELF_TARGET] = soc_unq[0][1];
-	} else if (soc_unq[0][0] == "target") {
-	  entry[SOULD_TARGET] = soc_unq[0][1];
-	} else if (soc_unq[0][0] == "other-only") {
-	  entry[SOULD_OTHER_ONLY] = soc_unq[0][1];
-	} else if (soc_unq[0][0] == "other-target") {
-	  entry[SOULD_OTHER_TARGET] = soc_unq[0][1];
-	} else {
-	  error("Unrecognized tag '" + STRINGD->mixed_sprint(soc_unq[0])
-		+ "' in social entry parsing SoulD file!");
-	}
-	soc_unq = soc_unq[1..];
-      }
+            while(sizeof(soc_unq) > 0) {
+                switch (soc_unq[0][0]) {
+                    case "verb":
+                        sould_strings[soc_unq[0][1]] = entry;
+                        break;
+                    case "self-only":
+                        entry[SOULD_SELF_ONLY] = soc_unq[0][1];
+                        break;
+                    case "self-target":
+                        entry[SOULD_SELF_TARGET] = soc_unq[0][1];
+                        break;
+                    case "target":
+                        entry[SOULD_TARGET] = soc_unq[0][1];
+                        break;
+                    case "other-only":
+                        entry[SOULD_OTHER_ONLY] = soc_unq[0][1];
+                        break;
+                    case "other-target":
+                        entry[SOULD_OTHER_TARGET] = soc_unq[0][1];
+                        break;
+                    default:
+                        error("Unrecognized tag '" + STRINGD->mixed_sprint(soc_unq[0])
+                                + "' in social entry parsing SoulD file!");
+                        break;
+                }
+                soc_unq = soc_unq[1..];
+            }
+        }
+        unq = unq[2..];
     }
-    unq = unq[2..];
-  }
 
-  num_soc = map_sizeof(sould_strings);
+    num_soc = map_sizeof(sould_strings);
 }
 
 int is_social_verb(string verb) {

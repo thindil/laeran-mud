@@ -28,7 +28,7 @@ static void create(void) {
   HELPD->new_help_directory("/usr/game/help");
 
   /* Load the SoulD with social commands */
-  load_sould();
+  read_object_dir(SOCIAL_DIR, 3);
 
   /* Load stuff into MAPD and EXITD */
   if(read_object_dir(ROOM_DIR, 1) >= 0) {
@@ -71,13 +71,6 @@ static mixed* load_file_with_dtd(string file_path, string dtd_path) {
   destruct_object(dtd);
 
   return dtd_unq;
-}
-
-static void load_sould(void) {
-  string file_tmp;
-
-  file_tmp = read_file("/usr/game/sould.unq");
-  SOULD->from_unq_text(file_tmp);
 }
 
 static void load_tagd(void) {
@@ -139,10 +132,19 @@ static int read_object_dir(string path, int type) {
   int     ctr;
   string  file;
 
-  if (type == 1)
-      dir = get_dir(path + "/zone*.unq");
-  else
-      dir = get_dir(path + "/mobiles*.unq");
+  switch (type) {
+      case 1:
+          dir = get_dir(path + "/zone*.unq");
+          break;
+      case 2:
+          dir = get_dir(path + "/mobiles*.unq");
+          break;
+      case 3:
+          dir = get_dir(path + "/socials*.unq");
+          break;
+      default:
+          break;
+  }
   if(!sizeof(dir[0])) {
     LOGD->write_syslog("Can't find any '" + path
 		       + " files to load!", LOG_ERR);
@@ -160,9 +162,17 @@ static int read_object_dir(string path, int type) {
       return -1;
     }
 
-    if (type == 1)
-        MAPD->add_unq_text_rooms(file, ROOM_DIR + "/" + dir[0][ctr]);
-    else
-        MOBILED->add_unq_text_mobiles(file, MOB_DIR + "/" + dir[0][ctr]);
+    switch (type) {
+        case 1:
+            MAPD->add_unq_text_rooms(file, ROOM_DIR + "/" + dir[0][ctr]);
+            break;
+        case 2:
+            MOBILED->add_unq_text_mobiles(file, MOB_DIR + "/" + dir[0][ctr]);
+            break;
+        case 3:
+            SOULD->from_unq_text(file);
+            break;
+        default:break;
+    }
   }
 }
