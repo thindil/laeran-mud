@@ -45,8 +45,35 @@ void upgraded(varargs int clone) {
   unq::upgraded();
 }
 
-mixed* to_dtd_unq(void) {
-  error("Not implemented yet");
+string serialize_string(mixed *sstring)
+{
+    string ret;
+    int i;
+
+    ret = "";
+    for (i = 0; i < sizeof(sstring); i++) {
+        if (sstring[i] == "target" || sstring[i] == "actor")
+            ret += "~" + sstring[i] + "{}";
+        else if (typeof(sstring[i]) == T_STRING)
+            ret += sstring[i];
+    }
+    return ret;
+}
+
+string to_unq_text(int number)
+{
+    string socialtmp, verb;
+
+    verb = map_indices(sould_strings)[number]; 
+    socialtmp = "~social{\n"
+            + "  ~verb{" + verb + "}\n"
+            + "  ~self-only{" + serialize_string(sould_strings[verb][SOULD_SELF_ONLY]) + "}\n"
+            + "  ~self-target{" + serialize_string(sould_strings[verb][SOULD_SELF_TARGET]) + "}\n"
+            + "  ~target{" + serialize_string(sould_strings[verb][SOULD_TARGET]) + "}\n"
+            + "  ~other-only{" + serialize_string(sould_strings[verb][SOULD_OTHER_ONLY]) + "}\n"
+            + "  ~other-target{" + serialize_string(sould_strings[verb][SOULD_OTHER_TARGET]) + "}\n"
+            + "}\n";
+    return socialtmp;
 }
 
 /* Access protection for from_unq and from_unq_text */

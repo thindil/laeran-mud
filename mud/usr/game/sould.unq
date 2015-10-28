@@ -6,7 +6,6 @@
   ~other-only{~actor{} chichocze do siebie.}
   ~other-target{~actor{} chichocze do ~target{}.}
 }
-
 ~social{
   ~verb{warkot}
   ~self-only{Warczysz.}
@@ -15,7 +14,6 @@
   ~other-only{~actor{} warczy.}
   ~other-target{~actor{} warczy na ~target{}.}
 }
-
 ~social{
   ~verb{pozdrow}
   ~self-only{Pozdrawiasz wszystkich.}
@@ -24,7 +22,6 @@
   ~other-only{~actor{} pozdrawia wszystkich.}
   ~other-target{~actor{} pozdrawia ~target{}.}
 }
-
 ~social{
   ~verb{przepros}
   ~self-only{Przepraszasz za swoje zachowanie.}
@@ -33,7 +30,6 @@
   ~other-only{~actor{} przeprasza za swoje zachowanie.}
   ~other-target{~actor{} przeprasza ~target{}.}
 }
-
 ~social{
   ~verb{szczeka}
   ~self-only{HAU! HAU!}
@@ -42,7 +38,6 @@
   ~other-only{~actor{} szczeka.}
   ~other-target{~actor{} szczeka na ~target{}.}
 }
-
 ~social{
   ~verb{piwo}
   ~self-only{Wyciągasz butelkę piwa.}
@@ -51,7 +46,6 @@
   ~other-only{~actor{} wyciąga piwo.}
   ~other-target{~actor{} podaje piwo ~target{}.}
 }
-
 ~social{
   ~verb{uklon}
   ~self-only{Kłaniasz się nisko.}
@@ -60,7 +54,6 @@
   ~other-only{~actor{} kłania się nisko.}
   ~other-target{~actor{} kłania się przed ~target{}.}
 }
-
 ~social{
   ~verb{cygaro}
   ~self-only{Zapalasz cygaro.}
@@ -69,7 +62,6 @@
   ~other-only{~actor{} zapala cygaro.}
   ~other-target{~actor{} podaje ~target{} cygaro i zapala je.}
 }
-
 ~social{
   ~verb{klaszcz}
   ~self-only{Klaszczesz.}

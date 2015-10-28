@@ -166,7 +166,7 @@ void heart_beat_func(void)
 
 void heart_beat_save(void)
 {
-  find_object(INITD)->save_mud_data(nil, ROOM_DIR, MOB_DIR, ZONE_DIR, nil);
+  find_object(INITD)->save_mud_data(nil, ROOM_DIR, MOB_DIR, ZONE_DIR, SOCIAL_DIR, nil);
 }
 
 void heart_beat_dump(void)

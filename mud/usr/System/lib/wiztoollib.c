@@ -268,13 +268,13 @@ static void cmd_quota(object user, string cmd, string str) {
 
 static void cmd_datadump(object user, string cmd, string str) {
   find_object(INITD)->save_mud_data(user, ROOM_DIR, MOB_DIR, ZONE_DIR,
-				    nil);
+				    SOCIAL_DIR, nil);
   user->message("Data save commenced.\n");
 }
 
 static void cmd_safesave(object user, string cmd, string str) {
   find_object(INITD)->save_mud_data(user, SAFE_ROOM_DIR, SAFE_MOB_DIR,
-				    SAFE_ZONE_DIR, nil);
+				    SAFE_ZONE_DIR, SAFE_SOCIAL_DIR, nil);
   user->message("Safe data save commenced.\n");
 }
 
