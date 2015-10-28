@@ -1,9 +1,13 @@
 bin/driver
 bin/mud.dgd
-mud/kernel/data/*.*
-mud/log/*.*
-mud/usr/game/object/**
-mud/usr/game/users/*.*
+mud/kernel/data/**
+mud/log/**
+mud/usr/game/object/mobiles*/**
+mud/usr/game/object/stuff*/**
+mud/usr/game/object/zones*/**
+mud/usr/game/object/socials.old/**
+mud/usr/game/object/safe*/**
+mud/usr/game/users/**
 mud/usr/System/keys/**
 mud/usr/game/text/*_reports.txt
 snapshot*
