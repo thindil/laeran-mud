@@ -2,169 +2,163 @@
 ~keywords{admin}
 ~desc{
 
-There are a number of commands that deal with LPC programs
-individually.  Note that in LPC, "program" is synonymous with "source
-LPC file", a single LPC file like /usr/System/obj/wiztool.c or
+Jest pewna liczba komend, które pozwalają działać z programami
+LPC. Jedna uwaga, w LPC "program" jest tym samy co "źródłowy plik
+LPC", pojedynczy plik LPC to /usr/System/obj/wiztool.c lub
 /usr/common/lib/intl_phrase.c.
 
-Commands and help topics include:
+Komendy i tematy pomocy:
 
-%history         Shows your code/clone/compile history
-%clear           Clears your code/clone/compile history
+%history         Pokazuje Twoją historię komend code/clone/compile
+%clear           Czyści Twoją historię komend code/clone/compile
 
-%clone           Clones the referenced object
-%destruct        Destructs the referenced object
-%compile         Compiles the referenced object
+%clone           Klonuje wybrany obiekt
+%destruct        Niszczy wybrany obiekt
+%compile         Kompiluje wybrany obiekt
 
-%od_report       Report on an LPC object
-%list_dest       List destroyed LPC objects
-%full_rebuild    Recompiles all objects
+%od_report       Informacje na temat obiektu LPC
+%list_dest       Lista usuniętych obiektów LPC
+%full_rebuild    Rekompiluje wszystkie obiekty
 
-%code            The code command runs arbitrary DGD code
-cd               Various file commands, like in DOS or Unix
-%ed              The DGD editor.
+%code            Komenda code uruchamia jakiś kod DGD
+cd               Komendy związane z plikami, jak w systemie
+%ed              Edytor tekstowy DGD.
 
-%access          Show admins' permissions
-%rsrc            Shows resource usage
-%quota           Shows quotas and resource usage
+%access          Pokazuje uprawnienia administracyjne
+%rsrc            Pokazuje użycie zasobów
+%quota           Pokazuje użycie zasobów i udziałów
 
-%grant           Grant an administrator permissions
-%ungrant         Remove an administrator's permissions
+%grant           Przydziela uprawnienia administracyjne
+%ungrant         Usuwa uprawnienia administracyjne
 
-daemons          Daemons providing MUD services
+demony           Demony dostarczające różnych usług MUDa
 
 }
 
 
-~name{~enUS{history,%history,command history,compile history,clone history,
-            code history}}
+~name{history,%history,historia,historia komend,historia kompilacji}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The %history command by itself shows the history of values returned by
-%code, %compile and %clone commands.  You can also follow it with a
-number to show just that history value.  Most of the values listed
-will be shown by object type rather than specific value.  They can be
-further referenced in several low-level MUDLib commands as $0, $1, $2,
-etc.
+Komenda %history bez argumentów pokazuje historię wartości zwróconych
+przez komendy %code, %compile bądź %clone. Możesz również podać argument
+w postaci numeru aby zobaczyć tylko jedną wartość z historii. Większość
+wartości będzie pokazanych jako obiekt niż specificzna wartość. Mogą
+również odnosić się do niskopoziomowych komend MUDliba jak $0, $1, $2,
+itd.
 
-}}
+}
 
 
-~name{~enUS{clear, %clear, clear history}}
+~name{clear,%clear,czyszczenie historii}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The %clear command clears the command history.  See %history.
+Komenda %clear czyści historię komend. Zobacz %history.
 
-}}
+}
 
 
-~name{~enUS{%clone, clone, clone object}}
+~name{%clone,clone,klonuj,klonuj obiekt}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The %clone command clones an object and puts it into your command
-history.  Be careful of causing memory leaks!  The cloned object may
-be specified by object name or by history number.
+Komenda %clone klonuje obiekt i dodaje go do Twojej historii
+komend. Bądź ostrożny, inaczej możesz wywołać wycieki pamięci!
+Sklonowany obiekt może być określony przez nazwę obiektu bądź
+numer z historii.
 
-See %history.
+Zobacz %history.
 
-}}
+}
 
 
-~name{~enUS{%destruct, destruct, destruct object}}
+~name{%destruct,destruct,zniszcz obiekt}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The %destruct command destructs objects by object name or history
-number.  Destructing a library and recompiling it may not be enough to
-fully replace it in the code of its inherited objects.
+Komenda %destruct niszczy obiekty podane poprzez nazwę obiektu
+bądź numer z historoo. Skasowanie biblioteki i rekompilacja jej może
+nie być wystarczające aby w pełni zastąpić jej kod w obiektach
+potomnych.
 
-See %history and "http://phantasmal.sf.net/DGD/Kernel/Inheritance.html".
+Zobacz %history i "http://phantasmal.sf.net/DGD/Kernel/Inheritance.html".
 
-}}
+}
 
 
-~name{~enUS{%compile, compile, compile object}}
+~name{%compile,compile,kompiluj obiekt}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The %compile command compiles objects by object name or history
-number.  Destructing a library and recompiling it may not be enough to
-fully replace it in the code of its inherited objects, though
-recompiling a clonable will upgrade all clones.  If clonable, the
-compiled object will be added to the command history.
+Komenda %compile kompiluje obiekty podane jako nazwy obiektów albo
+numer z historii. Skasowanie biblioteki i rekompilacja może nie być
+wystarczające aby w pełni zastąpić jej kod w obiektach potomnych,
+chociaż rekompilacja klonowanego powinna zaktualizować wszystkie
+klony. Jeżeli obiekt jest klonowalny, skompilowany obiekt będzie
+dodany do historii komendy.
 
-See %history, "http://phantasmal.sf.net/DGD/Kernel/Inheritance.html",
-%destruct, and %full_rebuild.
+Zobacz %history, "http://phantasmal.sf.net/DGD/Kernel/Inheritance.html",
+%destruct i %full_rebuild.
 
-}}
+}
 
 
-~name{~enUS{%code, code, arbitrary code, lpc, lpc code}}
+~name{%code,code,uruchamianie kodu,lpc,kod lpc,kod}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The %code command will run a bit of DGD LPC code that you specify and
-return a result.  Simple examples include:
+Komenda %code uruchomi nieco kodu LPC DGD który podasz jako argument
+i zwróci rezultat. Proste przykłady:
 
 %code 3 + 7
 %code destruct_object($3)
 %code (\{"bob", "sam", "fred"\}) & (\{"bob", "william"\})
 
-This code will be run from your directory, and thus with your
-permissions.  The object itself will be called /usr/you/_code where
-"you" is replaced by your username.  If you have a file called
-/usr/you/include/code.h, it will be included before the code is run.
-This allows you to declare variables and inherit from a parent object,
-if you so desire.
+Ten kod będzie uruchomiony z Twojego katalogu i dlatego będzie 
+działał z Twoimi uprawnieniami. Sam obiekt będzie nazwany
+/usr/Ty/_code gdzie "Ty" będzie zamienione na Twoją nazwę
+postaci. Jeżeli posiadasz plik nazwany /usr/Ty/include/code.h,
+zostanie on dołączony przed uruchomieniem kodu. To pozwoli Tobie
+deklarować zmienne i dziedziczyć z obiektu rodzica jeżeli masz
+na to ochotę.
 
-See %history and "http://phantasmal.sf.net/DGD".
+Zobacz %history i "http://phantasmal.sf.net/DGD".
 
-}}
+}
 
 
-~name{~enUS{objectd report,od_report,%od_report,object report}}
+~name{objectd report,od_report,%od_report,raport objectd}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The %od_report command will give the objectd's view of a particular
-object or issue.  It may be used on an LPC program, or a particular
-issue number or history number (see %history):
+Komenda %od_report pokaże wartość objectd dla wybranego obiektu
+bądź zagadnienia. Może być użyta na programach LPC, na wybranym
+numerze rzeczy bądź historii (zobacz %history):
 
 %od_report /usr/System/obj/wiztool
 %od_report #47
 %od_report $7
 
-In any of these cases it will report whether the object is clonable
-or inheritable, whether the issue found is destructed, the name,
-index and time of compilation, previous issue if any, and parent
-issues and files the program depends on (other than its direct
-corresponding source file).
+W dowolnym z tych wypadków, raport poinformuje czy obiekt jest
+klonowalny czy dziedziczy, czy zgłoszenie jest usunięte, nazwę,
+indeks i czas kompilacji, poprzednie zgłoszenie (jeżeli jest),
+zgłoszenie rodzicielskie i pliki na których program polega
+(inne niż plik z bezpośrednim kodem źródłowym).
 
-}}
+}
 
 
-~name{~enUS{%list_dest,%list_destroyed,list_dest,list_destroyed,list dest,
-            list destroyed,listdest,%listdest,listdestroyed,%listdestroyed}}
+~name{%list_dest,list_dest,lista usunietych,lista usuniętych}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-Users who are not debugging the objectd will probably have no need
-ever to use the %list_dest command.  It simply prints out a current
-list of programs whose most recent issue is destroyed (with the
-%destruct command or with destruct_object()).
+Użytkownicy którzy nie debuggują objectd prawdopodonie nigdy nie
+będą potrzebowali użycia komendy %list_dest. To po prostu pokazuje
+obecną listę programów, których najnowsze zgłoszenia zostały
+usunięte (przy pomocy komendy %destruct albo destruct_object()),
 
-}}
+}
 
 
 ~name{~enUS{rebuild,full_rebuild,%full_rebuild,full rebuild,fullrebuild,
