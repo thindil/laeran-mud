@@ -51,3 +51,30 @@
   ~other-only{~actor{} wyciąga piwo.}
   ~other-target{~actor{} podaje piwo ~target{}.}
 }
+
+~social{
+  ~verb{uklon}
+  ~self-only{Kłaniasz się nisko.}
+  ~self-target{Kłaniasz się przed ~target{}.}
+  ~target{~actor{} kłania się Tobie.}
+  ~other-only{~actor{} kłania się nisko.}
+  ~other-target{~actor{} kłania się przed ~target{}.}
+}
+
+~social{
+  ~verb{cygaro}
+  ~self-only{Zapalasz cygaro.}
+  ~self-target{Podajesz ~target{} cygaro i zapalasz je.}
+  ~target{~actor{} podaje Tobie cygaro i zapala je.}
+  ~other-only{~actor{} zapala cygaro.}
+  ~other-target{~actor{} podaje ~target{} cygaro i zapala je.}
+}
+
+~social{
+  ~verb{klaszcz}
+  ~self-only{Klaszczesz.}
+  ~self-target{Bijesz brawo ~target{}.}
+  ~target{~actor{} bije Tobie brawo.}
+  ~other-only{~actor{} klaszcze.}
+  ~other-target{~actor{} bije brawo dla ~target{}}
+}
