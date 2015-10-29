@@ -2105,14 +2105,15 @@ static void cmd_shutdown(object user, string cmd, string str)
 static void cmd_reboot(object user, string cmd, string str)
 {
     if (str) {
-	message("Usage: " + cmd + "\n");
-	return;
+        message("Usage: " + cmd + "\n");
+        return;
     }
 
-    if (!access(owner, "/", FULL_ACCESS)) {
-	message("Permission denied.\n");
-    } else {
-	::dump_state();
-	::shutdown(1);
+    if (!access(owner, "/", FULL_ACCESS)) 
+        message("Permission denied.\n");
+    else {
+        ::dump_state();
+        find_object("/usr/System/initd")->reboot();
+        ::shutdown(1);
     }
 }

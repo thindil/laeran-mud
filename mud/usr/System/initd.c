@@ -391,7 +391,7 @@ void prepare_reboot(void)
     error("Can't call prepare_reboot from there!");
 
   if(find_object(LOGD)) {
-    LOGD->write_syslog("Preparing to reboot MUD...", LOG_NORMAL);
+    LOGD->write_syslog("Zapisywanie stanu gry...", LOG_NORMAL);
   }
 
   ACCESSD->save();
@@ -422,12 +422,9 @@ void force_shutdown(void) {
 
 void reboot(void)
 {
-  if(previous_program() != SYSTEM_WIZTOOLLIB)
-    error("Can't call reboot from there!");
-
-  if(find_object(LOGD)) {
-    LOGD->write_syslog("Rebooting!", LOG_NORMAL);
-  }
+    if(find_object(LOGD)) 
+        LOGD->write_syslog("Rebooting!", LOG_NORMAL);
+  
 }
 
 void set_path_special_object(object new_obj) {
