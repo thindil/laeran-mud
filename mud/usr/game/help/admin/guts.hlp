@@ -161,99 +161,86 @@ usunięte (przy pomocy komendy %destruct albo destruct_object()),
 }
 
 
-~name{~enUS{rebuild,full_rebuild,%full_rebuild,full rebuild,fullrebuild,
-            full_recompile,%full_recompile,full recompile,fullrecompile}}
+~name{rebuild,full_rebuild,%full_rebuild}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The %full_rebuild command will entirely recompile the LPC sources of the
-MUD with the exception of the Driver object, /kernel/sys/driver.c.
-That may be separately recompiled with the %compile command if you're
-so inclined.
+Komenda %full_rebuild przekompiluje cały kod LPC MUDa za wyjątkiem
+obiektu Driver, /kernel/sys/driver.c. Ten może być rekompilowany
+osobno komendą %compile jeżeli tego chcesz.
 
-It updates by destructing every library (as with the %destruct command) and
-then rebuilding every clonable.
+Komenda aktualizuje poprzez zniszczenie każdej biblioteki (jak przy
+pomocy komendy %destruct) i ponowne przebudowanie każdej klonowalnej.
 
-}}
+}
 
 
-~name{~enUS{cd,pwd,ls,cp,mv,rm,mkdir,rmdir}}
+~name{cd,pwd,ls,cp,mv,rm,mkdir,rmdir}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The cd, pwd, ls, cp, mv, rm, mkdir and rmdir commands work like in
-Unix.  For DOS folks, the differences are that cd, typed by itself,
-switches to your home directory instead of printing the current
-directory.  pwd, typed by itself, shows the current directory.  DIR is
-ls, COPY is cp, MOVE is mv.  The rest should be the same.
+Komendy cd, pwd, ls, cp, mv, rm, mkdir, rmdir działają jak ich
+uniksowe odpowiedniki. Jeżeli nigdy nie korzystałeś z linii
+poleceń w systemach uniksowych, proszę powstrzymaj się przed ich
+używaniem. Mogą spowodować poważne uszkodzenia w grze i nawet nie
+będziesz o tym wiedzieć. Jeżeli ich nie rozumiesz, nie używaj.
 
-If you've never used either DOS or Unix, please avoid these commands
-for your own sanity.  They can do serious damage to your MUD without
-you intending anything bad.  If you don't understand them already,
-don't use them.
-
-}}
+}
 
 
-~name{~enUS{%ed,ed,edit}}
+~name{%ed,ed,edytor}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-DGD includes a build-in line editor called "ed".  You invoke it by
-typing "%ed", or "%ed <filename>".  This can seriously mess stuff up.
-If you don't already know how to use it, please don't mess with it.
+DGD zawiera wbudowany edytor nazywany "ed". Możesz uruchomić go
+wpisując "%ed" albo "%ed <nazwa pliku>". To może bardzo poważnie
+namieszać w grze. Jeżeli nie wiesz dokładnie jak go używać, proszę
+nie korzystaj na razie z niego.
 
-}}
+}
 
 
-~name{~enUS{%grant,%ungrant,grant,ungrant}}
+~name{%grant,%ungrant,grant,ungrant}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-%grant <username> access
-%grant <username> <path> [read|write|full]
-%grant global <path>
+%grant <nazwa użytkownika> access
+%grant <nazwa użytkownika> <ścieżka> [read|write|full]
+%grant global <ścieżka>
 
-%ungrant <username> access
-%ungrant <username> <path>
-%ungrant global <path>
+%ungrant <nazwa użytkownika> access
+%ungrant <nazwa użytkownika> <ścieżka>
+%ungrant global <ścieżka>
 
-Using the "%grant <user> access" syntax turns a regular user into an
-admin character, giving him significant additional powers.  There's no
-simple, controlled way to do so at this point -- you're definitely
-compromising the security of the MUD if you don't trust the person you
-do this to.
+Użycie komendy "%grant <użytkownik> access" zmieni zwykłego gracza
+w postać administratora, dając mu potężne dodatkowe moce. Nie ma
+prostej, kontrolowalnej drogi aby zabezpieczyć się w tym momencie --
+zdecydowanie narażasz bezpieczeństwo gry jeżeli używasz tej komendy
+na osobie, której nie ufasz.
 
-The "%grant <user> <path> [r|w|f]" syntax grants a specific user a
-specific kind of access (read access, write access or full
-administrative access) to a specific location and all its
-subdirectories.  This is the basic way that Kernel library permissions
-work.
+Komenda "%grant <użytkownik> <ścieżka> [r|w|f]" przyznaje wybranemu
+użytkownikowi określony dostęp (odczyt, zapis albo pełny dostęp
+administracyjny) do wybranej lokacji i jej podkatalogów. To jest
+podstawowa wersja tego jak system pozwoleń działa w grze.
 
-The %ungrant command is the opposite of grant, and the corresponding
-syntaxes remove the corresponding permissions.  For instance "%ungrant
-<user> access" will make the targeted character stop being an admin
-character.  Be warned that an unscrupulous user can do that to your
-character as well!
+Komenda %ungrant jest przeciwieństwem komendy %grant i odpowiednia
+składnia usuwa odpowiednie uprawnienia. Na przykład, "%ungrant
+<użytkownik> access" usunie uprawnienia administracyjne z wybranej
+postaci. Pamiętaj, że jakiś pozbawiony skrupółów użytkownik może
+zrobić to samo Twojej postaci!
 
-Regardless of anything else you do, the "admin" character retains full
-privileges.  This is an immutable characteristic of the Kernel
-Library.
+Bez względu na wszystko postać "admin" zawsze zachowuje pełne
+uprawnienia. Jest to niezmienna cecha biblioteki Kernel.
 
-}}
+}
 
 
-~name{~enUS{permission,permissions}}
+~name{uprawnienia,uprawnienie}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-To view a user's permissions, use the %access command.  To add new
-permissions, use the %grant command.  To remove existing permissions,
-use the %ungrant command.
+Aby zobaczyć uprawnienia użytkownika, użyj komendy %access. Aby
+nadać nowe uprawnienia, użyj komendy %grant. Aby usunąć obecne
+uprawnienia, użyj komendy %ungrant.
 
-}}
+}

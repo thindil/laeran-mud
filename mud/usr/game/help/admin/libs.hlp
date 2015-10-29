@@ -1,27 +1,26 @@
-~name{~enUS{room library,room lib,ROOM}}
+~name{biblioteka room,room library,room lib,ROOM}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The room library is inherited by all "rooms".  This includes not only 
-rooms in the traditional sense, but also portables, user and npc 
-bodies, etc.  In general when you create a new room, however, you do 
-not need to create a new room LPC file (contrary to most MUDs), you 
-use the existing OnLine Creation (OLC) tools and/or hand edit the 
-roomfile.unq file.  
+Biblioteka room jest dziedziczona przez wszystkie "pokoje". To oznacza
+nie tylko pokoje w tradycyjnym sensie, ale również przenośne,
+użytkowników, npc, ciała, itd. Ogólnie rzecz biorąc, kiedy tworzysz
+nowy pokój, jednakże nie musisz tworzyć nowego pliku LPC dla tego
+pokoju (w odróżnieniu od większości MUDów), używasz w tym celu systemu
+OnLine Creation (OLC) albo/i ręcznej edycji pliku zone[numer].unq.
 
-If however you need to create a new kind of room (for example one 
-where the ceiling slowly falls down), you need to create a new LPC 
-program derived from ROOM, and set up the UNQ parser to recognize 
-your new room type.  You do this as follows:
+Jeżeli jednak chcesz stworzyć nowy rodzaj pokoju (na przykład taki
+z wolno opadającym sufitem), musisz utworzyć nowy program LPC
+dziedziczący z ROOM i ustawić parser UNQ aby rozpoznawał Twój nowy
+typ pokoju. Wykonasz to następująco:
 
-1) Create a new LPC file, which inherits ROOM and UNQABLE.  (ROOM 
-being a constant which is the filename of the room library, probably 
-/usr/common/lib/room)
+1) Utwórz nowy plik LPC który będzie dziedziczyć z ROOM i UNQABLE.
+ROOM będzie stałą która zawiera nazwę pliku z biblioteką room,
+najprawdopodobniej /usr/common/lib/room.
 
-2) Override the create(), upgraded(), destructed(), to_unq_text()
-and from_dtd_unq() member functions.  These functions should look
-approximately as follows (taken from simple_room.c):
+2) Nadpisz funkcje create(), upgraded(), destructed(), to_unq_text()
+oraz from_dtd_unq(). Te funkcje powinny wyglądać następująco (pobrane
+z pliku simple_room.c):
 
 static void create(varargs int clone) \{
   room::create(clone);
@@ -69,37 +68,37 @@ void from_dtd_unq(mixed* unq) \{
   \}
 \}
 
-Where "my_room" is a name for your room -- it must be unique, and
-cannot be the name of any room parameters -- like location, bdesc,
-parent, etc.  (ie it can't be any of the types already listed in
-room.dtd).
+Gdzie "my_room" jest nazwą Twojego pokoju -- musi być unikalna i
+nie może mieć nazwy jakiegokolwiek parametru pokoju -- jak location,
+bdesc, parent, itd (znaczy się, nie może zawierać żadnego typu
+już zapisanego w pliku room.dtd).
 
-3) Now you have to add a dtd definition for your room to room.dtd.  
-The simplest definiton is just "\~my_room:obj\{\}".  (my_room must
-be the same as the my_room above.  If you want any
-extra parameters stored for your room, you need to add these into
-room.dtd too.  (Of course you also have to be prepared to process
-them in your room LPC file).  Look at simple_portable.c for an example
-of how this works.
+3) Teraz musisz dodać definicje dtd dla Twojego pokoju do room.dtd.
+Najprostszą definicją jest po prostu "\~my_room:obj\{\}". "my_room"
+musi być takie samo jak "my_room" wcześniej. Jeżeli chcesz dodać
+jakieś nowe parametry zapisywane przez pokój, musisz dodać je do
+room.dtd również. Oczywiście musisz je również odpowiednio obsłużyć
+w kodzie LPC. Zobacz do pliku simple_portable.c jako przykład jak
+to może działać.
 
-4) Next you need to bind your LPC file to the dtd you have just
-finished creating.  To do this edit room_binder.unq and add some unq
-such as the following:
+4) Następnie musisz przywiązać Twój plik LPC do dtd który właśnie
+skończyłeś tworzyć. Aby to zrobić, edytuj plik room_binder.unq i
+dodaj nieco unq podobnego do tego poniżej:
 
 \~bind\{
   \~tag\{my_room\}
   \~code\{/usr/common/obj/my_room\}
 \}
 
-where my_room is the name of the dtd tag you just finished creating
-and /usr/common/obj/my_room is the name of the LPC file containing
-your program (excluding the .c).  
+gdzie my_room jest nazwą tagu dtd który skończyłeś tworzyć a
+/usr/commn/obj/my_room jest nazwą pliku LPC zawierającego Twój
+program (bez końcówki .c).
 
-That's it.  However, you can't use the OLC to create objects of the
-type of your file (at least not yet.  If you want to implement this
-feature go ahead).  Instead you need to edit roomfile.unq manually.
+To wszystko. Jednakże nie możesz używać systemu OLC do tworzenia
+obiektów tego typu, który przed chwilą stworzyłeś. Przynajmniej 
+jeszcze nie. Jeżeli chcesz, musisz zaimplementować odpowiednie
 
-FUNCTIONS:
+FUNKCJE:
 
 Now, to implement your neato features for this room, there are a few
 functions in the ROOM library that you can override to give your room
@@ -206,7 +205,7 @@ through a get command or something similar.  mover is the object
 that is trying to move this object around, and new_env is the room
 this object is being moved into.  
 
-}}
+}
 
 ~name{~enUS{mobile library,mobile lib,MOBILE,mob lib,mob library}}
 ~keywords{admin}
