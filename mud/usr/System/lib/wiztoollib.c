@@ -1017,23 +1017,39 @@ static void cmd_reports(object user, string cmd, string str)
     }
 }
 
+void co_read_socials(object user, int ctr, int file_ctr)
+{
+
+    mixed** dir;
+    int     i;
+    string  file;
+    string  *socials;
+
+    dir = get_dir(SOCIAL_DIR + "/socials*.unq");
+
+    for(; ctr < sizeof(dir[0]); ctr++) {
+        /* Skip directories */
+        if(dir[1][ctr] == -2)
+            continue;
+        file = read_file(SOCIAL_DIR + "/" + dir[0][ctr]);
+        socials = explode(file, "\n}\n");
+        for (i = 0; i < 10 && file_ctr < sizeof(socials); i++, file_ctr ++) 
+            SOULD->from_unq_text(socials[file_ctr] + "\n}\n");
+        if (file_ctr < sizeof(socials))
+            break;
+    }
+   
+    if (ctr < sizeof(dir[0])) {
+        call_out("co_read_socials", 0, user, ctr, file_ctr);
+        return;
+    }
+
+    user->message("Przeładowano komendy socjalne.\n");
+}
+
 static void cmd_load_socials(object user, string cmd, string str)
 {
-  mixed** dir;
-  int     ctr;
-  string  file;
-
-  dir = get_dir(SOCIAL_DIR + "/socials*.unq");
-
-  for(ctr = 0; ctr < sizeof(dir[0]); ctr++) {
-    /* Skip directories */
-    if(dir[1][ctr] == -2)
-      continue;
-    file = read_file(SOCIAL_DIR + "/" + dir[0][ctr]);
-    SOULD->from_unq_text(file);
-  }
-
-  user->message("Przeładowano komendy socjalne.\n");
+    call_out("co_read_socials", 0, user, 0, 0);
 }
 
 
