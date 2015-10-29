@@ -857,7 +857,7 @@ static void cmd_help(object user, string cmd, string str) {
   }
 
   message("Brak pomocy dla \"" + str + "\".\n");
-  write_file("/usr/game/text/help_reports.txt", Name + ": " + str + "\n\n");
+  write_file("/usr/game/text/help_reports.txt", Name + ": " + str + "\n");
 }
 
 
