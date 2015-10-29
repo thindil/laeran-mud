@@ -1254,17 +1254,18 @@ static void cmd_users(object user, string cmd, string str) {
 /* List available social commands */
 static void cmd_socials(object user, string cmd, string str)
 {
-  int i, sz;
-  string* scommands;
-  
-  message("Dostępne komendy socjalne:\n");
-  scommands = SOULD->all_socials();
-  str = "";
-  for (i = 0, sz = sizeof(scommands); i < sz; i++)
-    {
-      str += scommands[i] + "\n";
+    int i, sz;
+    string* scommands;
+
+    message("Dostępne komendy socjalne:\n");
+    scommands = SOULD->all_socials();
+    str = "";
+    for (i = 0, sz = sizeof(scommands); i < sz; i++) {
+        if (!(i % 5))
+            str += "\n";
+        str += lalign(scommands[i], 20);
     }
-  message_scroll(str + "\n");
+    message_scroll(str + "\n");
 }
 
 static void cmd_movement(object user, string cmd, string str) {
