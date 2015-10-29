@@ -29,7 +29,6 @@ private object* pending_removed_adjectives;
 #define OF_CONTAINER          1
 #define OF_OPEN               2
 #define OF_OPENABLE           8
-#define OF_WEAPON             64
 #define OF_WEARABLE          128
 #define OF_DRESSED           256
 
@@ -220,7 +219,7 @@ int get_price(void)
 
 int* get_wearlocations(void)
 {
-  if(wearlocations == nil && sizeof(obj::get_archetypes()))
+  if(!sizeof(wearlocations) && sizeof(obj::get_archetypes()))
     return obj::get_archetypes()[0]->get_wearlocations();
 
   return wearlocations;
@@ -449,10 +448,6 @@ int is_openable() {
   return objflags & OF_OPENABLE;
 }
 
-int is_weapon() {
-  return objflags & OF_WEAPON;
-}
-
 int is_wearable() {
   return objflags & OF_WEARABLE;
 }
@@ -488,13 +483,6 @@ void set_openable(int value) {
     error("Only authorized code can currently set an object as openable!");
 
   set_flags(OF_OPENABLE, value);
-}
-
-void set_weapon(int value) {
-  if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can currently set an object as openable!");
-
-  set_flags(OF_WEAPON, value);
 }
 
 void set_wearable(int value) {
@@ -1089,7 +1077,7 @@ string to_unq_flags(void) {
     {
       ret += "  ~damage{" + damage + "}\n";
     }
-  if (is_wearable())
+  if (is_wearable() && sizeof(wearlocations))
     {
       ret += "  ~wearlocations{" + serialize_list(wearlocations) + "}\n";
     }
