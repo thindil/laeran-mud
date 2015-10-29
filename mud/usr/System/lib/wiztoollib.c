@@ -1079,7 +1079,7 @@ static void cmd_kick(object user, string cmd, string str)
                 return;
             }
             users[i]->message("Zostałeś wyrzucony z gry przez " + user->query_name());
-            users[i]->logout(0);
+            users[i]->disconnect();
             message("Wykopałeś gracza: " + str + " z gry.\n");
             return;
         }

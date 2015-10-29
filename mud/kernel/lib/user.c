@@ -18,7 +18,7 @@ nomask object query_conn()
  * NAME:	disconnect()
  * DESCRIPTION:	terminate the connection
  */
-static void disconnect()
+void disconnect()
 {
     if (connection) {
 	connection->disconnect();
