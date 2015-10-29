@@ -1690,26 +1690,21 @@ static void cmd_wear(object user, string cmd, string str)
       return;
     }
   ctr = 0;
-  if(sizeof(tmp) > 1)
-    {
+  if(sizeof(tmp) > 1) {
       for(ctr = 0; ctr < sizeof(tmp); ctr++)
-	{
-	  if ((tmp[ctr]->is_wearable() || tmp[ctr]->is_weapon()) && !tmp[ctr]->is_dressed())
-	    {
-	      break;
-	    }
-	}
+          if (tmp[ctr]->is_wearable() && !tmp[ctr]->is_dressed())
+              break;
       if(ctr >= sizeof(tmp))
-	{
-	  message("Żadna z tych rzeczy nie może być założona.\n");
-	  return;
-	}
+      {
+          message("Żadna z tych rzeczy nie może być założona.\n");
+          return;
+      }
       message("Więcej niż jedna taka rzecz jest w ekwipunku.\n");
       message("Wybierasz ");
       send_phrase(tmp[ctr]->get_brief());
       message(".\n");
-    }
-  if(!tmp[ctr]->is_wearable() && !tmp[ctr]->is_weapon())
+  }
+  if(!tmp[ctr]->is_wearable())
     {
       message("Nie możesz tego założyć!\n");
       return;
@@ -1720,32 +1715,25 @@ static void cmd_wear(object user, string cmd, string str)
       return;
     }
   items = body->objects_in_container();
-  if (tmp[ctr]->is_weapon())
-    {
-      for (i = 0; i < sizeof(items); i++)
-	{
-	  if (items[i]->is_weapon() && items[i]->is_dressed())
-	    {
-	      message("Chowasz " + items[i]->get_brief()->to_string(user) + ".\n");
-	      items[i]->set_dressed(0);
-	      break;
-	    }
-	}
+  if (tmp[ctr]->get_wearlocations()[0] == 5) {
+      for (i = 0; i < sizeof(items); i++) {
+          if (items[i]->is_wearable() && items[i]->get_wearlocations()[0] == 5 && items[i]->is_dressed()) {
+              message("Chowasz " + items[i]->get_brief()->to_string(user) + ".\n");
+              items[i]->set_dressed(0);
+              break;
+          }
+      }
       message("Bierzesz " + tmp[ctr]->get_brief()->to_string(user) + " do ręki.\n");
-    }
-  else
-    {
-      for (i = 0; i < sizeof(items); i++)
-	{
-	  if (!items[i]->is_weapon() && items[i]->is_dressed())
-	    {
-	      if (sizeof(tmp[ctr]->get_wearlocations() - items[i]->get_wearlocations()) < sizeof(tmp[ctr]->get_wearlocations()))
-		{
-		  message("Zdejmujesz " + items[i]->get_brief()->to_string(user) + ".\n");
-		  items[i]->set_dressed(0);
-		}
-	    }
-	}
+  }
+  else {
+      for (i = 0; i < sizeof(items); i++) {
+          if (items[i]->is_wearable() && items[i]->get_wearlocations()[0] != 5 && items[i]->is_dressed()) {
+              if (sizeof(tmp[ctr]->get_wearlocations() - items[i]->get_wearlocations()) < sizeof(tmp[ctr]->get_wearlocations())) {
+                  message("Zdejmujesz " + items[i]->get_brief()->to_string(user) + ".\n");
+                  items[i]->set_dressed(0);
+              }
+          }
+      }
       message("Zakładasz " + tmp[ctr]->get_brief()->to_string(user) + ".\n");
     }
   tmp[ctr]->set_dressed(1);
@@ -1774,35 +1762,27 @@ static void cmd_takeoff(object user, string cmd, string str)
       return;
     }
   ctr = 0;
-  if(sizeof(tmp) > 1)
-    {
-      for(ctr = 0; ctr < sizeof(tmp); ctr++)
-	{
-	  if ((tmp[ctr]->is_wearable() || tmp[ctr]->is_weapon()) && tmp[ctr]->is_dressed())
-	    {
+  if(sizeof(tmp) > 1) {
+      for(ctr = 0; ctr < sizeof(tmp); ctr++) {
+	  if (tmp[ctr]->is_wearable() && tmp[ctr]->is_dressed())
 	      break;
-	    }
-	}
+      }
       if(ctr >= sizeof(tmp))
-	{
-	  message("Żadna z tych rzeczy nie może być zdjęta.\n");
-	  return;
-	}
-    }
+      {
+          message("Żadna z tych rzeczy nie może być zdjęta.\n");
+          return;
+      }
+  }
   if (!tmp[ctr]->is_dressed())
     {
       message("Ten obiekt nie jest założony!\n");
       return;
     }
   items = body->objects_in_container();
-  if (tmp[ctr]->is_weapon())
-    {
+  if (tmp[ctr]->get_wearlocations()[0] == 5)
       message("Chowasz " + tmp[ctr]->get_brief()->to_string(user) + ".\n");
-    }
   else
-    {
       message("Zdejmujesz " + tmp[ctr]->get_brief()->to_string(user) + ".\n");
-    }
   tmp[ctr]->set_dressed(0);
 }
 

@@ -385,7 +385,7 @@ static void cmd_stat(object user, string cmd, string str) {
 	  tmp += "Obiekt można nosić.\n";
 	  tmp += "Lokacje ciała: ";
 	  wlocationsnum = obj->get_wearlocations();
-	  wlocations = ({"głowa", "tułów", "ręce", "dłonie", "nogi" });
+	  wlocations = ({"głowa", "tułów", "ręce", "dłonie", "nogi", "prawa dłoń", "lewa dłoń" });
 	  for (ctr = 0; ctr < sizeof(wlocationsnum); ctr++)
 	    {
 	      tmp += wlocations[wlocationsnum[ctr]] + " ";
@@ -790,6 +790,12 @@ static void cmd_set_obj_wearlocations(object user, string cmd, string str)
         case "nogi":
             newvalue += ({4});
             break;
+        case "prawa dłoń":
+            newvalue += ({5});
+            break;
+        case "lewa dłoń":
+            newvalue += ({6});
+            break;
         default:
             break;
         }
@@ -972,7 +978,7 @@ static void cmd_set_obj_flag(object user, string cmd, string str) {
 
   if(str) str = STRINGD->trim_whitespace(str);
   if(str && !STRINGD->stricmp(str, "flagi")) {
-    user->message("Nazwy flag:  cont container open openable locked lockable weapon wearable\n");
+    user->message("Nazwy flag:  cont container open openable locked lockable wearable\n");
     return;
   }
 
@@ -1029,9 +1035,6 @@ static void cmd_set_obj_flag(object user, string cmd, string str) {
           break;
       case "lockable":
           obj->set_lockable(flagval);
-          break;
-      case "weapon":
-          obj->set_weapon(flagval);
           break;
       case "wearable":
           obj->set_wearable(flagval);

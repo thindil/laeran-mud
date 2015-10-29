@@ -43,53 +43,38 @@ void start_combat(object new_fighter1, object new_fighter2)
   combat_info1["damage"] = fighter1->get_mobile()->get_user()->get_stat_val("siła") / 10;
   combat_info1["armor"] = ({({0, "głowa"}), ({0, "tułów"}), ({0, "ręce"}), ({0, "dłonie"}), ({0, "nogi"})});
   if (TAGD->get_tag_value(fighter1, "Fatigue"))
-    {
       fatigue = TAGD->get_tag_value(fighter1, "Fatigue");
-    }
   else
-    {
       fatigue = 0;
-    }
   combat_info1["stamina"] = (fighter1->get_mobile()->get_user()->get_stat_val("kondycja") * 10) - fatigue;
   combat_info1["stam_cost"] = 1;
   if (TAGD->get_tag_value(fighter1, "Hp"))
-    {
       combat_info1["hp"] = TAGD->get_tag_value(fighter1, "Hp");
-    }
   else
-    {
       combat_info1["hp"] = fighter1->get_hp();
-    }
   objs = fighter1->objects_in_container();
-  for (i = 0; i < sizeof(objs); i++)
-    {
-      if (objs[i]->is_weapon() && objs[i]->is_dressed())
-	{
-	  combat_info1["skill"] = objs[i]->get_skill();
-	  combat_info1["damage"] += objs[i]->get_damage();
-	  combat_info1["stam_cost"] += (int)objs[i]->get_weight();
-	}
-      if (!objs[i]->is_weapon() && objs[i]->is_dressed())
-	{
-	  tmp = objs[i]->get_wearlocations();
-	  for (j = 0; j < sizeof(tmp); j++)
-	    {
-	      combat_info1["armor"][tmp[j]][0] = objs[i]->get_armor();
-	    }
-	}
-    }
+  for (i = 0; i < sizeof(objs); i++) {
+      if (objs[i]->is_dressed()) {
+          tmp = objs[i]->get_wearlocations();
+          if (tmp[0] == 5) {
+              combat_info1["skill"] = objs[i]->get_skill();
+              combat_info1["damage"] += objs[i]->get_damage();
+              combat_info1["stam_cost"] += (int)objs[i]->get_weight();
+          }
+          else {
+              for (j = 0; j < sizeof(tmp); j++)
+                  combat_info1["armor"][tmp[j]][0] = objs[i]->get_armor();
+          }
+      }
+  }
   combat_info1["hit"] = fighter1->get_mobile()->get_user()->get_stat_val("siła") + fighter1->get_mobile()->get_user()->get_skill_val(combat_info1["skill"]);
   combat_info1["evade"] = fighter1->get_mobile()->get_user()->get_stat_val("zręczność") + fighter1->get_mobile()->get_user()->get_skill_val("walka/unik");
   combat_info1["exp"] = combat_info1["hit"] + combat_info1["evade"] + combat_info1["hp"];
 
   if (TAGD->get_tag_value(fighter2, "Hp"))
-    {
       combat_info2["hp"] = TAGD->get_tag_value(fighter2, "Hp");
-    }
   else
-    {
       combat_info2["hp"] = fighter2->get_hp();
-    }
   combat_info2["name"] = fighter2->get_brief()->to_string(fighter1->get_mobile()->get_user());
   combat_info2["stamina"] = 100;
   combat_info2["stam_cost"] = 1;
@@ -100,31 +85,24 @@ void start_combat(object new_fighter1, object new_fighter2)
       combat_info2["damage"] = fighter2->get_mobile()->get_user()->get_stat_val("siła") / 10;
       combat_info2["armor"] = ({({0, "głowa"}), ({0, "tułów"}), ({0, "ręce"}), ({0, "dłonie"}), ({0, "nogi"})});
       if (TAGD->get_tag_value(fighter2, "Fatigue"))
-	{
-	  fatigue = TAGD->get_tag_value(fighter2, "Fatigue");
-	}
+          fatigue = TAGD->get_tag_value(fighter2, "Fatigue");
       else
-	{
-	  fatigue = 0;
-	}
+          fatigue = 0;
       combat_info2["stamina"] = (fighter2->get_mobile()->get_user()->get_stat_val("kondycja") * 10) - fatigue;
-      for (i = 0; i < sizeof(objs); i++)
-	{
-	  if (objs[i]->is_weapon() && objs[i]->is_dressed())
-	    {
-	      combat_info2["skill"] = objs[i]->get_skill();
-	      combat_info2["damage"] += objs[i]->get_damage();
-	      combat_info2["stam_cost"] += (int)objs[i]->get_weight();
-	    }
-	  if (!objs[i]->is_weapon() && objs[i]->is_dressed())
-	    {
-	      tmp = objs[i]->get_wearlocations();
-	      for (j = 0; j < sizeof(tmp); j++)
-		{
-		  combat_info2["armor"][tmp[j]][0] = objs[i]->get_armor();
-		}
-	    }
-	}
+      for (i = 0; i < sizeof(objs); i++) {
+          if (objs[i]->is_dressed()) {
+              tmp = objs[i]->get_wearlocations();
+              if (tmp[0] == 5) {
+                  combat_info2["skill"] = objs[i]->get_skill();
+                  combat_info2["damage"] += objs[i]->get_damage();
+                  combat_info2["stam_cost"] += (int)objs[i]->get_weight();
+              }
+              else {
+                  for (j = 0; j < sizeof(tmp); j++)
+                      combat_info2["armor"][tmp[j]][0] = objs[i]->get_armor();
+              }
+          }
+      }
       combat_info2["hit"] = fighter2->get_mobile()->get_user()->get_stat_val("siła") + fighter2->get_mobile()->get_user()->get_skill_val(combat_info1["skill"]);
       combat_info2["evade"] = fighter1->get_mobile()->get_user()->get_stat_val("zręczność") + fighter2->get_mobile()->get_user()->get_skill_val("walka/unik");
     }

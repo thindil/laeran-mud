@@ -49,7 +49,6 @@ private object obj_detail_of;
 #define SS_PROMPT_WEIGHT_CAPACITY  23
 #define SS_PROMPT_VOLUME_CAPACITY  24
 #define SS_PROMPT_LENGTH_CAPACITY  25
-#define SS_PROMPT_WEAPON           26
 #define SS_PROMPT_DAMAGE           27
 #define SS_PROMPT_WEARABLE         28
 #define SS_PROMPT_WLOCATION        29
@@ -86,7 +85,6 @@ static void prompt_openable_data(mixed data);
 static int  prompt_weight_capacity_input(string input);
 static int  prompt_volume_capacity_input(string input);
 static int  prompt_length_capacity_input(string input);
-static void prompt_weapon_data(mixed data);
 static int  prompt_damage_input(string input);
 static void prompt_wearable_data(mixed data);
 static int  prompt_wlocation_input(string input);
@@ -227,7 +225,6 @@ int from_user(string input) {
   case SS_PROMPT_CONTAINER:
   case SS_PROMPT_OPEN:
   case SS_PROMPT_OPENABLE:
-  case SS_PROMPT_WEAPON:
   case SS_PROMPT_WEARABLE:
     send_string("Internal error in state machine!  Cancelling OLC!\r\n");
     LOGD->write_syslog("Reached from_user() in state " + substate
@@ -385,7 +382,6 @@ private string blurb_for_substate(int substate) {
   case SS_PROMPT_CONTAINER:
   case SS_PROMPT_OPEN:
   case SS_PROMPT_OPENABLE:
-  case SS_PROMPT_WEAPON:
   case SS_PROMPT_WEARABLE:
     return "This blurb should never be used.  Oops!\r\n";
 
@@ -426,11 +422,11 @@ private string blurb_for_substate(int substate) {
     return "Wprowadź ilość zadawanych obrażeń przez obiekt.\n";
   case SS_PROMPT_WLOCATION:
     if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Wprowadź lokację (lub lokacje, oddzielone spacjami) na które można założyć dany obiekt, "
+      return "Wprowadź lokację (lub lokacje, oddzielone przecinkami) na które można założyć dany obiekt, "
 	+ " albo wpisz 'none' \n aby przyjąć wartości z archetypu.\n"
-	+ "Dostępne lokacje to: tułów ręce nogi głowa dłonie\n";
-    return "Wprowadź lokację (lub lokacje) na które można założyć dany obiekt.\n"
-      + "Dostępne lokacje to: tułów ręce nogi głowa dłonie\n";
+	+ "Dostępne lokacje to: tułów, ręce, nogi, głowa, dłonie, prawa dłoń, lewa dłoń\n";
+    return "Wprowadź lokację (lub lokacje, oddzielone przecinkami) na które można założyć dany obiekt.\n"
+      + "Dostępne lokacje to: tułów, ręce, nogi, głowa, dłonie, prawa dłoń, lewa dłoń\n";
   case SS_PROMPT_ARMOR:
     if(new_obj && sizeof(new_obj->get_archetypes()))
       return "Wprowadź wartość zbroi przedmiotu, czyli ile obrażeń potrafi "
@@ -510,7 +506,6 @@ void switch_from(int popp) {
        && substate != SS_PROMPT_CONTAINER
        && substate != SS_PROMPT_OPEN
        && substate != SS_PROMPT_OPENABLE
-       && substate != SS_PROMPT_WEAPON
        && substate != SS_PROMPT_WEARABLE) {
       send_string("(Tworzenie obiektu -- przerwanie)\r\n");
     }
@@ -535,9 +530,6 @@ void pass_data(mixed data) {
     break;
   case SS_PROMPT_OPENABLE:
     prompt_openable_data(data);
-    break;
-  case SS_PROMPT_WEAPON:
-    prompt_weapon_data(data);
     break;
   case SS_PROMPT_WEARABLE:
     prompt_wearable_data(data);
@@ -1251,15 +1243,13 @@ static void prompt_container_data(mixed data) {
 
   if(!data) {
     /* Not a container, so neither open nor openable. */
-    if(obj_type == OT_PORTABLE)
-      {
-	substate = SS_PROMPT_WEAPON;
-	push_new_state(US_ENTER_YN, "Obiekt jest bronią? ");
+    if(obj_type == OT_PORTABLE) {
+          substate = SS_PROMPT_DAMAGE;
+          send_string(blurb_for_substate(substate));
       }
-    else
-      {
-	send_string("Ukończono detal #" + new_obj->get_number() + ".\r\n");
-	pop_state();
+    else {
+          send_string("Ukończono detal #" + new_obj->get_number() + ".\r\n");
+          pop_state();
       }
     return;
   }
@@ -1550,36 +1540,15 @@ static int prompt_length_capacity_input(string input) {
   send_string("Zaakceptowano maksymalną długość przedmiotów w pojemniku.\r\n\r\n");
   substate = SS_PROMPT_CONTAINER;
 
-  if(obj_type == OT_PORTABLE)
-    {
-      substate = SS_PROMPT_WEAPON;
-      push_new_state(US_ENTER_YN, "Obiekt jest bronią? ");
+  if(obj_type == OT_PORTABLE) {
+      substate = SS_PROMPT_DAMAGE;
+      send_string(blurb_for_substate(substate));
       return RET_NORMAL;
-    }
-  else
-    {
+  } 
+  else 
       send_string("Ukończono detal #" + new_obj->get_number() + ".\r\n");
-    }
 
   return RET_POP_STATE;
-}
-
-static void prompt_weapon_data(mixed data)
-{
-  if(typeof(data) != T_INT)
-    {
-      send_string("Wewnętrzny błąd -- przekazano zły typ!\r\n");
-      pop_state();
-      return;
-    }
-
-  if(data)
-    {
-      new_obj->set_weapon(1);
-    }
-
-  substate = SS_PROMPT_DAMAGE;
-  send_string(blurb_for_substate(substate));
 }
 
 static int prompt_damage_input(string input)
@@ -1667,7 +1636,7 @@ static int prompt_wlocation_input(string input)
       return RET_NORMAL;
     }
 
-  inputlocations = explode(input, " ");
+  inputlocations = explode(input, ", ");
   locations = ({ });
   for (i = 0; i < sizeof(inputlocations); i ++)
     {
@@ -1688,6 +1657,12 @@ static int prompt_wlocation_input(string input)
 	case "nogi":
 	  locations += ({4});
 	  break;
+    case "prawa dłoń":
+      locations += ({5});
+      break;
+    case "lewa dłoń":
+      locations += ({6});
+      break;
 	case "none":
 	  locations = nil;
 	  i = sizeof(inputlocations);
