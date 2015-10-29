@@ -1,4 +1,20 @@
 ~social{
+  ~verb{beknij}
+  ~self-only{Bekasz głośno.}
+  ~self-target{Bekasz głośno do ~target{}}
+  ~target{~actor{} beka głośno do Ciebie.}
+  ~other-only{~actor{} beka głośno.}
+  ~other-target{~actor{} beka głośno do ~target{}}
+}
+~social{
+  ~verb{blagac}
+  ~self-only{Błagasz wszystkich o pomoc.}
+  ~self-target{Błagasz ~target{} o litość.}
+  ~target{~actor{} błaga Ciebie o litość.}
+  ~other-only{~actor{} błaga wszystkich o pomoc.}
+  ~other-target{~actor{} błaga ~target{} o litość.}
+}
+~social{
   ~verb{chichot}
   ~self-only{Chichoczesz do siebie.}
   ~self-target{Chichoczesz do ~target{}.}
@@ -47,12 +63,28 @@
   ~other-target{~actor{} przeprasza ~target{}.}
 }
 ~social{
+  ~verb{rumieniec}
+  ~self-only{Rumienisz się.}
+  ~self-target{Rumienisz się na widok ~target{}.}
+  ~target{~actor{} rumieni się na Twój widok.}
+  ~other-only{~actor{} rumieni się.}
+  ~other-target{~actor{} rumieni się na widok ~target{}.}
+}
+~social{
   ~verb{szczeka}
   ~self-only{HAU! HAU!}
   ~self-target{Szczekasz na ~target{}.}
   ~target{~actor{} szczeka na Ciebie.}
   ~other-only{~actor{} szczeka.}
   ~other-target{~actor{} szczeka na ~target{}.}
+}
+~social{
+  ~verb{szczotkuj}
+  ~self-only{Szczotkujesz sobie włosy.}
+  ~self-target{Szczotkujesz włosy ~target{}. Teraz wygląda lepiej.}
+  ~target{~actor{} szczotkuje Twoje włosy.}
+  ~other-only{~actor{} szczotkuje włosy.}
+  ~other-target{~actor{} szczotkuje włosy ~target{}.}
 }
 ~social{
   ~verb{uklon}
