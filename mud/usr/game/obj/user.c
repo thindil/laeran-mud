@@ -26,6 +26,7 @@ inherit PHANTASMAL_USER;
 
 static mapping commands_map;
 static object combat;
+static int set_password;
 
 /* Prototypes */
         void upgraded(varargs int clone);
@@ -60,6 +61,7 @@ void upgraded(varargs int clone) {
   if(SYSTEM()) {
     ::upgraded(clone);
 
+    set_password = -1;
     commands_map = ([
 		     "mow"       : "cmd_say",
 		     "emo"       : "cmd_emote",
@@ -379,114 +381,144 @@ static void player_logout(void)
 
 int process_command(string str)
 {
-  string cmd;
-  int    ctr, size;
-  int    force_command;
-  mixed* command;
+    string cmd;
+    int    ctr, size;
+    int    force_command;
+    mixed* command;
 
-  cmd = str;
-  if (strlen(str) != 0 && str[0] == '!') {
-    cmd = cmd[1 ..];
-    force_command = 1;
-  }
-
-  /* Do this unless we're in the editor and didn't start the command
-     with an exclamation mark */
-  if (!wiztool || !query_editor(wiztool) || force_command) {
-    /* check standard commands */
-    cmd = STRINGD->trim_whitespace(cmd);
-    if(cmd == "") {
-      str = nil;
+    cmd = str;
+    if (strlen(str) != 0 && str[0] == '!') {
+        cmd = cmd[1 ..];
+        force_command = 1;
     }
 
-    if (strlen(cmd) != 0) {
-      switch (cmd[0]) {
-      case '\'':
-	if (strlen(cmd) > 1) {
-	  str = cmd[1..];
-	} else {
-	  str = "";
-	}
-	cmd = "mow";
-	break;
+    /* Do this unless we're in the editor and didn't start the command
+       with an exclamation mark */
+    if (!wiztool || !query_editor(wiztool) || force_command) {
+        /* check standard commands */
+        cmd = STRINGD->trim_whitespace(cmd);
+        if(cmd == "") {
+            str = nil;
+        }
 
-      case ':':
-	if (strlen(cmd) > 1) {
-	  str = cmd[1..];
-	} else {
-	  str = "";
-	}
-	cmd = "emo";
-	break;
+        if (strlen(cmd) != 0) {
+            switch (cmd[0]) {
+                case '\'':
+                    if (strlen(cmd) > 1) {
+                        str = cmd[1..];
+                    } else {
+                        str = "";
+                    }
+                    cmd = "mow";
+                    break;
 
-      default:
-	/* If single word, leave cmd the same.  If multiword, put
-	   first word in cmd. */
-	if(sscanf(cmd, "%s %s", cmd, str) != 2) {
-	  str = "";
-	}
-	break;
-      }
+                case ':':
+                    if (strlen(cmd) > 1) {
+                        str = cmd[1..];
+                    } else {
+                        str = "";
+                    }
+                    cmd = "emo";
+                    break;
+
+                default:
+                    /* If single word, leave cmd the same.  If multiword, put
+                       first word in cmd. */
+                if(sscanf(cmd, "%s %s", cmd, str) != 2) {
+                    str = "";
+                }
+                break;
+            }
+        }
+        
+        /* Set new password */
+        if (cmd == "ustaw" && str == "haslo") {
+            message("Podaj stare hasło: ");
+            set_password = STATE_OLDPASSWD;
+            return MODE_NOECHO;
+        }
+        if (set_password == STATE_OLDPASSWD) {
+            if (hash_string("crypt", cmd + str, password) != password) {
+                message("Nieprawidłowe stare hasło, przerywam ustawianie nowego hasła.\n");
+                set_password = STATE_NORMAL;
+                return MODE_ECHO;
+            }
+            else {
+                message("Podaj nowe hasło: ");
+                set_password = STATE_NEWPASSWD1;
+                return MODE_NOECHO;
+            }
+        }
+        if (set_password == STATE_NEWPASSWD1) {
+            if (!str) 
+                message("Puste nowe hasło. Przerywam zmianę hasła.\n");
+            else {
+                password = hash_string("crypt", cmd + str);
+                message("Ustawiono nowe hasło.\n");
+            }
+            set_password = STATE_NORMAL;
+            return MODE_ECHO;
+        }
+
+        /* Log out from game */
+        if(cmd == "wyloguj")
+        {
+            message("Do zobaczenia!");
+            return MODE_DISCONNECT;
+        }
+
+        if(SOULD->is_social_verb(cmd)) {
+            cmd_social(this_object(), cmd, str);
+            str = nil;
+        }
+
+        if(commands_map[cmd]) {
+            string err;
+
+            err = (call_other(this_object(),                /* Call on self */
+                        commands_map[cmd],            /* The function */
+                        this_object(),                /* This user */
+                        cmd,                          /* The command */
+                        str == "" ? nil : str)        /* str or nil */
+                  );
+            if(err) {
+                LOGD->write_syslog("Error on command '" + cmd + "/"
+                        + (str ? str : "(nil)") + "'.  Err text: "
+                        + err);
+
+                message("Twoja komenda się wykraczyła w kodzie.\n");
+                message("Krzycz na Thindila.\n");
+
+                /* Return normal status, print a prompt and continue. */
+                return -1;
+            }
+            str = nil;
+        }
     }
 
-    if(cmd == "wyloguj")
-      {
-	message("Do zobaczenia!");
-	return MODE_DISCONNECT;
-      }
+    if (str) {
+        if (wiztool) {
+            string err;
 
-    if(SOULD->is_social_verb(cmd)) {
-      cmd_social(this_object(), cmd, str);
-      str = nil;
+            err = catch(wiztool->command(cmd, str));
+            if(err) {
+                LOGD->write_syslog("Error on command '" + cmd + "/"
+                        + (str ? str : "(nil)") + "'.  Err text: "
+                        + err);
+
+                message("Twoja komenda się wykraczyła w kodzie.\n");
+                message("Krzycz na Thindila.\n");
+
+                /* Return normal status, print a prompt and continue. */
+                return -1;
+            }
+        } else {
+            message("Nie ma takiej komendy: " + cmd + " " + str + "\n");
+        }
     }
 
-    if(commands_map[cmd]) {
-      string err;
-
-      err = (call_other(this_object(),                /* Call on self */
-			commands_map[cmd],            /* The function */
-			this_object(),                /* This user */
-			cmd,                          /* The command */
-			str == "" ? nil : str)        /* str or nil */
-	     );
-      if(err) {
-	LOGD->write_syslog("Error on command '" + cmd + "/"
-			   + (str ? str : "(nil)") + "'.  Err text: "
-			   + err);
-
-	message("Twoja komenda się wykraczyła w kodzie.\n");
-	message("Krzycz na Thindila.\n");
-
-	/* Return normal status, print a prompt and continue. */
-	return -1;
-      }
-      str = nil;
-    }
-  }
-
-  if (str) {
-    if (wiztool) {
-      string err;
-
-      err = catch(wiztool->command(cmd, str));
-      if(err) {
-	LOGD->write_syslog("Error on command '" + cmd + "/"
-			   + (str ? str : "(nil)") + "'.  Err text: "
-			   + err);
-
-	message("Twoja komenda się wykraczyła w kodzie.\n");
-	message("Krzycz na Thindila.\n");
-
-	/* Return normal status, print a prompt and continue. */
-	return -1;
-      }
-    } else {
-      message("Nie ma takiej komendy: " + cmd + " " + str + "\n");
-    }
-  }
-
-  /* All is well, just print a prompt and wait for next command */
-  return -1;
+    /* All is well, just print a prompt and wait for next command */
+    return -1;
 }
 
 int get_stat_val(string name)
@@ -1873,7 +1905,7 @@ void cmd_settings(object user, string cmd, string str)
     if (str)
         str = STRINGD->trim_whitespace(str);
     if (!str || str == "") {
-        message("Użycie: " + cmd + " [opis|mail]\n");
+        message("Użycie: " + cmd + " [opis|mail|haslo]\n");
         return;
     }
     parts = explode(str, " ");
@@ -1895,7 +1927,7 @@ void cmd_settings(object user, string cmd, string str)
             message("Zmieniono adres mailowy z "+ oldmail + " na " + parts[1] + "\n");
             break;
         default:
-            message("Nieznana opcja, spróbuj " + cmd + " [opis|mail]\n");
+            message("Nieznana opcja, spróbuj " + cmd + " [opis|mail|haslo]\n");
             break;
     }
 }

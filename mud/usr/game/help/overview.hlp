@@ -80,6 +80,9 @@ przy ustawianiu opisu obowiązują zasady panujące w grze.
 Opiekunami. Będziemy używać tego adresu jedynie w przypadku gdybyś
 zapomniał hasła do swojej postaci. Wpisując same "ustaw mail" resetujesz
 ustawienia adresu. Aby podać nowy adres wpisz "ustaw mail nowy@email.pl".
+- "ustaw haslo": Pozwala zmienić hasło do konta. Najpierw będziesz musiał
+podać stare hasło aby móc ustawić nowe. Możesz w każdej chwili przerwać
+zmianę hasła, wystarczy że podasz nowe puste hasło albo niepoprawne stare.
 
 Zobacz rówież: zasady, patrz
 }
