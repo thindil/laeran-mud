@@ -99,6 +99,7 @@ void upgraded(varargs int clone) {
 		     "pp"        : "cmd_ooc",
 		     "socjalne"  : "cmd_socials",
 		     "komendy"   : "cmd_commands",
+             "ustaw"     : "cmd_settings",
 
 		     "kanal"     : "cmd_channels",
 		     "kanaly"    : "cmd_channels",
@@ -1861,4 +1862,28 @@ void cmd_report(object user, string cmd, string str)
     else
         write_file(filename, Name + ": " + str + "\n");
     message("Dziękujemy za zgłoszenie " + rtype  + ".\n");
+}
+
+/* Player settings - description */
+void cmd_settings(object user, string cmd, string str)
+{
+    string *parts;
+
+    if (str)
+        str = STRINGD->trim_whitespace(str);
+    if (!str || str == "") {
+        message("Użycie: " + cmd + " opis\n");
+        return;
+    }
+    parts = explode(str, " ");
+    switch (parts[0]) {
+        case "opis":
+            message("Ustawiasz nowy opis postaci.\n");
+            push_new_state(US_SET_DESC, user);
+            push_new_state(US_ENTER_DATA);
+            return;
+        default:
+            message("Nieznana opcja, spróbuj " + cmd + " opis\n");
+            break;
+    }
 }

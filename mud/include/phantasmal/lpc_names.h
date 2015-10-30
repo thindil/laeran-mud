@@ -82,6 +82,7 @@
 #define US_OLC_ATTRIB       "/usr/common/obj/ustate/olcattrib"
 #define US_MAKE_ROOM        "/usr/common/obj/ustate/makeroom"
 #define US_REPORT_BUG       "/usr/common/obj/ustate/report_bug"
+#define US_SET_DESC         "/usr/common/obj/ustate/set_desc"
 
 /* Telnet Option Handlers */
 #define TELOPT_DEFAULT_HANDLER  "/usr/common/obj/telopt/default_dgd"
