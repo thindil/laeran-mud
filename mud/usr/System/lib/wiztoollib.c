@@ -1064,13 +1064,13 @@ static void cmd_kick(object user, string cmd, string str)
         return;
     }
 
+    str = STRINGD->to_lower(str);
     if (str == user->query_name()) {
         message("Nie możesz wykopać samego siebie.\n");
         return;
     }
 
     users = users();
-    str = STRINGD->to_lower(str);
     for (i = 0; i < sizeof(users); i++) {
         name = STRINGD->to_lower(users[i]->query_name());
         if (str == name) {
