@@ -45,6 +45,9 @@ void pass_data(mixed data)
     }
 
   data = STRINGD->trim_whitespace(data);
-  call_other(user, "cmd_report", user, command, data);
+  if (data != "")
+      call_other(user, "cmd_report", user, command, data);
+  else
+      send_string("Przerwano wprowadzanie zgłoszenia.\n");
   pop_state();
 }

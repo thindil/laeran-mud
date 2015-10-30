@@ -1832,35 +1832,33 @@ static void cmd_attack(object user, string cmd, string str)
 /* Report bug, typo or propose idea */
 void cmd_report(object user, string cmd, string str)
 {
-  string filename, rtype;
+    string filename, rtype;
 
-  switch (cmd)
-    {
-    case "bug":
-      filename = "/usr/game/text/bug_reports.txt";
-      rtype = "błędu";
-      break;
-    case "literowka":
-      filename = "/usr/game/text/typo_reports.txt";
-      rtype = "literówki";
-      break;
-    case "idea":
-      filename = "/usr/game/text/idea_reports.txt";
-      rtype = "pomysłu";
-      break;
-    default:
-      message("Ups, coś poszło nie tak.\n");
-      return;
+    switch (cmd) {
+        case "bug":
+            filename = "/usr/game/text/bug_reports.txt";
+            rtype = "błędu";
+            break;
+        case "literowka":
+            filename = "/usr/game/text/typo_reports.txt";
+            rtype = "literówki";
+            break;
+        case "idea":
+            filename = "/usr/game/text/idea_reports.txt";
+            rtype = "pomysłu";
+            break;
+        default:
+            message("Ups, coś poszło nie tak.\n");
+            return;
     }
-  if (!str || str == "")
-    {
-      push_new_state(US_REPORT_BUG, cmd, user);
-      push_new_state(US_ENTER_DATA);
-      return;
+    if (!str || str == "") {
+        message("Opis " + rtype + ". Postaraj się podać jak najwięcej szczegółów,\n"
+                + "to pomoże nam w pracy.\n");
+        push_new_state(US_REPORT_BUG, cmd, user);
+        push_new_state(US_ENTER_DATA);
+        return;
     }
-  else
-    {
-      write_file(filename, Name + ": " + str + "\n");
-    }
-  message("Dziękujemy za zgłoszenie " + rtype  + ".\n");
+    else
+        write_file(filename, Name + ": " + str + "\n");
+    message("Dziękujemy za zgłoszenie " + rtype  + ".\n");
 }
