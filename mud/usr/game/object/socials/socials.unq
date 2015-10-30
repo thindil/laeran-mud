@@ -31,6 +31,22 @@
   ~other-target{~actor{} podaje ~target{} cygaro i zapala je.}
 }
 ~social{
+  ~verb{kaszel}
+  ~self-only{Zaczynasz kaszleć.}
+  ~self-target{Kaszlesz znacząco do ~target{}.}
+  ~target{~actor{} kaszle znacząco do Ciebie.}
+  ~other-only{~actor{} zaczyna kaszleć.}
+  ~other-target{~actor{} kaszle znacząco do ~target{}}
+}
+~social{
+  ~verb{kawa}
+  ~self-only{Nalewasz sobie filiżankę kawy.}
+  ~self-target{Nalewasz ~target{} filiżankę kawy.}
+  ~target{~actor{} nalewa Tobie filiżankę kawy.}
+  ~other-only{~actor{} nalewa sobie filiżankę kawy.}
+  ~other-target{~actor{} nalewa ~target{} filiżankę kawy.}
+}
+~social{
   ~verb{klaszcz}
   ~self-only{Klaszczesz.}
   ~self-target{Bijesz brawo ~target{}.}
@@ -45,6 +61,14 @@
   ~target{~actor{} podaje Tobie piwo.}
   ~other-only{~actor{} wyciąga piwo.}
   ~other-target{~actor{} podaje piwo ~target{}.}
+}
+~social{
+  ~verb{placz}
+  ~self-only{Płaczesz.}
+  ~self-target{Płaczesz na ramieniu ~target{}.}
+  ~target{~actor{} płacze na Twoim ramieniu.}
+  ~other-only{~actor{} popłakuje.}
+  ~other-target{~actor{} płacze na ramieniu ~target{}.}
 }
 ~social{
   ~verb{pozdrow}
