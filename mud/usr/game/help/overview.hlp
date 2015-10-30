@@ -76,6 +76,10 @@ opcji. Na chwilę obecną, możliwe ustawienia to:
 - "ustaw opis": Ustawia widoczny dla wszystkich opis postaci (używany 
 kiedy ktoś na Ciebie spojrzy przy pomocy komendy patrz). Pamiętaj, że
 przy ustawianiu opisu obowiązują zasady panujące w grze.
+- "ustaw mail": Pozwala ustawić adres mailowy służący do kontaktu z
+Opiekunami. Będziemy używać tego adresu jedynie w przypadku gdybyś
+zapomniał hasła do swojej postaci. Wpisując same "ustaw mail" resetujesz
+ustawienia adresu. Aby podać nowy adres wpisz "ustaw mail nowy@email.pl".
 
 Zobacz rówież: zasady, patrz
 }

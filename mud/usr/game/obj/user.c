@@ -1868,11 +1868,12 @@ void cmd_report(object user, string cmd, string str)
 void cmd_settings(object user, string cmd, string str)
 {
     string *parts;
+    string oldmail;
 
     if (str)
         str = STRINGD->trim_whitespace(str);
     if (!str || str == "") {
-        message("Użycie: " + cmd + " opis\n");
+        message("Użycie: " + cmd + " [opis|mail]\n");
         return;
     }
     parts = explode(str, " ");
@@ -1881,9 +1882,20 @@ void cmd_settings(object user, string cmd, string str)
             message("Ustawiasz nowy opis postaci.\n");
             push_new_state(US_SET_DESC, user);
             push_new_state(US_ENTER_DATA);
-            return;
+            break;
+        case "mail":
+            oldmail = email;
+            if (oldmail == "")
+                oldmail = "brak adresu";
+            if (sizeof(parts) < 2) 
+                parts = ({ "mail", "" });
+            email = parts[1];
+            if (parts[1] == "")
+                parts[1] = "brak adresu";
+            message("Zmieniono adres mailowy z "+ oldmail + " na " + parts[1] + "\n");
+            break;
         default:
-            message("Nieznana opcja, spróbuj " + cmd + " opis\n");
+            message("Nieznana opcja, spróbuj " + cmd + " [opis|mail]\n");
             break;
     }
 }
