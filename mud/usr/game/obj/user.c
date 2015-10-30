@@ -28,11 +28,12 @@ static mapping commands_map;
 static object combat;
 
 /* Prototypes */
-       void upgraded(varargs int clone);
-static void cmd_social(object user, string cmd, string str);
-       void death(void);
-       void set_health(int hp);
-       void set_condition(int fatigue);
+        void upgraded(varargs int clone);
+static  void cmd_social(object user, string cmd, string str);
+        void death(void);
+        void set_health(int hp);
+        void set_condition(int fatigue);
+private string lalign(string num, int width);
 
 /* Macros */
 #define NEW_PHRASE(x) PHRASED->new_simple_english_phrase(x)
@@ -761,95 +762,73 @@ static void cmd_whisper(object self, string cmd, string str)
 /* Show info about character */
 static void cmd_whoami(object user, string cmd, string str)
 {
-  string charinfo, skilltext;
-  mapping statsinfo, skillsinfo;
-  int i, j;
-  string *stattext, *statnames, *skillname, *skillsnames;
+    string charinfo, skilltext, tmptext;
+    mapping statsinfo, skillsinfo;
+    int i, j;
+    string *stattext, *statnames, *skillname, *skillsnames;
 
-  charinfo = "Nazywasz się " + Name + ". ";
-  if (gender == 1)
-    {
-      charinfo += "Jesteś mężczyzną. ";
+    charinfo = "Nazywasz się " + Name + ". ";
+    if (gender == 1)
+        charinfo += "Jesteś mężczyzną. ";
+    else
+        charinfo += "Jesteś kobietą. ";
+    charinfo += "Masz " + body->get_length() + " cm wzrostu. "
+        + "Ważysz " + body->get_weight() + " kg.\n"
+        + "Jesteś " + STRINGD->to_lower(health) + " i " + STRINGD->to_lower(condition) + ".\n"
+        + "Niesiesz " + body->get_current_weight() + " kg ekwipunku na " + body->get_weight_capacity() + " kg możliwych.\n\n"
+        + "===== CECHY =====";
+    statsinfo = ([ "siła": ({ "Słaby", "Przeciętny", "Dobrze zbudowany", "Siłacz" }),
+            "zręczność": ({ "Niezdarny", "Przeciętny", "Zwinny", "Akrobata" }),
+            "inteligencja": ({ "Niezbyt rozgarnięty", "Przeciętny", "Inteligentny", "Mistrz Umysłu" }),
+            "kondycja": ({ "Chorowity", "Przeciętny", "Wysportowany", "Niezniszczalny" }) ]);
+    stattext = ({ "Siła: ", "Zręczność: ", "Inteligencja: ", "Kondycja: " });
+    statnames = ({ "siła", "zręczność", "inteligencja", "kondycja" });
+    for (i = 0; i < sizeof(statnames); i++) {
+        if (!(i % 2))
+            charinfo += "\n";
+        else
+            charinfo += "      ";
+        tmptext = stattext[i];
+        if (stats[statnames[i]][0] >= 10 && stats[statnames[i]][0] < 20)
+            tmptext += statsinfo[statnames[i]][0];
+        else if (stats[statnames[i]][0] >= 20 && stats[statnames[i]][0] < 30)
+            tmptext += statsinfo[statnames[i]][1];
+        else if (stats[statnames[i]][0] >= 30 && stats[statnames[i]][0] < 40)
+            tmptext += statsinfo[statnames[i]][2];
+        else
+            tmptext += statsinfo[statnames[i]][3];
+        charinfo += lalign(tmptext, 40);
     }
-  else
-    {
-      charinfo += "Jesteś kobietą. ";
+    charinfo += "\n\n===== UMIEJĘTNOŚCI =====";
+    skillsinfo = ([ ]);
+    skillsnames = map_indices(skills);
+    for (i = 0; i < sizeof(skillsnames); i++) {
+        skillname = explode(skillsnames[i], "/");
+        if (skills[skillsnames[i]][0] >= 1 && skills[skillsnames[i]][0] < 20)
+            skilltext = "nowicjusz";
+        else if (skills[skillsnames[i]][0] >= 20 && skills[skillsnames[i]][0] < 40)
+            skilltext = "amator";
+        else if (skills[skillsnames[i]][0] >= 40 && skills[skillsnames[i]][0] < 60)
+            skilltext = "adept";
+        else if (skills[skillsnames[i]][0] >= 60 && skills[skillsnames[i]][0] < 80)
+            skilltext = "zaawansowany";
+        else
+            skilltext = "mistrz";
+        if (!skillsinfo[skillname[0]])
+            skillsinfo[skillname[0]] = ({ });
+        skillsinfo[skillname[0]] += ({ skillname[1], skilltext });
     }
-  charinfo += "Masz " + body->get_length() + " cm wzrostu. "
-    + "Ważysz " + body->get_weight() + " kg.\n\n"
-    + "Jesteś " + STRINGD->to_lower(health) + " i " + STRINGD->to_lower(condition) + ".\n\n"
-    + "Niesiesz " + body->get_current_weight() + " kg ekwipunku na " + body->get_weight_capacity() + " kg możliwych.\n\n"
-    + "===== CECHY =====\n\n";
-  statsinfo = ([ "siła": ({ "Słaby", "Przeciętny", "Dobrze zbudowany", "Siłacz" }),
-		 "zręczność": ({ "Niezdarny", "Przeciętny", "Zwinny", "Akrobata" }),
-		 "inteligencja": ({ "Niezbyt rozgarnięty", "Przeciętny", "Inteligentny", "Mistrz Umysłu" }),
-		 "kondycja": ({ "Chorowity", "Przeciętny", "Wysportowany", "Niezniszczalny" }) ]);
-  stattext = ({ "Siła: ", "Zręczność: ", "Inteligencja: ", "Kondycja: " });
-  statnames = ({ "siła", "zręczność", "inteligencja", "kondycja" });
-  for (i = 0; i < sizeof(statnames); i++)
-    {
-      charinfo += stattext[i];
-      if (stats[statnames[i]][0] >= 10 && stats[statnames[i]][0] < 20)
-	{
-	  charinfo += statsinfo[statnames[i]][0];
-	}
-      else if (stats[statnames[i]][0] >= 20 && stats[statnames[i]][0] < 30)
-	{
-	  charinfo += statsinfo[statnames[i]][1];
-	}
-      else if (stats[statnames[i]][0] >= 30 && stats[statnames[i]][0] < 40)
-	{
-	  charinfo += statsinfo[statnames[i]][2];
-	}
-      else
-	{
-	  charinfo += statsinfo[statnames[i]][3];
-	}
-      charinfo += "\n";
+    skillsnames = map_indices(skillsinfo);
+    for (i = 0; i < sizeof(skillsnames); i++) {
+        charinfo += "\n                     ==== " + skillsnames[i] + " ====";
+        for (j = 0; j < sizeof(skillsinfo[skillsnames[i]]); j += 2) {
+            if (!(j % 4))
+                charinfo += "\n";
+            charinfo += lalign(skillsinfo[skillsnames[i]][j] + ": " + skillsinfo[skillsnames[i]][j + 1], 40);
+        }
     }
-  charinfo += "\n===== UMIEJĘTNOŚCI =====\n";
-  skillsinfo = ([ ]);
-  skillsnames = map_indices(skills);
-  for (i = 0; i < sizeof(skillsnames); i++)
-    {
-      skillname = explode(skillsnames[i], "/");
-      if (skills[skillsnames[i]][0] >= 1 && skills[skillsnames[i]][0] < 20)
-	{
-	  skilltext = "nowicjusz";
-	}
-      else if (skills[skillsnames[i]][0] >= 20 && skills[skillsnames[i]][0] < 40)
-	{
-	  skilltext = "amator";
-	}
-      else if (skills[skillsnames[i]][0] >= 40 && skills[skillsnames[i]][0] < 60)
-	{
-	  skilltext = "adept";
-	}
-      else if (skills[skillsnames[i]][0] >= 60 && skills[skillsnames[i]][0] < 80)
-	{
-	  skilltext = "zaawansowany";
-	}
-      else
-	{
-	  skilltext = "mistrz";
-	}
-      if (!skillsinfo[skillname[0]])
-	{
-	  skillsinfo[skillname[0]] = ({ });
-	}
-      skillsinfo[skillname[0]] += ({ skillname[1], skilltext });
-    }
-  skillsnames = map_indices(skillsinfo);
-  for (i = 0; i < sizeof(skillsnames); i++)
-    {
-      charinfo += "\n==== " + skillsnames[i] + " ====\n";
-      for (j = 0; j < sizeof(skillsinfo[skillsnames[i]]); j += 2)
-	{
-	  charinfo += skillsinfo[skillsnames[i]][j] + ": " + skillsinfo[skillsnames[i]][j + 1] + "\n";
-	}
-    }
-  charinfo += "\n";
-  message_scroll(charinfo);
+    charinfo += "\n";
+    message_scroll(charinfo);
 }
 
 static void cmd_look(object user, string cmd, string str) {
@@ -946,8 +925,14 @@ static void cmd_look(object user, string cmd, string str) {
 private string lalign(string num, int width)
 {
     string str;
+    int i, diff;
 
     str = num + "                         ";
+    if (width > strlen(str)) {
+        diff = width - strlen(str);
+        for (i = 0; i <= diff; i++)
+            str += " ";
+    }
     return str[0..width];
 }
 
