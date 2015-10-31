@@ -20,6 +20,7 @@ wymaga odpowiednich uprawnień aby mogły być wykonane pomyślnie.
 %log_subscribe      Wybiera jakie wydarzenia z dziennika są zapisywane
                     do pliku
 %zgloszenia         Zobacz zgłoszenia błędów/literówek/pomysłów
+%make_social        Stwórz nową komendę socjalną
 
 }
 
@@ -275,5 +276,23 @@ zgloszenia pomoc        pokaże wszystkie zgłoszenia brakującej pomocy
 
 Wpisanie samej komendy czy też komendy z nieprawidłową opcją, pokaże
 wszystkie dostępne opcje dla komendy.
+
+}
+
+~name{@make_social,%make_social,make_social,socjalne}
+~keywords{admin}
+~desc{
+
+Aby dodać nową komendę socjalną do gry, użyj komendy @make_social lub
+%make_social. Będziesz musiał odpowiedzieć na parę pytań dotyczących
+nowej komendy socjalnej. Jeżeli wszystko pójdzie dobrze, nowa komenda
+socjalna zostanie dodana do już istniejących. W trakcie pisania tekstów
+wyświetlających się dla wybranej komendy socjalnej trzeba użyć dwóch
+zmiennych:
+- "\~actor\{\}" oznacza osobę wywołującą komendę (konkretnie jej krótki
+opis, albo imię). Podczas wykonywania komendy zostanie zamienione na imię.
+- "\~target\{\}" oznacza osobę będącą celem komendy (konkretnie jej krótki
+opis albo imię, osoby nie komendy). Podczas wykonywania komendy zostanie
+zamienione na imię.
 
 }
