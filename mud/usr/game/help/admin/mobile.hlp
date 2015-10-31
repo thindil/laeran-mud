@@ -1,36 +1,31 @@
 ~name{mobki,mob,moby,npc,npcs,NPC,NPCs,NPCS}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-Mobiles are the "minds" of anything with its own volition, such as
-players or monsters.  The body is a standard object (see "help rooms")
-with the mobile attached to it.
+Mobki to "umysły" wszystkiego co posiada własną wolę jak gracze czy
+potwory. Ich ciała to standardowe obiekty (patrz "pomoc pokoje") z
+mobami dołączonymi do nich.
 
-Some commands to play with mobiles:
-@list_mobile              Lists mobiles with numbers
-@delete_mobile            Deletes mobiles by number
-@new_mobile               Creates a new mobile in an existing body
-@stat                     View a mobile (or its body) by number
+Niektóre komendy do zabawy z mobkami:
+@list_mobile              Wypisuje mobki z ich numerami
+@delete_mobile            Kasuje mobki o wybranym numerze
+@new_mobile               Tworzy nowego mobka
+@stat                     Zobacz mobka (bądź jego ciało) o wybranym numerze
 
-}}
+}
 
 
-~name{~enUS{list_mob, list_mobile, list_mobiles,
-            list mob, list mobile, list mobiles,
-            listmob, listmobile, listmobiles }}
+~name{list_mob,list_mobile,list_mobiles}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @list_mob or @list_mobiles command currently lists every mobile in
-the MUD that is currently registered with the MOBILED and a bit of
-information about each.  Simply type "@list_mob", by itself, at the
-prompt.
+Komenda @list_mob albo @list_mobiles pokazuje obecnie wszystkie mobki
+w grze, które są zarejestrowane przy pomocy MOBILED i nieco informacji
+o każdym. Po prostu wpisz "@list_mob" aby zobaczyć listę.
 
-See Also:  MOBILED, @stat, @delete_mobile, @new_mobile
+Zobacz również:  MOBILED, @stat, @delete_mobile, @new_mobile
 
-}}
+}
 
 
 ~name{~enUS{new_mob, new_mobile, new_mobiles,

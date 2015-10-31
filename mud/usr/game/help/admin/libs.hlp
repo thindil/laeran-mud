@@ -199,98 +199,89 @@ bądź czegoś podobnego. mover to obiekt który porusza obiektem a
 new_env to pokój do którego ten obiekt jest przenoszony.
 }
 
-~name{~enUS{mobile library,mobile lib,MOBILE,mob lib,mob library}}
+~name{mobile library,mobile lib,MOBILE,mob lib,mob library}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-Mobiles are the LPC code which serves as a go between between the 
-user object and (will) control NPCs.  All sentient objects have a 
-mobile, and all mobiles will normally have a body.  To create a NPC, 
-you will derive an object form MOBILE.  Since no NPCs have ever been 
-created yet, exactly how this will work is somewhat unclear, however 
-the MOBILE library is at a state where it _should_be possible to
-create a working NPC by deriving a new LPC program from MOBILE.
-There are no cookbook answers here, however so you'll need to do
-a little experimentation, and really understand some fundementals of
-Phantasmal by the time you finish -- you'll probably also need to
-modify some other files too.  If you still want to do this,
-check out user_mobile.c, for an example of how to create a mobile
-based on the MOBILE library (user_mobile.c is the mobile object
-for a user).
+Mobki to kod LPC który służy do kontrolowania obiektów oraz NPC'ków.
+Wszystkie rozumne obiekty są mobami i wszystkie moby mają zazwyczaj
+ciała. Aby stworzyć NPC'ka musisz stworzyć pochodny obiekt od MOBILE.
+Nie ma dokładnego przepisu jak to zrobić, musisz nieco poeksperymentować
+i naprawdę zrozumieć jak działa Phantasmal -- będziesz musiał zmodyfikować
+parę innych plików również. Jeżeli nadal chcesz to zrobić, sprawdź
+plik user_mobile.c jako przykład jak można stworzyć moba bazującego
+na bibliotece MOBILE (user_mobile.c jest mobilnym obiektem dla
+gracza).
 
-When NPCs actually work, these are the functions you'll use to
-control them:
+Kiedy NPC działa, musisz stworzyć parę funkcji do ich kontroli.
 
 void say(string msg)
-     Say msg to everyone in the current room.
+    Mówi msg do wszystkim w obecnym pokoju.
 
 void emote(string msg)
-     Emote something, which will be picked up by everyone in the
-current room.
+    Wykonuje jakąś emotkę, która jest pokazywana dla wszystkich
+w obecnym pokoju.
 
 int whisper(object to, string str)
-     Whisper "str" to "to".  "to" must be the body of a mobile in
-the current room.  When something is whispered, only the person who 
-is being whispered to will be able to tell what you said, however 
-everyone in the same room as you will be able to tell that you 
-whispered something to them.  Returns 1 if the whisper suceeded, 0 
-if it failed.
+    Szepcze "str" do "to. "to" musi być ciałem mobka w tym samym
+pokoju. Kiedy coś jest szepnięte, tylko osoba do której szeptano
+będzie mogła zobaczyć co powiedziałeś, jednakże wszyscy w tym samym
+pokoju zobaczą że coś zostało szepnięte. Zwróć 1 jeżeli szept został
+zakończony sukcesem, 0 w przypadku błędu.
 
 int ask(object to, string str)
-     Ask "to" "str".  "to" must be the body of a mobile in the
-current room.  "to" can be nil, in which case the question will be
-asked of everyone in the room.  Although a question can be directed
-at a specific person, everyone in the room will be able to hear it.
+    Zapytaj "to" o "str". "to" musi być ciałem mobka w tym samym
+pokoju. "to" może być nil, w tym wypadku pytanie będzie zadane
+do wszystkich w pokoju. Mimo że pytanie może być skierowane do jednej
+osoby, wszyscy obecni je zauważą.
 
 string place(object obj, object to)
-     Moves the object "obj" from its current location into "to".
-Both obj and to must be descendents of your location.  String will
-be a string explaining why the move failed, or nil if it succeeded.
+    Porusza obiekt "obj" z obecnego miejsca do "to". Oba obiekty
+muszą być potomkami Twojej lokacji. Zwraca string z informacją
+dlaczego nie udało się przenieść obiektu bądź nil jeżeli wszystko
+było w porządku.
 
 string move(int dir)
-     Moves in the direction "dir".  If the move succeeds, this 
-function returns nil, otherwise it returns a string indicating
-why it failed.
+    Porusza mobkiem w kierunku "dir". Jeżeli ruch był udany,
+funkcja zwraca nil, w przeciwnym wypadku, zwraca przyczynę dlaczego
+nie udało się poruszyć.
 
 string teleport(object loc, int force)
-     Teleports into the room "loc".  If force is 1, the teleport will
-always succeed.  NB:  force will be made priviledged, and the entire
-function may be made privileged, as it is a very dangerous function,
-with much potential for being abused.
+    Teleportuje obiekt do pokoju "loc". Jeżeli force jest ustawiona 
+na 1, teleport zawsze się uda. Przy okazji: force zawsze będzie 
+uprzywilejowane jak i cała funkcja może być uprzywilejowana, jest to
+bardzo niebezpieczna fukcja z dużą możliwością nadużyć.
 
-Here are the functions which will allow you to respond to events in
-your NPCs:
+Poniżej znajdują się funkcje, które pozwalają Tobie odpowiadać na
+zdarzenia w Twoim NPC'ku:
 
-void hook_say(mixed *args)
-     Someone in the current room said something.  args[0] is the body
-of the person who said it, and args[1] is what they said.
+void hook_say(object body, string message)
+    Ktoś w obecnym pokoju powiedział coś. body to ciało osoby
+która powiedziała coś a message to to co powiedziała.
 
-void hook_whisper(mixed *args)
-     Someone in the current room whispered something to this mobile.
-args[0] is the person who did the whispering, and args[1] is what 
-they whispered.
+void hook_whisper(object body, string message)
+    Ktoś w obecnym pokoju szepnął coś do tego mobka. body to ciało
+osoby, która szeptała a message to co zostało szepnięte.
 
-void hook_whisper_other(mixed *args)
-     Someone in the current room whispered something to someone
-else in the room.  args[0] is the person who whispered, args[1] is
-the person they whispered to.
+void hook_whisper_other(object body, object target)
+    Ktoś w obecnym pokoju szepnął coś do kogoś innego. body to osoba,
+która szeptała, target to ciało osoby do której szeptano.
 
 void hook_ask(mixed *args)
-     Someone in the current room asked you something.  args[0] is
-the person who asked, and args[1] is what they asked.
+    Ktoś w obecnym pokoju spytał o coś. arg[0] to ciało osoby która
+pyta, args[1] to o co zapytała.
 
 void hook_ask_other(mixed *args)
-     Someone in the current room asked someone in the room something.
-args[0] is the person who asked, args[1] is the person they asked
-(which may be nil for a general ask), and args[2] is what they asked.
+    Ktoś w obecnym pokoju zapytał kogoś w tym pokoju o coś. args[0]
+to ciało osoby która pyta, args[1] to ciało osoby pytanej (może być
+nil dla pytania do wszystkich) a args[2] to o co zostało spytane.
 
-void hook_leave(mixed *args)
-     Someone just left this room.  args[0] is the person who left,
-args[1] is the direction in which they left.
+void hook_leave(object body, int dir)
+    Ktoś dopiero co opuścił ten pokój. body to ciało osoby która
+odeszła, dir to kierunek w którym odeszła.
 
-void hook_enter(mixed *args)
-     Someone just entered this room.  args[0] is the person who
-entered, args[1] is the direction they entered from.
+void hook_enter(object body, int dir)
+    Ktoś dopiero co wszedł do tego pokoju. body to ciało osoby
+która weszła, dir to kierunek z którego nadeszła.
 
-}}
+}
