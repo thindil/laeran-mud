@@ -162,6 +162,8 @@ void upgraded(varargs int clone) {
 	"%list_dest"           : ({ "cmd_list_dest" }),
 	"%full_rebuild"        : ({ "cmd_full_rebuild" }),
 	"%load_socials"        : ({ "cmd_load_socials" }),
+    "%make_social"         : ({ "cmd_make_social" }),
+    "@make_social"         : ({ "cmd_make_social" }),
 
 	"@log"                 : ({ "cmd_writelog" }),
 	"%log"                 : ({ "cmd_writelog" }),

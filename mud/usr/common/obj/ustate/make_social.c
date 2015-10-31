@@ -18,6 +18,7 @@ private int substate;
 #define SS_PROMPT_TARGET          4
 #define SS_PROMPT_OTHER_ONLY      5
 #define SS_PROMPT_OTHER_TARGET    6
+#define SS_PROMPT_FINISH          7
 
 /* Input function return values */
 #define RET_NORMAL                  1
@@ -25,13 +26,12 @@ private int substate;
 
 /* Prototypes */
 static int prompt_input(string input);
-
-private string blurb_for_substate(int substate);
+private string blurp_for_substate(int substate);
 
 /* Macros */
 #define NEW_PHRASE(x) PHRASED->new_simple_english_phrase(x)
 
-static void create(varagrs int clone)
+static void create(varargs int clone)
 {
     ::create();
     if (clone) {
@@ -107,7 +107,7 @@ private string blurp_for_substate(int substate)
             return "Wpisz tekst jaki zobaczu gracz kiedy użyje komendy socjalnej bez\n"
                 + "wybranego celu.\n"
                 + "Przykład: Warczysz.\n";
-        case SS_PROMPT_SELF_OTHER:
+        case SS_PROMPT_SELF_TARGET:
             return "Wpisz tekst jaki zobaczy gracz kiedy użyje komendy socjalnej z\n"
                 + "wybranym celem. Jako imię celu podaj ~target{}.\n"
                 + "Przykład: Warczysz na ~target{}.\n";
@@ -140,7 +140,7 @@ void switch_to(int pushp)
                 || substate == SS_PROMPT_TARGET
                 || substate == SS_PROMPT_OTHER_ONLY 
                 || substate == SS_PROMPT_OTHER_TARGET)) {
-        send_string(blurb_for_substate(substate));
+        send_string(blurp_for_substate(substate));
         send_string("Możesz również wpisać 'wyjdz' aby przerwać pracę nad komendą.\n");
         send_string(" > ");
     } else {
@@ -167,14 +167,22 @@ void pass_data(mixed data)
 static int prompt_input(string input)
 {
     if (input)
-        input = STRINGD->trim_whitespace(STRINGD->to_lower(input));
+        input = STRINGD->trim_whitespace(input);
+    if (input && substate == SS_PROMPT_VERB) {
+        input = STRINGD->to_lower(input);
+        if (SOULD->is_social_verb(input)) {
+            send_string("\nTaka komenda socjalna już istnieje. Spróbuj ponownie.\n");
+            send_string(blurp_for_substate(substate));
+            return RET_NORMAL;
+        }
+    }
 
     if (!input) {
         if (substate == SS_PROMPT_VERB) 
             send_string("\nMusisz podać nazwę komendy. Spróbujmy ponownie.\n");
         else
             send_string("\nMusisz podać jakiś tekst. Spróbujmy ponownie.\n");
-        send_string(blurb_for_substate(substate));
+        send_string(blurp_for_substate(substate));
         return RET_NORMAL;
     }
 
@@ -200,11 +208,25 @@ static int prompt_input(string input)
             substate = SS_PROMPT_OTHER_ONLY;
             break;
         case SS_PROMPT_OTHER_ONLY:
+            social += "  ~other-only{" + input + "}\n";
+            send_string("\nZaakceptowano tekst dla innych bez celu.\n");
+            substate = SS_PROMPT_OTHER_TARGET;
+            break;
         case SS_PROMPT_OTHER_TARGET:
+            social += "  ~other-target{" + input + "}\n";
+            send_string("\nZaakceptowano tekst dla inny z celem.\n");
+            substate = SS_PROMPT_FINISH;
+            break;
         default:
             break;
     }
-    send_string(blurb_for_substate(substate));
 
-    return RET_NORMAL;
+    if (substate != SS_PROMPT_FINISH) {
+        send_string(blurp_for_substate(substate));
+        return RET_NORMAL;
+    } else {
+        SOULD->from_unq_text(social + "}\n");
+        send_string("Zakończono prace nad nową komendą socjalną.\n");
+        return RET_POP_STATE;
+    }
 }

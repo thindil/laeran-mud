@@ -65,6 +65,8 @@ static void create(varargs int clone)
       auto::compile_object(UNQ_DTD);
     if(!find_object(SIMPLE_ROOM))
       auto::compile_object(SIMPLE_ROOM);
+    if (!find_object(US_MAKE_SOCIAL))
+        auto::compile_object(US_MAKE_SOCIAL);
   }
 }
 
@@ -1085,4 +1087,17 @@ static void cmd_kick(object user, string cmd, string str)
         }
     }
     message("Nie ma w grze gracza o imieniu " + str + ".\n");
+}
+
+static void cmd_make_social(object user, string cmd, string str)
+{
+    object state;
+
+    if(str && !STRINGD->is_whitespace(str)) {
+        user->message("Użycie: " + cmd + "\n");
+        return;
+    }
+
+    state = clone_object(US_MAKE_SOCIAL);
+    user->push_new_state(US_MAKE_SOCIAL);
 }

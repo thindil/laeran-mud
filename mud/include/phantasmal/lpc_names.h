@@ -83,6 +83,7 @@
 #define US_MAKE_ROOM        "/usr/common/obj/ustate/makeroom"
 #define US_REPORT_BUG       "/usr/common/obj/ustate/report_bug"
 #define US_SET_DESC         "/usr/common/obj/ustate/set_desc"
+#define US_MAKE_SOCIAL      "/usr/common/obj/ustate/make_social"
 
 /* Telnet Option Handlers */
 #define TELOPT_DEFAULT_HANDLER  "/usr/common/obj/telopt/default_dgd"
