@@ -181,6 +181,7 @@ void upgraded(varargs int clone) {
 	"%whoami"              : ({ "cmd_whoami" }),
 	"@whoami"              : ({ "cmd_whoami" }),
     "%kick"                : ({ "cmd_kick" }),
+    "%ban"                 : ({ "cmd_ban" }),
 
 	"%status"              : ({ "cmd_status" }),
 

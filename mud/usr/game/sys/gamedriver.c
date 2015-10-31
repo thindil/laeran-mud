@@ -10,6 +10,7 @@ string welcome_message;
 string shutdown_message;
 string suspended_message;
 string sitebanned_message;
+string *banned_ip;
 
 static void create(void)
 {
@@ -34,6 +35,8 @@ static void create(void)
 	if (!file_tmp)
 		error("Can't read /usr/game/text/sitebanned.msg!");
 	sitebanned_message = file_tmp;
+
+    banned_ip = ({ });
 }
 
 #define GAME_USER "/usr/game/obj/user"
@@ -74,4 +77,31 @@ string get_sitebanned_message(object connection) {
     return nil;
 
   return sitebanned_message;
+}
+
+string* get_banned_ip(void)
+{
+    return banned_ip;
+}
+
+void set_banned_ip(string *banned)
+{
+    banned_ip = banned;
+}
+
+void add_banned_ip(string value)
+{
+    banned_ip += ({ value });
+}
+
+/* check if ip is banned, return 1 for true */
+int site_is_banned(string ip)
+{
+    int i, j;
+
+    for (i = 0; i < sizeof(banned_ip); i++)
+        if (ip == banned_ip[i])
+            return 1;
+
+    return 0;
 }

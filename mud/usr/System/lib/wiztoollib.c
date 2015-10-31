@@ -5,6 +5,7 @@
 
 #include <phantasmal/log.h>
 #include <phantasmal/lpc_names.h>
+#include <gameconfig.h>
 
 #include <trace.h>
 #include <type.h>
@@ -1064,4 +1065,62 @@ static void cmd_make_social(object user, string cmd, string str)
 
     state = clone_object(US_MAKE_SOCIAL);
     user->push_new_state(US_MAKE_SOCIAL);
+}
+
+static void cmd_ban(object user, string cmd, string str)
+{
+    string *banned, *parts;
+    string message;
+    int i;
+
+    if (!str || STRINGD->is_whitespace(str)) {
+        message("Użycie: " + cmd + " [lista|dodaj|usun]\n");
+        return;
+    }
+
+    parts = explode(str, " ");
+    banned = GAME_DRIVER->get_banned_ip();
+    switch (parts[0]) {
+        case "lista":
+            if (!sizeof(banned)) {
+                message("Nikogo jeszcze nie zbanowano.\n");
+                return;
+            }
+            user->message_scroll("Lista zbanowanych: \n" + implode(banned, "\n") + "\n");
+            break;
+        case "dodaj":
+            if (!sizeof(banned))
+                GAME_DRIVER->set_banned_ip(({ parts[1] }));
+            else {
+                for (i = 0; i < sizeof(banned); i++) {
+                    if (banned[i] == parts[1]) {
+                        message("Ten adres jest już zbanowany.\n");
+                        return;
+                    }
+                }
+                GAME_DRIVER->add_banned_ip(parts[1]);
+            }
+            message("Dodano IP: " + parts[1] + " do listy zbanowanych\n");
+            break;
+        case "usun":
+            if (!sizeof(banned)) {
+                message("Nikogo jeszcze nie zbanowano.\n");
+                return;
+            }
+            for (i = 0; i < sizeof(banned); i++) {
+                if (banned[i] == parts[1]) {
+                    banned -= ({ parts[1] });
+                    break;
+                }
+            }
+            if (sizeof(banned) == sizeof(GAME_DRIVER->get_banned_ip()))
+                message("Nie ma takiego adresu zbanowanego.\n");
+            else
+                message("Usunięto IP: " + parts[1] + " z listy zbanowanych.\n");
+            GAME_DRIVER->set_banned_ip(banned);
+            break;
+        default:
+            message("Użycie: " + cmd + " [lista|dodaj|usun]\n");
+            break;
+    }
 }
