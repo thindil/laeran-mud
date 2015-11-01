@@ -4,6 +4,7 @@
 #include <type.h>
 #include <gameconfig.h>
 #include <config.h>
+#include <version.h>
 
 static mixed* load_file_with_dtd(string file_path, string dtd_path);
 static void load_sould(void);
@@ -34,26 +35,21 @@ static void create(void) {
   if(read_object_dir(ROOM_DIR, 1) >= 0) {
     EXITD->add_deferred_exits();
     MAPD->do_room_resolution(1);
-  } else {
+  } else 
     error("Can't read object files!  Dying!\n");
-  }
 
   /* Load the mobilefile into MOBILED */
   read_object_dir(MOB_DIR, 2);
 
   /* Set up heart_beat functions */
   if(!find_object(HEART_BEAT))
-    {
       compile_object(HEART_BEAT);
-    }
   HEART_BEAT->set_up_heart_beat();
 
   if(!find_object(COMBAT))
-    {
       compile_object(COMBAT);
-    }
 
-  LOGD->write_syslog("Configured Phantasmal from /usr/game!");
+  LOGD->write_syslog("Zakończono konfigurację gry! Wersja gry: " + GAME_VERSION);
 }
 
 static mixed* load_file_with_dtd(string file_path, string dtd_path) {

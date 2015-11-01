@@ -15,7 +15,6 @@
 #define GAME_INITD             "/usr/game/initd"
 
 #define GAME_DRIVER            "/usr/game/sys/gamedriver"
-#define GAME_WIZTOOL           "/usr/game/obj/wiztool"
 #define HEART_BEAT             "/usr/game/sys/heart_beat"
 #define COMBAT                 "/usr/game/obj/combat"
 
