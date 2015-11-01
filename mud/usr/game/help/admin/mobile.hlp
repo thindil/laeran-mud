@@ -28,49 +28,53 @@ Zobacz również:  MOBILED, @stat, @delete_mobile, @new_mobile
 }
 
 
-~name{~enUS{new_mob, new_mobile, new_mobiles,
-            new mob, new mobile, new mobiles,
-            newmob, newmobile, newmobiles }}
+~name{new_mob,new_mobile,nowy mob,nowe mobki,@new_mob,@new_mobile}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @new_mob or @new_mobile command creates a new mobile of a
-specified type, with a specified body.  The syntax is:
+Komenda @new_mob lub @new_mobile tworzy nowego mobka wybranego
+typu z określonym ciałem, ciałem rodziciela oraz pokojem w którym
+będzie się pojawiać. Składnia to:
 
 @new_mob #<bodynum> <type> #<parentbody> #<spawnroom>
 
-The bodynum should be an existing portable object registered with MAPD.
-It will serve as the mobile's body, and the type should be a mobile
-type registered with the mobiled binder.  Example:
+bodynum to numer już istniejącego obiektu zarejestrowanego z MAPD.
+Będzie służył jako ciało dla mobka. Ustaw to dla mobów z którymi nie
+można walczyć (zawsze są w grze) albo podaj wartość -1. type to typ
+mobka zarejestrowany przy pomocy bindera mobków. parentbody to obiekt,
+który zostanie sklonowany jako ciało mobka - jeżeli chcesz aby można
+było walczyć z wybranym mobem, ustaw ten parametr na jakiś istniejący
+obiekt. W przeciwnym wypadku podaj -1. spawnroom to pokój w którym
+będzie pojawiało się ciało moba, jeżeli takowego nie ma w grze. Jeżeli
+chcesz aby dany mob pojawiał się losowo w wybranej strefie, wpisz -1.
+Ta opcja podobnie jak i parentbody nie ma znaczenia dla stałych mobów
+takich jak sprzedawcy. Przykład:
 
-@new_mob #347 wander
+@new_mob #347 wander #-1 #-1
 
-These will create a new mobile with an autoassigned number, which will
-use object #347 as its body and will use the "wander" mobile type.
+To stworzy nowego mobka (z automatycznie przypisanym numerem), który
+będzie używać obiektu #347 jako ciała, będzie mobem typu "wander" i
+nie będzie można go zaatakować (niezniszczalny mobek).
 
-See Also:  MOBILED, @stat, @delete_mobile, @list_mobiles, @segmap
+Zobacz również:  MOBILED, @stat, @delete_mobile, @list_mobiles, @segmap
 
-}}
+}
 
 
-~name{~enUS{delete_mob, delete_mobile, delete_mobiles,
-            delete mob, delete mobile, delete mobiles,
-            deletemob, deletemobile, deletemobiles }}
+~name{delete_mob,delete_mobile,delete_mobiles,@delete_mob,@delete_mobile}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @delete_mob or @delete_mobile command currently deletes the
-specified mobile by number.  For instance:
+Komenda @delete_mob lub @delete_mobile obecnie usuwa mobka o podanym
+numerze. Na przykład:
 
   @delete_mob #507
 
-Note that @delete_mob doesn't work on mobiles that currently have a
-user object (those of logged-in users, basically).  You have to wait
-for them to log out to use this for cleanup.  Note that this also
-won't delete the mob's body, which you *can* do with a logged-in user.
+Uwaga, komenda @delete_mob nie działa na mobkach które są odpowiednikami
+obiektu użytkownika (ogólnie, te które są zalogowanymi graczami). Musisz
+poczekać aż się wylogują i dopiero wtedy możesz użyć tej komendy. To
+również nie usunie ciała mobka, co możesz zrobić z zalogowanym użytkownikiem.
 
-See Also:  MOBILED, mobiles, @list_mobiles, @new_mobile
+Zobacz również:  MOBILED, mobki, @list_mobiles, @new_mobile
 
-}}
+}

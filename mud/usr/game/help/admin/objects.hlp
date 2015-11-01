@@ -1,152 +1,124 @@
 ~name{obiekty,obiekt}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-Objects in Phantasmal includes not just portables (traditional
-objects) but also rooms, details, exits and others.  There are a
-number of commands for objects, which therefore work on all of those
-object types.  Here are the current crop:
+Obiekty w Phantasmal to nie tylko przenośne rzeczy (tradycyjne
+znaczenie obiektów) ale również pokoje, detale, wyjścia i inne.
+Istnieje wiele komend dla obiektów które działają ze wszystkimi
+tego typu rzeczami. Oto obecna lista komend:
 
-help @stat
-help @move
+pomoc @stat
+pomoc @move
 
-help @set_glance
-help @set_brief
-help @set_look
-help @set_examine
+pomoc @set_glance
+pomoc @set_brief
+pomoc @set_look
+pomoc @set_examine
 
-help @set_object_article
-help @set_object_detail
-help @add_nouns
-help @add_adjectives
-help @clear_nouns
-help @clear_adjectives
+pomoc @set_object_article
+pomoc @set_object_detail
+pomoc @add_nouns
+pomoc @add_adjectives
+pomoc @clear_nouns
+pomoc @clear_adjectives
 
-help @set_object_value       (This is a family of commands)
+pomoc @set_object_value       (To jest rodzina komend)
 
-help @delete
+pomoc @delete
 
-See also commands for portables, rooms and so on for certain operations
-specific to those objects.
+Zobacz również komendy dla przenośnych, pokoi i innych aby poznać
+specyficzne operacje dla wybranych obiektów.
 
-}}
+}
 
 
 ~name{segment,segmenty,seg}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-Objects are allocated in 100-number segments.  For instance, the range
-#1300-#1399 forms a single segment.  A given segment is managed by
-only one daemon, so for instance if the 1300 segment contains a single
-room (managed by MAPD) then all of that segment must be composed of
-rooms (or empty).
+Obiekty są przydzielone do 100-liczbowych segmentów. Na przykład zakres
+#1300-#1399 formuje jeden segment. Wybrany segment jest zarządzany tylko
+przez jednego demona, na przykład, jeżeli segment 1300 zawiera pojedynczy
+poków (zarządzany przez MAPD) wteyd wszystko w tym segmencie musi być
+pokojem (lub może być pusty).
 
-See @segmap, @set_segment_zone.
+Zobacz @segmap, @set_segment_zone.
 
-}}
+}
 
 
-~name{~enUS{segment_map, seg_map, segmap}}
+~name{segment_map,seg_map,segmap}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @segment_map (or @segmap) command lists the segments numerically
-in ascending order followed by the daemon managing each.  For instance:
+Komenda @segment_map (lub @segmap) pokazuje listę segmentów ponumerowanych
+w porządku rosnącym z informacją o każdym zarządzającym nim demonie. Na 
+przykład:
 
-    Segments:
+    Segmenty:
     0   /usr/common/sys/mapd
     1   /usr/common/sys/exitd
-    2   /usr/common/sys/portabled
+    2   /usr/common/sys/mobiled
 
-In this case, #0-#99 would be rooms managed by MAPD, #100-#199 would be
-exits managed by ExitD, and #200-#299 would be portables managed by
-PortableD.
+W tym wypadku, #0-#99 będą pokojami zarządzanymi przez MAPD, #100-#199
+będą wyjściami zarządzanymi przez EXITD a #200-#299 będą mobkami
+zarządzanymi przez MOBILED.
 
-See also:  MAPD, EXITD, PORTABLED, MOBILED, @set_seg_zone
+Zobacz również:  MAPD, EXITD, MOBILED, @set_seg_zone
 
-}}
+}
 
 
-~name{~enUS{set_segment_zone,
-            set_seg_zone, set segment zone}}
+~name{set_segment_zone,set_seg_zone, set segment zone}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @set_segment_zone or @set_seg_zone command sets what zone a given
-segment belongs to (see "help @segmap").  A given zone will usually
-encompass a number of segments including rooms, portables, exits, and
-others.  Grouping the segments into zones allows the builder interface
-to group everything related to a given area despite the division of
-different kinds of objects.  The syntax is:
+Komenda @set_segment_zone lub @set_seg_zone ustawia strefę dla wybranego
+segmentu, tak aby należał do niej (patrz "pomoc @segmap"). Podana strefa
+najczęściej obejmuje jakąś liczbę segmentów zawierających pokoje,
+przenośne, wyjścia i inne. Grupowanie segmentów w strefy pozwala budowniczym
+zebrać wszystko co związane ze sobą na wybranym obszarze bez względu
+na typ obiektu. Składnia to:
 
 @set_seg_zone #6 #2
 
-The command above sets segment 6, containing objects #600-#699, to be
-part of zone #2.
+Komenda powyżej przypisze segment 6, zawierający obiekty #600-#699 do
+strefy #2.
 
-See also:  @segmap, segments, @zonemap, zones
+Zobacz również:  @segmap, segmenty, @zonemap, strefy
 
-}}
+}
 
 
-~name{~enUS{zone_map, zonemap}}
+~name{zone_map, zonemap}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @zonemap command lists the general contents of the MUD's zones
-by number, giving a brief description of each.
+Komenda @zonemap pokazuje listę aktualnych stref w grze, pogrupowanych
+według numerów, podając krótki opis każdej strefy.
 
-See also:  @segmap, @set_seg_zone, segments, zones
+Zobacz również:  @segmap, @set_seg_zone, segmenty, strefy
 
-}}
+}
 
 
-~name{~enUS{set_brief,brief,brief desc,
-            brief description, set brief desc, set brief description}}
+~name{set_brief,brief,krótki opis,krotki opis}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The Brief description is the shortest of all object descriptions and
-is normally used as part of a list of objects so as to minimize length
-and distraction.  It can be set by @set_brief: "@set_brief #75 flower",
-or simply "@set_brief #75".  The brief description should not start
-with an article (such as "a", "an", or "the").
+Krótki opis (brief) jest najkrótszym opisem wszystkich obiektów i
+normalnie jest używany jako część listy obiektów, więc postaraj się
+ustawiać go na najkrótszy jak się da. Może być ustawiony poprzez
+"@set_brief #75 kwiat" lub po prostu "@set_brief #75".
 
-If used in the latter form a text-entry mode will begin.  No commands
-may be typed until the tilde (\~) is entered on a line by itself to
-stop entering text.
+Jeżeli jest użyty w drugiej formie, wejdziesz w specjalny tryb
+tekstowy. Nie będziesz mógł użyć jakiejkolwiek komendy dopóki nie
+wpiszesz w nowej linii znaku tyldy (\~) aby przestać wprowadzać
+opis.
 
-See also @set_glance, @set_look, @set_examine, @set_obj_art
+Zobacz rówież @set_glance, @set_look, @set_examine
 
-}}
-
-
-~name{~enUS{set_glance,glance,glance desc,
-	glance description, set glance desc, set glance description }}
-~keywords{admin}
-~desc{
-  ~enUS{
-
-The Glance description is given when an object is looked at briefly,
-but not so briefly as the "brief" description.  It can be set by
-@set_glance: "@set_glance #75 pretty flower", or simply "@set_glance
-#75".
-
-If used in the latter form a text-entry mode will begin.  No commands
-may be typed until the tilde (\~) is entered on a line by itself to
-stop entering text.
-
-See also @set_brief, @set_look, @set_examine, @set_obj_art
-
-}}
-
+}
 
 ~name{~enUS{set_look,look,look desc,look description,
             set_look_desc, set look description}}
