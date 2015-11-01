@@ -169,327 +169,305 @@ private void priv_mob_stat(object user, object mob) {
 
 
 static void cmd_stat(object user, string cmd, string str) {
-  int     objnum, ctr;
-  object  obj, room, exit, location;
-  string* words;
-  string  tmp;
-  mixed*  objs, *tags;
-  object *details, *archetypes;
+    int     objnum, ctr;
+    object  obj, room, exit, location;
+    string* words;
+    string  tmp;
+    mixed*  objs, *tags;
+    object *details, *archetypes;
 
-  if(!str || STRINGD->is_whitespace(str)) {
-    user->message("Użycie: " + cmd + " #<numer obiektu>\n");
-    user->message("        " + cmd + " <opis obiektu>\n");
-    return;
-  }
+    if(!str || STRINGD->is_whitespace(str)) {
+        user->message("Użycie: " + cmd + " #<numer obiektu>\n");
+        user->message("        " + cmd + " <opis obiektu>\n");
+        return;
+    }
 
-  if(sscanf(str, "#%d", objnum) != 1) {
-    str = STRINGD->trim_whitespace(str);
+    if(sscanf(str, "#%d", objnum) != 1) {
+        str = STRINGD->trim_whitespace(str);
 
-    if(!STRINGD->stricmp(str, "tutaj")) {
-      if(!user->get_location()) {
-	user->message("Jesteś w pustce!\n");
-	return;
-      }
-      objnum = user->get_location()->get_number();
+        if(!STRINGD->stricmp(str, "tutaj")) {
+            if(!user->get_location()) {
+                user->message("Jesteś w pustce!\n");
+                return;
+            }
+            objnum = user->get_location()->get_number();
+        } else {
+
+            objs = user->find_first_objects(str, LOC_INVENTORY, LOC_CURRENT_ROOM,
+                    LOC_BODY, LOC_CURRENT_EXITS);
+            if(!objs) {
+                user->message("Nie możesz znaleźć jakiegokolwiek '" + str + "' tutaj.\n");
+                return;
+            }
+
+            if(sizeof(objs) > 1) {
+                user->message("Więcej niż jeden obiekt pasuje. Wybierasz pierwszy.\n");
+            }
+
+            objnum = objs[0]->get_number();
+        }
+    }
+
+    room = MAPD->get_room_by_num(objnum);
+    exit = EXITD->get_exit_by_num(objnum);
+
+    obj = room ? room : exit;
+
+    if(!obj) {
+        object mob;
+
+        mob = MOBILED->get_mobile_by_num(objnum);
+
+        if(!mob) {
+            user->message("Nie znaleziono obiektu #" + objnum+ " zarejestrowanego z MAPD, EXITD lub MOBILED.\n");
+            return;
+        }
+        priv_mob_stat(user, mob);
+        return;
+    }
+
+    tmp  = "Numer: " + obj->get_number() + "\n";
+    if(obj->get_detail_of()) {
+        tmp += "Detal z: ";
     } else {
-
-      objs = user->find_first_objects(str, LOC_INVENTORY, LOC_CURRENT_ROOM,
-				      LOC_BODY, LOC_CURRENT_EXITS);
-      if(!objs) {
-	user->message("Nie możesz znaleźć jakiegokolwiek '" + str + "' tutaj.\n");
-	return;
-      }
-
-      if(sizeof(objs) > 1) {
-	user->message("Więcej niż jeden obiekt pasuje. Wybierasz pierwszy.\n");
-      }
-
-      objnum = objs[0]->get_number();
+        tmp += "Lokacja: ";
     }
-  }
+    location = obj->get_location();
+    if(location) {
+        if(typeof(location->get_number()) == T_INT
+                && location->get_number() != -1) {
+            tmp += "#" + location->get_number();
 
-  room = MAPD->get_room_by_num(objnum);
-  exit = EXITD->get_exit_by_num(objnum);
-
-  obj = room ? room : exit;
-
-  if(!obj) {
-    object mob;
-
-    mob = MOBILED->get_mobile_by_num(objnum);
-
-    if(!mob) {
-      user->message("Nie znaleziono obiektu #" + objnum+ " zarejestrowanego z MAPD, EXITD lub MOBILED.\n");
-      return;
-    }
-    priv_mob_stat(user, mob);
-    return;
-  }
-
-  tmp  = "Numer: " + obj->get_number() + "\n";
-  if(obj->get_detail_of()) {
-    tmp += "Detal z: ";
-  } else {
-    tmp += "Lokacja: ";
-  }
-  location = obj->get_location();
-  if(location) {
-    if(typeof(location->get_number()) == T_INT
-       && location->get_number() != -1) {
-      tmp += "#" + location->get_number();
-
-      if(location->get_brief()) {
-	tmp += " (";
-	tmp += location->get_brief()->to_string(user);
-	tmp += ")\n";
-      } else {
-	tmp += "\n";
-      }
+            if(location->get_brief()) {
+                tmp += " (";
+                tmp += location->get_brief()->to_string(user);
+                tmp += ")\n";
+            } else {
+                tmp += "\n";
+            }
+        } else {
+            tmp += " (niezarejestrowany)\n";
+        }
     } else {
-      tmp += " (niezarejestrowany)\n";
+        tmp += " (żaden)\n";
     }
-  } else {
-    tmp += " (żaden)\n";
-  }
 
-  tmp += "Opisy ("
-		+ PHRASED->locale_name_for_language(user->get_locale())
-		+ ")\n";
+    tmp += "Opisy ("
+        + PHRASED->locale_name_for_language(user->get_locale())
+        + ")\n";
 
-  tmp += "Krótki (Brief): ";
-  if(obj->get_brief()) {
-    tmp += "'" + obj->get_brief()->to_string(user) + "'\n";
-  } else {
-    tmp += "(brak)\n";
-  }
+    tmp += "Krótki (Brief): ";
+    if(obj->get_brief()) 
+        tmp += "'" + obj->get_brief()->to_string(user) + "'\n";
+    else 
+        tmp += "(brak)\n";
 
-  tmp += "Patrz (Look):\n  ";
-  if(obj->get_look()) {
-    tmp += "'" + obj->get_look()->to_string(user) + "'\n";
-  } else {
-    tmp += "(brak)\n";
-  }
+    tmp += "Patrz (Look):\n  ";
+    if(obj->get_look()) 
+        tmp += "'" + obj->get_look()->to_string(user) + "'\n";
+    else
+        tmp += "(brak)\n";
 
-  tmp += "Zbadaj (Examine):\n  ";
-  if(obj->get_examine()) {
-    if(obj->get_examine() == obj->get_look()) {
-      tmp += "(tak sam jak opis Patrz)\n";
+    tmp += "Zbadaj (Examine):\n  ";
+    if(obj->get_examine()) {
+        if(obj->get_examine() == obj->get_look()) {
+            tmp += "(tak sam jak opis Patrz)\n";
+        } else {
+            tmp += "'" + obj->get_examine()->to_string(user) + "'\n";
+        }
     } else {
-      tmp += "'" + obj->get_examine()->to_string(user) + "'\n";
+        tmp += "(brak)\n";
     }
-  } else {
-    tmp += "(brak)\n";
-  }
 
-  /* Show user the nouns and adjectives */
-  tmp += "Rzeczowniki ("
-    + PHRASED->locale_name_for_language(user->get_locale())
-    + "): ";
-  words = obj->get_nouns(user->get_locale());
-  tmp += implode(words, ", ");
-  tmp += "\n";
+    /* Show user the nouns and adjectives */
+    tmp += "Rzeczowniki ("
+        + PHRASED->locale_name_for_language(user->get_locale())
+        + "): ";
+    words = obj->get_nouns(user->get_locale());
+    tmp += implode(words, ", ");
+    tmp += "\n";
 
-  tmp += "Przymiotniki ("
-    + PHRASED->locale_name_for_language(user->get_locale())
-    + "): ";
-  words = obj->get_adjectives(user->get_locale());
-  tmp += implode(words, ", ");
-  tmp += "\n\n";
+    tmp += "Przymiotniki ("
+        + PHRASED->locale_name_for_language(user->get_locale())
+        + "): ";
+    words = obj->get_adjectives(user->get_locale());
+    tmp += implode(words, ", ");
+    tmp += "\n\n";
 
-  if(function_object("get_weight", obj)) {
-    tmp += "Jego waga to " + obj->get_weight() + " kilogramy.\n";
-    tmp += "Jego objętość to " + obj->get_volume() + " litry.\n";
-    tmp += "Jego długość to " + obj->get_length() + " centymetry.\n";
-  }
+    if(function_object("get_weight", obj)) {
+        tmp += "Jego waga to " + obj->get_weight() + " kilogramy.\n";
+        tmp += "Jego objętość to " + obj->get_volume() + " litry.\n";
+        tmp += "Jego długość to " + obj->get_length() + " centymetry.\n";
+    }
 
-  if(function_object("is_locked", obj))
+    if(function_object("is_locked", obj))
     {
-      if (obj->is_locked())
-	{
-	  tmp += "Obiekt jest zablokowany.\n";
-	}
-      else
-	{
-	  tmp += "Obiekt jest odblokowany.\n";
-	}
-      if (obj->lockable())
-	{
-	  tmp += "Obiekt można swobodnie odblokowywać i zablokowywać.\n";
-	}
-      else
-	{
-	  tmp += "Obiekt nie można swobodnie odblokowywać i zablokowywać.\n";
-	}
+        if (obj->is_locked())
+            tmp += "Obiekt jest zablokowany.\n";
+        else
+            tmp += "Obiekt jest odblokowany.\n";
+        if (obj->lockable())
+            tmp += "Obiekt można swobodnie odblokowywać i zablokowywać.\n";
+        else
+            tmp += "Obiekt nie można swobodnie odblokowywać i zablokowywać.\n";
     }
 
-  if(function_object("is_container", obj)) {
-    if(obj->is_container()) {
-      if(obj->is_open()) {
-	tmp += "Obiekt jest otwartym pojemnikiem.\n";
-      } else {
-	tmp += "Obiekt jest zamkniętym pojemnikiem.\n";
-      }
-      if(obj->is_openable()) {
-	tmp += "Obiekt może być swobodnie zamykany bądź otwierany.\n";
-      } else {
-	tmp += "Obiekt nie może być swobodnie zamykany bądź otwierany.\n";
-      }
-      if(function_object("get_weight_capacity", obj)) {
-	tmp += "Zawiera " + obj->get_current_weight()
-	  + " kg z maksymalnie " + obj->get_weight_capacity()
-	  + " kilogramów.\n";
-	tmp += "Zawiera " + obj->get_current_volume()
-	  + " l z maksymalnie " + obj->get_volume_capacity()
-	  + " litrów.\n";
-	tmp += "Jego maksymalna długość/szerokość zawartości to " + obj->get_length_capacity()
-	  + " centymetrów.\n";
-      }
+    if(function_object("is_container", obj)) {
+        if(obj->is_container()) {
+            if(obj->is_open())
+                tmp += "Obiekt jest otwartym pojemnikiem.\n";
+            else
+                tmp += "Obiekt jest zamkniętym pojemnikiem.\n";
+            if(obj->is_openable()) 
+                tmp += "Obiekt może być swobodnie zamykany bądź otwierany.\n";
+            else
+                tmp += "Obiekt nie może być swobodnie zamykany bądź otwierany.\n";
+            if(function_object("get_weight_capacity", obj)) {
+                tmp += "Zawiera " + obj->get_current_weight()
+                    + " kg z maksymalnie " + obj->get_weight_capacity()
+                    + " kilogramów.\n";
+                tmp += "Zawiera " + obj->get_current_volume()
+                    + " l z maksymalnie " + obj->get_volume_capacity()
+                    + " litrów.\n";
+                tmp += "Jego maksymalna długość/szerokość zawartości to " + obj->get_length_capacity()
+                    + " centymetrów.\n";
+            }
+        } else {
+            tmp += "Obiekt nie jest pojemnikiem.\n";
+        }
+    }
+
+    tmp += "\n";
+
+    if(function_object("num_objects_in_container", obj)) {
+        tmp += "Zawiera obiekty [" + obj->num_objects_in_container()
+            + "]: ";
+        objs = obj->objects_in_container();
+        for(ctr = 0; ctr < sizeof(objs); ctr++) {
+            if(typeof(objs[ctr]->get_number()) == T_INT
+                    && objs[ctr]->get_number() != -1) {
+                tmp += "#" + objs[ctr]->get_number() + " ";
+            } else {
+                tmp += "<nierejestrowany> ";
+            }
+        }
+        tmp += "\nZawiera " + sizeof(obj->mobiles_in_container())
+            + " mobków.\n\n";
+    }
+
+    if (function_object("get_damage", obj))
+        tmp += "Zadaje " + (string)obj->get_damage() + " obrażeń.\n";
+
+    if(function_object("is_wearable", obj))
+    {
+        string* wlocations;
+        int* wlocationsnum;
+        if (obj->is_wearable())
+        {
+            tmp += "Obiekt można nosić.\n";
+            tmp += "Lokacje ciała: ";
+            wlocationsnum = obj->get_wearlocations();
+            wlocations = ({"głowa", "tułów", "ręce", "dłonie", "nogi", "prawa dłoń", "lewa dłoń" });
+            for (ctr = 0; ctr < sizeof(wlocationsnum); ctr++)
+            {
+                tmp += wlocations[wlocationsnum[ctr]] + " ";
+            }
+            tmp += "\n";
+        }
+    }
+
+    if(function_object("is_dressed", obj)) 
+    {
+        if (obj->is_dressed())
+        {
+            tmp += "Obiekt jest założony.\n";
+        }
+    }
+
+    if (function_object("get_armor", obj))
+        tmp += "Zbroja obiektu wynosi: " + (string)obj->get_armor() + "\n";
+    if (function_object("get_price", obj))
+        tmp += "Cena za obiekt wynosi: " + (string)obj->get_price() + "\n";
+    if (function_object("get_hp", obj))
+        tmp += "Punkty życia obiektu: " + (string)obj->get_hp() + "\n";
+    if (function_object("get_combat_rating", obj))
+        tmp += "Poziom bojowy obiektu: " + (string)obj->get_combat_rating() + "\n";
+
+    if (function_object("get_body_locations", obj) && sizeof(obj->get_body_locations()))
+        tmp += "Lokacje ciała: " + implode(obj->get_body_locations(), ", ") + "\n";
+    if (obj->get_skill())
+        tmp += "Umiejętność: " + obj->get_skill() + "\n";
+
+    details = obj->get_immediate_details();
+    if(details && sizeof(details)) {
+        object detail;
+
+        tmp += "Zawiera natychmiastowe detale [" + sizeof(details) + "]: ";
+        for(ctr = 0; ctr < sizeof(details); ctr++) {
+            detail = details[ctr];
+            if(detail) {
+                tmp += "#" + detail->get_number() + " ";
+            } else {
+                tmp += "<bez numeru> ";
+            }
+        }
+        tmp += "\n";
+    }
+    details = obj->get_details();
+    archetypes = obj->get_archetypes();
+    if(sizeof(archetypes) && sizeof(details)) {
+        object detail;
+
+        tmp += "Zawiera kompletne detale [" + sizeof(details) + "]: ";
+        for(ctr = 0; ctr < sizeof(details); ctr++) {
+            detail = details[ctr];
+            if(detail) {
+                tmp += "#" + detail->get_number() + " ";
+            } else {
+                tmp += "<bez numeru> ";
+            }
+        }
+        tmp += "\n";
+    }
+
+    tags = TAGD->object_all_tags(obj);
+    if(!sizeof(tags)) {
+        tmp += "\nNie ma ustawionych tagów.\n";
     } else {
-      tmp += "Obiekt nie jest pojemnikiem.\n";
-    }
-  }
-
-  tmp += "\n";
-
-  if(function_object("num_objects_in_container", obj)) {
-    tmp += "Zawiera obiekty [" + obj->num_objects_in_container()
-		  + "]: ";
-    objs = obj->objects_in_container();
-    for(ctr = 0; ctr < sizeof(objs); ctr++) {
-      if(typeof(objs[ctr]->get_number()) == T_INT
-	 && objs[ctr]->get_number() != -1) {
-	tmp += "#" + objs[ctr]->get_number() + " ";
-      } else {
-	tmp += "<nierejestrowany> ";
-      }
-    }
-    tmp += "\nZawiera " + sizeof(obj->mobiles_in_container())
-		  + " mobków.\n\n";
-  }
-
-  if(function_object("is_weapon", obj)) 
-    {
-        if (obj->is_weapon())
-            tmp += "Obiekt jest bronią.\n";
-    }
-
-  if (function_object("get_damage", obj))
-    tmp += "Zadaje " + (string)obj->get_damage() + " obrażeń.\n";
-
-  if(function_object("is_wearable", obj))
-    {
-      string* wlocations;
-      int* wlocationsnum;
-      if (obj->is_wearable())
-	{
-	  tmp += "Obiekt można nosić.\n";
-	  tmp += "Lokacje ciała: ";
-	  wlocationsnum = obj->get_wearlocations();
-	  wlocations = ({"głowa", "tułów", "ręce", "dłonie", "nogi", "prawa dłoń", "lewa dłoń" });
-	  for (ctr = 0; ctr < sizeof(wlocationsnum); ctr++)
-	    {
-	      tmp += wlocations[wlocationsnum[ctr]] + " ";
-	    }
-	  tmp += "\n";
-	}
-    }
-
-  if(function_object("is_dressed", obj)) 
-    {
-      if (obj->is_dressed())
-	{
-	  tmp += "Obiekt jest założony.\n";
-	}
-    }
-
-  if (function_object("get_armor", obj))
-    tmp += "Zbroja obiektu wynosi: " + (string)obj->get_armor() + "\n";
-  if (function_object("get_price", obj))
-    tmp += "Cena za obiekt wynosi: " + (string)obj->get_price() + "\n";
-  if (function_object("get_hp", obj))
-    tmp += "Punkty życia obiektu: " + (string)obj->get_hp() + "\n";
-  if (function_object("get_combat_rating", obj))
-    tmp += "Poziom bojowy obiektu: " + (string)obj->get_combat_rating() + "\n";
-
-  if (function_object("get_body_locations", obj) && sizeof(obj->get_body_locations()))
-    {
-      tmp += "Lokacje ciała: " + implode(obj->get_body_locations(), ", ") + "\n";
-    }
-  if (obj->get_skill())
-    {
-      tmp += "Umiejętność: " + obj->get_skill() + "\n";
-    }
-
-  details = obj->get_immediate_details();
-  if(details && sizeof(details)) {
-    object detail;
-
-    tmp += "Zawiera natychmiastowe detale [" + sizeof(details) + "]: ";
-    for(ctr = 0; ctr < sizeof(details); ctr++) {
-      detail = details[ctr];
-      if(detail) {
-	tmp += "#" + detail->get_number() + " ";
-      } else {
-	tmp += "<bez numeru> ";
-      }
+        tmp += "\nNazwa tagu: Wartość\n";
+        for(ctr = 0; ctr < sizeof(tags); ctr+=2) {
+            tmp += "  " + tags[ctr] + ": " + STRINGD->mixed_sprint(tags[ctr + 1])
+                + "\n";
+        }
     }
     tmp += "\n";
-  }
-  details = obj->get_details();
-  archetypes = obj->get_archetypes();
-  if(sizeof(archetypes) && sizeof(details)) {
-    object detail;
 
-    tmp += "Zawiera kompletne detale [" + sizeof(details) + "]: ";
-    for(ctr = 0; ctr < sizeof(details); ctr++) {
-      detail = details[ctr];
-      if(detail) {
-	tmp += "#" + detail->get_number() + " ";
-      } else {
-	tmp += "<bez numeru> ";
-      }
+    if(obj->get_mobile()) {
+        tmp += "Obiekt jest istotą.\n";
+        if(obj->get_mobile()->get_user()) {
+            tmp += "Obiekt jest ciałem gracza "
+                + obj->get_mobile()->get_user()->query_name()
+                + ".\n";
+        }
     }
-    tmp += "\n";
-  }
 
-  tags = TAGD->object_all_tags(obj);
-  if(!sizeof(tags)) {
-    tmp += "\nNie ma ustawionych tagów.\n";
-  } else {
-    tmp += "\nNazwa tagu: Wartość\n";
-    for(ctr = 0; ctr < sizeof(tags); ctr+=2) {
-      tmp += "  " + tags[ctr] + ": " + STRINGD->mixed_sprint(tags[ctr + 1])
-	+ "\n";
+    if(sizeof(archetypes)) {
+        tmp += "Jest potomkiem obiektów: ";
+        for(ctr = 0; ctr < sizeof(archetypes); ctr++) {
+            tmp += "#" + archetypes[ctr]->get_number()
+                + " (" + archetypes[ctr]->get_brief()->to_string(user)
+                + ")";
+        }
+        tmp += ".\n";
     }
-  }
-  tmp += "\n";
-
-  if(obj->get_mobile()) {
-    tmp += "Obiekt jest istotą.\n";
-    if(obj->get_mobile()->get_user()) {
-      tmp += "Obiekt jest ciałem gracza "
-	+ obj->get_mobile()->get_user()->query_name()
-	+ ".\n";
+    if(room) {
+        tmp += "Zarejestrowany z MAPD jako pokój bądź przenośny.\n";
     }
-  }
-
-  if(sizeof(archetypes)) {
-    tmp += "Jest potomkiem obiektów: ";
-    for(ctr = 0; ctr < sizeof(archetypes); ctr++) {
-      tmp += "#" + archetypes[ctr]->get_number()
-	+ " (" + archetypes[ctr]->get_brief()->to_string(user)
-	+ ")";
+    if(exit) {
+        tmp += "Zarejestrowany z EXITD jako wyjście.\n";
     }
-    tmp += ".\n";
-  }
-  if(room) {
-    tmp += "Zarejestrowany z MAPD jako pokój bądź przenośny.\n";
-  }
-  if(exit) {
-    tmp += "Zarejestrowany z EXITD jako wyjście.\n";
-  }
 
-  user->message_scroll(tmp);
+    user->message_scroll(tmp);
 }
 
 
