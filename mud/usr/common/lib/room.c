@@ -1240,10 +1240,6 @@ void from_dtd_tag(string tag, mixed value) {
     case "length_capacity":
       length_capacity = value;
       break;
-    case "current_weight":
-      break;
-    case "current_volume":
-      break;
     case "damage":
       damage = value;
       break;
