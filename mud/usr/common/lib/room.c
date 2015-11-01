@@ -1064,47 +1064,22 @@ string to_unq_flags(void) {
     if(length_capacity >= 0.0)
       ret += "  ~length_capacity{" + length_capacity + "}\n";
   }
-  if (current_weight > 0.0)
-    {
-      ret += "  ~current_weight{" + current_weight + "}\n";
-    }
-  if (current_volume > 0.0)
-    {
-      ret += "  ~current_volume{" + current_volume + "}\n";
-    }
-
   if (damage > 0)
-    {
       ret += "  ~damage{" + damage + "}\n";
-    }
   if (is_wearable() && sizeof(wearlocations))
-    {
       ret += "  ~wearlocations{" + serialize_list(wearlocations) + "}\n";
-    }
   if (armor > 0)
-    {
       ret += "  ~armor{" + armor + "}\n";
-    }
   if (price > 0)
-    {
       ret += "  ~price{" + price + "}\n";
-    }
   if (hp > 0)
-    {
       ret += "  ~hp{" + hp + "}\n";
-    }
   if (combat_rating > 0)
-    {
       ret += "  ~combat_rating{" + combat_rating + "}\n";
-    }
   if (sizeof(body_locations))
-    {
       ret += "  ~body_locations{" + serialize_list(body_locations) + "}\n";
-    }
   if (skill != "")
-    {
       ret += "  ~skill{" + skill + "}\n";
-    }
 
   rem = get_removed_details();
   if(rem && sizeof(rem)) {
@@ -1266,10 +1241,8 @@ void from_dtd_tag(string tag, mixed value) {
       length_capacity = value;
       break;
     case "current_weight":
-      current_weight = value;
       break;
     case "current_volume":
-      current_volume = value;
       break;
     case "damage":
       damage = value;

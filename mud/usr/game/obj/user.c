@@ -166,152 +166,157 @@ int name_is_forbidden(string name) {
  */
 void player_login(int first_time)
 {
-  int    start_room_num, start_zone, rnd;
-  object start_room, other_user;
+    int    start_room_num, start_zone, rnd, i;
+    object start_room, other_user;
+    mixed* inv;
 
-  if(previous_program() != PHANTASMAL_USER)
-    error("Wrong program calling player_login!");
+    if(previous_program() != PHANTASMAL_USER)
+        error("Wrong program calling player_login!");
 
-  body = nil;
+    body = nil;
 
-  /* Set up location, body, etc */
-  start_room_num = START_ROOM;
-  start_room = MAPD->get_room_by_num(start_room_num);
-
-  /* If start room can't be found, set the start room to the void */
-  if (start_room == nil) {
-    LOGD->write_syslog("Can't find the start room!  Starting in the void...");
-    start_room_num = 0;
+    /* Set up location, body, etc */
+    start_room_num = START_ROOM;
     start_room = MAPD->get_room_by_num(start_room_num);
-    start_zone = 0;
-    if(start_room == nil) {
-      /* Panic!  No void! */
-      error("Internal Error: no Void!");
-    }
-  } else {
-    start_zone = ZONED->get_zone_for_room(start_room);
-    if(start_zone < 0) {
-      /* What's with this start room? */
-      error("Internal Error:  no zone, not even zero, for start room!");
-    }
-  }
 
-  if(body_num > 0) {
-    body = MAPD->get_room_by_num(body_num);
-  }
-
-  if(body && body->get_mobile()
-     && body->get_mobile()->get_user()) {
-    other_user = body->get_mobile()->get_user();
-  }
-  if(other_user && other_user->get_name() != name) {
-    LOGD->write_syslog("User is already set for this mobile!",
-		       LOG_ERROR);
-    message("DUP: Body and mobile files are misconfigured!  Internal error!\n");
-
-    other_user->message(
-	       "Somebody has logged in with your name and account!\n");
-    other_user->message("Closing your connection now...\n");
-    destruct_object(other_user);
-  }
-
-  /* Lets do character stats */
-  if (stats == nil)
-      stats = ([ "siła": ({10, 0}), "zręczność": ({10, 0}), "inteligencja": ({10, 0}), "kondycja": ({10, 0}) ]);
-  if (skills == nil)
-      skills = ([ ]);
-  if (!health || health == "")
-      health = "Zdrowy";
-  if (!condition || condition == "")
-      condition = "Wypoczęty";
-
-  if(!body) {
-    location = start_room;
-    current_room = start_room_num;
-
-    body = clone_object(SIMPLE_ROOM);
-    if(!body)
-      error("Can't clone player's body!");
-
-    body->set_container(1);
-    body->set_open(1);
-    body->set_openable(0);
-
-    /* Players weigh about 80 kilograms */
-    rnd = random(11);
-    if (random(11) < 5)
-        rnd = rnd * (-1);
-    if (gender == 1)
-        body->set_weight(70.0 + (float)rnd);
-    else
-        body->set_weight(55.0 + (float)rnd);
-    rnd = random(11);
-    if (random(11) < 5)
-        rnd = rnd * (-1);
-    if (gender == 1)
-        rnd = 170 + rnd;
-    else
-        rnd = 160 + rnd;
-    body->set_length((float)rnd);
-    rnd = rnd / 10;
-    body->set_volume((2.5 * (float)rnd));
-
-    /* Players are able to lift 50 kilograms */
-    body->set_weight_capacity(50.0);
-    /* Players are able to carry up to 20 liters of stuff --
-       that's roughly a large hiking backpack. */
-    body->set_volume_capacity(20.0);
-    /* Players are able to take 3m long items */
-    body->set_length_capacity(300.0);
-    body->set_hp(10);
-
-    MAPD->add_room_to_zone(body, -1, start_zone);
-    if(!MAPD->get_room_by_num(body->get_number())) {
-      LOGD->write_syslog("Error making new body!", LOG_ERR);
-    }
-    body_num = body->get_number();
-
-    /* Set descriptions and add noun for new name */
-    body->set_brief(NEW_PHRASE(Name));
-    body->set_look(NEW_PHRASE(Name + " stoi tutaj."));
-    body->set_examine(nil);
-    body->add_noun(NEW_PHRASE(STRINGD->to_lower(Name)));
-
-    /* Can't just clone mobile here, it causes problems later */
-    mobile = MOBILED->clone_mobile_by_type("user");
-    if(!mobile)
-      error("Can't clone mobile of type 'user'!");
-    MOBILED->add_mobile_number(mobile, -1);
-    mobile->assign_body(body);
-    mobile->set_user(this_object());
-
-    mobile->teleport(location, 1);
-
-    /* We just set a body number, so we need to save the player data
-       file again... */
-    save_user_to_file();
-  } else {
-    location = MAPD->get_room_by_num(current_room);
-    mobile = body->get_mobile();
-    if(!mobile) {
-      mobile = clone_object(USER_MOBILE);
-      MOBILED->add_mobile_number(mobile, -1);
-      mobile->assign_body(body);
+    /* If start room can't be found, set the start room to the void */
+    if (start_room == nil) {
+        LOGD->write_syslog("Can't find the start room!  Starting in the void...");
+        start_room_num = 0;
+        start_room = MAPD->get_room_by_num(start_room_num);
+        start_zone = 0;
+        if(start_room == nil) {
+            /* Panic!  No void! */
+            error("Internal Error: no Void!");
+        }
+    } else {
+        start_zone = ZONED->get_zone_for_room(start_room);
+        if(start_zone < 0) {
+            /* What's with this start room? */
+            error("Internal Error:  no zone, not even zero, for start room!");
+        }
     }
 
-    mobile->set_user(this_object());
-    mobile->teleport(location, 1);
+    if(body_num > 0) 
+        body = MAPD->get_room_by_num(body_num);
 
-    /* Move body to start room */
-    if(location->get_number() <= LOCKER_ROOM)
-      {
-          mobile->teleport(start_room, 1);
-      }
-  }
+    if(body && body->get_mobile()
+            && body->get_mobile()->get_user()) {
+        other_user = body->get_mobile()->get_user();
+    }
+    if(other_user && other_user->get_name() != name) {
+        LOGD->write_syslog("User is already set for this mobile!",
+                LOG_ERROR);
+        message("DUP: Body and mobile files are misconfigured!  Internal error!\n");
 
-  /* Show room to player */
-  message("\n");
-  show_room_to_player(location);
+        other_user->message(
+                "Somebody has logged in with your name and account!\n");
+        other_user->message("Closing your connection now...\n");
+        destruct_object(other_user);
+    }
+
+    /* Lets do character stats */
+    if (stats == nil)
+        stats = ([ "siła": ({10, 0}), "zręczność": ({10, 0}), "inteligencja": ({10, 0}), "kondycja": ({10, 0}) ]);
+    if (skills == nil)
+        skills = ([ ]);
+    if (!health || health == "")
+        health = "Zdrowy";
+    if (!condition || condition == "")
+        condition = "Wypoczęty";
+
+    if(!body) {
+        location = start_room;
+        current_room = start_room_num;
+
+        body = clone_object(SIMPLE_ROOM);
+        if(!body)
+            error("Can't clone player's body!");
+
+        body->set_container(1);
+        body->set_open(1);
+        body->set_openable(0);
+
+        /* Players weigh about 80 kilograms */
+        rnd = random(11);
+        if (random(11) < 5)
+            rnd = rnd * (-1);
+        if (gender == 1)
+            body->set_weight(70.0 + (float)rnd);
+        else
+            body->set_weight(55.0 + (float)rnd);
+        rnd = random(11);
+        if (random(11) < 5)
+            rnd = rnd * (-1);
+        if (gender == 1)
+            rnd = 170 + rnd;
+        else
+            rnd = 160 + rnd;
+        body->set_length((float)rnd);
+        rnd = rnd / 10;
+        body->set_volume((2.5 * (float)rnd));
+
+        /* Players are able to lift 50 kilograms */
+        body->set_weight_capacity(50.0);
+        /* Players are able to carry up to 20 liters of stuff --
+           that's roughly a large hiking backpack. */
+        body->set_volume_capacity(20.0);
+        /* Players are able to take 3m long items */
+        body->set_length_capacity(300.0);
+        body->set_hp(10);
+
+        MAPD->add_room_to_zone(body, -1, start_zone);
+        if(!MAPD->get_room_by_num(body->get_number())) {
+            LOGD->write_syslog("Error making new body!", LOG_ERR);
+        }
+        body_num = body->get_number();
+
+        /* Set descriptions and add noun for new name */
+        body->set_brief(NEW_PHRASE(Name));
+        body->set_look(NEW_PHRASE(Name + " stoi tutaj."));
+        body->set_examine(nil);
+        body->add_noun(NEW_PHRASE(STRINGD->to_lower(Name)));
+
+        /* Can't just clone mobile here, it causes problems later */
+        mobile = MOBILED->clone_mobile_by_type("user");
+        if(!mobile)
+            error("Can't clone mobile of type 'user'!");
+        MOBILED->add_mobile_number(mobile, -1);
+        mobile->assign_body(body);
+        mobile->set_user(this_object());
+
+        mobile->teleport(location, 1);
+
+        /* We just set a body number, so we need to save the player data
+           file again... */
+        save_user_to_file();
+    } else {
+        location = MAPD->get_room_by_num(current_room);
+        mobile = body->get_mobile();
+        if(!mobile) {
+            mobile = clone_object(USER_MOBILE);
+            MOBILED->add_mobile_number(mobile, -1);
+            mobile->assign_body(body);
+        }
+
+        mobile->set_user(this_object());
+        mobile->teleport(location, 1);
+
+        /* Move body to start room */
+        if(location->get_number() <= LOCKER_ROOM)
+            mobile->teleport(start_room, 1);
+
+        /* Recound player current weight and volume */
+        inv = body->objects_in_container();
+        for (i = 0; i < sizeof(inv); i++) {
+            body->remove_from_container(inv[i]);
+            body->append_to_container(inv[i]);
+        }
+    }
+
+    /* Show room to player */
+    message("\n");
+    show_room_to_player(location);
 }
 
 
