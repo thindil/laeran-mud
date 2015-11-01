@@ -16,6 +16,7 @@ wymaga odpowiednich uprawnień aby mogły być wykonane pomyślnie.
 
 %who                Pokazuje kto jest zalogowany z adresem IP
 %kick               Wykopuje wybranego gracza z gry
+%ban                Banuje wybrany adres IP
 %log                Zapisuje wydarzenia do logów systemowych
 %log_subscribe      Wybiera jakie wydarzenia z dziennika są zapisywane
                     do pliku
@@ -294,5 +295,23 @@ opis, albo imię). Podczas wykonywania komendy zostanie zamienione na imię.
 - "\~target\{\}" oznacza osobę będącą celem komendy (konkretnie jej krótki
 opis albo imię, osoby nie komendy). Podczas wykonywania komendy zostanie
 zamienione na imię.
+
+}
+
+~name{ban,%ban,banowanie,zbanowanie}
+~keywords{admin}
+~desc{
+
+Komenda %ban służy do zarządzania listą zbanowanych adresów IP. Aby zobaczyć
+wszystkie obecnie zbanowane adresy IP wpisz "%ban lista". Aby dodać nowy
+adres do listy wpisz "%ban dodaj IP" gdzie IP to adres IP który chcesz
+zbanować. Aby usunąć jakiś adres z listy, wpisz "%ban usun IP" gdzie IP to
+adres do usunięcia. Przykład:
+
+%ban dodaj 127.0.0.1 
+
+Komenda doda adres IP 127.0.0.1 do listy zbanowanych.
+
+Zobacz również: %who, %kick
 
 }
