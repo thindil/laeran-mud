@@ -1654,7 +1654,8 @@ static void cmd_commands(object user, string cmd, string str)
           msg += "\n";
       msg += lalign(indices[i], 20);
     }
-  msg += lalign("wyloguj \n\n", 23);
+  msg += lalign("wyloguj \n", 23);
+  msg += "\n";
   /* Admin commands */
   if (is_admin()) {
       mixed* admin_commands;
