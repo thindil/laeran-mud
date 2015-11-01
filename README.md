@@ -4,7 +4,7 @@ Repozytorium kodu gry Laeran MUD. Kod jest połączeniem drivera DGD oraz mudlib
 
 * Na chwilę obecną, kod był testowany jedynie na na systemach GNU/Linux. Jest małe prawdopodobieństwo, że będzie działać na Windowsie również.
 * W repozytorium nie ma danych o świecie, takich jak pokoje, moby, przedmioty itd.
-* Do działania kod potrzebuje również pliku konfiguracyjnego dla drivera, kluczy ssh oraz plików świata gry (strefy, pokoje, moby, przedmioty).
+* Do działania kod potrzebuje również pliku konfiguracyjnego dla drivera oraz plików świata gry (strefy, pokoje, moby, przedmioty).
 * Ten kod nie zawiera dokumentacji, można ją pobrać z repozytoriów oryginalnego kodu.
 * Podobnie jak driver i mudlib, kod gry jest dostępny na licencji AGPL wersja 3.
 
