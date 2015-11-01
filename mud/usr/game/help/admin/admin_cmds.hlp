@@ -22,6 +22,7 @@ wymaga odpowiednich uprawnień aby mogły być wykonane pomyślnie.
                     do pliku
 %zgloszenia         Zobacz zgłoszenia błędów/literówek/pomysłów
 %make_social        Stwórz nową komendę socjalną
+%zmien_haslo        Zmień hasło wybranemu graczowi
 
 }
 
@@ -313,5 +314,16 @@ adres do usunięcia. Przykład:
 Komenda doda adres IP 127.0.0.1 do listy zbanowanych.
 
 Zobacz również: %who, %kick
+
+}
+
+~name{zmien_haslo,%zmien_haslo,zmiana hasła,zmiana hasla,zmien haslo,zmień
+hasło}
+~keywords{admin}
+~desc{
+
+Komenda %zmien_hasło służy do zmiany hasła dowolnego gracza. Jest składnia
+to "%zmien_haslo [gracz] [hasło]". Gracz któremu zmieniamy hasło nie musi
+być zalogowany.
 
 }
