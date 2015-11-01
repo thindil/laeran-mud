@@ -36,7 +36,11 @@ static void create(void)
 		error("Can't read /usr/game/text/sitebanned.msg!");
 	sitebanned_message = file_tmp;
 
-    banned_ip = ({ });
+    file_tmp = read_file("/usr/game/text/bans.txt");
+    if (!file_tmp)
+        banned_ip = ({ });
+    else
+        banned_ip = explode(file_tmp, ", ");
 }
 
 #define GAME_USER "/usr/game/obj/user"

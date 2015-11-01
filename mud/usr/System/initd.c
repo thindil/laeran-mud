@@ -40,9 +40,10 @@ static  void __co_write_mobs(object user, int* objects, int ctr,
 static  void __co_write_zones(object user, int* objects, int ctr,
 			      string zonefile, int filesize, int extension,
                   string socialdir);
-static  void __co_write_users(object user);
+static  void __co_write_users(object user, int ctr);
 static  void __co_write_socials(object user, string socialdir,
                   int filesize, int extension, int ctr);
+static  void __co_write_banned(object user);
 static  void __reboot_callback(void);
 static  void __shutdown_callback(void);
         void set_path_special_object(object new_obj);
@@ -715,41 +716,71 @@ static void __co_write_socials(object user, string socialdir,
     /* Done with socials, start on users */
     LOGD->write_syslog("Writing users to files.", LOG_VERBOSE);
 
-    if(call_out("__co_write_users", 0, user) < 1)
+    if(call_out("__co_write_users", 0, user, 0) < 1)
     {
         release_system();
         error("Can't schedule call_out to start writing users!");
     }
 }
 
-static void __co_write_users(object user)
+static void __co_write_users(object user, int ctr)
 {
-  object *users;
-  int i;
+    object *users;
+    int i;
 
-  users = users();
-  for (i = 0; i < sizeof(users); i++)
+    users = users();
+    catch {
+        for (i = 0; ctr < sizeof(users) && i < SAVE_CHUNK; i++, ctr++)
+            users[ctr]->save_user_to_file();
+    } : {
+        release_system();
+        if (user) user->message("Error writing users!\n");
+        error("Error writing users!");
+    }
+
+    if (ctr < sizeof(users)) {
+        if (call_out("__co_write_users", 0, user, ctr) < 1)
+            error("Can't schedule call_out to start writing users!");
+        return;
+    }
+
+    /* Done with users, start on banned ip */
+    LOGD->write_syslog("Writing bans to file.", LOG_VERBOSE);
+
+    if(call_out("__co_write_banned", 0, user) < 1)
     {
-      users[i]->save_user_to_file();
+        release_system();
+        error("Can't schedule call_out to start writing banned!");
+    }
+}
+
+static void __co_write_banned(object user)
+{
+    string bans;
+
+    if (sizeof(GAME_DRIVER->get_banned_ip())) {
+        bans = implode(GAME_DRIVER->get_banned_ip(), ", ");
+        remove_file("/usr/game/text/bans.txt");
+        write_file("/usr/game/text/bans.txt", bans);
     }
 
-  /* This is the callback from %shutdown or %reboot or whatever,
-     it's the function to call after all data has successfully
-     been saved. */
-  catch {
-    if(pending_callback) {
-      call_other(this_object(), pending_callback);
-      pending_callback = nil;
+    /* This is the callback from %shutdown or %reboot or whatever,
+       it's the function to call after all data has successfully
+       been saved. */
+    catch {
+        if(pending_callback) {
+            call_other(this_object(), pending_callback);
+            pending_callback = nil;
+        }
+    } : {
+        release_system();
+        if(user) user->message("Error calling callback!\n");
+        error("Error calling callback!");
     }
-  } : {
+
     release_system();
-    if(user) user->message("Error calling callback!\n");
-    error("Error calling callback!");
-  }
-
-  release_system();
-  LOGD->write_syslog("Finished writing saved data...", LOG_NORMAL);
-  if(user) user->message("Finished writing data.\n"); 
+    LOGD->write_syslog("Finished writing saved data...", LOG_NORMAL);
+    if(user) user->message("Finished writing data.\n"); 
 }
 
 static void __shutdown_callback(void) {
