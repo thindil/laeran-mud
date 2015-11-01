@@ -187,7 +187,7 @@ void save_user_to_file() {
   save_object(user_filename);
 }
 
-static int restore_user_from_file(string str) {
+int restore_user_from_file(string str) {
   object* chanlist;
   int     chan_code, channel, subcode;
 

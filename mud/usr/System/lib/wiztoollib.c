@@ -1124,3 +1124,40 @@ static void cmd_ban(object user, string cmd, string str)
             break;
     }
 }
+
+static void cmd_change_password(object user, string cmd, string str)
+{
+    object player;
+    int i;
+    string *parts;
+    object *users;
+
+    if(!access(user->query_name(), "/", FULL_ACCESS)) {
+        user->message("Tylko administrator z pełnymi prawami może zmieniać hasła!");
+        return;
+    }
+    if (!str || STRINGD->is_whitespace(str)) {
+        message("Użycie: " + cmd + " <gracz> <nowe hasło>\n");
+        return;
+    }
+    
+    parts = explode(str, " ");
+    users = users();
+    for (i = 0; i < sizeof(users); i++) {
+        if (STRINGD->to_lower(parts[0]) == users[i]->get_name()) {
+            users[i]->set_password(implode(parts[1..], " "));
+            message("Hasło dla postaci " + parts[0] + " zostało zmienione.\n");
+            return;
+        }
+    }
+
+    player = clone_object("/usr/game/obj/user");
+    if (!player->restore_user_from_file(parts[0])) {
+        message("Nie ma gracza o imieniu " + parts[0] + ".\n");
+        return;
+    }
+    player->set_password(implode(parts[1..], " "));
+    player->save_user_to_file();
+    destruct_object(player);
+    message("Hasło dla postaci " + parts[0] + " zostało zmienione.\n");
+}

@@ -182,6 +182,7 @@ void upgraded(varargs int clone) {
 	"@whoami"              : ({ "cmd_whoami" }),
     "%kick"                : ({ "cmd_kick" }),
     "%ban"                 : ({ "cmd_ban" }),
+    "%zmien_haslo"         : ({ "cmd_change_password" }),
 
 	"%status"              : ({ "cmd_status" }),
 

@@ -26,7 +26,7 @@ inherit PHANTASMAL_USER;
 
 static mapping commands_map;
 static object combat;
-static int set_password;
+static int state_password;
 
 /* Prototypes */
         void upgraded(varargs int clone);
@@ -35,6 +35,7 @@ static  void cmd_social(object user, string cmd, string str);
         void set_health(int hp);
         void set_condition(int fatigue);
 private string lalign(string num, int width);
+        void set_password(string new_pass);
 
 /* Macros */
 #define NEW_PHRASE(x) PHRASED->new_simple_english_phrase(x)
@@ -61,7 +62,7 @@ void upgraded(varargs int clone) {
   if(SYSTEM()) {
     ::upgraded(clone);
 
-    set_password = -1;
+    state_password = STATE_NORMAL;
     commands_map = ([
 		     "mow"       : "cmd_say",
 		     "emo"       : "cmd_emote",
@@ -216,21 +217,13 @@ void player_login(int first_time)
 
   /* Lets do character stats */
   if (stats == nil)
-    {
       stats = ([ "siła": ({10, 0}), "zręczność": ({10, 0}), "inteligencja": ({10, 0}), "kondycja": ({10, 0}) ]);
-    }
   if (skills == nil)
-    {
       skills = ([ ]);
-    }
   if (!health || health == "")
-    {
       health = "Zdrowy";
-    }
   if (!condition || condition == "")
-    {
       condition = "Wypoczęty";
-    }
 
   if(!body) {
     location = start_room;
@@ -247,30 +240,18 @@ void player_login(int first_time)
     /* Players weigh about 80 kilograms */
     rnd = random(11);
     if (random(11) < 5)
-      {
-	rnd = rnd * (-1);
-      }
+        rnd = rnd * (-1);
     if (gender == 1)
-      {
-	body->set_weight(70.0 + (float)rnd);
-      }
+        body->set_weight(70.0 + (float)rnd);
     else
-      {
-	body->set_weight(55.0 + (float)rnd);
-      }
+        body->set_weight(55.0 + (float)rnd);
     rnd = random(11);
     if (random(11) < 5)
-      {
-	rnd = rnd * (-1);
-      }
+        rnd = rnd * (-1);
     if (gender == 1)
-      {
-	rnd = 170 + rnd;
-      }
+        rnd = 170 + rnd;
     else
-      {
-	rnd = 160 + rnd;
-      }
+        rnd = 160 + rnd;
     body->set_length((float)rnd);
     rnd = rnd / 10;
     body->set_volume((2.5 * (float)rnd));
@@ -324,7 +305,7 @@ void player_login(int first_time)
     /* Move body to start room */
     if(location->get_number() <= LOCKER_ROOM)
       {
-	mobile->teleport(start_room, 1);
+          mobile->teleport(start_room, 1);
       }
   }
 
@@ -434,29 +415,29 @@ int process_command(string str)
         /* Set new password */
         if (cmd == "ustaw" && str == "haslo") {
             message("Podaj stare hasło: ");
-            set_password = STATE_OLDPASSWD;
+            state_password = STATE_OLDPASSWD;
             return MODE_NOECHO;
         }
-        if (set_password == STATE_OLDPASSWD) {
+        if (state_password == STATE_OLDPASSWD) {
             if (hash_string("crypt", cmd + str, password) != password) {
                 message("Nieprawidłowe stare hasło, przerywam ustawianie nowego hasła.\n");
-                set_password = STATE_NORMAL;
+                state_password = STATE_NORMAL;
                 return MODE_ECHO;
             }
             else {
                 message("Podaj nowe hasło: ");
-                set_password = STATE_NEWPASSWD1;
+                state_password = STATE_NEWPASSWD1;
                 return MODE_NOECHO;
             }
         }
-        if (set_password == STATE_NEWPASSWD1) {
+        if (state_password == STATE_NEWPASSWD1) {
             if (!str) 
                 message("Puste nowe hasło. Przerywam zmianę hasła.\n");
             else {
-                password = hash_string("crypt", cmd + str);
+                set_password(cmd + str);
                 message("Ustawiono nowe hasło.\n");
             }
-            set_password = STATE_NORMAL;
+            state_password = STATE_NORMAL;
             return MODE_ECHO;
         }
 
@@ -723,6 +704,11 @@ void print_prompt(void)
     {
       message("[" + health + "] [" + condition + "]\n");
     }
+}
+
+void set_password(string new_pass)
+{
+    password = hash_string("crypt", new_pass);
 }
 
 /************** User-level commands *************************/
