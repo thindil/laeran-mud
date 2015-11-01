@@ -10,7 +10,6 @@
 
 /* System managers and daemons */
 #define TELNETD     "/usr/System/sys/telnetd"
-#define SSHD        "/usr/System/sys/sshd"
 #define MUDCLIENTD  "/usr/System/sys/mudclientd"
 #define OBJECTD     "/usr/System/sys/objectd"
 #define ERRORD      "/usr/System/sys/errord"

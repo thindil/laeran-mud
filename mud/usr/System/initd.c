@@ -206,15 +206,9 @@ static void create(varargs int clone)
   if(!find_object(TELNETD)) { compile_object(TELNETD); }
   "/kernel/sys/userd"->set_telnet_manager(0,find_object(TELNETD));
 
-  /* The first binary port uses the default handler for safety reasons. */
-
-  /* SSHD manages the second binary port in phantasmal.dgd */
-  if(!find_object(SSHD)) { compile_object(SSHD); }
-  "/kernel/sys/userd"->set_binary_manager(1, find_object(SSHD));
-
-  /* MUDCLIENTD manages the third binary port in phantasmal.dgd */
+  /* MUDCLIENTD manages the first binary port */
   if(!find_object(MUDCLIENTD)) { compile_object(MUDCLIENTD); }
-  "/kernel/sys/userd"->set_binary_manager(2, find_object(MUDCLIENTD));
+  "/kernel/sys/userd"->set_binary_manager(0, find_object(MUDCLIENTD));
 
   /* Compile the Phrase manager (before HelpD) */
   if(!find_object(PHRASED)) { compile_object(PHRASED); }
@@ -457,7 +451,6 @@ private void suspend_system() {
   __sys_suspended = 1;
   RSRCD->suspend_callouts();
   TELNETD->suspend_input(0);  /* 0 means "not shutdown" */
-  SSHD->suspend_input(0);  /* 0 means "not shutdown" */
   MUDCLIENTD->suspend_input(0);  /* 0 means "not shutdown" */
 }
 
@@ -472,7 +465,6 @@ private void release_system() {
   __sys_suspended = 0;
   RSRCD->release_callouts();
   TELNETD->release_input();
-  SSHD->release_input();
   MUDCLIENTD->release_input();
   pending_callback = nil;
 }
