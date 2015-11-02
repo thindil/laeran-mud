@@ -164,61 +164,66 @@ string* all_socials(void) {
 
 string get_social_string(object user, object body,
 			 object target_body, string verb) {
-  mixed *entry, *unq;
-  string result;
-  object phr;
+    mixed *entry, *unq;
+    string result;
+    object phr;
+    string *nouns;
+    int number;
 
-  if(!SYSTEM() && !COMMON() && !GAME())
-    return nil;
+    if(!SYSTEM() && !COMMON() && !GAME())
+        return nil;
 
-  entry = sould_strings[verb];
-  if(!entry) return nil;
+    entry = sould_strings[verb];
+    if(!entry) 
+        return nil;
 
-  /* Check for reflexive */
-  if(target_body == body) {
-    /* A nil target means it's done to yourself */
-    target_body = nil;
-  }
+    /* Check for reflexive */
+    if(target_body == body) 
+        /* A nil target means it's done to yourself */
+        target_body = nil;
 
-  if(user->get_body() == body) {
-    /* Looks like this is done by us... */
-    if(target_body) {
-      unq = entry[SOULD_SELF_TARGET];
-    } else {
-      unq = entry[SOULD_SELF_ONLY];
+    if(user->get_body() == body) {
+        /* Looks like this is done by us... */
+        if(target_body) 
+            unq = entry[SOULD_SELF_TARGET];
+        else 
+            unq = entry[SOULD_SELF_ONLY];
+    } else if (user->get_body() == target_body) 
+        /* Looks like this is done *to* us */
+        unq = entry[SOULD_TARGET];
+    else { 
+        if(target_body) 
+            unq = entry[SOULD_OTHER_TARGET];
+        else 
+            unq = entry[SOULD_OTHER_ONLY];
     }
-  } else if (user->get_body() == target_body) {
-    /* Looks like this is done *to* us */
-    unq = entry[SOULD_TARGET];
-  } else {
-    if(target_body) {
-      unq = entry[SOULD_OTHER_TARGET];
-    } else {
-      unq = entry[SOULD_OTHER_ONLY];
+
+    if(!unq)
+        error("Can't resolve UNQ for social verb '" + verb + "'!");
+
+    /* Go through and replace tags */
+    result = "";
+    while(unq && sizeof(unq)) {
+        if(!unq[0] || unq[0] == "") 
+            result += unq[1];
+        else if (unq[0] == "target") {
+            nouns = target_body->get_nouns(user->get_locale());
+            if (sizeof(nouns) < 7) {
+                phr = target_body->get_brief();
+                result += phr->to_string(user);
+            } else {
+                number = (int)unq[1];
+                result += nouns[number];
+            }
+        } else if (unq[0] == "actor") {
+            phr = body->get_brief();
+            result += phr->to_string(user);      
+        } else 
+            error("Unrecognized tag " + STRINGD->mixed_sprint(unq[0])
+                    + "/" + STRINGD->mixed_sprint(unq[1])
+                    + " in string substitution for social verb '" + verb + "'");
+        unq = unq[2..];
     }
-  }
 
-  if(!unq)
-    error("Can't resolve UNQ for social verb '" + verb + "'!");
-
-  /* Go through and replace tags */
-  result = "";
-  while(unq && sizeof(unq)) {
-    if(!unq[0] || unq[0] == "") {
-      result += unq[1];
-    } else if (unq[0] == "target") {
-      phr = target_body->get_brief();
-      result += phr->to_string(user);
-    } else if (unq[0] == "actor") {
-      phr = body->get_brief();
-      result += phr->to_string(user);      
-    } else {
-      error("Unrecognized tag " + STRINGD->mixed_sprint(unq[0])
-	    + "/" + STRINGD->mixed_sprint(unq[1])
-	    + " in string substitution for social verb '" + verb + "'");
-    }
-    unq = unq[2..];
-  }
-
-  return result;
+    return result;
 }
