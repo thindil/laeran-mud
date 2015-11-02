@@ -1296,10 +1296,6 @@ static void cmd_movement(object user, string cmd, string str) {
         fatigue = TAGD->get_tag_value(body, "Fatigue");
     else
         fatigue = 0;
-    if (fatigue >= (stats["kondycja"][0] * 10)) {
-        message("Jesteś zbyt zmęczony aby podróżować. Odpocznij chwilę.\n");
-        return;
-    }
 
     /* Currently, we ignore modifiers (str) and just move */
 

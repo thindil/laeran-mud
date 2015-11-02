@@ -461,6 +461,7 @@ nomask string move(int dir) {
   object dest;
   object exit;
   string reason;
+  int fatigue;
 
   if(!SYSTEM() && !COMMON() && !GAME())
     return "Access Denied!";
@@ -473,6 +474,16 @@ nomask string move(int dir) {
   dest = exit->get_destination();
   if (!dest) {
     return "To wyjście prowadzi donikąd!";
+  }
+
+  if (get_user()) {
+      if (TAGD->get_tag_value(body, "Fatigue"))
+          fatigue = TAGD->get_tag_value(body, "Fatigue");
+      else
+          fatigue = 0;
+      if (fatigue >= (get_user()->get_stat_val("kondycja") * 10)) {
+          return "Jesteś zbyt zmęczony aby podróżować. Odpocznij chwilę.";
+      }
   }
 
   /* NB.  I do want a = (not == ), as in other places like this*/
