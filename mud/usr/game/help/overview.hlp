@@ -83,6 +83,11 @@ ustawienia adresu. Aby podać nowy adres wpisz "ustaw mail nowy@email.pl".
 - "ustaw haslo": Pozwala zmienić hasło do konta. Najpierw będziesz musiał
 podać stare hasło aby móc ustawić nowe. Możesz w każdej chwili przerwać
 zmianę hasła, wystarczy że podasz nowe puste hasło albo niepoprawne stare.
+- "ustaw odmiana": Pozwala ustawić odmianę imienia postaci. Odmiana imiena
+przydaje się do usunięcia różnych kwiatków w stylu "zwłoki Thindil".
+Podobnie jak i w przypadku ustawienia opisu, pamiętaj o obowiązujących 
+zasadach (podszywanie się pod kogoś czy inne złośliwości będą oczywiście 
+odpowiednio "nagrodzone").
 
-Zobacz rówież: zasady, patrz
+Zobacz rówież: zasady, patrz, socjalne
 }
