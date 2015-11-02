@@ -33,7 +33,7 @@ inherit io   SYSTEM_USER_IO;
 
 /* Saved by save_object */
 string name;	                /* user filename and login name */
-string password;		/* user password */
+string password;		        /* user password */
 string Name;                    /* human-readable user name */
 int    channel_subs;            /* user channel subscriptions */
 int    log_chan_level;          /* Level of output on CHANNEL_LOG */
@@ -41,6 +41,7 @@ int    err_chan_level;          /* Level of output on CHANNEL_ERR */
 int    body_num;                /* number of body object */
 string email;                   /* user email */
 int    gender;                  /* 1 - male, 2 - female, character gender */
+string hostname;                /* Host Ip they're logging in from */
 
 
 /* Random unsaved */
@@ -48,7 +49,6 @@ static string newpasswd;	/* new password */
 static object wiztool;		/* command handler */
 static int nconn;		/* # of connections */
 static int timestamp;           /* Last network input */
-static string hostname;         /* Hostname they're logging in from */
 static mapping state;		/* state for a connection object */
 static int first_login;         /* whether this was the first login */
 
@@ -575,7 +575,6 @@ int login(string str)
     }
 
     timestamp = time();
-    hostname = query_ip_name(this_object());
 
     name = nil;
     restore_user_from_file(filename);

@@ -173,6 +173,7 @@ void player_login(int first_time)
     if(previous_program() != PHANTASMAL_USER)
         error("Wrong program calling player_login!");
 
+    hostname = query_ip_number(query_conn());
     body = nil;
 
     /* Set up location, body, etc */
