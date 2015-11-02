@@ -53,8 +53,12 @@ string serialize_string(mixed *sstring)
 
     ret = "";
     for (i = 0; i < sizeof(sstring); i++) {
-        if (sstring[i] == "target" || sstring[i] == "actor")
-            ret += "~" + sstring[i] + "{}";
+        if (sstring[i] == "actor")
+            ret += "~actor{}";
+        else if (sstring[i] == "target") {
+            ret += "~target{" + sstring[(i + 1)] + "}";
+            i++;
+        }
         else if (typeof(sstring[i]) == T_STRING)
             ret += sstring[i];
     }
