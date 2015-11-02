@@ -1653,14 +1653,13 @@ static void cmd_commands(object user, string cmd, string str)
 
   /* Standard commands */
   msg = "Dostępne komendy:";
-  indices = map_indices(commands_map);
+  indices = map_indices(commands_map) + ({ "wyloguj" });
   for (i = 0; i < sizeof(indices); i++) {
       if (!(i % 5))
           msg += "\n";
       msg += lalign(indices[i], 20);
     }
-  msg += lalign("wyloguj \n", 23);
-  msg += "\n";
+  msg += "\n\n";
   /* Admin commands */
   if (is_admin()) {
       mixed* admin_commands;
