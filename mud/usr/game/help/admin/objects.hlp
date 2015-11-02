@@ -116,178 +116,135 @@ tekstowy. Nie będziesz mógł użyć jakiejkolwiek komendy dopóki nie
 wpiszesz w nowej linii znaku tyldy (\~) aby przestać wprowadzać
 opis.
 
-Zobacz rówież @set_glance, @set_look, @set_examine
+Zobacz rówież @set_look, @set_examine
 
 }
 
-~name{~enUS{set_look,look,look desc,look description,
-            set_look_desc, set look description}}
+~name{set_look,set_look_desc}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The Look description is given when an object is looked at for a
-significant period of time.  It is the primary room description, or
-the description a player receives when specifically choosing to look
-at a portable, detail or exit.  It can be set by @set_look: "@set_look
-#75 A very pretty flower with petals and leaves", or simply "@set_look
-#75".
+Opis Patrz (Look) jest podawany kiedy obiekt jest obserwowany
+przez jakiś okres czasu. Jest to podstawowy opis pokoju albo opis,
+który gracz otrzymuje po spojrzeniu na wybrany przenośny, detal bądź
+wyjście. Może być ustawiony przez komendę @set_look: "@set_look #75
+Bardzo ładny kwiat z płatkami i liśćmi" albo po prostu "@set_look #75".
 
-If used in the latter form a text-entry mode will begin.  No commands
-may be typed until the tilde (\~) is entered on a line by itself to
-stop entering text.
+Jeżeli jest użyty w drugiej formie, wejdziesz w specjalny tryb
+tekstowy. Nie będziesz mógł użyć jakiejkolwiek komendy dopóki nie
+wpiszesz w nowej linii znaku tyldy (\~) aby przestać wprowadzać
+opis.
 
-See also @set_brief, @set_glance, @set_examine
+Zobacz również @set_brief, @set_examine
 
-}}
+}
 
 
-~name{~enUS{set_examine,examine,examine desc, set examine desc,
-            examine description, set examine description}}
+~name{set_examine}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The Examine description is given when an object is specifically
-examined in a very close-up and time consuming way.  There is
-currently no examine command, rendering it briefly useless.  The
-examine description is optional, unlike the other three.  It can be
-set by @set_examine: "@set_examine #75 You see a bug on the flower!",
-or simply "@set_examine #75".
+Opis Zbadaj (Examine) jest podawany kiedy obiekt jest dokładnie
+badany przy pomocy długotrwałej czynności. Gracz otrzyma ten
+opis jeżeli użyje komendy "zbadaj". Ten opis jest opcjonalny w 
+odróżnieniu od innych. Może być ustawiony przy pomocy komendy
+@set_examine: "@set_examine #75 Widzisz robaka na kwiecie!"
+albo po prostu "@set_examine #75".
 
-If used in the latter form a text-entry mode will begin.  No commands
-may be typed until the tilde (\~) is entered on a line by itself to
-stop entering text.
+Jeżeli jest użyty w drugiej formie, wejdziesz w specjalny tryb
+tekstowy. Nie będziesz mógł użyć jakiejkolwiek komendy dopóki nie
+wpiszesz w nowej linii znaku tyldy (\~) aby przestać wprowadzać
+opis.
 
-See also @set_brief, @set_glance, @set_look
+Zobacz również @set_brief, @set_look
 
-}}
+}
 
-
-~name{~enUS{set_object_article, set_object_art,
-            set_obj_article, set_obj_art,
-            article, definite, indefinite, proper, proper noun,
-            proper nouns}}
+~name{set_obj_flag,contain,cont,container,containers,
+            open,openable,set container,set locked,set lockable, 
+            locked,lockable,set open,set openable}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @set_obj_art (or @set_object_article) command tells whether the
-brief and glance descriptions of an object should be referred to using
-a definite article, an indefinite article, or no article (as would
-be appropriate for a proper noun like "Tom" or "King Ted").
-
-The syntax is "@set_obj_art #749 definite".  Appropriate values for
-the second argument include "definite", "def", "indefinite", "indef",
-and "proper".  More may be added later.
-
-See also @add_nouns, @add_adj, @set_brief, @set_glance
-
-}}
-
-
-~name{~enUS{set_obj_flag, set_obj_flags,
-            set_object_flag, set_object_flags, set_objflag,
-            set_objflags, setobjflag, setobjflags,
-            contain, cont, containment, container, containers,
-            open, open container, openable, openable container, set container,
-	    set locked, set lockable, locked, lockable,
-            set open,set openable,descless,nodesc,no_desc,
-            set_port_flag, set_portable_flag, set_port_flags,
-            set_portable_flags}}
-~keywords{admin}
-~desc{
-  ~enUS{
-
-The @set_obj_flag (or @set_object_flag) command sets flags on objects,
-such as whether they are containers and whether they are open.  For
-instance:
+Komenda @set_obj_fla ustawia flagi na obiekcie np czy jest pojemnikiem
+i czy jest otwarty. Na przykład:
 
   @set_obj_flag #237 cont true
   @set_obj_flag #294 open 0
-  @set_object_flags #901 openable 1
+  @set_obj_flags #901 openable 1
 
-The values, if present, should indicate true or false -- like "true",
-"false", "yes", "no", 1, 0.  If absent, the values default to true.
-The first argument is the object number of a room or portable.  The
-middle argument is a flag name, and can be "cont" or "container" to
-set whether the object is a container, "open" to set whether it is
-currently open, "openable" to say whether it can be easily opened or
-closed, "locked" to say whether it is locked or not, "lockable" to
-say whether it can be locked or not, or possibly other flag names.
+Wartości, jeżeli są podane powinny oznaczać prawdę lub fałsz -- jak
+"true", "false", "yes", "no", 1, 0. Jeżeli nie podano wartości,
+wtedy domyślnie jest ustalana na prawdę. Pierwszy argument to numer
+obiektu, któremu ustawiamy flagi. Drugi argument to nazwa flagi.
 
-To get a list of flag names, type "@set_obj_flag flagnames".
+Aby zobaczyć pełną listę flag, wpis "@set_obj_flag flagi".
 
-}}
+}
 
 
 
-~name{~enUS{parent, inherit, inheritance, data inheritance, urobject,
-            urobjects, ur_object, ur_object, ur object, ur objects,
-            archetype }}
+~name{rodzic,potomek,dziedziczenie,archetyp}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-Phantasmal uses data inheritance to make certain properties of an
-object pass from parent to child.  An object may inherit from a list
-of parents, and properties will be inherited from some or all of
-those parents.
+Phantasmal używa dziedziczenia danych aby przekazać niektóre wartości
+obiektów z rodziców na potomków. Obiekt może dziedziczyć z listy
+rodziców a jego wartości będą dziedziczone z kilku bądź wszystkich
+tych rodziców.
 
-The descriptions, like look and brief, will be inherited from the
-first parent on the list.  Nouns, adjectives and details will all be
-inherited from all parents in the list, and combined into a single
-large grouping.  Weight, volume, height, and capacities for the same
-will be inherited from the first parent.
+Opisy, jak patrz i krótki będą dziedziczone tylko z pierwszego
+rodzica na liście. Rzeczowniki, przymiotniki i detale będą dziedziczone
+ze wszystkich rodziców z listy i łączone w jedną dużą grupę. Waga,
+objętość, wysokość oraz pojemność będą dziedziczone tylko z pierwszego
+rodzica.
 
-Other properties, including tags, may be inherited similarly or
-differently.
+Inne wartości, jak na przykład tagi, mogą być dziedziczone w ten sam
+bądź inny sposób.
 
-Note that this is different from code inheritance in LPC.  It is, in
-fact, almost opposite.
+Zauważ że jest to odmienne od dziedziczenia kodu w LPC. Prawdę mówiąc,
+niemal odwrotne.
 
-See also:  @set_obj_parent
+Zobacz również:  @set_obj_parent
 
-}}
+}
 
 
-~name{~enUS{set_object_parent, set_object_par,
-            set_obj_parent, set_obj_par, set_parent, set_par }}
+~name{set_obj_parent,set_obj_par,set_parent}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @set_obj_par (or @set_object_parent, or @set_parent) command adds
-or removes parents of an object for data inheritance.  This means the
-child object will inherit various data, including details, from the
-parent object(s).  The syntax is "@set_obj_parent <child> <parent>" where
-"<child>" and "<parent>" are portable or room numbers prefixed with a
-pound ("#") sign.
+Komenda @set_obj_parent(albo @set_parent) dodaje bądź usuwa rodziców
+z obiektu dla dziedziczenia danych. Oznacza to że obiekt potomny będzie
+przyjmował różne dane, włączając detale, z obiektu(ów) nadrzędnych.
+Składnia to "@set_obj_parent <potomek> <rodzic>" gdzie "<potomek>" i
+"<rodzic>" to numery pokojów bądź przenośnych poprzedzone znakiem hash
+("#").
 
-If "<parent>" is the word 'none', all parents are cleared, and the
-object will be set to have no parents.  If the word "add" or "remove"
-precedes the list of parents, those parents will be added or removed.
-If the word is "set" then the object's list of parents will be set
-to that list of objects.
+Jeżeli "<parent>" jest słowem 'none', wszyscy rodzice zostaną usunięci
+i obiekt będzie ustawiony bez rodziców. Jeżeli słowo "add" lub "remove"
+poprzedza listę rodziców, ci rodzice będą dodani ("add") bądź usunięci
+("remove"). Jeżeli słowo "set" poprzedza listę rodziców, ta lista będzie
+ustawiona jako lista rodziców dla obiektu.
 
-The "set" keyword may be used to change the order of parents in the
-list.  In that case, just include all the old parents in the "set"
-call.  If the set call actually changes *which* parents (not just the
-order) then the details, nouns and adjectives are recalculated to
-reflect the new inheritance.  If the parents are set to the same
-objects in a different order, only the order-dependent settings are
-changed -- removed nouns, adjectives and details from the parent list
-will still be removed.
+Słowo "set" może być użyte do zmiany kolejności na liście rodziców.
+W takim wypadku, po prostu wpisz wszystkich obecnych rodziców przedmiotu
+w odpowiedniej kolejności. Jeżeli słowo "set" zmienia również *którzy*
+rodzice będą dziedziczeni (nie tylko ich kolejność), wtedy detale,
+rzeczowniki i przymiotniki będą przeliczone ponownie aby odzwierciedlić
+nowe dziedziczenie. Jeżeli rodzice są tacy sami jak byli, tylko w innej
+kolejności, tylko zależne od kolejności ustawienia zostaną zmienione --
+rzeczowniki, przymiotniki czy detale pozostaną takie same.
 
-Usage: @set_obj_par #791 none
-       @set_object_parent #947 set #322 #741 #909
-       @set_obj_parent #947 remove #322 #741
+Użycie: @set_obj_parent #791 none
+        @set_obj_parent #947 set #322 #741 #909
+        @set_obj_parent #947 remove #322 #741
 
-You can check an object's current parents using the 'stat' command.
+Możesz sprawdzić obecnych rodziców obiektu, używając komendy '@stat'.
 
-See also:  inheritance
+Zobacz również: dziedziczenie
 
-}}
+}
 
 
 ~name{~enUS{move}}
