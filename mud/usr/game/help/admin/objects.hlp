@@ -324,7 +324,7 @@ See also: @add_nouns, @clear_nouns, @add_adj, @clear_adj
 The @add_noun command adds one or more one-word nouns to an object's
 noun list.  The object may then be referred to using these nouns.
 
-Syntax: @add_noun #<obj num> noun [noun, noun, noun...]
+Syntax: @add_noun #<obj num> noun [noun noun noun...]
 
 See also: @stat, @clear_nouns, @add_adjective
 }}

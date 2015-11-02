@@ -472,36 +472,28 @@ static void cmd_stat(object user, string cmd, string str) {
 
 
 static void cmd_add_nouns(object user, string cmd, string str) {
-  int     ctr;
-  object  obj, phr;
-  string* words;
+    int     ctr;
+    object  obj;
+    string* words;
 
-  if(str)
-    str = STRINGD->trim_whitespace(str);
+    if(str)
+        str = STRINGD->trim_whitespace(str);
 
-  if(!str || str == "" || !sscanf(str, "%*s %*s")) {
-    user->message("Usage: " + cmd + " #<objnum> [<noun> <noun>...]\n");
-    return;
-  }
+    if(!str || str == "" || !sscanf(str, "%*s %*s")) {
+        user->message("Usage: " + cmd + " #<objnum> [<noun> <noun>...]\n");
+        return;
+    }
 
-  words = explode(str, " ");
-  obj = resolve_object_name(user, words[0]);
-  if(!obj) {
-    user->message("Can't find object '" + words[0] + "'.\n");
-    return;
-  }
+    words = explode(str, " ");
+    obj = resolve_object_name(user, words[0]);
+    if(!obj) {
+        user->message("Can't find object '" + words[0] + "'.\n");
+        return;
+    }
 
-  for(ctr = 1; ctr < sizeof(words); ctr++) {
-    words[ctr] = STRINGD->to_lower(words[ctr]);
-  }
-
-  user->message("Adding nouns ("
-		+ PHRASED->locale_name_for_language(user->get_locale())
-		+ ").\n");
-  phr = new_object(LWO_PHRASE);
-  phr->from_unq("~enUS" + "{" + implode(words[1..],",") + "}");
-  obj->add_noun(phr);
-  user->message("Done.\n");
+    user->message("Adding nouns...");
+    obj->add_noun(PHRASED->new_simple_english_phrase(implode(words[1..], ",")));
+    user->message("done.\n");
 }
 
 
