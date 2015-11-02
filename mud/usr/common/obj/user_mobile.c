@@ -86,17 +86,20 @@ void hook_whisper_other(object body, object target) {
 }
 
 void hook_leave(object body, int dir) {
-  if (user) {
-    if (dir == DIR_TELEPORT) {
-      user->send_phrase(body->get_brief());
-      user->message(" znika w kłębie dymu.\n");
-    } else {
-      user->send_phrase(body->get_brief()) ;
-      user->message(" odchodzi na ");
-      user->send_phrase(EXITD->get_name_for_dir(dir));
-      user->message("\n");
+    if (user) {
+        if (dir == DIR_TELEPORT) {
+            user->message(body->get_brief()->to_string(user) + " znika w kłębie dymu.\n");
+            if (TAGD->get_tag_value(user->get_body(), "Follow") 
+                    && TAGD->get_tag_value(user->get_body(), "Follow") == body->get_number())
+                user->stop_follow(user);
+        } else {
+            user->message(body->get_brief()->to_string(user) + " odchodzi na " 
+                    + EXITD->get_name_for_dir(dir)->to_string(user) + "\n");
+            if (TAGD->get_tag_value(user->get_body(), "Follow") 
+                    && TAGD->get_tag_value(user->get_body(), "Follow") == body->get_number())
+                move(dir);
+        }
     }
-  }
 }
 
 void hook_enter(object body, int dir) {

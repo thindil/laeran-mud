@@ -18,3 +18,8 @@
   ~type{1}
 }
 
+~object_tag{
+  ~name{Follow}
+  ~type{1}
+}
+

@@ -36,6 +36,7 @@ static  void cmd_social(object user, string cmd, string str);
         void set_condition(int fatigue);
 private string lalign(string num, int width);
         void set_password(string new_pass);
+        void stop_follow(object user);
 
 /* Macros */
 #define NEW_PHRASE(x) PHRASED->new_simple_english_phrase(x)
@@ -90,6 +91,7 @@ void upgraded(varargs int clone) {
 		     "dol"              : "cmd_movement",
 		     "dosrodka"         : "cmd_movement",
 		     "nazewnatrz"       : "cmd_movement",
+             "podazaj"          : "cmd_follow",
 
 		     "pomoc"     : "cmd_help",
 		     "kto"       : "cmd_users",
@@ -327,42 +329,39 @@ void player_login(int first_time)
  */
 static void player_logout(void)
 {
-  if(previous_program() != PHANTASMAL_USER)
-    error("Wrong program calling player_logout!");
+    if(previous_program() != PHANTASMAL_USER)
+        error("Wrong program calling player_logout!");
 
-  /* Teleport body to meat locker */
-  if(body)
-    {      
-      object meat_locker;
-      object mobile;
+    /* Teleport body to meat locker */
+    if(body) {      
+        object meat_locker;
+        object mobile;
 
-      if (TAGD->get_tag_value(body, "Combat"))
-	{
-	  combat->stop_combat();
-	  destruct_object(combat);
-	  death();
-	}
+        if (TAGD->get_tag_value(body, "Combat")) {
+            combat->stop_combat();
+            destruct_object(combat);
+            death();
+        }
 
-      if(LOCKER_ROOM >= 0)
-	{
-	  meat_locker = MAPD->get_room_by_num(LOCKER_ROOM);
-	  if(meat_locker)
-	    {
-	      if (location)
-		{
-		  current_room = location->get_number();
-		  mobile = body->get_mobile();
-		  mobile->teleport(meat_locker, 1);
-		}
-	    }
-	  else
-	    {
-	      LOGD->write_syslog("Can't find room #" + LOCKER_ROOM + " as meat locker!", LOG_ERR);
-	    }
-	}
+        if (TAGD->get_tag_value(body, "Follow")) 
+            stop_follow(this_object());
+
+        if(LOCKER_ROOM >= 0) {
+            meat_locker = MAPD->get_room_by_num(LOCKER_ROOM);
+            if(meat_locker) {
+                if (location) {
+                    current_room = location->get_number();
+                    mobile = body->get_mobile();
+                    mobile->teleport(meat_locker, 1);
+                }
+            } else
+                LOGD->write_syslog("Can't find room #" + LOCKER_ROOM + " as meat locker!", LOG_ERR);
+        }
     }
-  save_user_to_file();
-  CHANNELD->unsubscribe_user_from_all(this_object());
+    save_user_to_file();
+    CHANNELD->unsubscribe_user_from_all(this_object());
+
+    message("\nDo zobaczenia!\n");
 }
 
 
@@ -450,7 +449,6 @@ int process_command(string str)
         /* Log out from game */
         if(cmd == "wyloguj")
         {
-            message("Do zobaczenia!");
             return MODE_DISCONNECT;
         }
 
@@ -1278,54 +1276,59 @@ static void cmd_socials(object user, string cmd, string str)
     message_scroll(str + "\n");
 }
 
-static void cmd_movement(object user, string cmd, string str) {
-  int    dir, fatigue;
-  string reason;
+/* Stop following */
+void stop_follow(object user)
+{
+    object target;
 
-  if (TAGD->get_tag_value(body, "Fatigue"))
-    {
-      fatigue = TAGD->get_tag_value(body, "Fatigue");
-    }
-  else
-    {
-      fatigue = 0;
-    }
-  if (fatigue >= (stats["kondycja"][0] * 10))
-    {
-      message("Jesteś zbyt zmęczony aby podróżować. Odpocznij chwilę.\n");
-      return;
-    }
-  
-  /* Currently, we ignore modifiers (str) and just move */
-
-  dir = EXITD->direction_by_string(cmd);
-  if(dir == -1) {
-    user->message("'" + cmd + "' nie wygląda na poprawny kierunek.\n");
-    return;
-  }
-
-  if (reason = mobile->move(dir)) {
-    user->message(reason + "\n");
-
-    /* don't show the room to the player if they havn't gone anywhere */
-    return;
-  }
-
-  fatigue++;
-  TAGD->set_tag_value(body, "Fatigue", fatigue);
-  gain_exp("kondycja", 1);
-  set_condition((stats["kondycja"][0] * 10) - fatigue);
-  
-  if (TAGD->get_tag_value(body, "Combat"))
-    {
-      combat->stop_combat();
-      destruct_object(combat);
-      message("Uciekasz z walki.\n");
-    }
-  
-  show_room_to_player(location);
+    target = MAPD->get_room_by_num(TAGD->get_tag_value(body, "Follow"));
+    TAGD->set_tag_value(body, "Follow", nil);
+    if (target->get_mobile()->get_user())
+        target->get_mobile()->get_user()->message(Name + " przestał za Tobą podążać.\n");
+    message("Przestałeś podążać za " + target->get_brief()->to_string(user) + ".\n");
 }
 
+static void cmd_movement(object user, string cmd, string str) {
+    int    dir, fatigue;
+    string reason;
+
+    if (TAGD->get_tag_value(body, "Fatigue"))
+        fatigue = TAGD->get_tag_value(body, "Fatigue");
+    else
+        fatigue = 0;
+    if (fatigue >= (stats["kondycja"][0] * 10)) {
+        message("Jesteś zbyt zmęczony aby podróżować. Odpocznij chwilę.\n");
+        return;
+    }
+
+    /* Currently, we ignore modifiers (str) and just move */
+
+    dir = EXITD->direction_by_string(cmd);
+    if(dir == -1) {
+        user->message("'" + cmd + "' nie wygląda na poprawny kierunek.\n");
+        return;
+    }
+
+    if (reason = mobile->move(dir)) {
+        user->message(reason + "\n");
+        return;
+    }
+
+    fatigue++;
+    TAGD->set_tag_value(body, "Fatigue", fatigue);
+    gain_exp("kondycja", 1);
+    set_condition((stats["kondycja"][0] * 10) - fatigue);
+
+    if (TAGD->get_tag_value(body, "Combat")) {
+        combat->stop_combat();
+        destruct_object(combat);
+        message("Uciekasz z walki.\n");
+    }
+    if (TAGD->get_tag_value(body, "Follow"))
+        stop_follow(user);
+
+    show_room_to_player(location);
+}
 
 /* This one is special, and is called specially... */
 static void cmd_social(object user, string cmd, string str) {
@@ -1800,59 +1803,51 @@ static void cmd_takeoff(object user, string cmd, string str)
 /* Start combat */
 static void cmd_attack(object user, string cmd, string str)
 {
-  object *tmp;
-  string target;
-  int number;
-  
-  if(str)
-    {
-      str = STRINGD->trim_whitespace(str);
+    object *tmp;
+    string target;
+    int number;
+
+    if(str)
+        str = STRINGD->trim_whitespace(str);
+    if(!str || str == "") {
+        message("Użycie: " + cmd + " <obiekt>\n");
+        return;
     }
-  if(!str || str == "")
-    {
-      message("Użycie: " + cmd + " <obiekt>\n");
-      return;
+    if (sscanf(str, "%d %s", number, target) != 2) {
+        target = str;
+        number = 1;
     }
-  if (sscanf(str, "%d %s", number, target) != 2)
-    {
-      target = str;
-      number = 1;
+    tmp = find_first_objects(target, LOC_IMMEDIATE_CURRENT_ROOM);
+    if(!tmp || !sizeof(tmp)) {
+        message("Nie możesz znaleźć jakiegokolwiek '" + target + "'.\n");
+        return;
     }
-  tmp = find_first_objects(target, LOC_IMMEDIATE_CURRENT_ROOM);
-  if(!tmp || !sizeof(tmp))
-    {
-      message("Nie możesz znaleźć jakiegokolwiek '" + target + "'.\n");
-      return;
+    if (sizeof(tmp) > 1 && !number) {
+        message("Jest kilka '" + target + "' w okolicy. Wybierz dokładnie którego chcesz zaatakować.\n");
+        return;
     }
-  if (sizeof(tmp) > 1 && !number)
-    {
-      message("Jest kilka '" + target + "' w okolicy. Wybierz dokładnie którego chcesz zaatakować.\n");
-      return;
+    if (number > sizeof(tmp)) {
+        message("Nie możesz znaleźć tego '" + target + "'.\n");
+        return;
     }
-  if (number > sizeof(tmp))
-    {
-      message("Nie możesz znaleźć tego '" + target + "'.\n");
-      return;
+    number -= 1;
+    if (!tmp[number]->get_mobile()) {
+        message("Możesz atakować tylko istoty. Nie wyżywaj się na sprzęcie.\n");
+        return;
     }
-  number -= 1;
-  if (!tmp[number]->get_mobile())
-    {
-      message("Możesz atakować tylko istoty. Nie wyżywaj się na sprzęcie.\n");
-      return;
+    if (!tmp[number]->get_mobile()->get_parentbody()) {
+        message("Nie możesz zaatakować tej istoty.\n");
+        return;
     }
-  if (!tmp[number]->get_mobile()->get_parentbody())
-    {
-      message("Nie możesz zaatakować tej istoty.\n");
-      return;
+    if (TAGD->get_tag_value(body, "Combat") || TAGD->get_tag_value(tmp[number], "Combat")) {
+        message("Któreś z Was już walczy. Dokończcie najpierw jedną walkę.\n");
+        return;
     }
-  if (TAGD->get_tag_value(body, "Combat") || TAGD->get_tag_value(tmp[number], "Combat"))
-    {
-      message("Któreś z Was już walczy. Dokończcie najpierw jedną walkę.\n");
-      return;
-    }
-  message("Atakujesz " + tmp[number]->get_brief()->to_string(user) + "...\n");
-  combat = clone_object(COMBAT);
-  combat->start_combat(body, tmp[number]);
+    if (TAGD->get_tag_value(body, "Follow"))
+        stop_follow(user);
+    message("Atakujesz " + tmp[number]->get_brief()->to_string(user) + "...\n");
+    combat = clone_object(COMBAT);
+    combat->start_combat(body, tmp[number]);
 }
 
 /* Report bug, typo or propose idea */
@@ -1889,7 +1884,7 @@ void cmd_report(object user, string cmd, string str)
     message("Dziękujemy za zgłoszenie " + rtype  + ".\n");
 }
 
-/* Player settings - description */
+/* Player settings - description, email and password change */
 void cmd_settings(object user, string cmd, string str)
 {
     string *parts;
@@ -1923,4 +1918,51 @@ void cmd_settings(object user, string cmd, string str)
             message("Nieznana opcja, spróbuj " + cmd + " [opis|mail|haslo]\n");
             break;
     }
+}
+
+/* Follow other player/mobile */
+void cmd_follow(object user, string cmd, string str)
+{
+    object *tmp;
+    string target;
+    int number;
+    object leader;
+
+    if (str)
+        str = STRINGD->trim_whitespace(str);
+    if (!str || str == "") {
+        message("Użycie: " + cmd + " <cel> lub [przestan]\n");
+        return;
+    }
+    
+    if (str == "przestan" && TAGD->get_tag_value(body, "Follow")) {
+        stop_follow(user);
+        return;
+    }
+    if (sscanf(str, "%d %s", number, target) != 2) {
+        target = str;
+        number = 1;
+    }
+    tmp = find_first_objects(target, LOC_IMMEDIATE_CURRENT_ROOM);
+    if(!tmp || !sizeof(tmp)) {
+        message("Nie możesz znaleźć jakiegokolwiek '" + target + "'.\n");
+        return;
+    }
+    if (sizeof(tmp) > 1 && !number) {
+        message("Jest kilka '" + target + "' w okolicy. Wybierz dokładnie za kim chcesz podążać.\n");
+        return;
+    }
+    if (number > sizeof(tmp)) {
+        message("Nie możesz znaleźć tego '" + target + "'.\n");
+        return;
+    }
+    number -= 1;
+    if (!tmp[number]->get_mobile()) {
+        message("Możesz podążać tylko za żywymi istotami. Martwa natura nie porusza się.\n");
+        return;
+    }
+    TAGD->set_tag_value(body, "Follow", tmp[number]->get_number());
+    message("Zaczynasz podążać za " + tmp[number]->get_brief()->to_string(user) + "\n");
+    if (tmp[number]->get_mobile()->get_user())
+        tmp[number]->get_mobile()->get_user()->message(Name + " zaczyna podążać za Tobą.\n");
 }
