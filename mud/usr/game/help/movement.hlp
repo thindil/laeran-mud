@@ -4,6 +4,7 @@ Niektóre komendy poruszają Twoją postacią lub modyfikują jej poruszanie
 się:
 
 pomoc kierunki       Komendy do poruszania się w określonych kierunkach
+pomoc podazaj        Podążaj za wybranym celem
 }
 
 ~name{kierunki,kierunek,północ,polnoc,południe,poludnie,wschód,wschod,
@@ -19,5 +20,18 @@ A konkretnie:
 oraz ich skróty:
 
   pn, pd, w, z, pnw, pnz, pdw, pdz, g, d, ds, nz
+
+}
+
+~name{podazaj,podążaj}
+~desc{
+
+Komenda podazaj pozwala Tobie iść za wybranym żywym obiektem (graczem bądź
+mobkiem). Aby zacząć podążać za kimś, wpisz "podazaj <cel>" gdzie "<cel>"
+to nazwa postaci/mobka. Na przykład: "podazaj szczur". Aby przestać
+podążać za kimś, możesz albo udać się w innym kierunku niż wybrany cel albo
+wpisać komednę "podazaj przestan".
+
+Zobacz również: kierunki
 
 }
