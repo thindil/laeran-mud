@@ -1888,7 +1888,7 @@ void cmd_settings(object user, string cmd, string str)
     if (str)
         str = STRINGD->trim_whitespace(str);
     if (!str || str == "") {
-        message("Użycie: " + cmd + " [opis|mail|haslo]\n");
+        message("Użycie: " + cmd + " [opis|mail|haslo|odmiana]\n");
         return;
     }
     parts = explode(str, " ");
@@ -1908,6 +1908,9 @@ void cmd_settings(object user, string cmd, string str)
             if (parts[1] == "")
                 parts[1] = "brak adresu";
             message("Zmieniono adres mailowy z "+ oldmail + " na " + parts[1] + "\n");
+            break;
+        case "odmiana":
+            push_new_state(US_ENTER_CONJ, user);
             break;
         default:
             message("Nieznana opcja, spróbuj " + cmd + " [opis|mail|haslo]\n");

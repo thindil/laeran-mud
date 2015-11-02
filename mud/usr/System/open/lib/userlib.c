@@ -86,6 +86,8 @@ static void create(int clone)
       compile_object(US_REPORT_BUG);
   if (!find_object(US_SET_DESC))
       compile_object(US_SET_DESC);
+  if (!find_object(US_ENTER_CONJ))
+      compile_object(US_ENTER_CONJ);
 }
 
 void upgraded(varargs int clone) {
