@@ -212,13 +212,12 @@ string get_social_string(object user, object body,
             result += unq[1];
         else if (unq[0] == "target") {
             nouns = target_body->get_nouns(user->get_locale());
-            if (sizeof(nouns) < 7) {
+            number = (int)unq[1];
+            if (sizeof(nouns) <= number) {
                 phr = target_body->get_brief();
                 result += phr->to_string(user);
-            } else {
-                number = (int)unq[1];
+            } else 
                 result += nouns[number];
-            }
         } else if (unq[0] == "actor") {
             phr = body->get_brief();
             result += phr->to_string(user);      
