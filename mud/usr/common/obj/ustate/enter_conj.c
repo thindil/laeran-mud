@@ -195,14 +195,13 @@ static int prompt_input(string input)
             break;
     }
 
+    nouns += "," + input;
     if (substate != SS_PROMPT_FINISH) {
-        nouns += "," + input;
         send_string(blurp_for_substate(substate));
         return RET_NORMAL;
-    } else {
-        user_body->clear_nouns();
-        user_body->add_noun(PHRASED->new_simple_english_phrase(nouns));
-        send_string("Ustawiłeś odmianę swojego imienia.\n");
-        return RET_POP_STATE;
     }
+    user_body->clear_nouns();
+    user_body->add_noun(PHRASED->new_simple_english_phrase(nouns));
+    send_string("Ustawiłeś odmianę swojego imienia.\n");
+    return RET_POP_STATE;
 }
