@@ -147,9 +147,9 @@ int from_user(string input) {
     if(!STRINGD->stricmp(quitcheck, "wyjdz")) {
       if(new_obj) {
 	send_string("(Wychodzenie z OLC -- bez kasowania #"
-		    + new_obj->get_number() + " -- Przerwano!)\r\n");
+		    + new_obj->get_number() + " -- Przerwano!)\n");
       } else {
-	send_string("(Wychodzenie z OLC -- Przerwano!)\r\n");
+	send_string("(Wychodzenie z OLC -- Przerwano!)\n");
       }
       pop_state();
       return MODE_ECHO;
@@ -226,7 +226,7 @@ int from_user(string input) {
   case SS_PROMPT_OPEN:
   case SS_PROMPT_OPENABLE:
   case SS_PROMPT_WEARABLE:
-    send_string("Internal error in state machine!  Cancelling OLC!\r\n");
+    send_string("Internal error in state machine!  Cancelling OLC!\n");
     LOGD->write_syslog("Reached from_user() in state " + substate
 		       + " while doing @make_room.  Illegal!", LOG_ERR);
     pop_state();
@@ -234,7 +234,7 @@ int from_user(string input) {
     break;
 
   default:
-    send_string("Nieznany stan! Przerwanie OLC!\r\n");
+    send_string("Nieznany stan! Przerwanie OLC!\n");
     pop_state();
     return MODE_ECHO;
   }
@@ -249,7 +249,7 @@ int from_user(string input) {
   case RET_NO_PROMPT:
     break;
   default:
-    send_string("Zwrócono nieznaną wartość! Przerwanie OLC!\r\n");
+    send_string("Zwrócono nieznaną wartość! Przerwanie OLC!\n");
     pop_state();
     break;
   }
@@ -280,31 +280,31 @@ private string blurb_for_substate(int substate) {
   switch(substate) {
 
   case SS_PROMPT_OBJ_TYPE:
-    return "Wpisz typ obiektu albo 'wyjdz' aby wyjść.\r\n"
-      + "Prawidłowe wartości to:  room, portable, detail (r/p/d)\r\n";
+    return "Wpisz typ obiektu albo 'wyjdz' aby wyjść.\n"
+      + "Prawidłowe wartości to:  room, portable, detail (r/p/d)\n";
 
   case SS_PROMPT_OBJ_NUMBER:
-    return "Wprowadź wybrany numer dla tego obiektu\r\n"
-      + " albo naciśnij enter aby przypisać numer automatycznie.\r\n";
+    return "Wprowadź wybrany numer dla tego obiektu\n"
+      + " albo naciśnij enter aby przypisać numer automatycznie.\n";
 
   case SS_PROMPT_OBJ_DETAIL_OF:
-    return "Wprowadź numer obiektu bazowego dla tego detalu albo wpisz 'wyjdz'.\r\n"
-      + "Chodzi o numer istniejącego obiektu dla którego będzie ten detal.\r\n";
+    return "Wprowadź numer obiektu bazowego dla tego detalu albo wpisz 'wyjdz'.\n"
+      + "Chodzi o numer istniejącego obiektu dla którego będzie ten detal.\n";
 
   case SS_PROMPT_OBJ_PARENT:
-    return "Wprowadź numer obiektu rodzica z którego zostaną pobrane dane obiektu.\r\n"
-      + "Przykład: #37 #247 #1343\r\n"
-      + "Możesz również nacisnąć enter dla braku rodziców lub wpisać 'wyjdz' aby wyjść.\r\n"
-      + "Rodzice są jak Skotos ur-objects (zobacz pomoc set_obj_parent).\r\n";
+    return "Wprowadź numer obiektu rodzica z którego zostaną pobrane dane obiektu.\n"
+      + "Przykład: #37 #247 #1343\n"
+      + "Możesz również nacisnąć enter dla braku rodziców lub wpisać 'wyjdz' aby wyjść.\n"
+      + "Rodzice są jak Skotos ur-objects (zobacz pomoc set_obj_parent).\n";
 
   case SS_PROMPT_BRIEF_DESC:
     if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Następnie, proszę wprowadzić jednoliniowy opis albo wpisać 'none' dla wartości z rodzica.\r\n"
+      return "Następnie, proszę wprowadzić jednoliniowy opis albo wpisać 'none' dla wartości z rodzica.\n"
 	+ "Przykłady krótkiego(brief) opisu:  "
-	+ "'miecz', 'John', 'trochę bekonu'.\r\n";
-    return "Następnie, proszę wprowadzić jednoliniowy opis.\r\n"
+	+ "'miecz', 'John', 'trochę bekonu'.\n";
+    return "Następnie, proszę wprowadzić jednoliniowy opis.\n"
       + "Przykłady krótkiego(brief) opisu:  "
-      + "'miecz', 'John', 'trochę bekonu'.\r\n";
+      + "'miecz', 'John', 'trochę bekonu'.\n";
 
   case SS_PROMPT_LOOK_DESC:
     if(new_obj && sizeof(new_obj->get_archetypes()))
@@ -312,70 +312,70 @@ private string blurb_for_substate(int substate) {
 	+ " zobaczy przy pomocy komendy 'patrz'. Możesz też pisać 'none' dla przyjęcia\n"
 	+ " wartości z rodzica.\n";
     return "Teraz wprowadź wieloliniowy opis dla 'patrz'('look'). To jest to co gracz"
-      + " zobaczy przy pomocy komendy 'patrz'.\r\n";
+      + " zobaczy przy pomocy komendy 'patrz'.\n";
 
   case SS_PROMPT_EXAMINE_DESC:
     return "Teraz wprowadź wieloliniowy opis dla 'zbadaj'('examine'). To jest to co gracz"
-      + " zobaczy przy pomocy komendy 'zbadaj'.\r\n"
-      + "Albo naciśnij '~' i enter aby ustawić to na taki sam tekst jak dla komendy 'patrz'.\r\n";
+      + " zobaczy przy pomocy komendy 'zbadaj'.\n"
+      + "Albo naciśnij '~' i enter aby ustawić to na taki sam tekst jak dla komendy 'patrz'.\n";
 
   case SS_PROMPT_NOUNS:
-    tmp = "Krótki opis (Brief):  " + new_obj->get_brief()->to_string(get_user()) + "\r\n";
+    tmp = "Krótki opis (Brief):  " + new_obj->get_brief()->to_string(get_user()) + "\n";
 
     if(sizeof(new_obj->get_archetypes())) {
       tmp += "Rzeczowniki z rodzica: ";
       tmp += implode(new_obj->get_nouns(get_user()->get_locale()), ", ");
-      tmp += "\r\n";
+      tmp += "\n";
     }
 
-    tmp += "\r\nPodaj oddzielone spacją nowe rzeczowniki odwołujące się do tego obiektu.\r\n"
-      + "Przykład: miecz ostrze bron broń rękojeść rekojesc\r\n\r\n";
+    tmp += "r\nPodaj oddzielone spacją nowe rzeczowniki odwołujące się do tego obiektu oraz odmiana nazwy.\n"
+      + "Przykład: miecz miecza mieczowi miecz mieczem mieczu miecza ostrze bron broń\n\n";
 
     return tmp;
 
   case SS_PROMPT_ADJECTIVES:
-    tmp = "Krótki opis (Brief):  " + new_obj->get_brief()->to_string(get_user()) + "\r\n";
+    tmp = "Krótki opis (Brief):  " + new_obj->get_brief()->to_string(get_user()) + "\n";
 
     if(sizeof(new_obj->get_archetypes())) {
       tmp += "Przymiotniki z rodzica: ";
       tmp += implode(new_obj->get_adjectives(get_user()->get_locale()), ", ");
-      tmp += "\r\n";
+      tmp += "\n";
     }
 
-    tmp += "\nPodaj odddzielone spacją nowe przymiotniki odwołujące się do tego obiektu object.\r\n"
-      + "Przykład: ciezki ciężki metaliczny czerwony\r\n";
+    tmp += "\nPodaj odddzielone spacją nowe przymiotniki odwołujące się do tego obiektu.\n"
+      + "Przykład: ciezki ciężki metaliczny czerwony\n";
 
     return tmp;
 
   case SS_PROMPT_WEIGHT:
     if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Podaj ciężar obiektu albo wpisz 'none' aby przyjąć wartości z rodzica.\r\n"
-	+ "Domyślnie waga jest podana w kilogramach albo możesz podać dodatkowo jednostki.\r\n"
-	+ "Metryczne: mg   g   kg     Standard: lb   oz   tons\r\n";
-    return "Podaj ciężar obiektu.\r\n"
-      + "Domyślnie waga jest podana w kilogramach albo możesz podać dodatkowo jednostki.\r\n"
-      + "Metryczne: mg   g   kg     Standard: lb   oz   tons\r\n";
+      return "Podaj ciężar obiektu albo wpisz 'none' aby przyjąć wartości z rodzica.\n"
+	+ "Domyślnie waga jest podana w kilogramach albo możesz podać dodatkowo jednostki.\n"
+	+ "Metryczne: mg   g   kg     Standard: lb   oz   tons\n";
+    return "Podaj ciężar obiektu.\n"
+      + "Domyślnie waga jest podana w kilogramach albo możesz podać dodatkowo jednostki.\n"
+      + "Metryczne: mg   g   kg     Standard: lb   oz   tons\n";
 
   case SS_PROMPT_VOLUME:
     if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Podaj objętość obiektu albo wpisz 'none' aby przyjąć wartości z rodzica.\r\n"
-	+ "Domyślnie objętość jest podana w litrach albo możesz podać dodatkowo jednostki.\r\n"
-	+ "Metrycznec: L   mL   cc   cubic m\r\n"
-	+ "Standard: oz   qt   gal   cubic ft   cubic yd\r\n";
-    return "Podaj objętość obiektu.\r\n"
-      + "Domyślnie objętość jest podana w litrach albo możesz podać dodatkowo jednostki.\r\n"
-      + "Metryczne: L   mL   cc   cubic m\r\n"
-      + "Standard: oz   qt   gal   cubic ft   cubic yd\r\n";
+      return "Podaj objętość obiektu albo wpisz 'none' aby przyjąć wartości z rodzica.\n"
+	+ "Domyślnie objętość jest podana w litrach albo możesz podać dodatkowo jednostki.\n"
+	+ "Metrycznec: L   mL   cc   cubic m\n"
+	+ "Standard: oz   qt   gal   cubic ft   cubic yd\n";
+    return "Podaj objętość obiektu.\n"
+      + "Domyślnie objętość jest podana w litrach albo możesz podać dodatkowo jednostki.\n"
+      + "Metryczne: L   mL   cc   cubic m\n"
+      + "Standard: oz   qt   gal   cubic ft   cubic yd\n";
 
   case SS_PROMPT_LENGTH:
     if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Wprowadź długość najdłuższej osi obiektu albo wpisz 'none' aby przyjąć wartości\r\n"
-	+ "z rodzica.\r\n"
-	+ "Domyślnie długość jest podana w centymetrach albo możesz podać dodatkowo jednostki.\r\n"
-	+ "Metryczne: m   mm   cm   dm     Standard: in   ft   yd\r\n";
-    return "Wprowadź długość najdłuższej osi obiektu.\r\n"
-      + "Domyślnie długość jest podana w centymetrach albo możesz podać dodatkowo jednostki.\r\n"
-      + "Metryczne: m   mm   cm   dm     Standard: in   ft   yd\r\n";
+      return "Wprowadź długość najdłuższej osi obiektu albo wpisz 'none' aby przyjąć wartości\n"
+	+ "z rodzica.\n"
+	+ "Domyślnie długość jest podana w centymetrach albo możesz podać dodatkowo jednostki.\n"
+	+ "Metryczne: m   mm   cm   dm     Standard: in   ft   yd\n";
+    return "Wprowadź długość najdłuższej osi obiektu.\n"
+      + "Domyślnie długość jest podana w centymetrach albo możesz podać dodatkowo jednostki.\n"
+      + "Metryczne: m   mm   cm   dm     Standard: in   ft   yd\n";
 
     /* The following don't have full-on blurbs, just one-line prompts
        for the ENTER_YN user state.  So no blurb. */
@@ -383,37 +383,37 @@ private string blurb_for_substate(int substate) {
   case SS_PROMPT_OPEN:
   case SS_PROMPT_OPENABLE:
   case SS_PROMPT_WEARABLE:
-    return "This blurb should never be used.  Oops!\r\n";
+    return "This blurb should never be used.  Oops!\n";
 
   case SS_PROMPT_WEIGHT_CAPACITY:
     if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Podaj udźwig obiektu albo wpisz 'none' aby przyjąć wartości z rodzica.\r\n"
-	+ "Domyślnie udźwig jest podany w kilogramach albo możesz podać dodatkowo jednostki.\r\n"
-	+ "Metryczne: mg   g   kg     Standard: lb   oz   tons\r\n";
-    return "Podaj udźwig obiektu.\r\n"
-      + "Domyślnie udźwig jest podany w kilogramach albo możesz podać dodatkowo jednostki.\r\n"
-      + "Metric: mg   g   kg     Standard: lb   oz   tons\r\n";
+      return "Podaj udźwig obiektu albo wpisz 'none' aby przyjąć wartości z rodzica.\n"
+	+ "Domyślnie udźwig jest podany w kilogramach albo możesz podać dodatkowo jednostki.\n"
+	+ "Metryczne: mg   g   kg     Standard: lb   oz   tons\n";
+    return "Podaj udźwig obiektu.\n"
+      + "Domyślnie udźwig jest podany w kilogramach albo możesz podać dodatkowo jednostki.\n"
+      + "Metric: mg   g   kg     Standard: lb   oz   tons\n";
 
   case SS_PROMPT_VOLUME_CAPACITY:
     if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Podaj pojemność obiektu albo wpisz 'none' aby przyjąć wartości z rodzica.\r\n"
-	+ "Domyślnie pojemność jest podana w litrach albo możesz podać dodatkowo jednostki.\r\n"
-	+ "Metryczne: L   mL   cc   cubic m\r\n"
-	+ "Standard: oz   qt   gal   cubic ft   cubic yd\r\n";
-    return "Podaj pojemność obiektu\r\n"
-      + "Domyślnie pojemność jest podana w litrach albo możesz podać dodatkowo jednostki.\r\n"
-      + "Metryczne: L   mL   cc   cubic m\r\n"
-      + "Standard: oz   qt   gal   cubic ft   cubic yd\r\n";
+      return "Podaj pojemność obiektu albo wpisz 'none' aby przyjąć wartości z rodzica.\n"
+	+ "Domyślnie pojemność jest podana w litrach albo możesz podać dodatkowo jednostki.\n"
+	+ "Metryczne: L   mL   cc   cubic m\n"
+	+ "Standard: oz   qt   gal   cubic ft   cubic yd\n";
+    return "Podaj pojemność obiektu\n"
+      + "Domyślnie pojemność jest podana w litrach albo możesz podać dodatkowo jednostki.\n"
+      + "Metryczne: L   mL   cc   cubic m\n"
+      + "Standard: oz   qt   gal   cubic ft   cubic yd\n";
 
   case SS_PROMPT_LENGTH_CAPACITY:
     if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Podaj długość najdłuższej osi pojemnika albo wpisz 'none' aby przyjąć wartości\r\n"
-	+ "z rodzica.\r\n"
-	+ "Domyślnie długość jest podana w centymetrach albo możesz podać dodatkowo jednostki.\r\n"
-	+ "Metryczne: m   mm   cm   dm     Standard: in   ft   yd\r\n";
-    return "Podaj długość najdłuższej osi pojemnika.\r\n"
-      + "Domyślnie długość jest podana w centymetrach albo możesz podać dodatkowo jednostki.\r\n"
-      + "Metryczne: m   mm   cm   dm     Standard: in   ft   yd\r\n";
+      return "Podaj długość najdłuższej osi pojemnika albo wpisz 'none' aby przyjąć wartości\n"
+	+ "z rodzica.\n"
+	+ "Domyślnie długość jest podana w centymetrach albo możesz podać dodatkowo jednostki.\n"
+	+ "Metryczne: m   mm   cm   dm     Standard: in   ft   yd\n";
+    return "Podaj długość najdłuższej osi pojemnika.\n"
+      + "Domyślnie długość jest podana w centymetrach albo możesz podać dodatkowo jednostki.\n"
+      + "Metryczne: m   mm   cm   dm     Standard: in   ft   yd\n";
 
   case SS_PROMPT_DAMAGE:
     if(new_obj && sizeof(new_obj->get_archetypes()))
@@ -462,7 +462,7 @@ private string blurb_for_substate(int substate) {
     return "Podaj nazwę umiejętności potrzebną do używania tego obiektu. Aby pominąć ten krok, wciśnij \n"
       + "enter.\n";
   default:
-    return "<NIEZNANY STAN>\r\n";
+    return "<NIEZNANY STAN>\n";
   }
 }
 
@@ -478,7 +478,7 @@ void switch_to(int pushp) {
 	 || substate == SS_PROMPT_OBJ_DETAIL_OF)) {
     /* Just allocated */
     send_string("Tworzenie nowego przedmiotu. Wpisz 'wyjdz'"
-		+ " (za wyjątkiem wieloliniowych tekstów) aby przerwać.\r\n");
+		+ " (za wyjątkiem wieloliniowych tekstów) aby przerwać.\n");
     send_string(blurb_for_substate(substate));
     send_string(" > ");
   } else if (substate == SS_PROMPT_LOOK_DESC
@@ -494,7 +494,7 @@ void switch_to(int pushp) {
   } else {
     /* Somebody else pushed and then popped a state, so we're just
        getting back to ourselves. */
-    send_string("(Tworzenie obiektu -- powrót)\r\n");
+    send_string("(Tworzenie obiektu -- powrót)\n");
     send_string(" > ");
   }
 }
@@ -507,7 +507,7 @@ void switch_from(int popp) {
        && substate != SS_PROMPT_OPEN
        && substate != SS_PROMPT_OPENABLE
        && substate != SS_PROMPT_WEARABLE) {
-      send_string("(Tworzenie obiektu -- przerwanie)\r\n");
+      send_string("(Tworzenie obiektu -- przerwanie)\n");
     }
   }
 }
@@ -535,7 +535,7 @@ void pass_data(mixed data) {
     prompt_wearable_data(data);
     break;
   default:
-    send_string("Warning: User State was passed unrecognized data!\r\n");
+    send_string("Warning: User State was passed unrecognized data!\n");
     break;
   }
 }
@@ -550,7 +550,7 @@ static int prompt_obj_type_input(string input) {
 	 && input != "room"
 	 && input != "port" && input != "portable"
 	 && input != "det" && input != "detail")) {
-    send_string("That's not a valid object type.\r\n");
+    send_string("That's not a valid object type.\n");
     send_string(blurb_for_substate(SS_PROMPT_OBJ_TYPE));
 
     return RET_NORMAL;
@@ -581,8 +581,8 @@ static int prompt_obj_detail_of_input(string input) {
   int base_num;
 
   if(!input || STRINGD->is_whitespace(input)) {
-    send_string("\r\nMusisz podać obiekt bazowy."
-		+ " Spróbujmy ponownie.\r\n");
+    send_string("\nMusisz podać obiekt bazowy."
+		+ " Spróbujmy ponownie.\n");
     send_string(blurb_for_substate(substate));
     return RET_NORMAL;
   }
@@ -590,26 +590,26 @@ static int prompt_obj_detail_of_input(string input) {
   if(sscanf(input, "%*d %*s") == 2
      || sscanf(input, "%*s %*d") == 2
      || sscanf(input, "%d", base_num) != 1) {
-    send_string("\r\nMusisz podać pojedynczy numer obiektu.\r\n");
+    send_string("\nMusisz podać pojedynczy numer obiektu.\n");
     send_string(blurb_for_substate(substate));
     return RET_NORMAL;
   }
 
   if(base_num < 1) {
-    send_string("\r\nNumer obiektu musi być większy niż zero.\r\n");
+    send_string("\nNumer obiektu musi być większy niż zero.\n");
     send_string(blurb_for_substate(substate));
     return RET_NORMAL;
   }
 
   obj_detail_of = MAPD->get_room_by_num(base_num);
   if(!obj_detail_of) {
-    send_string("\r\nTo nie wygląda na room bądź portable #"
-		+ base_num + ".\r\n");
+    send_string("\nTo nie wygląda na room bądź portable #"
+		+ base_num + ".\n");
     send_string(blurb_for_substate(substate));
     return RET_NORMAL;
   }
 
-  send_string("\r\nObiekt bazowy zaakceptowany.\r\n");
+  send_string("\nObiekt bazowy zaakceptowany.\n");
   substate = SS_PROMPT_OBJ_NUMBER;
   send_string(blurb_for_substate(substate));
 
@@ -625,25 +625,25 @@ static int prompt_obj_number_input(string input) {
     /* Autoassign */
     obj_number = -1;
 
-    send_string("Numer obiektu będzie przypisany automatycznie.\r\n");
+    send_string("Numer obiektu będzie przypisany automatycznie.\n");
   } else {
     if(sscanf(input, "%*s %*d") == 2
        || sscanf(input, "%*d %*s") == 2
        || sscanf(input, "%d", obj_number) != 1) {
-      send_string("Proszę wprowadzić *tylko* numer.\r\n");
+      send_string("Proszę wprowadzić *tylko* numer.\n");
       send_string(blurb_for_substate(SS_PROMPT_OBJ_NUMBER));
       return RET_NORMAL;
     }
     /* Object number was parsed. */
     if(obj_number < 1) {
-      send_string("Nie wygląda na poprawny numer obiektu.\r\n");
-      send_string("Numer obiektu musi być większy od zera.\r\n");
+      send_string("Nie wygląda na poprawny numer obiektu.\n");
+      send_string("Numer obiektu musi być większy od zera.\n");
       send_string(blurb_for_substate(SS_PROMPT_OBJ_NUMBER));
 
       return RET_NORMAL;
     }
     if(MAPD->get_room_by_num(obj_number)) {
-      send_string("Jest już obiekt o numerze #" + obj_number + ".\r\n");
+      send_string("Jest już obiekt o numerze #" + obj_number + ".\n");
       send_string(blurb_for_substate(SS_PROMPT_OBJ_NUMBER));
 
       return RET_NORMAL;
@@ -652,7 +652,7 @@ static int prompt_obj_number_input(string input) {
     if(obj_number >= 0 && segown && segown != MAPD) {
       user->message("Obiekt #" + obj_number
 		    + " w segmencie posiadanym przez "
-		    + segown + "!\r\n");
+		    + segown + "!\n");
       send_string(blurb_for_substate(SS_PROMPT_OBJ_NUMBER));
 
       return RET_NORMAL;
@@ -677,7 +677,7 @@ static int prompt_obj_number_input(string input) {
   new_obj = clone_object(SIMPLE_ROOM);
 
   if(!new_obj) {
-    send_string("Przykro mi, osiągnąłeś limit obiektów albo pamięci!\r\n");
+    send_string("Przykro mi, osiągnąłeś limit obiektów albo pamięci!\n");
 
     return RET_POP_STATE;
   }
@@ -705,8 +705,8 @@ static int prompt_obj_number_input(string input) {
 
   if(obj_type == OT_DETAIL
      && !obj_detail_of) {
-    send_string("Ktoś skasował obiekt bazowy kiedy tworzyłeś ten\r\n Nie stworzono detalu."
-		+ " Wychodzenie z OLC!\r\n");
+    send_string("Ktoś skasował obiekt bazowy kiedy tworzyłeś ten\n Nie stworzono detalu."
+		+ " Wychodzenie z OLC!\n");
     destruct_object(new_obj);
     return RET_POP_STATE;
   }
@@ -719,7 +719,7 @@ static int prompt_obj_number_input(string input) {
 
   send_string("Dodano obiekt #" + new_obj->get_number()
 	      + " do strefy #" + zonenum
-	      + " (" + ZONED->get_name_for_zone(zonenum) + ")" + ".\r\n");
+	      + " (" + ZONED->get_name_for_zone(zonenum) + ")" + ".\n");
   if(obj_detail_of) {
     send_string("To jest detal obiektu ");
   } else {
@@ -734,9 +734,9 @@ static int prompt_obj_number_input(string input) {
       tmp = "(nieopisany)";
     }
 
-    send_string("#" + location->get_number() + "(" + tmp + ")\r\n\r\n");
+    send_string("#" + location->get_number() + "(" + tmp + ")\n\n");
   } else {
-    send_string("nigdzie\r\n\r\n");
+    send_string("nigdzie\n\n");
   }
 
   /* Okay, now keep entering data... */
@@ -772,15 +772,15 @@ static int prompt_obj_parent_input(string input) {
 
       if((!sscanf(parent_strings[ctr], "#%d", parnum) && !sscanf(parent_strings[ctr], "%d", parnum)) || (parnum < 0))
 	{
-	  send_string("Każdy rodzić musi być wartością większą od zera\r\n poprzedzoną znakiem #.\r\n");
-	  send_string("'" + parent_strings[ctr] + "' nie jest.\r\n");
+	  send_string("Każdy rodzić musi być wartością większą od zera\n poprzedzoną znakiem #.\n");
+	  send_string("'" + parent_strings[ctr] + "' nie jest.\n");
 	  send_string(blurb_for_substate(substate));
 	  return RET_NORMAL;
 	}
 
       if(!(obj_parent = MAPD->get_room_by_num(parnum)))
 	{
-	  send_string("Nie ma obiektu #" + parnum + ".\r\n");
+	  send_string("Nie ma obiektu #" + parnum + ".\n");
 	  send_string(blurb_for_substate(substate));
 	  return RET_NORMAL;
 	}
@@ -794,7 +794,7 @@ static int prompt_obj_parent_input(string input) {
     }
   else
     {
-      send_string("Wewnętrzny błąd. Dziwne. Spróbuj ponownie.\r\n");
+      send_string("Wewnętrzny błąd. Dziwne. Spróbuj ponownie.\n");
       send_string(blurb_for_substate(substate));
       return RET_NORMAL;
     }
@@ -809,7 +809,7 @@ static int prompt_brief_desc_input(string input) {
   object PHRASE phr;
 
   if(!input || STRINGD->is_whitespace(input)) {
-    send_string("Były tylko spacje. Spróbujmy ponownie.\r\n");
+    send_string("Były tylko spacje. Spróbujmy ponownie.\n");
     send_string(blurb_for_substate(SS_PROMPT_BRIEF_DESC));
 
     return RET_NORMAL;
@@ -838,13 +838,13 @@ static void prompt_look_desc_data(mixed data) {
   object PHRASE phr;
 
   if(typeof(data) != T_STRING) {
-    send_string("Dziwne dane wprowadzone do stanu! Przerywamy.\r\n");
+    send_string("Dziwne dane wprowadzone do stanu! Przerywamy.\n");
     pop_state();
     return;
   }
 
   if(!data || STRINGD->is_whitespace(data)) {
-    send_string("Wygląda jak same spacje. Spróbujmy ponownie.\r\n");
+    send_string("Wygląda jak same spacje. Spróbujmy ponownie.\n");
     send_string(blurb_for_substate(SS_PROMPT_LOOK_DESC));
 
     push_new_state(US_ENTER_DATA);
@@ -864,7 +864,7 @@ static void prompt_look_desc_data(mixed data) {
     }
 
   substate = SS_PROMPT_EXAMINE_DESC;
-  send_string("\r\nOpis 'patrz' (look) zaakceptowany.\r\n");
+  send_string("\nOpis 'patrz' (look) zaakceptowany.\n");
 
   send_string(blurb_for_substate(SS_PROMPT_EXAMINE_DESC));
 
@@ -875,13 +875,13 @@ static void prompt_examine_desc_data(mixed data) {
   string examine_desc;
 
   if(typeof(data) != T_STRING) {
-    send_string("Dziwne dane wprowadzone do stanu! Przerywamy.\r\n");
+    send_string("Dziwne dane wprowadzone do stanu! Przerywamy.\n");
     pop_state();
     return;
   }
 
   if(!data || STRINGD->is_whitespace(data)) {
-    send_string("Opis zbadaj (examine) domyślnie taki sam jak opis 'patrz'(look).\r\n");
+    send_string("Opis zbadaj (examine) domyślnie taki sam jak opis 'patrz'(look).\n");
     examine_desc = nil;
   } else {
     examine_desc = STRINGD->trim_whitespace(data);
@@ -892,8 +892,8 @@ static void prompt_examine_desc_data(mixed data) {
   }
   substate = SS_PROMPT_NOUNS;
 
-  send_string("\r\nW porządku, teraz weźmiemy listę rzeczowników i przymiotników, którymi możesz opisać\r\n"
-	      + "ten obiekt. Dla przypomnienia pokażemy Tobie również krótki opis przedmiotu, który wprowadziłeś.\r\n");
+  send_string("\nW porządku, teraz weźmiemy listę rzeczowników i przymiotników, którymi możesz opisać\n"
+	      + "ten obiekt. Dla przypomnienia pokażemy Tobie również krótki opis przedmiotu, który wprowadziłeś.\n");
   send_string(blurb_for_substate(SS_PROMPT_NOUNS));
 
   /* Don't return anything, this is a void function */
@@ -901,19 +901,13 @@ static void prompt_examine_desc_data(mixed data) {
 
 /* Used when processing nouns and adjectives */
 private mixed process_words(string input) {
-  object  phr, location;
-  string* words;
-  int     ctr;
+    object  phr, location;
+    string* words;
 
-  words = explode(input, " ");
-
-  for(ctr = 0; ctr < sizeof(words); ctr++) {
-    words[ctr] = STRINGD->to_lower(words[ctr]);
-  }
-
-  phr = PHRASED->new_simple_english_phrase(implode(words[0..], ","));
-
-  return phr;
+    words = explode(input, " ");
+    words[0] = STRINGD->to_lower(words[0]);
+    phr = PHRASED->new_simple_english_phrase(implode(words[0..], ","));
+    return phr;
 }
 
 
@@ -922,7 +916,7 @@ static int prompt_nouns_input(string input) {
 
   if(obj_type == OT_PORTABLE
      && (!input || STRINGD->is_whitespace(input))) {
-    send_string("Nie. Chcesz mieć przynajmmniej jeden przymiotnik. Spróbuj ponownie.\r\n");
+    send_string("Nie. Chcesz mieć przynajmmniej jeden przymiotnik. Spróbuj ponownie.\n");
     send_string(blurb_for_substate(SS_PROMPT_NOUNS));
     return RET_NORMAL;
   }
@@ -932,7 +926,7 @@ static int prompt_nouns_input(string input) {
 
   substate = SS_PROMPT_ADJECTIVES;
 
-  send_string("Dobrze. Teraz to samo dla przymiotników.\r\n");
+  send_string("Dobrze. Teraz to samo dla przymiotników.\n");
   send_string(blurb_for_substate(SS_PROMPT_ADJECTIVES));
 
   return RET_NORMAL;
@@ -958,14 +952,14 @@ static int prompt_adjectives_input(string input) {
     new_obj->set_volume_capacity(27000000.0);  /* Equiv of 30m cubic room */
     new_obj->set_length_capacity(1500.0);      /* 15m */
 
-    send_string("\r\nUkończono pokój #" + new_obj->get_number() + ".\r\n");
+    send_string("\nUkończono pokój #" + new_obj->get_number() + ".\n");
     return RET_POP_STATE;
   }
 
   if(obj_type == OT_PORTABLE) {
     substate = SS_PROMPT_WEIGHT;
 
-    send_string("Dobrze. Teraz ustalimy wagę obiektu.\r\n");
+    send_string("Dobrze. Teraz ustalimy wagę obiektu.\n");
     send_string(blurb_for_substate(substate));
     return RET_NORMAL;
   }
@@ -992,7 +986,7 @@ static int prompt_weight_input(string input) {
   use_parent = 0;
 
   if(!input || STRINGD->is_whitespace(input)) {
-    send_string("Spróbujmy ponownie.\r\n");
+    send_string("Spróbujmy ponownie.\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1025,7 +1019,7 @@ static int prompt_weight_input(string input) {
       value *= units[unitstr];
     else {
       send_string("Nie rozpoznaję jednostki '" + unitstr
-		  + "' jako jednostki masy bądź wagi. Spróbuj ponownie.\r\n");
+		  + "' jako jednostki masy bądź wagi. Spróbuj ponownie.\n");
       send_string(blurb_for_substate(substate));
 
       return RET_NORMAL;
@@ -1034,15 +1028,15 @@ static int prompt_weight_input(string input) {
     use_parent = 1;
     value = -1.0;
   } else if(sscanf(input, "%f", value) != 1) {
-    send_string("Wprowadź wartość, opcjonalnie z jednostkami. Coś jak:\r\n"
-		+ "  '4.7 oz' lub '3 tons' lub '0.5 mg'. Spróbuj ponownie.\r\n");
+    send_string("Wprowadź wartość, opcjonalnie z jednostkami. Coś jak:\n"
+		+ "  '4.7 oz' lub '3 tons' lub '0.5 mg'. Spróbuj ponownie.\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
   }
 
   if(value < 0.0 && !use_parent) {
-    send_string("Chcesz podać numer większy od zera. Sprónuj ponownie.\r\n");
+    send_string("Chcesz podać numer większy od zera. Sprónuj ponownie.\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1050,7 +1044,7 @@ static int prompt_weight_input(string input) {
 
   new_obj->set_weight(value);
 
-  send_string("Waga zaakceptowana.\r\n");
+  send_string("Waga zaakceptowana.\n");
   substate = SS_PROMPT_VOLUME;
   send_string(blurb_for_substate(substate));
 
@@ -1067,7 +1061,7 @@ static int prompt_volume_input(string input) {
   use_parent = 0;
 
   if(!input || STRINGD->is_whitespace(input)) {
-    send_string("Spróbujmy to ponownie.\r\n");
+    send_string("Spróbujmy to ponownie.\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1120,7 +1114,7 @@ static int prompt_volume_input(string input) {
       value *= units[unitstr];
     else {
       send_string("Nie rozpoznaję jednostki '" + unitstr
-		  + "' jako jednostki objętości. Spróbuj ponownie.\r\n");
+		  + "' jako jednostki objętości. Spróbuj ponownie.\n");
       send_string(blurb_for_substate(substate));
 
       return RET_NORMAL;
@@ -1129,15 +1123,15 @@ static int prompt_volume_input(string input) {
     use_parent = 1;
     value = -1.0;
   } else if(sscanf(input, "%f", value) != 1) {
-    send_string("Wprowadź wartość, opcjonalnie z jednostkami. Coś jak:\r\n"
-		+ "  '1.2 liters' lub '250 cc' lub '35 cu dm'. Spróbuj ponownie.\r\n");
+    send_string("Wprowadź wartość, opcjonalnie z jednostkami. Coś jak:\n"
+		+ "  '1.2 liters' lub '250 cc' lub '35 cu dm'. Spróbuj ponownie.\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
   }
 
   if(value < 0.0 && !use_parent) {
-    send_string("Chcesz podać numer większy od zera. Spróbuj ponownie.\r\n");
+    send_string("Chcesz podać numer większy od zera. Spróbuj ponownie.\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1145,7 +1139,7 @@ static int prompt_volume_input(string input) {
 
   new_obj->set_volume(value);
 
-  send_string("Objętość zaakceptowana.\r\n");
+  send_string("Objętość zaakceptowana.\n");
   substate = SS_PROMPT_LENGTH;
   send_string(blurb_for_substate(substate));
 
@@ -1162,7 +1156,7 @@ static int prompt_length_input(string input) {
   use_parent = 0;
 
   if(!input || STRINGD->is_whitespace(input)) {
-    send_string("Spróbujmy ponownie.\r\n");
+    send_string("Spróbujmy ponownie.\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1200,7 +1194,7 @@ static int prompt_length_input(string input) {
       value *= units[unitstr];
     else {
       send_string("Nie rozpoznaję jednostki '" + unitstr
-		  + "' jako jednostek długości. Spróbuj ponownie.\r\n");
+		  + "' jako jednostek długości. Spróbuj ponownie.\n");
       send_string(blurb_for_substate(substate));
 
       return RET_NORMAL;
@@ -1209,15 +1203,15 @@ static int prompt_length_input(string input) {
     use_parent = 1;
     value = -1.0;
   } else if(sscanf(input, "%f", value) != 1) {
-    send_string("Wprowadź wartość, opcjonalnie z jednostkami. Coś jak:\r\n"
-		+ "  '4.7 oz' lub '3 tons' lub '0.5 mg'. Spróbuj ponownie.\r\n");
+    send_string("Wprowadź wartość, opcjonalnie z jednostkami. Coś jak:\n"
+		+ "  '4.7 oz' lub '3 tons' lub '0.5 mg'. Spróbuj ponownie.\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
   }
 
   if(value < 0.0 && !use_parent) {
-    send_string("Chcesz podać numer większy niż zero. Spróbuj ponownie.\r\n");
+    send_string("Chcesz podać numer większy niż zero. Spróbuj ponownie.\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1225,7 +1219,7 @@ static int prompt_length_input(string input) {
 
   new_obj->set_length(value);
 
-  send_string("Zaakceptowano długość.\r\n");
+  send_string("Zaakceptowano długość.\n");
   substate = SS_PROMPT_CONTAINER;
 
   push_new_state(US_ENTER_YN, "Czy obiekt jest pojemnikiem? ");
@@ -1236,7 +1230,7 @@ static int prompt_length_input(string input) {
 
 static void prompt_container_data(mixed data) {
   if(typeof(data) != T_INT) {
-    send_string("Wewnętrzny błąd -- przekazano zły typ!\r\n");
+    send_string("Wewnętrzny błąd -- przekazano zły typ!\n");
     pop_state();
     return;
   }
@@ -1248,7 +1242,7 @@ static void prompt_container_data(mixed data) {
           send_string(blurb_for_substate(substate));
       }
     else {
-          send_string("Ukończono detal #" + new_obj->get_number() + ".\r\n");
+          send_string("Ukończono detal #" + new_obj->get_number() + ".\n");
           pop_state();
       }
     return;
@@ -1263,7 +1257,7 @@ static void prompt_container_data(mixed data) {
 
 static void prompt_open_data(mixed data) {
   if(typeof(data) != T_INT) {
-    send_string("Wewnętrzny błąd -- przekazano zły typ!\r\n");
+    send_string("Wewnętrzny błąd -- przekazano zły typ!\n");
     pop_state();
     return;
   }
@@ -1281,7 +1275,7 @@ static void prompt_open_data(mixed data) {
 
 static void prompt_openable_data(mixed data) {
   if(typeof(data) != T_INT) {
-    send_string("Wewnętrzny błąd -- przekazano zły typ!\r\n");
+    send_string("Wewnętrzny błąd -- przekazano zły typ!\n");
     pop_state();
     return;
   }
@@ -1304,7 +1298,7 @@ static int prompt_weight_capacity_input(string input) {
   use_parent = 0;
 
   if(!input || STRINGD->is_whitespace(input)) {
-    send_string("Spróbujmy ponownie.\r\n");
+    send_string("Spróbujmy ponownie.\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1337,7 +1331,7 @@ static int prompt_weight_capacity_input(string input) {
       value *= units[unitstr];
     else {
       send_string("Nie rozpoznaję jednostki '" + unitstr
-		  + "' jako jednostki masy bądź wagi. Spróbuj ponownie.\r\n");
+		  + "' jako jednostki masy bądź wagi. Spróbuj ponownie.\n");
       send_string(blurb_for_substate(substate));
 
       return RET_NORMAL;
@@ -1346,15 +1340,15 @@ static int prompt_weight_capacity_input(string input) {
     use_parent = 1;
     value = -1.0;
   } else if(sscanf(input, "%f", value) != 1) {
-    send_string("Wprowadź wartość, opcjonalnie z jednostkami. Coś jak:\r\n"
-		+ "  '4.7 oz' lub '3 tons' lub '0.5 mg'. Spróbuj ponownie.\r\n");
+    send_string("Wprowadź wartość, opcjonalnie z jednostkami. Coś jak:\n"
+		+ "  '4.7 oz' lub '3 tons' lub '0.5 mg'. Spróbuj ponownie.\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
   }
 
   if(value < 0.0 && !use_parent) {
-    send_string("Chcesz podać numer większy niż zero. Spróbuj ponownie.\r\n");
+    send_string("Chcesz podać numer większy niż zero. Spróbuj ponownie.\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1362,7 +1356,7 @@ static int prompt_weight_capacity_input(string input) {
 
   new_obj->set_weight_capacity(value);
 
-  send_string("Zaakceptowano udźwig.\r\n");
+  send_string("Zaakceptowano udźwig.\n");
   substate = SS_PROMPT_VOLUME_CAPACITY;
   send_string(blurb_for_substate(substate));
 
@@ -1379,7 +1373,7 @@ static int prompt_volume_capacity_input(string input) {
   use_parent = 0;
 
   if(!input || STRINGD->is_whitespace(input)) {
-    send_string("Spróbujmy ponownie.\r\n");
+    send_string("Spróbujmy ponownie.\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1432,7 +1426,7 @@ static int prompt_volume_capacity_input(string input) {
       value *= units[unitstr];
     else {
       send_string("Nie rozpoznaję jednostki '" + unitstr
-		  + "' jako jednostek objętości. Spróbuj ponownie.\r\n");
+		  + "' jako jednostek objętości. Spróbuj ponownie.\n");
       send_string(blurb_for_substate(substate));
 
       return RET_NORMAL;
@@ -1441,15 +1435,15 @@ static int prompt_volume_capacity_input(string input) {
     use_parent = 1;
     value = -1.0;
   } else if(sscanf(input, "%f", value) != 1) {
-    send_string("Wprowadź wartość, opcjonalnie z jednostkami. Coś jak:\r\n"
-		+ "  '1.2 liters' lub '250 cc' lub '35 cu dm'. Spróbuj ponownie.\r\n");
+    send_string("Wprowadź wartość, opcjonalnie z jednostkami. Coś jak:\n"
+		+ "  '1.2 liters' lub '250 cc' lub '35 cu dm'. Spróbuj ponownie.\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
   }
 
   if(value < 0.0 && !use_parent) {
-    send_string("Chcesz podać wartość większą niż zero. Spróbuj ponownie.\r\n");
+    send_string("Chcesz podać wartość większą niż zero. Spróbuj ponownie.\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1457,7 +1451,7 @@ static int prompt_volume_capacity_input(string input) {
 
   new_obj->set_volume_capacity(value);
 
-  send_string("Zaakceptowano pojemność.\r\n");
+  send_string("Zaakceptowano pojemność.\n");
   substate = SS_PROMPT_LENGTH_CAPACITY;
   send_string(blurb_for_substate(substate));
 
@@ -1474,7 +1468,7 @@ static int prompt_length_capacity_input(string input) {
   use_parent = 0;
 
   if(!input || STRINGD->is_whitespace(input)) {
-    send_string("Spróbujmy ponownie.\r\n");
+    send_string("Spróbujmy ponownie.\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1512,7 +1506,7 @@ static int prompt_length_capacity_input(string input) {
       value *= units[unitstr];
     else {
       send_string("Nie rozpoznaję jednostki '" + unitstr
-		  + "' jako jednostek długości. Spróbuj ponownie.\r\n");
+		  + "' jako jednostek długości. Spróbuj ponownie.\n");
       send_string(blurb_for_substate(substate));
 
       return RET_NORMAL;
@@ -1521,15 +1515,15 @@ static int prompt_length_capacity_input(string input) {
     use_parent = 1;
     value = -1.0;
   } else if(sscanf(input, "%f", value) != 1) {
-    send_string("Wprowadź wartość, opcjonalnie z jednostkami. Coś jak:\r\n"
-		+ "  '4.7 oz' lub '3 tons' lub '0.5 mg'. Spróbuj ponownie.\r\n");
+    send_string("Wprowadź wartość, opcjonalnie z jednostkami. Coś jak:\n"
+		+ "  '4.7 oz' lub '3 tons' lub '0.5 mg'. Spróbuj ponownie.\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
   }
 
   if(value < 0.0 && !use_parent) {
-    send_string("Chcesz podać wartość większą od zera. Spróbuj ponownie.\r\n");
+    send_string("Chcesz podać wartość większą od zera. Spróbuj ponownie.\n");
     send_string(blurb_for_substate(substate));
 
     return RET_NORMAL;
@@ -1537,7 +1531,7 @@ static int prompt_length_capacity_input(string input) {
 
   new_obj->set_length_capacity(value);
 
-  send_string("Zaakceptowano maksymalną długość przedmiotów w pojemniku.\r\n\r\n");
+  send_string("Zaakceptowano maksymalną długość przedmiotów w pojemniku.\n\n");
   substate = SS_PROMPT_CONTAINER;
 
   if(obj_type == OT_PORTABLE) {
@@ -1546,7 +1540,7 @@ static int prompt_length_capacity_input(string input) {
       return RET_NORMAL;
   } 
   else 
-      send_string("Ukończono detal #" + new_obj->get_number() + ".\r\n");
+      send_string("Ukończono detal #" + new_obj->get_number() + ".\n");
 
   return RET_POP_STATE;
 }
@@ -1559,7 +1553,7 @@ static int prompt_damage_input(string input)
 
   if(!input || STRINGD->is_whitespace(input))
     {
-      send_string("Spróbujmy ponownie.\r\n");
+      send_string("Spróbujmy ponownie.\n");
       send_string(blurb_for_substate(substate));
 
       return RET_NORMAL;
@@ -1602,7 +1596,7 @@ static void prompt_wearable_data(mixed data)
 {
   if(typeof(data) != T_INT)
     {
-      send_string("Wewnętrzny błąd -- przekazano zły typ!\r\n");
+      send_string("Wewnętrzny błąd -- przekazano zły typ!\n");
       pop_state();
       return;
     }
@@ -1630,7 +1624,7 @@ static int prompt_wlocation_input(string input)
 
   if(!input || STRINGD->is_whitespace(input))
     {
-      send_string("Spróbujmy ponownie.\r\n");
+      send_string("Spróbujmy ponownie.\n");
       send_string(blurb_for_substate(substate));
 
       return RET_NORMAL;
@@ -1689,7 +1683,7 @@ static int prompt_armor_input(string input)
 
   if(!input || STRINGD->is_whitespace(input))
     {
-      send_string("Spróbujmy ponownie.\r\n");
+      send_string("Spróbujmy ponownie.\n");
       send_string(blurb_for_substate(substate));
 
       return RET_NORMAL;
@@ -1736,7 +1730,7 @@ static int prompt_price_input(string input)
 
   if(!input || STRINGD->is_whitespace(input))
     {
-      send_string("Spróbujmy ponownie.\r\n");
+      send_string("Spróbujmy ponownie.\n");
       send_string(blurb_for_substate(substate));
 
       return RET_NORMAL;
@@ -1783,7 +1777,7 @@ static int prompt_hp_input(string input)
 
   if(!input || STRINGD->is_whitespace(input))
     {
-      send_string("Spróbujmy ponownie.\r\n");
+      send_string("Spróbujmy ponownie.\n");
       send_string(blurb_for_substate(substate));
 
       return RET_NORMAL;
@@ -1830,7 +1824,7 @@ static int prompt_combat_rating_input(string input)
 
   if(!input || STRINGD->is_whitespace(input))
     {
-      send_string("Spróbujmy ponownie.\r\n");
+      send_string("Spróbujmy ponownie.\n");
       send_string(blurb_for_substate(substate));
 
       return RET_NORMAL;
