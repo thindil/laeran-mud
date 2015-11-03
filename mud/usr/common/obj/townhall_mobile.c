@@ -29,16 +29,15 @@ string get_type(void) {
 /* Initiate communication */
 void hook_social(object body, object target, string verb)
 {
-  if (get_number() == target->get_mobile()->get_number() && verb == "pozdrow")
-    {
-      whisper(body, "Witaj, widzę, że jesteś nieco zagubiony. Oto kilka wskazówek, które mogę Ci\n"
-	      + "dać. Jeżeli potrzebujesz pieniędzy, płacimy tutaj w ratuszu za zabicie\n"
-	      + "określonych istot. Aby otrzymać wynagrodzenie za daną istotę, musisz przynieść\n"
-	      + "dowód do mnie. Jeżeli chcesz się dowiedzieć dokładnie jakie dowody, szepnij\n"
-	      + "do mnie 'lista' aby zobaczyć ich listę wraz z ofertą ile płacimy za nie.\n"
-	      + "Jeżeli masz przy sobie to czego potrzebujemy, szepnij do mnie 'mam <nazwa \n"
-	      + "przedmiotu>. Wtedy wymienimy Twoje przedmioty na gotówkę. Jeżeli potrzebujesz\n"
-	      + "jakiś porad, szepnij do mnie 'porady'.\n");
+    if (target && get_number() == target->get_mobile()->get_number() && verb == "pozdrow") {
+        whisper(body, "Witaj, widzę, że jesteś nieco zagubiony. Oto kilka wskazówek, które mogę Ci\n"
+                + "dać. Jeżeli potrzebujesz pieniędzy, płacimy tutaj w ratuszu za zabicie\n"
+                + "określonych istot. Aby otrzymać wynagrodzenie za daną istotę, musisz przynieść\n"
+                + "dowód do mnie. Jeżeli chcesz się dowiedzieć dokładnie jakie dowody, szepnij\n"
+                + "do mnie 'lista' aby zobaczyć ich listę wraz z ofertą ile płacimy za nie.\n"
+                + "Jeżeli masz przy sobie to czego potrzebujemy, szepnij do mnie 'mam <nazwa \n"
+                + "przedmiotu>. Wtedy wymienimy Twoje przedmioty na gotówkę. Jeżeli potrzebujesz\n"
+                + "jakiś porad, szepnij do mnie 'porady'.\n");
     }
 }
 
