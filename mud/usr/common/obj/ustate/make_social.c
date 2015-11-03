@@ -109,7 +109,7 @@ private string blurp_for_substate(int substate)
                 + "Przykład: Warczysz.\n";
         case SS_PROMPT_SELF_TARGET:
             return "Wpisz tekst jaki zobaczy gracz kiedy użyje komendy socjalnej z\n"
-                + "wybranym celem. Jako imię celu podaj ~target{numer}, gdzie 'numer'"
+                + "wybranym celem. Jako imię celu podaj ~target{numer}, gdzie 'numer'\n"
                 + "oznacza numer przypadku odmiany imienia.\n"
                 + "Przykład: Warczysz na ~target{3}.\n";
         case SS_PROMPT_TARGET:
@@ -124,7 +124,7 @@ private string blurp_for_substate(int substate)
         case SS_PROMPT_OTHER_TARGET:
             return "Wpisz tekst jaki zobaczą inne osoby będące w tym samym pomieszczeniu\n"
                 + "kiedy zostanie używa komenda socjalna z wybranym celem. Jako imię\n"
-                + "osoby uruchamiającej komendę podaj ~actor{}, jako cel ~target{numer}"
+                + "osoby uruchamiającej komendę podaj ~actor{}, jako cel ~target{numer}\n"
                 + "gdzie 'numer' oznacza numer przypadku odmiany imienia.\n"
                 + "Przykład: ~actor{} warczy na ~target{3}.\n";
         default:
@@ -172,11 +172,8 @@ static int prompt_input(string input)
         input = STRINGD->trim_whitespace(input);
     if (input && substate == SS_PROMPT_VERB) {
         input = STRINGD->to_lower(input);
-        if (SOULD->is_social_verb(input)) {
-            send_string("\nTaka komenda socjalna już istnieje. Spróbuj ponownie.\n");
-            send_string(blurp_for_substate(substate));
-            return RET_NORMAL;
-        }
+        if (SOULD->is_social_verb(input)) 
+            send_string("\nTaka komenda socjalna już istnieje. Rozpoczynasz jej edycję.\n");
     }
 
     if (!input) {
