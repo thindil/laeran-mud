@@ -557,21 +557,28 @@ nomask string teleport(object dest, int force) {
 /* death of mobile, remove body */
 nomask void death(object user)
 {
-  object PHRASE phr;
-  
-  if(!SYSTEM() && !COMMON() && !GAME())
-    return;
+    object PHRASE phr;
+    string *nouns;
+    string body_name;
 
-  phr = PHRASED->new_simple_english_phrase("zwłoki " + body->get_brief()->to_string(user));
-  body->set_brief(phr);
-  phr = PHRASED->new_simple_english_phrase(body->get_brief()->to_string(user) + " leżą tutaj.");
-  body->set_look(phr);
-  body->set_mobile(nil);
-  body->clear_nouns();
-  phr = PHRASED->new_simple_english_phrase("zwłoki, zwloki");
-  body->add_noun(phr);
-  TAGD->set_tag_value(body, "DropTime", time());
-  body = nil;
+    if(!SYSTEM() && !COMMON() && !GAME())
+        return;
+
+    nouns = body->get_nouns(user->get_locale());
+    if (sizeof(nouns) < 4)
+        body_name = body->get_brief()->to_string(user);
+    else
+        body_name = nouns[3];
+    phr = PHRASED->new_simple_english_phrase("zwłoki " + body_name);
+    body->set_brief(phr);
+    phr = PHRASED->new_simple_english_phrase("zwłoki " + body_name + " leżą tutaj.");
+    body->set_look(phr);
+    body->set_mobile(nil);
+    body->clear_nouns();
+    phr = PHRASED->new_simple_english_phrase("zwłoki, zwloki");
+    body->add_noun(phr);
+    TAGD->set_tag_value(body, "DropTime", time());
+    body = nil;
 }
 
 /*

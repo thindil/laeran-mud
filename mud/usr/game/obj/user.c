@@ -505,74 +505,75 @@ int process_command(string str)
 
 int get_stat_val(string name)
 {
-  return stats[name][0];
+    return stats[name][0];
 }
 
 int get_stat_exp(string name)
 {
-  return stats[name][1];
+    return stats[name][1];
 }
 
 int get_skill_val(string name)
 {
-  if (!skills[name])
-    {
-      return 1;
-    }
-  return skills[name][0];
+    if (!skills[name])
+        return 1;
+    return skills[name][0];
 }
 
 int get_skill_exp(string name)
 {
-  if (!skills[name])
-    {
-      return 0;
-    }
-  return skills[name][1];
+    if (!skills[name])
+        return 0;
+    return skills[name][1];
 }
 
 void death()
 {
-  object PHRASE phr;
-  object new_body;
-  
-  message("GINIESZ.\n");
- 
-  current_room = HOSPITAL_ROOM;
-  if (!MAPD->get_room_by_num(current_room))
-    {
-      current_room = START_ROOM;
-    }
-  new_body = clone_object(SIMPLE_ROOM);
-  new_body->set_brief(body->get_brief());
-  new_body->set_look(body->get_look());
-  new_body->set_container(1);
-  new_body->set_open(1);
-  new_body->set_openable(0);
-  new_body->set_weight(body->get_weight());
-  new_body->set_length(body->get_length());
-  new_body->set_volume(body->get_volume());
-  new_body->set_weight_capacity(50.0);
-  new_body->set_volume_capacity(20.0);
-  new_body->set_length_capacity(300.0);
-  new_body->set_hp(10);
-  new_body->add_noun(NEW_PHRASE(STRINGD->to_lower(Name)));
-  new_body->set_price(body->get_price());
-  MAPD->add_room_to_zone(new_body, -1, ZONED->get_zone_for_room(location));
-  mobile->assign_body(new_body);
-  
-  phr = PHRASED->new_simple_english_phrase("zwłoki " + Name);
-  body->set_brief(phr);
-  phr = PHRASED->new_simple_english_phrase("zwłoki " + Name + " leżą tutaj.");
-  body->set_look(phr);
-  body->clear_nouns();
-  phr = PHRASED->new_simple_english_phrase("zwłoki, zwloki");
-  body->add_noun(phr);
-  TAGD->set_tag_value(body, "DropTime", time() + 3600);
-  body = new_body;
-  location = MAPD->get_room_by_num(current_room);
-  mobile->teleport(location, 1);
-  show_room_to_player(location);
+    object PHRASE phr;
+    object new_body;
+    string conj_name;
+    string *nouns;
+
+    message("GINIESZ.\n");
+
+    current_room = HOSPITAL_ROOM;
+    if (!MAPD->get_room_by_num(current_room)) 
+        current_room = START_ROOM;
+    new_body = clone_object(SIMPLE_ROOM);
+    new_body->set_brief(body->get_brief());
+    new_body->set_look(body->get_look());
+    new_body->set_container(1);
+    new_body->set_open(1);
+    new_body->set_openable(0);
+    new_body->set_weight(body->get_weight());
+    new_body->set_length(body->get_length());
+    new_body->set_volume(body->get_volume());
+    new_body->set_weight_capacity(body->get_weight_capacity());
+    new_body->set_volume_capacity(20.0);
+    new_body->set_length_capacity(300.0);
+    new_body->set_hp(10);
+    new_body->add_noun(body->get_nouns(locale));
+    new_body->set_price(body->get_price());
+    MAPD->add_room_to_zone(new_body, -1, ZONED->get_zone_for_room(location));
+    mobile->assign_body(new_body);
+
+    nouns = body->get_nouns(locale);
+    if (sizeof(nouns) < 7)
+        conj_name = Name;
+    else
+        conj_name = nouns[3];
+    phr = PHRASED->new_simple_english_phrase("zwłoki " + conj_name);
+    body->set_brief(phr);
+    phr = PHRASED->new_simple_english_phrase("zwłoki " + conj_name + " leżą tutaj.");
+    body->set_look(phr);
+    body->clear_nouns();
+    phr = PHRASED->new_simple_english_phrase("zwłoki, " + conj_name + ", zwloki");
+    body->add_noun(phr);
+    TAGD->set_tag_value(body, "DropTime", time() + 3600);
+    body = new_body;
+    location = MAPD->get_room_by_num(current_room);
+    mobile->teleport(location, 1);
+    show_room_to_player(location);
 }
 
 void gain_exp(string skill, int value)
@@ -1818,6 +1819,7 @@ static void cmd_attack(object user, string cmd, string str)
     object *tmp;
     string target;
     int number;
+    string *nouns;
 
     if(str)
         str = STRINGD->trim_whitespace(str);
@@ -1857,7 +1859,11 @@ static void cmd_attack(object user, string cmd, string str)
     }
     if (TAGD->get_tag_value(body, "Follow"))
         stop_follow(user);
-    message("Atakujesz " + tmp[number]->get_brief()->to_string(user) + "...\n");
+    nouns = tmp[number]->get_nouns(locale);
+    if (sizeof(nouns) < 5)
+        message("Atakujesz " + tmp[number]->get_brief()->to_string(user) + "...\n");
+    else
+        message("Atakujesz " + nouns[3] + "...\n");
     combat = clone_object(COMBAT);
     combat->start_combat(body, tmp[number]);
 }
