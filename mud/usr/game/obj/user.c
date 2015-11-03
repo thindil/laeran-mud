@@ -1863,7 +1863,7 @@ static void cmd_attack(object user, string cmd, string str)
 }
 
 /* Report bug, typo or propose idea */
-void cmd_report(object user, string cmd, string str)
+static void cmd_report(object user, string cmd, string str)
 {
     string filename, rtype;
 
@@ -1897,7 +1897,7 @@ void cmd_report(object user, string cmd, string str)
 }
 
 /* Player settings - description, email and password change */
-void cmd_settings(object user, string cmd, string str)
+static void cmd_settings(object user, string cmd, string str)
 {
     string *parts;
     string oldmail;
@@ -1936,7 +1936,7 @@ void cmd_settings(object user, string cmd, string str)
 }
 
 /* Follow other player/mobile */
-void cmd_follow(object user, string cmd, string str)
+static void cmd_follow(object user, string cmd, string str)
 {
     object *tmp;
     string target;
