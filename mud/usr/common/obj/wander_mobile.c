@@ -27,31 +27,34 @@ string get_type(void) {
 
 void random_move(void)
 {
-  int    num_ex, ctr;
-  object exit, dest;
-  string reason;
+    int    num_ex, ctr;
+    object exit, dest;
+    string reason;
 
-  num_ex = location->num_exits();
-  if(num_ex > 0)
-    {
-      int dir;
+    if (TAGD->get_tag_value(this_object()->get_body(), "Combat"))
+        return;
 
-      ctr = random(num_ex + 10);
-      if (ctr >= (num_ex - 1))
-          return;
-      exit = location->get_exit_num(ctr);
-      if(!exit)
-          error("Internal error!  Can't get exit!");
-      
-      dir = exit->get_direction();
-      dest = exit->get_destination();
+    num_ex = location->num_exits();
+    if(num_ex > 0) {
+        int dir;
 
-      if (ZONED->get_zone_for_room(dest) != ZONED->get_zone_for_room(location))
-          return;
-      
-      reason = this_object()->move(dir);
-      if(reason)
-          error(reason);
+        ctr = random(100);
+        if (ctr >= 60)
+            return;
+        ctr = random(num_ex);
+        exit = location->get_exit_num(ctr);
+        if(!exit)
+            error("Błąd wewnętrzny! Nie mogę pobrać wyjścia!");
+
+        dir = exit->get_direction();
+        dest = exit->get_destination();
+
+        if (ZONED->get_zone_for_room(dest) != ZONED->get_zone_for_room(location))
+            return;
+
+        reason = this_object()->move(dir);
+        if(reason)
+            error(reason);
     }
 }
 
