@@ -1,39 +1,35 @@
 ~name{przenośne,przenosne}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-Portables are basic carryable, movable and manipulable objects.  In
-Phantasmal they are manipulated, from an admin viewpoint, by the room
-commands.  The only commands specific to portables is the following:
+Przenośne to ogólnie możliwe do noszenia, poruszania i manipulowania
+obiekty. W Phantasmal mogą być manipulowane (z punktu widzenia 
+administratora) przez komendy pokoju. Jedyna komenda specyficzna dla
+przenośnych to:
 
-@make_portable            Make a new portable by answering questions
+@make_portable          Stwórz nowy przenośny poprzez odpowiadanie 
+                        na pytania
 
-Even that command actually makes a room, it just makes it with more
-portable-like default settings.
+Nawet ta komenda tak naprawdę tworzy pokój, tylko przy jej pomocy
+można ustawić więcej typowych dla przenośnych opcji.
 
-See also:  rooms, MAPD
-}}
+Zobacz również:  pokoje, MAPD
+}
 
 
-~name{~enUS{make_portable, makeportable, make_portables,
-            makeportables, portablemake, portable_make
-            make_port, makeport, make_ports,
-            makeports, portmake, port_make }}
+~name{make_portable,makeportable,make_portables}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @make_portable command asks a series of questions about the new
-object to be created.  It then creates the object that the questions
-describe.  It asks about descriptions, nouns, adjectives and so on.
+Komenda @make_portable zadaje serię pytań o nowy obiekt do utworzenia.
+Następnie tworzy ten obiekt tak jak go opisano w pytaniach. Pyta o
+opisy, rzeczowniki, przymiotniki, i tak dalej.
 
-Experimental object attributes aren't necessarily asked or set by this
-command when first implemented.  As they become useful and mainstream
-in Phantasmal they are added to the various @make commands.  For that
-reason, certain settings may require using the standard OLC commands
-rather than this one.
+Niektóre najnowsze atrybuty obiektów mogą nie być możliwe do ustawienia
+przy pomocy tej komendy. Jednak wraz z czasem i one się pojawiają w
+różnych komendach @make. Z tego powodu niektóre ustawienia mogą wymagać
+użycia standardowych komend OLC zamiast tej.
 
-See also:  @make_room, @make_detail
+Zobacz również:  @make_room, @make_detail
 
-}}
+}

@@ -247,152 +247,148 @@ Zobacz również: dziedziczenie
 }
 
 
-~name{~enUS{move}}
+~name{move}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @move command takes two object numbers as arguments.  The first is
-the object number to be moved, the second is the location to move it
-to.  For instance:
+Komenda @move pobiera dwa numery obiektów jako argumenty. Pierwszy to
+obiekt, który będzie przenoszony, drugi to lokacja do której ów obiekt
+będzie przeniesiony. Na przykład:
 
 @move #200 #0
 
-The above would move object #200 into object #0 (the Void).  The
-command works on rooms and portables, both as objects to move and as
-destinations.  You can use the word "here" instead of the second
-object to move an object into your current room.
+Komenda powyżej przeniesie obiekt #200 do obiektu #0 (Pustka, Void).
+Komenda działa na pokojach oraz przenośnych w obu wypadkach jako
+obiekty do przeniesienia oraz lokacje. Możesz również użyć słowa
+"here" zamiast drugiego numeru aby przenieść obiekt do pokoju w 
+którym obecnie się znajdujesz.
 
-See also @goto
+Zobacz również @goto
 
-}}
+}
 
-~name{~enUS{stat}}
+~name{stat}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @stat command gives a reasonably complete summary of everything about
-a particular object number.  For instance you can type "@stat #0" and
-find out the Void's various descriptions, what rooms it contains, that
-it is registered with MAPD, and so on.  @stat works on rooms, portables,
-exits and mobiles.
+Komenda @stat podaje komplentne informacje na temat wybranego obiektu.
+Na przykład możesz wpisać "@stat #0" aby zobaczyć opisy Pustki (Void), co
+zawiera, czy jest zarejestrowana z MAPD i tak dalej. @stat działa z pokojami,
+przenośnymi, wyjściami oraz mobkami.
 
-It shows inheritance and tag values, among other information.
+Komenda pokazuje również informacje o dziedziczeniu i tagach wraz z innymi
+informacjami.
 
-Examples: @stat turnip
-          @stat #103
+Przykłady: @stat skrzynia
+           @stat #103
 
-See Also:  MAPD, OBJREGD, MOBILED, EXITD, room, portable, mobile, exit
+Zobacz również:  MAPD, OBJREGD, MOBILED, EXITD, pokój, przenośne, mob, wyjście
 
-}}
+}
 
 
-~name{~enUS{noun, nouns, adj, adjective, adjectives}}
+~name{rzeczownik,rzeczowniki,przymiotnik,przymiotniki}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-Nouns are the names which a player may call an object.  For instance,
-a sword might have "sword" and "blade" as nouns.
+Rzeczowniki to nazwy przy pomocy których gracz może wywoływać obiekt.
+Na przykład miecz może mieć jako rzeczowniki "miecz" oraz "ostrze".
+Oprócz tego rzeczowniki służą do odmiany nazwy przedmiotu przez
+przypadki. Dlatego pierwszy rzeczownik zawsze powinien być w mianowniku
+z małej litery, następne powinny być odmianą przez przypadki. Czyli
+w przypadku miecza: "miecz, miecza, mieczowi, miecz, mieczem, mieczu,
+miecza, ostrze".
 
-Adjectives are descriptors for those names.  A player may refer to an
-object by any adjectives it has in any order followed by exactly one
-of its nouns.  So if the sword had "heavy", "metal", "tarnished",
-"rusted" and "pitted" as adjectives, it could be called a "heavy metal
-tarnished blade" or a "rusted pitted sword" or a "blade" or a
-"tarnished rusted pitted tarnished rusted metal heavy heavy sword".
-However, it could not be called a "tarnished" or a "pitted rusted",
-for instance.
+Przymiotniki to opisy tych nazw. Gracz może odwoływać się do obiektu
+podając najpierw dowolny przymiotnik a na koniec dokładnie jeden 
+rzeczownik. Więc jeżeli miecz ma "ciężki", "metalowy", "podniszczony"
+"pordzewiały" jako przymiotniki to może być wywołany przez "ciężki metalowy
+podniszczony miecz" lub "pordzewiały miecz" lub "ostrze" lub "ciężki metalowy
+ciężki podniszczony metalowy miecz". Jednakże nie może być wywołany przez
+"podniszczony" czy "pordzewiały metalowy".
 
-Nouns are added with the @add_nouns command, or in @make_room or the
-equivalent.  The @clear_nouns command will remove all nouns an object
-has.  Similarly, adjectives are added with @add_adj and cleared with
+Rzeczowniki są ustawiane komendą @add_nouns albo @make_room czy jej
+odpowiedniku. Komenda @clear_nouns usunie wszystkie rzeczowniki z obiektu.
+Podobnie przymiotniki można dodawać komendą @add_adj i usuwać przy pomocy
 @clear_adj.
 
-Nouns and adjectives are inherited from parent objects.
+Rzeczowniki i przymiotniki są dziedziczone z obiektów rodzicielskich.
 
-See also: @add_nouns, @clear_nouns, @add_adj, @clear_adj
+Zobacz również: @add_nouns, @clear_nouns, @add_adj, @clear_adj
 
-}}
+}
 
-~name{~enUS{addnoun,add_noun}}
+~name{addnoun,add_noun}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @add_noun command adds one or more one-word nouns to an object's
-noun list.  The object may then be referred to using these nouns.
+Komenda @add_noun dodaj jeden lub więcej jednowyrazowych rzeczowników
+do listy rzeczowników obiektu. Obiekt może być wtedy wywoływany przy
+użyciu tychże rzeczowników.
 
-Syntax: @add_noun #<obj num> noun [noun noun noun...]
+Składnia: @add_noun #<numer obiektu> rzeczownik [rzeczownik rzeczownik
+rzeczownik ...]
 
-See also: @stat, @clear_nouns, @add_adjective
-}}
+Zobacz również: @stat, @clear_nouns, @add_adjective
+}
 
 
 
-~name{~enUS{addadjective,add_adjective,
-            addadj,add_adj}}
+~name{addadjective,add_adjective,addadj,add_adj}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @add_adjective command adds one or more one-word adjectives to an
-object's adjective list.  The object may then be referred to using
-these adjectives.
+Komenda @add_adj dodaje jeden lub więcej jednowyrazowych przymiotników
+do listy przymiotników obiektu. Obiekt może być wtedy wywoływany przy
+użyciu tychże przymiotników.
 
-Syntax: @add_adjective #<obj num> adj [adj, adj, adj...]
+Składnia: @add_adj #<numer obiektu> przymiotnik [przymiotnik, przymiotnik,
+przymiotnik ...]
 
-See also: @stat, @clear_adjectives, @add_noun
+Zobacz również: @stat, @clear_adjectives, @add_noun
 
-}}
+}
 
 
 
-~name{~enUS{clearnoun,clear_noun,
-            clearnouns,clear_nouns}}
+~name{clearnoun,clear_noun,clearnouns,clear_nouns}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @clear_nouns command clears all current nouns for an object, so more
-should normally be added with @add_noun.
+Komenda @clear_nouns usuwa wszystkie rzeczowniki z obiektu, więc nowe
+powinny być dodane przy pomocy komendy @add_noun.
 
-Syntax: @clear_nouns #<obj num>
+Składnia: @clear_nouns #<numer obiektu>
 
-See Also: @clear_adjectives, @add_noun
-}}
+Zobacz również: @clear_adjectives, @add_noun
+}
 
 
-~name{~enUS{clearadjective, clear_adjective,
-            clearadjectives, clear_adjectives,
-            clearadj, clear_adj}}
+~name{clearadjective,clear_adjective,clearadjectives,clear_adjectives,
+            clearadj, clear_adj}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @clear_adjectives command clears all current adjectives for an
-object, so more should normally be added with @add_adjective.
+Komenda @clear_adj usuwa wszyskie przymiotniki z obiektu, tak więc
+nowe powinny być dodane przy pomocy komendy @add_adj.
 
-Syntax: @clear_adjectives #<obj num>
+Składnia: @clear_adjectives #<numer obiektu>
 
-See Also: @clear_nouns, @add_adjective
-}}
+Zobacz również: @clear_nouns, @add_adjective
+}
 
-~name{~enUS{delete,
-            delete_obj, delete_object, delete_objects,
-            deleteobj, deleteobject, deleteobjects }}
+~name{delete,delete_obj,delete_object,delete_objects,deleteobj,deleteobject,
+            deleteobjects}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @delete or @delete_object command will delete an object in the
-current room, or any object in the MUD by number.  This object may be
-a mobile, portable, room or exit.  Examples:
+Komenda @delete lub @delete_object usuwa obiekt z obecnego pokoju (jeżeli
+podana została nazwa) lub dowolny obiekt z gry (jeżeli podano numer). Ten
+obiekt może być mobkiem, przenośnym, pokojem lub wyjściem. Przykłady:
 
 @delete #374
-@delete red cow
+@delete czerwona krowa
 
-See Also:  objects, @stat
+Zobacz również:  obiekty, @stat
 
-}}
+}
