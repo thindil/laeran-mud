@@ -293,9 +293,11 @@ wyświetlających się dla wybranej komendy socjalnej trzeba użyć dwóch
 zmiennych:
 - "\~actor\{\}" oznacza osobę wywołującą komendę (konkretnie jej krótki
 opis, albo imię). Podczas wykonywania komendy zostanie zamienione na imię.
-- "\~target\{\}" oznacza osobę będącą celem komendy (konkretnie jej krótki
-opis albo imię, osoby nie komendy). Podczas wykonywania komendy zostanie
-zamienione na imię.
+- "\~target\{numer\}" oznacza osobę będącą celem komendy (konkretnie jej 
+krótki opis albo imię, osoby nie komendy). "numer" to numer przypadku odmiany
+imienia bądź opisu. Numeracja przypadków to: Dopełniacz = 1, Celownik = 2,
+Biernik = 3, Narzędnik = 4, Miejscownik = 5, Wołacz = 6. Podczas wykonywania 
+komendy zostanie zamienione na odpowiednio odmienione imię.
 
 }
 

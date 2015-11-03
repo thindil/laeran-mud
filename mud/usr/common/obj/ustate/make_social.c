@@ -109,8 +109,9 @@ private string blurp_for_substate(int substate)
                 + "Przykład: Warczysz.\n";
         case SS_PROMPT_SELF_TARGET:
             return "Wpisz tekst jaki zobaczy gracz kiedy użyje komendy socjalnej z\n"
-                + "wybranym celem. Jako imię celu podaj ~target{}.\n"
-                + "Przykład: Warczysz na ~target{}.\n";
+                + "wybranym celem. Jako imię celu podaj ~target{numer}, gdzie 'numer'"
+                + "oznacza numer przypadku odmiany imienia.\n"
+                + "Przykład: Warczysz na ~target{3}.\n";
         case SS_PROMPT_TARGET:
             return "Wpisz tekst jaki zobaczy osoba będąca celem komendy socjalnej\n"
                 + "Jako imię osoby uruchamiającej komendę podaj ~actor{}.\n"
@@ -123,8 +124,9 @@ private string blurp_for_substate(int substate)
         case SS_PROMPT_OTHER_TARGET:
             return "Wpisz tekst jaki zobaczą inne osoby będące w tym samym pomieszczeniu\n"
                 + "kiedy zostanie używa komenda socjalna z wybranym celem. Jako imię\n"
-                + "osoby uruchamiającej komendę podaj ~actor{}, jako cel ~target{}.\n"
-                + "Przykład: ~actor{} warczy na ~target{}.\n";
+                + "osoby uruchamiającej komendę podaj ~actor{}, jako cel ~target{numer}"
+                + "gdzie 'numer' oznacza numer przypadku odmiany imienia.\n"
+                + "Przykład: ~actor{} warczy na ~target{3}.\n";
         default:
             return "<NIEZNANY STAN>\n";
     }
