@@ -836,22 +836,9 @@ static void cmd_new_tag_type(object user, string cmd, string str) {
   }
 
   name = STRINGD->trim_whitespace(name);
-  unqstring = "~"+scope_strings[scope]+"_tag{\n  ~name{" + name + "}\n  ~type{" + type_strings[type] + "}\n";
-  if(getter)
-    {
-      getter = STRINGD->trim_whitespace(getter);
-      unqstring += "  ~getter{" + getter + "}\n";
-    }
-  if(setter)
-    {
-      setter = STRINGD->trim_whitespace(setter);
-      unqstring += "  ~setter{" + setter + "}\n";
-    }
-  unqstring += "}\n\n";
 
   call_other(TAGD, "new_" + scope_strings[scope] + "_tag",
 	     name, type_strings[type], getter, setter);
-  write_file("/usr/game/tagd.unq", unqstring);
   user->message("Added new tag type '" + name + "'.\n");
 }
 

@@ -242,3 +242,51 @@ int object_tag_type(string tag_name) {
 
   return -1;
 }
+
+string to_unq_text(int number)
+{
+    string tagtmp, name;
+    string *indices;
+
+    if (!SYSTEM() && !COMMON())
+        return nil;
+
+    indices = map_indices(mobile_tags);
+    if (number < sizeof(indices)) {
+        name = indices[number];
+        tagtmp = "~mobile_tag{\n"
+            + "  ~name{" + name + "}\n"
+            + "  ~type{" + mobile_tags[name][0] + "}\n";
+        if (mobile_tags[name][1])
+            tagtmp += "  ~getter{" + mobile_tags[name][1] + "}\n";
+        if (mobile_tags[name][2])
+            tagtmp += "  ~setter{" + mobile_tags[name][2] + "}\n";
+        tagtmp += "}\n";
+        return tagtmp;
+    } else
+        number -= sizeof(indices);
+    
+    indices = map_indices(object_tags);
+    if (number < sizeof(indices)) {
+        name = indices[number];
+        tagtmp = "~object_tag{\n"
+            + "  ~name{" + name + "}\n"
+            + "  ~type{" + object_tags[name][0] + "}\n";
+        if (object_tags[name][1])
+            tagtmp += "  ~getter{" + object_tags[name][1] + "}\n";
+        if (object_tags[name][2])
+            tagtmp += "  ~setter{" + object_tags[name][2] + "}\n";
+        tagtmp += "}\n";
+        return tagtmp;
+    }
+
+    return nil;
+}
+
+int num_tags(void)
+{
+  if(!GAME() && !COMMON() && !SYSTEM())
+    error("Only game code may call num_tags!");
+
+  return sizeof(map_indices(object_tags)) + sizeof(map_indices(mobile_tags));
+}

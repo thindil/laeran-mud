@@ -43,6 +43,8 @@ static  void __co_write_zones(object user, int* objects, int ctr,
 static  void __co_write_users(object user, int ctr);
 static  void __co_write_socials(object user, string socialdir,
                   int filesize, int extension, int ctr);
+static  void __co_write_tags(object user, int filesize, int extension,
+                  int ctr);
 static  void __co_write_banned(object user);
 static  void __reboot_callback(void);
 static  void __shutdown_callback(void);
@@ -338,6 +340,8 @@ void save_mud_data(object user, string room_dirname, string mob_dirname,
   delete_directory(social_dirname + ".old");
   rename_file(social_dirname, social_dirname + ".old");
   delete_directory(social_dirname);
+
+  remove_file("/usr/game/tagd.unq");
 
   if(sizeof(get_dir(room_dirname)[0])) 
     LOGD->write_syslog("Can't remove old room directory -- trying to append!",
@@ -688,7 +692,7 @@ static void __co_write_socials(object user, string socialdir,
             filesize += strlen(unq_str);
             if (filesize > 64000) {
                 extension ++;
-                socialfile = socialfile + "socials" + extension + ".unq";
+                socialfile = socialdir + "/socials" + extension + ".unq";
                 filesize = strlen(unq_str);
             }
             write_file(socialfile, unq_str);
@@ -736,7 +740,50 @@ static void __co_write_users(object user, int ctr)
         return;
     }
 
-    /* Done with users, start on banned ip */
+    /* Done with users, start on tags */
+    LOGD->write_syslog("Writing bans to file.", LOG_VERBOSE);
+
+    if(call_out("__co_write_tags", 0, user, 0, 0, 0) < 1)
+    {
+        release_system();
+        error("Can't schedule call_out to start writing tags!");
+    }
+}
+
+static void __co_write_tags(object user, int filesize, int extension, int ctr)
+{
+    string unq_str, tagfile;
+    int chunk_ctr;
+
+    if (extension == 0)
+        tagfile = "/usr/game/tagd.unq";
+    else
+        tagfile = "/usr/game/tagd" + extension + ".unq";
+
+    catch {
+        for (chunk_ctr = 0; ctr < TAGD->num_tags() && chunk_ctr < SAVE_CHUNK; ctr ++, chunk_ctr ++) {
+            unq_str = TAGD->to_unq_text(ctr);
+            filesize += strlen(unq_str);
+            if (filesize > 64000) {
+                extension ++;
+                tagfile = "/usr/game/tagd" + extension + ".unq";
+                filesize = strlen(unq_str);
+            }
+            write_file(tagfile, unq_str);
+        }
+    } : {
+        release_system();
+        if (user) user->message("Error writing tags!\n");
+        error("Error writing tags!");
+    }
+
+    if (ctr < TAGD->num_tags()) {
+        if (call_out("__co_write_tagd", 0, user, filesize, extension, ctr) < 1)
+            error("Can't schedule call_out to start writing tags!");
+        return;
+    }
+
+    /* Done with tagss, start on banned ip */
     LOGD->write_syslog("Writing bans to file.", LOG_VERBOSE);
 
     if(call_out("__co_write_banned", 0, user) < 1)

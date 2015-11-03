@@ -1,25 +1,20 @@
 ~object_tag{
-  ~name{DropTime}
-  ~type{1}
-}
-
-~object_tag{
   ~name{Combat}
   ~type{1}
 }
-
 ~object_tag{
-  ~name{Hp}
+  ~name{DropTime}
   ~type{1}
 }
-
 ~object_tag{
   ~name{Fatigue}
   ~type{1}
 }
-
 ~object_tag{
   ~name{Follow}
   ~type{1}
 }
-
+~object_tag{
+  ~name{Hp}
+  ~type{1}
+}
