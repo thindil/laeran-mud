@@ -3,7 +3,7 @@
 pomoc rozmawianie          Rozmawianie w pokoju w którym przebywasz
 pomoc czat                 Rozmowa z graczami w całej grze
 pomoc kanal                Włączanie/wyłączanie kanałów
-pomoc socjalne		   Specjalne komendy do odgrywania postaci
+pomoc socjalne		       Specjalne komendy do odgrywania postaci
 }
 
 
@@ -30,11 +30,18 @@ osobom w pokoju: Bob chichocze.
 W komendach socjalnych możesz również podawać cel, np "chichot Adam".
 Taka komenda pokaże:
 
-osobie używającej jej: Chichoczesz do Adam.
-osobom w pokoju, poza Adamem: Bob chichocze do Adam.
+osobie używającej jej: Chichoczesz do Adama.
+osobom w pokoju, poza Adamem: Bob chichocze do Adama.
 Adamowi: Bob chichocze do Ciebie.
 
-Zobacz również: 'pomoc emo'
+Odmiana imienia celu przez przypadki następuje tylko wtedy gdy została
+ustawiona przez drugą osobę (w przypadku gracza).
+
+Jeżeli w pomieszczeniu jest więcej celów o takiej samej nazwie (np pięć
+szczurów) możesz również podać numer konkretnego celu. Na przykład,
+"chichot 3 szczur".
+
+Zobacz również: 'pomoc emo' i 'pomoc ustaw'
 }
 
 ~name{szepnij,rozmawianie,mowienie,mówienie,rozmowa,mow,powiedz,'}

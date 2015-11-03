@@ -383,9 +383,8 @@ int process_command(string str)
     if (!wiztool || !query_editor(wiztool) || force_command) {
         /* check standard commands */
         cmd = STRINGD->trim_whitespace(cmd);
-        if(cmd == "") {
+        if(cmd == "") 
             str = nil;
-        }
 
         if (strlen(cmd) != 0) {
             switch (cmd[0]) {
@@ -455,6 +454,7 @@ int process_command(string str)
         if(SOULD->is_social_verb(cmd)) {
             cmd_social(this_object(), cmd, str);
             str = nil;
+            return -1;
         }
 
         if(commands_map[cmd]) {
@@ -471,8 +471,7 @@ int process_command(string str)
                         + (str ? str : "(nil)") + "'.  Err text: "
                         + err);
 
-                message("Twoja komenda się wykraczyła w kodzie.\n");
-                message("Krzycz na Thindila.\n");
+                message("Twoja komenda się wykraczyła w kodzie.\nKrzycz na Thindila.\n");
 
                 /* Return normal status, print a prompt and continue. */
                 return -1;
@@ -491,15 +490,13 @@ int process_command(string str)
                         + (str ? str : "(nil)") + "'.  Err text: "
                         + err);
 
-                message("Twoja komenda się wykraczyła w kodzie.\n");
-                message("Krzycz na Thindila.\n");
+                message("Twoja komenda się wykraczyła w kodzie.\nKrzycz na Thindila.\n");
 
                 /* Return normal status, print a prompt and continue. */
                 return -1;
             }
-        } else {
+        } else
             message("Nie ma takiej komendy: " + cmd + " " + str + "\n");
-        }
     }
 
     /* All is well, just print a prompt and wait for next command */
@@ -1327,28 +1324,48 @@ static void cmd_movement(object user, string cmd, string str) {
 }
 
 /* This one is special, and is called specially... */
-static void cmd_social(object user, string cmd, string str) {
-  object* targets;
+static void cmd_social(object user, string cmd, string str) 
+{
+    object* targets;
+    int index;
 
-  if(!SOULD->is_social_verb(cmd)) {
-    message(cmd + " nie wygląda na poprawną komendę socjalną.\n");
-    return;
-  }
-
-  if(str && str != "") {
-    targets = location->find_contained_objects(user, str);
-    if(!targets) {
-      message("Nie widzisz niczego co by pasowało do '" + str
-	      + "' w okolicy.\n");
-      return;
+    if(!SOULD->is_social_verb(cmd)) {
+        message(cmd + " nie wygląda na poprawną komendę socjalną.\n");
+        return;
     }
     
-    /* For the moment, just pick the first one */
-    mobile->social(cmd, targets[0]);
-    return;
-  }
+    if (!str || STRINGD->trim_whitespace(str) == "") {
+        mobile->social(cmd, nil);
+        return;
+    }
 
-  mobile->social(cmd, nil);
+    if (sscanf(str, "%d %s", index, str) != 2)
+        index = 0;
+    index --;
+    if (index < -1) {
+        message("W marzeniach.\n");
+        return;
+    }
+    targets = location->find_contained_objects(user, str);
+    if(!targets) {
+        message("Nie możesz znaleźć żadnego '" + str + "' w okolicy.\n");
+        return;
+    }
+    if (index >= sizeof(targets)) {
+        message("Nie ma aż tyle '" + str + "' w okolicy.\n");
+        return;
+    }
+    if (sizeof(targets) > 1) {
+        if (index == -1) {
+            message("Więcej niż jedna taka osoba jest w okolicy.\n");
+            index = 0;
+        }
+        message("Wybierasz " + targets[index]->get_brief()->to_string(user) + "\n");
+
+    }
+    if (index == -1)
+        index = 0;
+    mobile->social(cmd, targets[index]);
 }
 
 static void cmd_get(object user, string cmd, string str) {
