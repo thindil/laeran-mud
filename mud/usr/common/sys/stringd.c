@@ -294,7 +294,7 @@ string unq_escape(string str) {
     case '}':
     case '~':
     case '\\':
-      ret += "\\" + str[index..index];
+      ret += "\\";
     default:
       ret += str[index..index];
       break;

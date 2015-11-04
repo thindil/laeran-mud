@@ -41,6 +41,7 @@ void pass_data(mixed data)
         error("Incorrect data type in set_desc user state!");
 
     data = STRINGD->trim_whitespace(data);
+    data = STRINGD->unq_escape(data);
     if (data != "") {
         phr = user->get_body()->get_look();
         phr->from_unq(data);
