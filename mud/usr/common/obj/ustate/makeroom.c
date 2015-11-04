@@ -50,14 +50,16 @@ private object obj_detail_of;
 #define SS_PROMPT_VOLUME_CAPACITY  24
 #define SS_PROMPT_LENGTH_CAPACITY  25
 #define SS_PROMPT_DAMAGE           27
-#define SS_PROMPT_WEARABLE         28
-#define SS_PROMPT_WLOCATION        29
-#define SS_PROMPT_ARMOR            30
-#define SS_PROMPT_PRICE            31
-#define SS_PROMPT_HP               32
-#define SS_PROMPT_COMBAT_RATING    33
-#define SS_PROMPT_BODY_LOCATIONS   34
-#define SS_PROMPT_SKILL            35
+#define SS_PROMPT_DAMAGE_TYPE      28
+#define SS_PROMPT_WEARABLE         29
+#define SS_PROMPT_WLOCATION        30
+#define SS_PROMPT_ARMOR            31
+#define SS_PROMPT_DAMAGE_RES       32
+#define SS_PROMPT_PRICE            33
+#define SS_PROMPT_HP               34
+#define SS_PROMPT_COMBAT_RATING    35
+#define SS_PROMPT_BODY_LOCATIONS   36
+#define SS_PROMPT_SKILL            37
 
 
 /* Input function return values */
@@ -86,9 +88,11 @@ static int  prompt_weight_capacity_input(string input);
 static int  prompt_volume_capacity_input(string input);
 static int  prompt_length_capacity_input(string input);
 static int  prompt_damage_input(string input);
+static int  prompt_damage_type_input(string input);
 static void prompt_wearable_data(mixed data);
 static int  prompt_wlocation_input(string input);
 static int  prompt_armor_input(string input);
+static int  prompt_damage_res_input(string input);
 static int  prompt_price_input(string input);
 static int  prompt_hp_input(string input);
 static int  prompt_combat_rating_input(string input);
@@ -199,11 +203,17 @@ int from_user(string input) {
   case SS_PROMPT_DAMAGE:
     ret = prompt_damage_input(input);
     break;
+  case SS_PROMPT_DAMAGE_TYPE:
+    ret = prompt_damage_type_input(input);
+    break;
   case SS_PROMPT_WLOCATION:
     ret = prompt_wlocation_input(input);
     break;
   case SS_PROMPT_ARMOR:
     ret = prompt_armor_input(input);
+    break;
+  case SS_PROMPT_DAMAGE_RES:
+    ret = prompt_damage_res_input(input);
     break;
   case SS_PROMPT_PRICE:
     ret = prompt_price_input(input);
@@ -275,195 +285,209 @@ void to_user(string output) {
    in, and the prompt is assumed to be prior to input (or prior
    to re-entering input after unacceptable input). */
 private string blurb_for_substate(int substate) {
-  string tmp;
+    string tmp;
 
-  switch(substate) {
+    switch(substate) {
 
-  case SS_PROMPT_OBJ_TYPE:
-    return "Wpisz typ obiektu albo 'wyjdz' aby wyjść.\n"
-      + "Prawidłowe wartości to:  room, portable, detail (r/p/d)\n";
+        case SS_PROMPT_OBJ_TYPE:
+            return "Wpisz typ obiektu albo 'wyjdz' aby wyjść.\n"
+                + "Prawidłowe wartości to:  room, portable, detail (r/p/d)\n";
 
-  case SS_PROMPT_OBJ_NUMBER:
-    return "Wprowadź wybrany numer dla tego obiektu\n"
-      + " albo naciśnij enter aby przypisać numer automatycznie.\n";
+        case SS_PROMPT_OBJ_NUMBER:
+            return "Wprowadź wybrany numer dla tego obiektu\n"
+                + " albo naciśnij enter aby przypisać numer automatycznie.\n";
 
-  case SS_PROMPT_OBJ_DETAIL_OF:
-    return "Wprowadź numer obiektu bazowego dla tego detalu albo wpisz 'wyjdz'.\n"
-      + "Chodzi o numer istniejącego obiektu dla którego będzie ten detal.\n";
+        case SS_PROMPT_OBJ_DETAIL_OF:
+            return "Wprowadź numer obiektu bazowego dla tego detalu albo wpisz 'wyjdz'.\n"
+                + "Chodzi o numer istniejącego obiektu dla którego będzie ten detal.\n";
 
-  case SS_PROMPT_OBJ_PARENT:
-    return "Wprowadź numer obiektu rodzica z którego zostaną pobrane dane obiektu.\n"
-      + "Przykład: #37 #247 #1343\n"
-      + "Możesz również nacisnąć enter dla braku rodziców lub wpisać 'wyjdz' aby wyjść.\n"
-      + "Rodzice są jak Skotos ur-objects (zobacz pomoc set_obj_parent).\n";
+        case SS_PROMPT_OBJ_PARENT:
+            return "Wprowadź numer obiektu rodzica z którego zostaną pobrane dane obiektu.\n"
+                + "Przykład: #37 #247 #1343\n"
+                + "Możesz również nacisnąć enter dla braku rodziców lub wpisać 'wyjdz' aby wyjść.\n"
+                + "Rodzice są jak Skotos ur-objects (zobacz pomoc set_obj_parent).\n";
 
-  case SS_PROMPT_BRIEF_DESC:
-    if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Następnie, proszę wprowadzić jednoliniowy opis albo wpisać 'none' dla wartości z rodzica.\n"
-	+ "Przykłady krótkiego(brief) opisu:  "
-	+ "'miecz', 'John', 'trochę bekonu'.\n";
-    return "Następnie, proszę wprowadzić jednoliniowy opis.\n"
-      + "Przykłady krótkiego(brief) opisu:  "
-      + "'miecz', 'John', 'trochę bekonu'.\n";
+        case SS_PROMPT_BRIEF_DESC:
+            if(new_obj && sizeof(new_obj->get_archetypes()))
+                return "Następnie, proszę wprowadzić jednoliniowy opis albo wpisać 'none' dla wartości z rodzica.\n"
+                    + "Przykłady krótkiego(brief) opisu:  "
+                    + "'miecz', 'John', 'trochę bekonu'.\n";
+            return "Następnie, proszę wprowadzić jednoliniowy opis.\n"
+                + "Przykłady krótkiego(brief) opisu:  "
+                + "'miecz', 'John', 'trochę bekonu'.\n";
 
-  case SS_PROMPT_LOOK_DESC:
-    if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Teraz wprowadź wieloliniowy opis dla 'patrz'('look'). To jest to co gracz\n"
-	+ " zobaczy przy pomocy komendy 'patrz'. Możesz też pisać 'none' dla przyjęcia\n"
-	+ " wartości z rodzica.\n";
-    return "Teraz wprowadź wieloliniowy opis dla 'patrz'('look'). To jest to co gracz"
-      + " zobaczy przy pomocy komendy 'patrz'.\n";
+        case SS_PROMPT_LOOK_DESC:
+            if(new_obj && sizeof(new_obj->get_archetypes()))
+                return "Teraz wprowadź wieloliniowy opis dla 'patrz'('look'). To jest to co gracz\n"
+                    + " zobaczy przy pomocy komendy 'patrz'. Możesz też pisać 'none' dla przyjęcia\n"
+                    + " wartości z rodzica.\n";
+            return "Teraz wprowadź wieloliniowy opis dla 'patrz'('look'). To jest to co gracz"
+                + " zobaczy przy pomocy komendy 'patrz'.\n";
 
-  case SS_PROMPT_EXAMINE_DESC:
-    return "Teraz wprowadź wieloliniowy opis dla 'zbadaj'('examine'). To jest to co gracz"
-      + " zobaczy przy pomocy komendy 'zbadaj'.\n"
-      + "Albo naciśnij '~' i enter aby ustawić to na taki sam tekst jak dla komendy 'patrz'.\n";
+        case SS_PROMPT_EXAMINE_DESC:
+            return "Teraz wprowadź wieloliniowy opis dla 'zbadaj'('examine'). To jest to co gracz"
+                + " zobaczy przy pomocy komendy 'zbadaj'.\n"
+                + "Albo naciśnij '~' i enter aby ustawić to na taki sam tekst jak dla komendy 'patrz'.\n";
 
-  case SS_PROMPT_NOUNS:
-    tmp = "Krótki opis (Brief):  " + new_obj->get_brief()->to_string(get_user()) + "\n";
+        case SS_PROMPT_NOUNS:
+            tmp = "Krótki opis (Brief):  " + new_obj->get_brief()->to_string(get_user()) + "\n";
 
-    if(sizeof(new_obj->get_archetypes())) {
-      tmp += "Rzeczowniki z rodzica: ";
-      tmp += implode(new_obj->get_nouns(get_user()->get_locale()), ", ");
-      tmp += "\n";
+            if(sizeof(new_obj->get_archetypes())) {
+                tmp += "Rzeczowniki z rodzica: ";
+                tmp += implode(new_obj->get_nouns(get_user()->get_locale()), ", ");
+                tmp += "\n";
+            }
+
+            tmp += "r\nPodaj oddzielone spacją nowe rzeczowniki odwołujące się do tego obiektu oraz odmiana nazwy.\n"
+                + "Przykład: miecz miecza mieczowi miecz mieczem mieczu miecza ostrze bron broń\n\n";
+
+            return tmp;
+
+        case SS_PROMPT_ADJECTIVES:
+            tmp = "Krótki opis (Brief):  " + new_obj->get_brief()->to_string(get_user()) + "\n";
+
+            if(sizeof(new_obj->get_archetypes())) {
+                tmp += "Przymiotniki z rodzica: ";
+                tmp += implode(new_obj->get_adjectives(get_user()->get_locale()), ", ");
+                tmp += "\n";
+            }
+
+            tmp += "\nPodaj odddzielone spacją nowe przymiotniki odwołujące się do tego obiektu.\n"
+                + "Przykład: ciezki ciężki metaliczny czerwony\n";
+
+            return tmp;
+
+        case SS_PROMPT_WEIGHT:
+            if(new_obj && sizeof(new_obj->get_archetypes()))
+                return "Podaj ciężar obiektu albo wpisz 'none' aby przyjąć wartości z rodzica.\n"
+                    + "Domyślnie waga jest podana w kilogramach albo możesz podać dodatkowo jednostki.\n"
+                    + "Metryczne: mg   g   kg     Standard: lb   oz   tons\n";
+            return "Podaj ciężar obiektu.\n"
+                + "Domyślnie waga jest podana w kilogramach albo możesz podać dodatkowo jednostki.\n"
+                + "Metryczne: mg   g   kg     Standard: lb   oz   tons\n";
+
+        case SS_PROMPT_VOLUME:
+            if(new_obj && sizeof(new_obj->get_archetypes()))
+                return "Podaj objętość obiektu albo wpisz 'none' aby przyjąć wartości z rodzica.\n"
+                    + "Domyślnie objętość jest podana w litrach albo możesz podać dodatkowo jednostki.\n"
+                    + "Metrycznec: L   mL   cc   cubic m\n"
+                    + "Standard: oz   qt   gal   cubic ft   cubic yd\n";
+            return "Podaj objętość obiektu.\n"
+                + "Domyślnie objętość jest podana w litrach albo możesz podać dodatkowo jednostki.\n"
+                + "Metryczne: L   mL   cc   cubic m\n"
+                + "Standard: oz   qt   gal   cubic ft   cubic yd\n";
+
+        case SS_PROMPT_LENGTH:
+            if(new_obj && sizeof(new_obj->get_archetypes()))
+                return "Wprowadź długość najdłuższej osi obiektu albo wpisz 'none' aby przyjąć wartości\n"
+                    + "z rodzica.\n"
+                    + "Domyślnie długość jest podana w centymetrach albo możesz podać dodatkowo jednostki.\n"
+                    + "Metryczne: m   mm   cm   dm     Standard: in   ft   yd\n";
+            return "Wprowadź długość najdłuższej osi obiektu.\n"
+                + "Domyślnie długość jest podana w centymetrach albo możesz podać dodatkowo jednostki.\n"
+                + "Metryczne: m   mm   cm   dm     Standard: in   ft   yd\n";
+
+            /* The following don't have full-on blurbs, just one-line prompts
+               for the ENTER_YN user state.  So no blurb. */
+        case SS_PROMPT_CONTAINER:
+        case SS_PROMPT_OPEN:
+        case SS_PROMPT_OPENABLE:
+        case SS_PROMPT_WEARABLE:
+                return "This blurb should never be used.  Oops!\n";
+
+        case SS_PROMPT_WEIGHT_CAPACITY:
+                if(new_obj && sizeof(new_obj->get_archetypes()))
+                    return "Podaj udźwig obiektu albo wpisz 'none' aby przyjąć wartości z rodzica.\n"
+                        + "Domyślnie udźwig jest podany w kilogramach albo możesz podać dodatkowo jednostki.\n"
+                        + "Metryczne: mg   g   kg     Standard: lb   oz   tons\n";
+                return "Podaj udźwig obiektu.\n"
+                    + "Domyślnie udźwig jest podany w kilogramach albo możesz podać dodatkowo jednostki.\n"
+                    + "Metric: mg   g   kg     Standard: lb   oz   tons\n";
+
+        case SS_PROMPT_VOLUME_CAPACITY:
+                if(new_obj && sizeof(new_obj->get_archetypes()))
+                    return "Podaj pojemność obiektu albo wpisz 'none' aby przyjąć wartości z rodzica.\n"
+                        + "Domyślnie pojemność jest podana w litrach albo możesz podać dodatkowo jednostki.\n"
+                        + "Metryczne: L   mL   cc   cubic m\n"
+                        + "Standard: oz   qt   gal   cubic ft   cubic yd\n";
+                return "Podaj pojemność obiektu\n"
+                    + "Domyślnie pojemność jest podana w litrach albo możesz podać dodatkowo jednostki.\n"
+                    + "Metryczne: L   mL   cc   cubic m\n"
+                    + "Standard: oz   qt   gal   cubic ft   cubic yd\n";
+
+        case SS_PROMPT_LENGTH_CAPACITY:
+                if(new_obj && sizeof(new_obj->get_archetypes()))
+                    return "Podaj długość najdłuższej osi pojemnika albo wpisz 'none' aby przyjąć wartości\n"
+                        + "z rodzica.\n"
+                        + "Domyślnie długość jest podana w centymetrach albo możesz podać dodatkowo jednostki.\n"
+                        + "Metryczne: m   mm   cm   dm     Standard: in   ft   yd\n";
+                return "Podaj długość najdłuższej osi pojemnika.\n"
+                    + "Domyślnie długość jest podana w centymetrach albo możesz podać dodatkowo jednostki.\n"
+                    + "Metryczne: m   mm   cm   dm     Standard: in   ft   yd\n";
+
+        case SS_PROMPT_DAMAGE:
+                if(new_obj && sizeof(new_obj->get_archetypes()))
+                    return "Wprowadź ilość zadawanych obrażeń przez obiekt albo wpisz "
+                        + " 'none' aby\n przyjąć wartości z archetypu.\n";
+                return "Wprowadź ilość zadawanych obrażeń przez obiekt.\n";
+        case SS_PROMPT_DAMAGE_TYPE:
+                if(new_obj && sizeof(new_obj->get_archetypes()))
+                    return "Wprowadź typ zadawanych obrażeń przez obiekt albo wpisz 'none' aby\n"
+                        + "przyjąć wartość z archetypu. Dostępne na razie wartości to crush, impaled, cut\n";
+                return "Wprowadź typ zadawanych obrażeń przez obiekt. Dostępne na razie wartości to crush, impaled, cut\n";
+        case SS_PROMPT_WLOCATION:
+                if(new_obj && sizeof(new_obj->get_archetypes()))
+                    return "Wprowadź lokację (lub lokacje, oddzielone przecinkami) na które można założyć dany obiekt, "
+                        + " albo wpisz 'none' \n aby przyjąć wartości z archetypu.\n"
+                        + "Dostępne lokacje to: tułów, ręce, nogi, głowa, dłonie, prawa dłoń, lewa dłoń\n";
+                return "Wprowadź lokację (lub lokacje, oddzielone przecinkami) na które można założyć dany obiekt.\n"
+                    + "Dostępne lokacje to: tułów, ręce, nogi, głowa, dłonie, prawa dłoń, lewa dłoń\n";
+        case SS_PROMPT_ARMOR:
+                if(new_obj && sizeof(new_obj->get_archetypes()))
+                    return "Wprowadź wartość zbroi przedmiotu, czyli ile obrażeń potrafi "
+                        + " odjąć podczas ataku \n albo wpisz 'none' aby przyjąć wartości "
+                        + " z archetypu.\n";
+                return "Wprowadź wartość zbroi przedmiotu, czyli ile obrażeń potrafi "
+                    + " odjąć podczas ataku. \n";
+        case SS_PROMPT_DAMAGE_RES:
+                if(new_obj && sizeof(new_obj->get_archetypes()))
+                    return "Wprowadź odporność na wybrany typ obrażeń przedmiotu, czyli o ile procent potrafi\n"
+                        + "odjąć obrażeń podczas ataku albo wpisz 'none' aby przyjąć wartości z archetypu.\n"
+                        + "Przykład: 10 crush - odejmuje 10 procent od obrażeń typu crush. Może to być wartość\n"
+                        + "ujemna albo lista wartości oddzielonych przecinkami: 10 crush, -20 cut\n";
+                return "Wprowadź odporność na wybrany typ obrażeń przedmiotu, czyli o ile procent potrafi\n"
+                    + "odjąć obrażeń podczas ataku albo pozostaw puste. Przykład: 10 crush - odejmuje 10 procent\n"
+                    + "od obrażeń typu crush. Może to być wartość ujemna oraz lista wartości oddzielonych przecinkami.\n";
+        case SS_PROMPT_PRICE:
+                if(new_obj && sizeof(new_obj->get_archetypes()))
+                    return "Wprowadź cenę za przedmiot w sklepie (kupno/sprzedaż) albo wpisz"
+                        + " 'none' aby przyjąć \n wartości z archetypu.\n";
+                return "Wprowadź cenę za przedmiot w sklepie (kupno/sprzedaż).\n";
+        case SS_PROMPT_HP:
+                if(new_obj && sizeof(new_obj->get_archetypes()))
+                    return "Wprowadź ilość punktów życia przedmiotu albo wpisz 'none' aby przyjąć \n"
+                        + "wartości z archetypu.\n";
+                return "Wprowadź ilość punktów życia przedmiotu.\n";
+        case SS_PROMPT_COMBAT_RATING:
+                if(new_obj && sizeof(new_obj->get_archetypes()))
+                    return "Wprowadź poziom bojowy obiektu albo wpisz 'none' aby przyjąć wartości \n"
+                        + "z archetypu.\n";
+                return "Wprowadź poziom bojowy obiektu.\n";
+        case SS_PROMPT_BODY_LOCATIONS:
+                if(new_obj && sizeof(new_obj->get_archetypes()))
+                    return "Wprowadź lokacje ciała oddzielone przecinkami albo wpisz 'none' aby przyjąć wartość z archetypu.\n"
+                        + "Aby pominąć ten krok, wciśnij enter. Przykład: głowa, korpus, przednia łapa, tylnia łapa\n";
+                return "Wprowadź lokacje ciała oddzielone przecinkami. Aby pominąć ten krok, wciśnij enter.\n"
+                    + "Przykład: głowa, korpus, przednia łapa, tylnia łapa\n";
+        case SS_PROMPT_SKILL:
+                if(new_obj && sizeof(new_obj->get_archetypes()))
+                    return "Podaj nazwę umiejętności potrzebną do używania tego obiektu albo wpisz 'none' aby przyjąć\n"
+                        + "wartość z archetypu. Aby pominąć ten krok, wciśnij enter. \n";
+                return "Podaj nazwę umiejętności potrzebną do używania tego obiektu. Aby pominąć ten krok, wciśnij \n"
+                    + "enter.\n";
+        default:
+                return "<NIEZNANY STAN>\n";
     }
-
-    tmp += "r\nPodaj oddzielone spacją nowe rzeczowniki odwołujące się do tego obiektu oraz odmiana nazwy.\n"
-      + "Przykład: miecz miecza mieczowi miecz mieczem mieczu miecza ostrze bron broń\n\n";
-
-    return tmp;
-
-  case SS_PROMPT_ADJECTIVES:
-    tmp = "Krótki opis (Brief):  " + new_obj->get_brief()->to_string(get_user()) + "\n";
-
-    if(sizeof(new_obj->get_archetypes())) {
-      tmp += "Przymiotniki z rodzica: ";
-      tmp += implode(new_obj->get_adjectives(get_user()->get_locale()), ", ");
-      tmp += "\n";
-    }
-
-    tmp += "\nPodaj odddzielone spacją nowe przymiotniki odwołujące się do tego obiektu.\n"
-      + "Przykład: ciezki ciężki metaliczny czerwony\n";
-
-    return tmp;
-
-  case SS_PROMPT_WEIGHT:
-    if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Podaj ciężar obiektu albo wpisz 'none' aby przyjąć wartości z rodzica.\n"
-	+ "Domyślnie waga jest podana w kilogramach albo możesz podać dodatkowo jednostki.\n"
-	+ "Metryczne: mg   g   kg     Standard: lb   oz   tons\n";
-    return "Podaj ciężar obiektu.\n"
-      + "Domyślnie waga jest podana w kilogramach albo możesz podać dodatkowo jednostki.\n"
-      + "Metryczne: mg   g   kg     Standard: lb   oz   tons\n";
-
-  case SS_PROMPT_VOLUME:
-    if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Podaj objętość obiektu albo wpisz 'none' aby przyjąć wartości z rodzica.\n"
-	+ "Domyślnie objętość jest podana w litrach albo możesz podać dodatkowo jednostki.\n"
-	+ "Metrycznec: L   mL   cc   cubic m\n"
-	+ "Standard: oz   qt   gal   cubic ft   cubic yd\n";
-    return "Podaj objętość obiektu.\n"
-      + "Domyślnie objętość jest podana w litrach albo możesz podać dodatkowo jednostki.\n"
-      + "Metryczne: L   mL   cc   cubic m\n"
-      + "Standard: oz   qt   gal   cubic ft   cubic yd\n";
-
-  case SS_PROMPT_LENGTH:
-    if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Wprowadź długość najdłuższej osi obiektu albo wpisz 'none' aby przyjąć wartości\n"
-	+ "z rodzica.\n"
-	+ "Domyślnie długość jest podana w centymetrach albo możesz podać dodatkowo jednostki.\n"
-	+ "Metryczne: m   mm   cm   dm     Standard: in   ft   yd\n";
-    return "Wprowadź długość najdłuższej osi obiektu.\n"
-      + "Domyślnie długość jest podana w centymetrach albo możesz podać dodatkowo jednostki.\n"
-      + "Metryczne: m   mm   cm   dm     Standard: in   ft   yd\n";
-
-    /* The following don't have full-on blurbs, just one-line prompts
-       for the ENTER_YN user state.  So no blurb. */
-  case SS_PROMPT_CONTAINER:
-  case SS_PROMPT_OPEN:
-  case SS_PROMPT_OPENABLE:
-  case SS_PROMPT_WEARABLE:
-    return "This blurb should never be used.  Oops!\n";
-
-  case SS_PROMPT_WEIGHT_CAPACITY:
-    if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Podaj udźwig obiektu albo wpisz 'none' aby przyjąć wartości z rodzica.\n"
-	+ "Domyślnie udźwig jest podany w kilogramach albo możesz podać dodatkowo jednostki.\n"
-	+ "Metryczne: mg   g   kg     Standard: lb   oz   tons\n";
-    return "Podaj udźwig obiektu.\n"
-      + "Domyślnie udźwig jest podany w kilogramach albo możesz podać dodatkowo jednostki.\n"
-      + "Metric: mg   g   kg     Standard: lb   oz   tons\n";
-
-  case SS_PROMPT_VOLUME_CAPACITY:
-    if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Podaj pojemność obiektu albo wpisz 'none' aby przyjąć wartości z rodzica.\n"
-	+ "Domyślnie pojemność jest podana w litrach albo możesz podać dodatkowo jednostki.\n"
-	+ "Metryczne: L   mL   cc   cubic m\n"
-	+ "Standard: oz   qt   gal   cubic ft   cubic yd\n";
-    return "Podaj pojemność obiektu\n"
-      + "Domyślnie pojemność jest podana w litrach albo możesz podać dodatkowo jednostki.\n"
-      + "Metryczne: L   mL   cc   cubic m\n"
-      + "Standard: oz   qt   gal   cubic ft   cubic yd\n";
-
-  case SS_PROMPT_LENGTH_CAPACITY:
-    if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Podaj długość najdłuższej osi pojemnika albo wpisz 'none' aby przyjąć wartości\n"
-	+ "z rodzica.\n"
-	+ "Domyślnie długość jest podana w centymetrach albo możesz podać dodatkowo jednostki.\n"
-	+ "Metryczne: m   mm   cm   dm     Standard: in   ft   yd\n";
-    return "Podaj długość najdłuższej osi pojemnika.\n"
-      + "Domyślnie długość jest podana w centymetrach albo możesz podać dodatkowo jednostki.\n"
-      + "Metryczne: m   mm   cm   dm     Standard: in   ft   yd\n";
-
-  case SS_PROMPT_DAMAGE:
-    if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Wprowadź ilość zadawanych obrażeń przez obiekt albo wpisz "
-	+ " 'none' aby\n przyjąć wartości z archetypu.\n";
-    return "Wprowadź ilość zadawanych obrażeń przez obiekt.\n";
-  case SS_PROMPT_WLOCATION:
-    if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Wprowadź lokację (lub lokacje, oddzielone przecinkami) na które można założyć dany obiekt, "
-	+ " albo wpisz 'none' \n aby przyjąć wartości z archetypu.\n"
-	+ "Dostępne lokacje to: tułów, ręce, nogi, głowa, dłonie, prawa dłoń, lewa dłoń\n";
-    return "Wprowadź lokację (lub lokacje, oddzielone przecinkami) na które można założyć dany obiekt.\n"
-      + "Dostępne lokacje to: tułów, ręce, nogi, głowa, dłonie, prawa dłoń, lewa dłoń\n";
-  case SS_PROMPT_ARMOR:
-    if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Wprowadź wartość zbroi przedmiotu, czyli ile obrażeń potrafi "
-	+ " odjąć podczas ataku \n albo wpisz 'none' aby przyjąć wartości "
-	+ " z archetypu.\n";
-    return "Wprowadź wartość zbroi przedmiotu, czyli ile obrażeń potrafi "
-      + " odjąć podczas ataku. \n";
-  case SS_PROMPT_PRICE:
-    if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Wprowadź cenę za przedmiot w sklepie (kupno/sprzedaż) albo wpisz"
-	+ " 'none' aby przyjąć \n wartości z archetypu.\n";
-    return "Wprowadź cenę za przedmiot w sklepie (kupno/sprzedaż).\n";
-  case SS_PROMPT_HP:
-    if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Wprowadź ilość punktów życia przedmiotu albo wpisz 'none' aby przyjąć \n"
-	+ "wartości z archetypu.\n";
-    return "Wprowadź ilość punktów życia przedmiotu.\n";
-  case SS_PROMPT_COMBAT_RATING:
-    if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Wprowadź poziom bojowy obiektu albo wpisz 'none' aby przyjąć wartości \n"
-	+ "z archetypu.\n";
-    return "Wprowadź poziom bojowy obiektu.\n";
-  case SS_PROMPT_BODY_LOCATIONS:
-    if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Wprowadź lokacje ciała oddzielone przecinkami albo wpisz 'none' aby przyjąć wartość z archetypu.\n"
-	+ "Aby pominąć ten krok, wciśnij enter. Przykład: głowa, korpus, przednia łapa, tylnia łapa\n";
-    return "Wprowadź lokacje ciała oddzielone przecinkami. Aby pominąć ten krok, wciśnij enter.\n"
-      + "Przykład: głowa, korpus, przednia łapa, tylnia łapa\n";
-  case SS_PROMPT_SKILL:
-    if(new_obj && sizeof(new_obj->get_archetypes()))
-      return "Podaj nazwę umiejętności potrzebną do używania tego obiektu albo wpisz 'none' aby przyjąć\n"
-	+ "wartość z archetypu. Aby pominąć ten krok, wciśnij enter. \n";
-    return "Podaj nazwę umiejętności potrzebną do używania tego obiektu. Aby pominąć ten krok, wciśnij \n"
-      + "enter.\n";
-  default:
-    return "<NIEZNANY STAN>\n";
-  }
 }
 
 
@@ -1586,10 +1610,30 @@ static int prompt_damage_input(string input)
   new_obj->set_damage(value);
 
   send_string("Zaakceptowano obrażenia.\n\n");
-  substate = SS_PROMPT_WEARABLE;
-  push_new_state(US_ENTER_YN, "Obiekt można zakładać na ciało? ");
+  substate = SS_PROMPT_DAMAGE_TYPE;
+  send_string(blurb_for_substate(substate));
 
   return RET_NORMAL;
+}
+
+static int prompt_damage_type_input(string input)
+{
+    if (!input || STRINGD->is_whitespace(input)) {
+        send_string("Spróbujmy ponownie.\n");
+        send_string(blurb_for_substate(substate));
+        return RET_NORMAL;
+    }
+    input = STRINGD->trim_whitespace(input);
+    if (!STRINGD->stricmp(input, "none"))
+        new_obj->set_damage_type("");
+    else
+        new_obj->set_damage_type(input);
+
+    send_string("Zaakceptowano typ obrażeń.\n\n");
+    substate = SS_PROMPT_WEARABLE;
+    push_new_state(US_ENTER_YN, "Obiekt można zakładać na ciało? ");
+
+    return RET_NORMAL;
 }
 
 static void prompt_wearable_data(mixed data)
@@ -1716,10 +1760,35 @@ static int prompt_armor_input(string input)
   new_obj->set_armor(value);
 
   send_string("Zaakceptowano zbroję obiektu.\n\n");
-  substate = SS_PROMPT_PRICE;
+  substate = SS_PROMPT_DAMAGE_RES;
   send_string(blurb_for_substate(substate));
 
   return RET_NORMAL;
+}
+
+static int prompt_damage_res_input(string input)
+{
+    int i;
+    string *value, *value2;
+    mapping val;
+
+    input = STRINGD->trim_whitespace(input);
+    val = ([ ]);
+
+    if (input && !STRINGD->is_whitespace(input) && STRINGD->stricmp(input, "none")) {
+        value = explode(input, ", ");
+        for (i = 0; i < sizeof(value); i++) {
+            value2 = explode(value[i], " ");
+            val[value2[1]] = value2[0];
+        }
+        new_obj->set_damage_res(explode(input, ", "));
+    }
+    new_obj->set_damage_res(val);
+    send_string("Zaakceptowano odporności na obrażenia przedmiotu.\n\n");
+    substate = SS_PROMPT_PRICE;
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
 }
 
 static int prompt_price_input(string input)

@@ -51,8 +51,9 @@ private float weight, volume, length;
 private float weight_capacity, volume_capacity, length_capacity;
 private int damage, armor, price, hp, combat_rating;
 private int* wearlocations;
-private string* body_locations;
-private string skill;
+private string *body_locations;
+private string skill, damage_type;
+private mapping damage_res;
 
 /* These are the total current amount of weight and volume
    being held in the object. */
@@ -74,6 +75,8 @@ static void create(varargs int clone) {
     damage = armor = price = hp = combat_rating = 0;
     wearlocations = ({ });
     body_locations = ({ });
+    damage_res = ([ ]);
+    damage_type = "";
     skill = "";
 
     pending_parents = nil;
@@ -257,6 +260,22 @@ string get_skill(void)
   return skill;
 }
 
+string get_damage_type(void)
+{
+  if(damage_type == "" && sizeof(obj::get_archetypes()))
+    return obj::get_archetypes()[0]->get_damage_type();
+
+  return damage_type;
+}
+
+mapping get_damage_res(void)
+{
+  if(!sizeof(map_indices(damage_res)) && sizeof(obj::get_archetypes()))
+    return obj::get_archetypes()[0]->get_damage_res();
+
+  return damage_res;
+}
+
 void set_weight(float new_weight) {
   object loc;
 
@@ -377,6 +396,19 @@ void set_skill(string new_skill) {
     error("Only authorized code can set length capacities!");
 
   skill = new_skill;
+}
+
+void set_damage_type(string new_damage_type) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can set length capacities!");
+
+  damage_type = new_damage_type;
+}
+void set_damage_res(mapping new_damage_res) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can set length capacities!");
+
+  damage_res = new_damage_res;
 }
 
 /*** Functions dealing with Exits ***/
@@ -997,6 +1029,20 @@ private string serialize_list(mixed *list) {
   return implode(str_list, ", ");
 }
 
+private string serialize_mapping(mapping map) 
+{
+    int i;
+    string *str_list, *indices;
+
+    indices = map_indices(map);
+    str_list = ({ });
+    for (i = 0; i < sizeof(indices); i++) {
+        str_list += ({ indices[i], map[indices] });
+    }
+
+    return implode(str_list, ", ");
+}
+
 /*
  * string to_unq_flags(void)
  *
@@ -1066,10 +1112,14 @@ string to_unq_flags(void) {
   }
   if (damage > 0)
       ret += "  ~damage{" + damage + "}\n";
+  if (damage_type != "")
+      ret += "  ~damage_type{" + damage_type + "}\n";
   if (is_wearable() && sizeof(wearlocations))
       ret += "  ~wearlocations{" + serialize_list(wearlocations) + "}\n";
   if (armor > 0)
       ret += "  ~armor{" + armor + "}\n";
+  if (sizeof(map_indices(damage_res)))
+      ret += "  ~damage_res{" + serialize_mapping(damage_res) + "}\n";
   if (price > 0)
       ret += "  ~price{" + price + "}\n";
   if (hp > 0)
@@ -1144,146 +1194,141 @@ private void parse_all_tags(mixed* value) {
  */
 
 void from_dtd_tag(string tag, mixed value) {
-  int ctr, ctr2;
+    int ctr, ctr2;
+    string *val;
 
-  switch (tag)
+    switch (tag)
     {
-    case "number":
-      tr_num = value;
-      break;
-    case "obj_type":
-      break;
-    case "detail":
-      if(pending_location > -1)
-	{
-	  LOGD->write_syslog("Detail specified despite pending location!",
-			     LOG_ERR);
-	  LOGD->write_syslog("Obj #" + tr_num + ", detail field: "
-			     + value + ", existing location/detail: "
-			     + pending_location, LOG_ERR);
-	  error("Error loading object #" + tr_num + "!  Check logfile.");
-	}
-      pending_detail_of = value;
-      pending_location = value;
-      break;
-    case "location":
-      if(pending_location > -1)
-	{
-	  LOGD->write_syslog("Location specified despite pending location!",
-			     LOG_ERR);
-	  LOGD->write_syslog("Obj #" + tr_num + ", new location: "
-			     + value + ", existing location/detail: "
-			     + pending_location, LOG_ERR);
-	  error("Error loading object #" + tr_num + "!  Check logfile.");
-      }
-      pending_location = value;
-      break;
-    case "bdesc":
-      set_brief(value);
-      break;
-    case "ldesc":
-      set_look(value);
-      break;
-    case "edesc":
-      set_examine(value);
-      break;
-    case "flags":
-      objflags = value;
-      break;
-    case "parent":
-      pending_parents = ({ value });
-      set_brief(nil);
-      set_look(nil);
-      break;
-    case "nouns":
-      for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
-	{
-	  add_noun(value[ctr2]);
-	}
-      break;
-    case "adjectives":
-      for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
-	{
-	  add_adjective(value[ctr2]);
-	}
-      break;
-    case "rem_nouns":
-      for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
-	{
-	  pending_removed_nouns += ({ value[ctr2] });
-	}
-      break;
-    case "rem_adjectives":
-      for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
-	{
-	  pending_removed_adjectives += ({ value[ctr2] });
-	}
-      break;
-    case "newexit":
-      EXITD->room_request_complex_exit(tr_num, value);
-      break;
-    case "weight":
-      weight = value;
-      break;
-    case "volume":
-      volume = value;
-      break;
-    case "length":
-      length = value;
-      break;
-    case "weight_capacity":
-      weight_capacity = value;
-      break;
-    case "volume_capacity":
-      volume_capacity = value;
-      break;
-    case "length_capacity":
-      length_capacity = value;
-      break;
-    case "damage":
-      damage = value;
-      break;
-    case "armor":
-      armor = value;
-      break;
-    case "price":
-      price = value;
-      break;
-    case "hp":
-      hp = value;
-      break;
-    case "combat_rating":
-      combat_rating = value;
-      break;
-    case "skill":
-      skill = value;
-      break;
-    case "wearlocations":
-      value = explode(value, ", ");
-      for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
-	{
-	  wearlocations += ({ (int)value[ctr2] });
-	}
-      break;
-    case "body_locations":
-      value = explode(value, ", ");
-      for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
-	{
-	  body_locations += ({ value[ctr2] });
-	}
-      break;
-    case "removed_details":
-      value = explode(value, ", ");
-      for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
-	{
-	  pending_removed_details += ({ (int)value[ctr2] });
-	}
-      break;
-    case "tags":
-      /* Fill in tags array for this object */
-      parse_all_tags(value);
-      break;
-    default:
-      error("Don't recognize tag " + tag + " in function from_dtd_tag()");
+        case "number":
+            tr_num = value;
+            break;
+        case "obj_type":
+            break;
+        case "detail":
+            if(pending_location > -1) {
+                LOGD->write_syslog("Detail specified despite pending location!",
+                        LOG_ERR);
+                LOGD->write_syslog("Obj #" + tr_num + ", detail field: "
+                        + value + ", existing location/detail: "
+                        + pending_location, LOG_ERR);
+                error("Error loading object #" + tr_num + "!  Check logfile.");
+            }
+            pending_detail_of = value;
+            pending_location = value;
+            break;
+        case "location":
+            if(pending_location > -1) {
+                LOGD->write_syslog("Location specified despite pending location!",
+                        LOG_ERR);
+                LOGD->write_syslog("Obj #" + tr_num + ", new location: "
+                        + value + ", existing location/detail: "
+                        + pending_location, LOG_ERR);
+                error("Error loading object #" + tr_num + "!  Check logfile.");
+            }
+            pending_location = value;
+            break;
+        case "bdesc":
+            set_brief(value);
+            break;
+        case "ldesc":
+            set_look(value);
+            break;
+        case "edesc":
+            set_examine(value);
+            break;
+        case "flags":
+            objflags = value;
+            break;
+        case "parent":
+            pending_parents = ({ value });
+            set_brief(nil);
+            set_look(nil);
+            break;
+        case "nouns":
+            for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
+                add_noun(value[ctr2]);
+            break;
+        case "adjectives":
+            for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
+                add_adjective(value[ctr2]);
+            break;
+        case "rem_nouns":
+            for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
+                pending_removed_nouns += ({ value[ctr2] });
+            break;
+        case "rem_adjectives":
+            for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
+                pending_removed_adjectives += ({ value[ctr2] });
+            break;
+        case "newexit":
+            EXITD->room_request_complex_exit(tr_num, value);
+            break;
+        case "weight":
+            weight = value;
+            break;
+        case "volume":
+            volume = value;
+            break;
+        case "length":
+            length = value;
+            break;
+        case "weight_capacity":
+            weight_capacity = value;
+            break;
+        case "volume_capacity":
+            volume_capacity = value;
+            break;
+        case "length_capacity":
+            length_capacity = value;
+            break;
+        case "damage":
+            damage = value;
+            break;
+        case "damage_type":
+            damage_type = value;
+            break;
+        case "armor":
+            armor = value;
+            break;
+        case "damage_res":
+            value = explode(value, ", ");
+            for (ctr2 = 0; ctr2 < sizeof(value); ctr2 ++) {
+                val = explode(value[ctr2], " ");
+                damage_res[val[1]] = val[0];
+            }
+            break;
+        case "price":
+            price = value;
+            break;
+        case "hp":
+            hp = value;
+            break;
+        case "combat_rating":
+            combat_rating = value;
+            break;
+        case "skill":
+            skill = value;
+            break;
+        case "wearlocations":
+            value = explode(value, ", ");
+            for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
+                wearlocations += ({ (int)value[ctr2] });
+            break;
+        case "body_locations":
+            value = explode(value, ", ");
+            for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
+                body_locations += ({ value[ctr2] });
+            break;
+        case "removed_details":
+            value = explode(value, ", ");
+            for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
+                pending_removed_details += ({ (int)value[ctr2] });
+            break;
+        case "tags":
+            /* Fill in tags array for this object */
+            parse_all_tags(value);
+            break;
+        default:
+            error("Don't recognize tag " + tag + " in function from_dtd_tag()");
     }
 }

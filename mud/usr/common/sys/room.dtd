@@ -4,8 +4,9 @@
        nouns?,rem_nouns?,adjectives?,rem_adjectives?,
        exit*,newexit*,flags?,weight?,volume?,length?,
        weight_capacity?,volume_capacity?,length_capacity?,removed_details?,
-       tags?,data?,damage?,wearlocations?,armor?,price?,hp?,combat_rating?,
-       body_locations?,skill?,current_weight?,current_volume?}
+       tags?,data?,damage?,damage_type?,wearlocations?,armor?,damage_res?,
+       price?,hp?,combat_rating?,body_locations?,skill?,current_weight?,
+       current_volume?}
   ~object:obj{}
   ~obj_type{string}
   ~number{int}
@@ -35,8 +36,10 @@
   ~tags{unq}
   ~data{unq}
   ~damage{int}
+  ~damage_type{string}
   ~wearlocations{string}
   ~armor{int}
+  ~damage_res{string}
   ~price{int}
   ~hp{int}
   ~combat_rating{int}
