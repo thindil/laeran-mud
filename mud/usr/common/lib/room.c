@@ -1037,7 +1037,7 @@ private string serialize_mapping(mapping map)
     indices = map_indices(map);
     str_list = ({ });
     for (i = 0; i < sizeof(indices); i++) {
-        str_list += ({ indices[i], map[indices] });
+        str_list += ({ map[indices[i]] + " " + indices[i] });
     }
 
     return implode(str_list, ", ");
