@@ -392,11 +392,11 @@ static void cmd_stat(object user, string cmd, string str) {
     if (function_object("get_damage_res", obj)) {
         dmg_res = obj->get_damage_res();
         words = map_indices(dmg_res);
-        tmp += "Odporności obiektu: ";
+        tmp += "Odporności obiektu:";
         if (!sizeof(words))
-            tmp += "brak";
+            tmp += " brak";
         for (ctr = 0; ctr < sizeof(words); ctr++) 
-            tmp += dmg_res[words[ctr]] + "% na " + words[ctr];
+            tmp += " " + dmg_res[words[ctr]] + "% na " + words[ctr];
         tmp += "\n";
     }
     if (function_object("get_price", obj))
