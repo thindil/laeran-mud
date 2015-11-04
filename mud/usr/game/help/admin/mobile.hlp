@@ -11,6 +11,7 @@ Niektóre komendy do zabawy z mobkami:
 @delete_mobile            Kasuje mobki o wybranym numerze
 @new_mobile               Tworzy nowego mobka
 @stat                     Zobacz mobka (bądź jego ciało) o wybranym numerze
+@set_mob_val              Ustaw jakąś opcję mobka na określoną wartość
 
 }
 
@@ -77,4 +78,24 @@ również nie usunie ciała mobka, co możesz zrobić z zalogowanym użytkowniki
 
 Zobacz również:  MOBILED, mobki, @list_mobiles, @new_mobile
 
+}
+
+~name{set_mob_value,set_mob_val,set mob val,set mob value}
+~keywords{admin}
+~desc{
+
+Komenda @set_mob_val ustawia określoną wartość dla opcji w wybranym mobile.
+Nie wszystkie typy wartości czy opcji da się ustawić. Jeżeli się nie uda,
+komenda poiformuje dlaczego się nie udało. Jeżeli chcesz ustawić wartość
+opcji jako tablicę, podaj zawartość tablicy oddzieloną przecinkami. Przykłady:
+
+@set_mob_val #203 spawnroom 305          Ustawia mobkowi #203 opcję spawnroom na
+                                         wartość 305
+@set_mob_val #105 emotes warkot, miaucz  Ustawia mobkowi #105 opcję emotes na
+                                         tablicę "warkot, miaucz"
+
+Ogólnie rzecz biorąc, jeżeli nie znasz nazw opcji czy nie wiesz za bardzo o
+co chodzi, staraj się tej komendy nie używać.
+
+Zobacz również: mobki, MOBILED
 }
