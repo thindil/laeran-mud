@@ -227,62 +227,65 @@ static void cmd_delete_room(object user, string cmd, string str) {
 
 
 static void cmd_save_rooms(object user, string cmd, string str) {
-  string unq_str, argstr;
-  mixed* rooms, *args;
-  object room;
-  int    ctr;
+    string unq_str, argstr;
+    mixed* rooms, *args;
+    object room;
+    int    ctr, zones;
 
-  if(!str || STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + " <file to write>\n");
-    user->message("   or  " + cmd
-		  + " <file to write> #<num> #<num> #<num>...\n");
-    return;
-  }
-
-  str = STRINGD->trim_whitespace(str);
-  remove_file(str + ".old");
-  rename_file(str, str + ".old");  /* Try to remove & rename, just in case */
-
-  if(sizeof(get_dir(str)[0])) {
-    user->message("Couldn't make space for file -- can't overwrite!\n");
-    return;
-  }
-
-  if(sscanf(str, "%*s %*s") != 2) {
-    rooms = MAPD->rooms_in_zone(0) - ({ 0 });
-  } else {
-    int roomnum;
-
-    rooms = ({ });
-    sscanf(str, "%s %s", str, argstr);
-    args = explode(argstr, " ");
-    for(ctr = 0; ctr < sizeof(args); ctr++) {
-      if(sscanf(args[ctr], "#%d", roomnum)) {
-	rooms += ({ roomnum });
-      } else {
-	user->message("'" + args[ctr] + "' is not a valid room number.\n");
-	return;
-      }
+    if(!str || STRINGD->is_whitespace(str)) {
+        user->message("Użycie: " + cmd + " <plik do zapisu>\n");
+        user->message("   lub  " + cmd
+                + " <plik do zapisu> #<numer> #<numer> #<numer>...\n");
+        return;
     }
-  }
 
-  if(!rooms || !sizeof(rooms)) {
-    user->message("No rooms to save!\n");
-    return;
-  }
+    str = STRINGD->trim_whitespace(str);
+    remove_file(str + ".old");
+    rename_file(str, str + ".old");  /* Try to remove & rename, just in case */
 
-  user->message("Saving rooms: ");
-  for(ctr = 0; ctr < sizeof(rooms); ctr++) {
-    room = MAPD->get_room_by_num(rooms[ctr]);
+    if(sizeof(get_dir(str)[0])) {
+        user->message("Nie udało się zrobić miejsca dla pliku -- nie mogę nadpisywać!\n");
+        return;
+    }
 
-    unq_str = room->to_unq_text();
+    if(sscanf(str, "%*s %*s") != 2) {
+        zones = ZONED->num_zones();
+        rooms = MAPD->rooms_in_zone(0) - ({ 0 });
+        for (ctr = 1; ctr < zones; ctr++) 
+            rooms += MAPD->rooms_in_zone(ctr);
+    } else {
+        int roomnum;
 
-    if(!write_file(str, unq_str))
-      error("Couldn't write rooms to file " + str + "!");
-    user->message(".");
-  }
+        rooms = ({ });
+        sscanf(str, "%s %s", str, argstr);
+        args = explode(argstr, " ");
+        for(ctr = 0; ctr < sizeof(args); ctr++) {
+            if(sscanf(args[ctr], "#%d", roomnum)) {
+                rooms += ({ roomnum });
+            } else {
+                user->message("'" + args[ctr] + "' nie jest prawidłowym numerem pokoju.\n");
+                return;
+            }
+        }
+    }
 
-  user->message("\nDone!\n");
+    if(!rooms || !sizeof(rooms)) {
+        user->message("Nie ma pokojów do zapisu!\n");
+        return;
+    }
+
+    user->message("Zapisywanie pokojów: ");
+    for(ctr = 0; ctr < sizeof(rooms); ctr++) {
+        room = MAPD->get_room_by_num(rooms[ctr]);
+
+        unq_str = room->to_unq_text();
+
+        if(!write_file(str, unq_str))
+            error("Nie można zapisać pokojów do pliku " + str + "!");
+        user->message(".");
+    }
+
+    user->message("\nWykonane!\n");
 }
 
 mixed* parse_to_room(string room_file) {
