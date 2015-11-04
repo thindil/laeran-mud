@@ -175,6 +175,7 @@ static void cmd_stat(object user, string cmd, string str) {
     string  tmp;
     mixed*  objs, *tags;
     object *details, *archetypes;
+    mapping dmg_res;
 
     if(!str || STRINGD->is_whitespace(str)) {
         user->message("Użycie: " + cmd + " #<numer obiektu>\n");
@@ -388,6 +389,16 @@ static void cmd_stat(object user, string cmd, string str) {
 
     if (function_object("get_armor", obj))
         tmp += "Zbroja obiektu wynosi: " + (string)obj->get_armor() + "\n";
+    if (function_object("get_damage_res", obj)) {
+        dmg_res = obj->get_damage_res();
+        words = map_indices(dmg_res);
+        tmp += "Odporności obiektu: ";
+        if (!sizeof(words))
+            tmp += "brak";
+        for (ctr = 0; ctr < sizeof(words); ctr++) 
+            tmp += dmg_res[words[ctr]] + "% na " + words[ctr];
+        tmp += "\n";
+    }
     if (function_object("get_price", obj))
         tmp += "Cena za obiekt wynosi: " + (string)obj->get_price() + "\n";
     if (function_object("get_hp", obj))
@@ -811,6 +822,39 @@ static void cmd_set_obj_body_locations(object user, string cmd, string str)
   call_other(obj, "set_body_locations", newvalue);
 
   user->message("Wykonane.\n");
+}
+
+static void cmd_set_obj_damage_res(object user, string cmd, string str) 
+{
+    object obj;
+    int objnum,i ;
+    string value;
+    string *pairs, *pair;
+    mapping result;
+
+    if(!str || sscanf(str, "#%d %s", objnum, value) < 1) {
+        user->message("Użycie: " + cmd + " #<obiekt> [wartość]\n");
+        return;
+    }
+
+    if (!value) 
+        value = ""; 
+
+    obj = MAPD->get_room_by_num(objnum);
+    if(!obj) {
+        user->message("Obiekt musi być pokojem lub przenośnym. Obiekt #"
+                + objnum + " nie jest.\n");
+        return;
+    }
+    pairs = explode(value, ", ");
+    result = ([ ]);
+    for (i = 0; i < sizeof(pairs); i++) {
+        pair = explode(pairs[i], " ");
+        result[pair[1]] = pair[0];
+    }
+    call_other(obj, "set_damage_res", result);
+
+    user->message("Wykonane.\n");
 }
 
 /* Set object values for string based fields. */
