@@ -357,6 +357,8 @@ static void cmd_stat(object user, string cmd, string str) {
 
     if (function_object("get_damage", obj))
         tmp += "Zadaje " + (string)obj->get_damage() + " obrażeń.\n";
+    if (function_object("get_damage_type", obj))
+        tmp += "Rodzaj obrażeń: " + obj->get_damage_type() + ".\n";
 
     if(function_object("is_wearable", obj))
     {

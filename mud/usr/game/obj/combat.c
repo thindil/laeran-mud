@@ -163,6 +163,14 @@ void combat_round(void)
         dmg = combat_info1["damage"] - combat_info2["armor"][loc][0];
         if (dmg < 0)
             dmg = 0;
+        if (dmg > 0) {
+            if (combat_info1["damage_type"] == "cut") 
+                dmg = (int)((float)dmg * 1.5);
+            else if (combat_info1["damage_type"] == "impaled")
+                dmg = dmg * 2;
+            if (combat_info2["damage_res"][combat_info1["damage_type"]])
+                dmg -= (int)((float)dmg * ((float)combat_info2["damage_res"][combat_info1["damage_type"]] / 100.0));
+        }
         combat_info2["hp"] -= dmg;
         if (dmg = 0) {
             message += " Jednak atak odbija się od jego ciała.";
@@ -200,8 +208,14 @@ void combat_round(void)
         message +=  " i trafia cię w " + combat_info1["armor"][loc][1] + ".";
         dmg = combat_info2["damage"] - combat_info1["armor"][loc][0];
         if (dmg < 0)
-        {
             dmg = 0;
+        if (dmg > 0) {
+            if (combat_info2["damage_type"] == "cut")
+                dmg = (int)((float)dmg * 1.5);
+            else if (combat_info2["damage_type"] == "impaled")
+                dmg = dmg * 2;
+            if (combat_info1["damage_res"][combat_info2["damage_type"]])
+                dmg -= (int)((float)dmg * ((float)combat_info1["damage_res"][combat_info2["damage_type"]] / 100.0));
         }
         combat_info1["hp"] -= dmg;
         if (dmg = 0)
