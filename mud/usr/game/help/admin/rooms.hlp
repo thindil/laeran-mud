@@ -1,108 +1,101 @@
 ~name{pokój,pokoj,pokoje}
 ~keywords{admin}
 ~desc{
-  ~enUS{
-Rooms are objects which are registered with MAPD.
 
-Some commands to play with rooms:
-@list_room               Lists existing rooms by number
-@make_room               Make a new room by answering questions
-@stat                    View room details by number
-@goto_room               Goes to an existing room by number
-@save_rooms              Save rooms to a file
-@load_rooms              Load rooms from a file
-@new_room                Allocates a new room
-@delete_room             Destroys a room
+Pokoje to obiekty które są zarejestrowane z MAPD.
 
-}}
+Niektóre komedy do zabawy z pokojami:
+
+@list                    Pokaż istniejące pokoje według numerów
+@make_room               Utwórz nowy pokój odpowiadając na pytania
+@stat                    Zobacz szczegóły wybranego według numeru pokoju
+@goto                    Idź do wybranego według numeru pokoju
+@save_rooms              Zapisz pokoje do pliku
+@load_rooms              Załaduj pokoje z pliku
+@new_room                Utwórz nowy pokój
+@delete_room             Usuń pokój
+
+}
 
 
-~name{~enUS{list_room, listroom, list_rooms, listrooms,
-            roomlist, list}}
+~name{list_room,lista pokoi,list,list_rooms}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @list_room command lists the numbered rooms in the MUD currently
-registered with the Map Daemon (MAPD).  It lists each room by number
-and "glance" description.
+Komenda @list pokazuje ponumerowaną listę pokoi w grze, zarejestrowanych
+z Demonem Map (MAPD). Wylistowuje każdy poków z numerem oraz krótkim
+(brief) opisem.
 
-By default only rooms in the current zone are listed.  The same
-behavior occurs with the command "@list_rooms zone".  To see all rooms
-in the MUD, type "@list_rooms all".
+Domyślnie pokazane są tylko pokoje w obecnej strefie. Ten sam efekt można
+osiągnąć używając komendy "@list zone". Aby zobaczyć wszystkie pokoje
+w grze, wpisz "@list all".
 
-}}
+}
 
 
-~name{~enUS{make_room, makeroom, make_rooms,
-            makerooms, roommake }}
+~name{make_room,make_rooms}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @make_room command asks a series of questions about the new
-object to be created.  It then creates the object that the questions
-describe.  It asks about descriptions, nouns, adjectives and so on.
-
-Experimental object attributes aren't necessarily asked or set by this
-command when first implemented.  As they become useful and mainstream
-in Phantasmal they are added to the various @make commands.  For that
-reason, certain settings may require using the standard OLC commands
-rather than this one.
-
-See also:  @make_portable, @make_detail
-
-}}
+Komenda @make_room zadaje parę pytań na temat nowego obiektu, który
+będzie utworzony. Następnie tworzy ten obiekt tak jak opisano go
+w odpowiedziach. Pyta o opisy, rzeczowniki, przymiotniki itd.
 
 
-~name{~enUS{goto_room, gotoroom, go_to_room, goto, go_to}}
+Niektóre najnowsze atrybuty obiektów mogą nie być możliwe do ustawienia
+przy pomocy tej komendy. Jednak wraz z czasem i one się pojawiają w
+różnych komendach @make. Z tego powodu niektóre ustawienia mogą wymagać
+użycia standardowych komend OLC zamiast tej.
+
+Zobacz również:  @make_portable, @make_detail
+
+}
+
+
+~name{goto}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-@goto_room takes a room number or portable as an argument, and teleports
-you to it.  It only works on numbered rooms and portables.
+@goto pobiera numer pokoju lub przenośnego jako argument i teleportuje
+Ciebie do tego obiektu. Działa tylko z ponumerowanymi pokojami i
+przenośnymi.
 
-}}
+}
 
-~name{~enUS{save_rooms, save_room, saverooms, saveroom, roomsave, save}}
+~name{save_rooms,save_room}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-@save_room takes an absolute path and saves rooms to that file in a
-loadable format.  It defaults to saving all rooms in the MUD other
-than #0, The Void.  It can also be given a series of additional
-arguments specifying room numbers to save.
+Komenda @save_rooms pobiera ścieżkę absolutną jako argument i
+zapisuje do tego pliku pokoje w odpowiednim formacie. Domyślnie zapisuje
+wszystkie pokoje w grze za wyjątkiem pokoju #0, Pustka. Można również
+podać serię dodatkowy argumentów jako numery pokojów do zapisu.
 
-Examples:
+Przykłady:
 @save_rooms /data/object/whole_mud.unq
 @save_rooms /data/object/my_zone.unq #3 #4 #5 #7 #23 #91 #2
 
-}}
+}
 
-~name{~enUS{load_rooms, load_room, loadrooms, loadroom, roomload,
-            roomload, load}}
+~name{load_rooms,load_room}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-@load_room's first argument is an absolute path and it loads rooms
-found in that file.  It will either load all the rooms in the file, or
-if a sequence of numbers is given it will load only rooms with those
-numbers from the file.  None of the loaded room numbers must
-correspond to rooms existing in the MUD.  This is one reason the
-"number" field is optional in the room structure.
+Pierwszy argument komendy @load_rooms pobiera absolutną ścieżkę do
+pliku i załadowuje pokoje które w nim się znajdują. Może załadować
+wszystkie pokoje albo wybrane pokoje, jeżeli podano ich numery
+podczas wpisywania komendy. Żaden z ładowanych pokojów nie może mieć
+numeru takiego samego jak już zarejestrowany w grze pokój.
 
-Use this command with great caution to avoid large numbers of
-duplicate rooms.  Note also that numberless rooms in the file cannot
-be loaded with the second form of this command, the one that specifies
-room numbers.
+Używaj tej komendy z dużą ostrożnością aby uniknąć dużej ilości
+zduplikowanych pokoi. Zapamietaj również, że pokoje bez numerów będące
+w pliku nie mogą być załadowane przy użyciu drugiej formy tej komendy,
+podanymi numerami pokojów.
 
-Examples:
+Przykłady:
   @load_rooms /data/object/testload.unq
   @load_rooms /data/object/numtest.unq #34 #47 #12
-}}
+}
 
 
 ~name{~enUS{new_rooms, new_room, newrooms, add room, add rooms,

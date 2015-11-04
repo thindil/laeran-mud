@@ -2,75 +2,70 @@
 ~keywords{admin}
 ~desc{
 
-The Security, resource and quota command set is copied from DGD's
-Kernel MUDLib's versions of the same functionality.  Those commands
-are:
+Komendy bezpieczeństwa, zasobów oraz limitów są skopiowane z kernela
+DGD i mają taką samą funkcjonalność. Te komendy to:
 
-help %access            Shows an admin's access
-help %quota             Checks or sets quotas
-help %rsrc              Shows an admin's resource limits or usage
-help %grant             Grants an admin additional access
-help %ungrant           Removes existing access
+pomoc %access            Pokazuje dostęp adminów
+pomoc %quota             Ustawia bądź sprawdza limity
+pomoc %rsrc              Pokazuje limity zasobów lub użycie
+pomoc %grant             Przyznaje administratorowi dodatkowy dostęp
+pomoc %ungrant           Usuwa istniejący dostęp
 
 }
 
 
-~name{~enUS{%rsrc,@rsrc,rsrc}}
+~name{%rsrc,rsrc}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The %rsrc command typed by itself will show the MUD's total usage of
-the same resources %quota affects.  This doesn't just show your usage.
-It shows everybody's.  With a resource name and a numerical limit
-%rsrc will set the new total limit to the given value.  With just a
-resource name %rsrc will list the usage of that resource by all
-wizards.
+Komenda %rsrc napisana bez argumentów pokaże ogólne zużycie zasobów
+gry tak samo jak komenda %quota. To pokaże nie tylko Twoje użycie ale
+wszystkich. Z nazwą zasobu i argumentem liczbowym ustawi nowy limit
+dla wybranego zasobu. Z podaną tylko nazwą zasobu, %rsrc pokaże zużycie
+tego zasobu przez wszytkich administratorów.
 
-Examples:
-%rsrc                    Show total use of every resource
-%rsrc ticks              Show everybody's tick usage
-%rsrc ticks -1           Try to unrestrict tick usage
-}}
+Przykłady:
+%rsrc                    Pokaże użycie wszystkich zasobów
+%rsrc ticks              Pokaże użycie ticks przez wszystkich
+%rsrc ticks -1           Spróbuje usunąć ograniczenia w ticks
+}
 
 
-~name{~enUS{%quota,@quota,quota}}
+~name{%quota,quota}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The %quota command lists a wizard's resource usage.  With no arguments
-it gives the usages for the user that typed it.  With one argument it
-gives the usages for the wizard whose name is given.  With two
-arguments it takes a wizard's name and a resource type (such as ticks,
-stack, or callouts) to give the usage for.  With three arguments of
-the form "%quota <user> <rsrc> <limit>" it will try to set that user's
-limit on that resource to the number specified.  You must have the
-necessary privilege for this operation to succeed.  For most limits,
--1 means infinite.
+Komenda %quota pokazuje zużycie zasobów przez administratorów. Bez
+argumentów pokazuje Twoje własne użycie zasobów. Z jednym podanym
+argumentem podaje zużycie zasobów przez wybranego administratora.
+Z podanymi dwoma argumentami pokaże zużycie dla wybranego administratora
+wybranego typu zasobów (np ticks, stack lub callouts). Z podanymi
+trzema argumentami w formie "%quota <użytkownik> <zasób> <limit>"
+spróbuje ustawić wybranemu użytkownikowi nowy limit liczbowy na wybrany
+zasób. Musisz posiadać odpowiednie uprawnienia aby ta komenda zadziałała.
+Dla większości limitów -1 oznacza nieskończoność.
 
-Examples:
-  %quota                          Show your own quotas
-  %quota angelbob                 Show angelbob's quotas
-  %quota angelbob ticks           Show angelbob's "ticks" quota
-  %quota angelbob ticks 75        Set angelbob's "ticks" quota
-}}
+Przykłady:
+  %quota                          Pokazuje Twoje własne zużycie
+  %quota angelbob                 Pokazuje zużycie angelboba
+  %quota angelbob ticks           Pokazuje zużycie "ticks" przez angelboba
+  %quota angelbob ticks 75        Ustawia nowy limit "ticks" dla angelboba
+}
 
 
-~name{~enUS{%access,@access,access}}
+~name{%access,access}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-You can use the %access command on a wizard's name to find out his
-file and directory access.  You can use it with no argument to find
-out your own access.  With the special string "global" you can find
-out what directories allow everybody read access.  You can %access a
-file to find out who has what access to it.
+Możesz użyć komendy %access z imieniem administratora aby zobaczyć
+do jakich plików i katalogów ma dostęp. Jeżeli użyjesz bez argumentów,
+pokaże to Twój posiadany dostęp do plików. Z argumentem "global" możesz
+sprawdzić jakie katalogi mają dostęp do odczytu dla wszystkich. Możesz
+również podać nazwę pliku aby zobaczyć kto ma do niego dostęp.
 
-Examples:
-  %access                          Show your own access
-  %access angelbob                 Show angelbob's access
-  %access global                   What areas are global?
-  %access /usr/System/sys/objectd  Who can access the objectd?
-}}
+Przykłady:
+  %access                          Pokazuje Twój własny dostęp do plików
+  %access angelbob                 Pokazuje dostęp do plików dla angelboba
+  %access global                   Jakie obszary są dostępne dla wszystkich?
+  %access /usr/System/sys/objectd  Kto ma dostęp do objectd?
+}
