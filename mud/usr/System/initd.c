@@ -296,91 +296,58 @@ static void create(varargs int clone)
 
 void save_mud_data(object user, string room_dirname, string mob_dirname,
 		   string zone_dirname, string social_dirname, string callback) {
-  int   *objects, *save_zones;
-  int    cohandle, iter;
-  mixed  tmp;
+    int   *objects, *save_zones;
+    int    cohandle, iter;
+    mixed  tmp;
 
-  ACCESSD->save();
+    ACCESSD->save();
 
-  if(!SYSTEM() && !GAME()) {
-    error("Only privileged code can call save_mud_data!");
-    return;
-  }
+    if(!SYSTEM() && !GAME()) {
+        error("Only privileged code can call save_mud_data!");
+        return;
+    }
 
-  if(pending_callback) {
-    error("Somebody else is already saving!");
-  }
-  pending_callback = callback;
+    if(pending_callback) {
+        error("Somebody else is already saving!");
+    }
+    pending_callback = callback;
 
-  if(__sys_suspended) {
-    LOGD->write_syslog("System was still suspended! (unsuspending)",
-		       LOG_ERROR);
-    release_system();
-  }
+    if(__sys_suspended) {
+        LOGD->write_syslog("System was still suspended! (unsuspending)",
+                LOG_ERROR);
+        release_system();
+    }
 
-  errors_in_writing = 0;
+    errors_in_writing = 0;
 
-  LOGD->write_syslog("Writing World Data to files...", LOG_NORMAL);
-  LOGD->write_syslog("Rooms: '" + room_dirname + "/*', Mobiles: '"
-		     + mob_dirname + "/*', Zones: '"
-		     + zone_dirname + "/*'", LOG_VERBOSE);
+    LOGD->write_syslog("Writing World Data to files...", LOG_NORMAL);
+    LOGD->write_syslog("Rooms: '" + room_dirname + "/*', Mobiles: '"
+            + mob_dirname + "/*', Zones: '"
+            + zone_dirname + "/*'", LOG_VERBOSE);
 
-  delete_directory(room_dirname + ".old");
-  rename_file(room_dirname, room_dirname + ".old");
-  delete_directory(room_dirname);
+    delete_directory(room_dirname + ".old");
+    rename_file(room_dirname, room_dirname + ".old");
+    delete_directory(room_dirname);
+    make_dir(room_dirname);
 
-  delete_directory(mob_dirname + ".old");
-  rename_file(mob_dirname, mob_dirname + ".old");
-  delete_directory(mob_dirname);
+    LOGD->write_syslog("Writing rooms to files " + room_dirname, LOG_VERBOSE);
 
-  delete_directory(zone_dirname + ".old");
-  rename_file(zone_dirname, zone_dirname + ".old");
-  delete_directory(zone_dirname);
+    objects = MAPD->rooms_in_zone(0);
+    if(!objects) objects = ({ });
+    objects -= ({ 0 });
 
-  delete_directory(social_dirname + ".old");
-  rename_file(social_dirname, social_dirname + ".old");
-  delete_directory(social_dirname);
+    save_zones = ({ });
+    for(iter = 0; iter < ZONED->num_zones(); iter++) {
+        save_zones += ({ iter });
+    }
 
-  remove_file("/usr/game/tagd.unq");
-
-  if(sizeof(get_dir(room_dirname)[0])) 
-    LOGD->write_syslog("Can't remove old room directory -- trying to append!",
-		       LOG_FATAL);
-  make_dir(room_dirname);
-
-  if(sizeof(get_dir(mob_dirname)[0])) 
-    LOGD->write_syslog("Can't remove old mobs directory -- trying to append!",
-		       LOG_FATAL);
-  make_dir(mob_dirname);
-
-  if(sizeof(get_dir(zone_dirname)[0])) 
-    LOGD->write_syslog("Can't remove old zones directory -- trying to append!",
-		       LOG_FATAL);
-    make_dir(zone_dirname);
-
-  if(sizeof(get_dir(social_dirname)[0])) 
-    LOGD->write_syslog("Can't remove old socials directory -- trying to append!",
-		       LOG_FATAL);
-  make_dir(social_dirname);
-
-  LOGD->write_syslog("Writing rooms to files " + room_dirname, LOG_VERBOSE);
-
-  objects = MAPD->rooms_in_zone(0);
-  if(!objects) objects = ({ });
-  objects -= ({ 0 });
-
-  save_zones = ({ });
-  for(iter = 0; iter < ZONED->num_zones(); iter++) {
-    save_zones += ({ iter });
-  }
-
-  cohandle = call_out("__co_write_rooms", 0, user, objects, save_zones,
-		      0, 0, room_dirname, mob_dirname, zone_dirname, 0, -1, social_dirname);
-  if(cohandle < 1) {
-    error("Can't schedule call_out to save objects!");
-  } else {
-    suspend_system();
-  }
+    cohandle = call_out("__co_write_rooms", 0, user, objects, save_zones,
+            0, 0, room_dirname, mob_dirname, zone_dirname, 0, -1, social_dirname);
+    if(cohandle < 1) {
+        error("Can't schedule call_out to save objects!");
+    } else {
+        suspend_system();
+    }
 }
 
 void prepare_reboot(void)
@@ -479,89 +446,88 @@ static void __co_write_rooms(object user, int* objects, int* save_zones,
 			     string mobfile, string zonefile, int filesize,
 			     int extension, string socialdir)
 {
-  string unq_str, roomfile, err;
-  object obj;
-  int    chunk_ctr, index;
-  string *file_ext;
+    string unq_str, roomfile, err;
+    object obj;
+    int    chunk_ctr, index;
+    string *file_ext;
 
-  file_ext = ({ "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" });
-  if (extension == -1)
-    {
-      roomfile = roomdir + "/zone" + save_zones[zone_ctr] + ".unq";
+    file_ext = ({ "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" });
+    if (extension == -1)
+        roomfile = roomdir + "/zone" + save_zones[zone_ctr] + ".unq";
+    else
+        roomfile = roomdir + "/zone" + save_zones[zone_ctr] + file_ext[extension] + ".unq";
+
+    catch {
+        chunk_ctr = 0;
+        while(chunk_ctr < SAVE_CHUNK
+                && ((objects && ctr < sizeof(objects))
+                    || zone_ctr < sizeof(save_zones))) {
+
+            /* Save up to SAVE_CHUNK objects from the objects array. */
+            for(; ctr < sizeof(objects) && chunk_ctr < SAVE_CHUNK;
+                    ctr++, chunk_ctr++) {
+                obj = MAPD->get_room_by_num(objects[ctr]);
+
+                err = catch(unq_str = obj->to_unq_text());
+
+                filesize += strlen(unq_str);
+                if (filesize > 64000) {
+                    extension ++;
+                    roomfile = roomdir + "/zone" + save_zones[zone_ctr] + file_ext[extension] + ".unq";
+                    filesize = strlen(unq_str);
+                }
+
+                if(err || !write_file(roomfile, unq_str)) {
+                    LOGD->write_syslog("Couldn't write room " + objects[ctr]
+                            + " to file!");
+                    errors_in_writing = 1;
+                }
+            }
+
+            /* Done with this zone with time to spare?  Great, move onto the
+               next one. */
+            while((!objects || ctr >= sizeof(objects))
+                    && zone_ctr < sizeof(save_zones)) {
+
+                zone_ctr++;
+
+                if(zone_ctr < sizeof(save_zones)) {
+                    roomfile = roomdir + "/zone" + save_zones[zone_ctr] + ".unq";
+                    objects = MAPD->rooms_in_zone(save_zones[zone_ctr]);
+                    ctr = 0;
+                    filesize = 0;
+                    extension = -1;
+                }
+            }
+
+        }
+
+        if((objects && ctr < sizeof(objects)) || zone_ctr < sizeof(save_zones)) {
+            /* Still saving rooms... */
+            if(call_out("__co_write_rooms", 0, user, objects, save_zones,
+                        ctr, zone_ctr, roomdir, mobfile, zonefile, filesize, extension, socialdir) < 1) {
+                error("Can't schedule call_out to continue writing rooms!");
+            }
+            return;
+        }
+
+        /* Done with rooms, start on mobiles */
+        LOGD->write_syslog("Writing mobiles to dir " + mobfile, LOG_VERBOSE);
+        delete_directory(mobfile + ".old");
+        rename_file(mobfile, mobfile + ".old");
+        delete_directory(mobfile);
+        make_dir(mobfile);
+
+        objects = MOBILED->all_mobiles();
+        if(call_out("__co_write_mobs", 0, user, objects, 0, mobfile,
+                    zonefile, 0, 0, socialdir) < 1) {
+            error("Can't schedule call_out to start writing mobiles!");
+        }
+    } : {
+        release_system();
+        if(user) user->message("Error writing rooms!\n");
+        error("Error writing rooms!");
     }
-  else
-    {
-      roomfile = roomdir + "/zone" + save_zones[zone_ctr] + file_ext[extension] + ".unq";
-    }
-
-  catch {
-    chunk_ctr = 0;
-    while(chunk_ctr < SAVE_CHUNK
-	  && ((objects && ctr < sizeof(objects))
-	      || zone_ctr < sizeof(save_zones))) {
-
-      /* Save up to SAVE_CHUNK objects from the objects array. */
-      for(; ctr < sizeof(objects) && chunk_ctr < SAVE_CHUNK;
-	  ctr++, chunk_ctr++) {
-	obj = MAPD->get_room_by_num(objects[ctr]);
-
-	err = catch(unq_str = obj->to_unq_text());
-
-	filesize += strlen(unq_str);
-	if (filesize > 64000)
-	  {
-	    extension ++;
-	    roomfile = roomdir + "/zone" + save_zones[zone_ctr] + file_ext[extension] + ".unq";
-	    filesize = strlen(unq_str);
-	  }
-
-	if(err || !write_file(roomfile, unq_str)) {
-	  LOGD->write_syslog("Couldn't write room " + objects[ctr]
-			     + " to file!");
-	  errors_in_writing = 1;
-	}
-      }
-
-      /* Done with this zone with time to spare?  Great, move onto the
-	 next one. */
-      while((!objects || ctr >= sizeof(objects))
-	    && zone_ctr < sizeof(save_zones)) {
-
-	zone_ctr++;
-
-	if(zone_ctr < sizeof(save_zones)) {
-	  roomfile = roomdir + "/zone" + save_zones[zone_ctr] + ".unq";
-	  objects = MAPD->rooms_in_zone(save_zones[zone_ctr]);
-	  ctr = 0;
-	  filesize = 0;
-	  extension = -1;
-	}
-      }
-
-    }
-
-    if((objects && ctr < sizeof(objects)) || zone_ctr < sizeof(save_zones)) {
-      /* Still saving rooms... */
-      if(call_out("__co_write_rooms", 0, user, objects, save_zones,
-		  ctr, zone_ctr, roomdir, mobfile, zonefile, filesize, extension, socialdir) < 1) {
-	error("Can't schedule call_out to continue writing rooms!");
-      }
-      return;
-    }
-
-    /* Done with rooms, start on mobiles */
-    LOGD->write_syslog("Writing mobiles to dir " + mobfile, LOG_VERBOSE);
-
-    objects = MOBILED->all_mobiles();
-    if(call_out("__co_write_mobs", 0, user, objects, 0, mobfile,
-		zonefile, 0, 0, socialdir) < 1) {
-       error("Can't schedule call_out to start writing mobiles!");
-     }
-  } : {
-    release_system();
-    if(user) user->message("Error writing rooms!\n");
-    error("Error writing rooms!");
-  }
 }
 
 static void __co_write_mobs(object user, int* objects, int ctr,
@@ -604,6 +570,10 @@ static void __co_write_mobs(object user, int* objects, int ctr,
       }
       return;
     }
+    delete_directory(zonefile + ".old");
+    rename_file(zonefile, zonefile + ".old");
+    delete_directory(zonefile);
+    make_dir(zonefile);
 
     /* Done with mobiles, start on zones */
     LOGD->write_syslog("Writing zones to file " + zonefile, LOG_VERBOSE);
@@ -621,8 +591,8 @@ static void __co_write_mobs(object user, int* objects, int ctr,
 static void __co_write_zones(object user, int* objects, int ctr,
 			     string zonedir, int filesize, int extension,
                  string socialdir) {
-  string unq_str, zonefile;
-  int chunk_ctr, size;
+    string unq_str, zonefile;
+    int chunk_ctr, size;
 
     if (extension == 0)
         zonefile = zonedir + "/zones.unq";
@@ -631,22 +601,22 @@ static void __co_write_zones(object user, int* objects, int ctr,
 
     size = ZONED->num_zones() + OBJNUMD->get_highest_segment() + 1;
 
-  catch {
-      for (chunk_ctr = 0; ctr < size && chunk_ctr < SAVE_CHUNK; ctr++, chunk_ctr++) {
-          unq_str = ZONED->to_unq_text(ctr);
-          filesize += strlen(unq_str);
-          if (filesize > 64000) {
-              extension ++;
-              zonefile = zonedir + "/zones" + extension + ".unq";
-              filesize = strlen(unq_str);
-          }
-          write_file(zonefile, unq_str);
-      }
-  } : {
-    release_system();
-    if(user) user->message("Error writing zones!\n");
-    error("Error writing zones!");
-  }
+    catch {
+        for (chunk_ctr = 0; ctr < size && chunk_ctr < SAVE_CHUNK; ctr++, chunk_ctr++) {
+            unq_str = ZONED->to_unq_text(ctr);
+            filesize += strlen(unq_str);
+            if (filesize > 64000) {
+                extension ++;
+                zonefile = zonedir + "/zones" + extension + ".unq";
+                filesize = strlen(unq_str);
+            }
+            write_file(zonefile, unq_str);
+        }
+    } : {
+        release_system();
+        if(user) user->message("Error writing zones!\n");
+        error("Error writing zones!");
+    }
 
     if (ctr < size)
     {
@@ -655,23 +625,27 @@ static void __co_write_zones(object user, int* objects, int ctr,
         return;
     }
 
-  if(errors_in_writing) {
-    errors_in_writing = 0;
+    if(errors_in_writing) {
+        errors_in_writing = 0;
 
-    release_system();
+        release_system();
 
-    if(user) user->message("Errors in writing saved data!\r\n");
+        if(user) user->message("Errors in writing saved data!\r\n");
 
-    return;
-  }
+        return;
+    }
+    delete_directory(socialdir + ".old");
+    rename_file(socialdir, socialdir + ".old");
+    delete_directory(socialdir);
+    make_dir(socialdir);
 
-  /* Done with zones, start on socials */
-  LOGD->write_syslog("Writing socials to files.", LOG_VERBOSE);
+    /* Done with zones, start on socials */
+    LOGD->write_syslog("Writing socials to files.", LOG_VERBOSE);
 
-  if(call_out("__co_write_socials", 0, user, socialdir, 0, 0, 0) < 1)
+    if(call_out("__co_write_socials", 0, user, socialdir, 0, 0, 0) < 1)
     {
-      release_system();
-      error("Can't schedule call_out to start writing users!");
+        release_system();
+        error("Can't schedule call_out to start writing users!");
     }
 }
 
@@ -741,7 +715,8 @@ static void __co_write_users(object user, int ctr)
     }
 
     /* Done with users, start on tags */
-    LOGD->write_syslog("Writing bans to file.", LOG_VERBOSE);
+    LOGD->write_syslog("Writing tags to file.", LOG_VERBOSE);
+    remove_file("/usr/game/tagd.unq");
 
     if(call_out("__co_write_tags", 0, user, 0, 0, 0) < 1)
     {
