@@ -1148,3 +1148,49 @@ static void cmd_change_password(object user, string cmd, string str)
     destruct_object(player);
     message("Hasło dla postaci " + parts[0] + " zostało zmienione.\n");
 }
+
+static void cmd_set_mob_value(object user, string cmd, string str)
+{
+    string option, value;
+    int number, type;
+    object mobile;
+
+    if (!str || STRINGD->is_whitespace(str) 
+            || sscanf(str, "#%d %s %s", number, option, value) != 3) {
+        message("Użycie: " + cmd + " #<numer mobka> <nazwa opcji> <wartość>\n");
+        return;
+    }
+
+    mobile = MOBILED->get_mobile_by_num(number);
+    if (!mobile) {
+        message("Nie ma mobka o numerze #" + number + ".\n");
+        return;
+    }
+    if (mobile->get_type() == "user") {
+        message("Nie możesz zmieniać ustawień graczom.\n");
+        return;
+    }
+    if (!function_object("set_" + option, mobile)) {
+        message("Nie można ustawić tej opcji mobka.\n");
+        return;
+    }
+    type = typeof(call_other(mobile, "get_" + option));
+    switch (type) {
+        case T_INT:
+            call_other(mobile, "set_" + option, (int)value);
+            break;
+        case T_FLOAT:
+            call_other(mobile, "set_" + option, (float)value);
+            break;
+        case T_STRING:
+            call_other(mobile, "set_" + option, value);
+            break;
+        case T_ARRAY:
+            call_other(mobile, "set_" + option, explode(value, ", "));
+            break;
+        default:
+            message("Nie obsługuję tego typu zmiennych.\n");
+            return;
+    }
+    message("Zmieniono ustawienie mobka #" + number + " " + option + " na wartość: " + value + ".\n");
+}

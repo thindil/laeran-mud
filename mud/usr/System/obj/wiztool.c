@@ -152,6 +152,7 @@ void upgraded(varargs int clone) {
 	"@new_mobile"          : ({ "cmd_new_mobile" }),
 	"@delete_mob"          : ({ "cmd_delete_mobile" }),
 	"@delete_mobile"       : ({ "cmd_delete_mobile" }),
+    "@set_mob_val"         : ({ "cmd_set_mob_value" }),
 
 	"@segmap"              : ({ "cmd_segment_map" }),
 	"@set_seg_zone"        : ({ "cmd_set_segment_zone" }),
