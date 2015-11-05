@@ -703,11 +703,61 @@ void print_prompt(void)
     }
 }
 
+void heartbeat(void)
+{
+    int cur_val;
+
+    if (TAGD->get_tag_value(body, "Combat")) {
+        call_out("heartbeat", 10);
+        return;
+    }
+
+    if (TAGD->get_tag_value(body, "Hp")) {
+        cur_val = TAGD->get_tag_value(body, "Hp");
+        cur_val += 3;
+        if (cur_val >= body->get_hp()) {
+            cur_val = body->get_hp();
+            TAGD->set_tag_value(body, "Hp", nil);
+            message("Jesteś już kompletnie zdrowy.\n");
+        }
+        else
+            TAGD->set_tag_value(body, "Hp", cur_val);
+        set_health(cur_val);
+    }
+    
+    if (TAGD->get_tag_value(body, "Fatigue")) {
+        cur_val = TAGD->get_tag_value(body, "Fatigue");
+        cur_val += ((stats["kondycja"][0] * 10) / 3);
+        if (cur_val >= (stats["kondycja"][0] * 10)) {
+            cur_val = stats["kondycja"][0] * 10;
+            TAGD->set_tag_value(body, "Fatigue", nil);
+            message("Jesteś już kompletnie wypoczęty.\n");
+        }
+        else
+            TAGD->set_tag_value(body, "Fatigue", cur_val);
+        set_condition(cur_val);
+    }
+
+    call_out("heartbeat", 10);
+}
+
 void set_password(string new_pass)
 {
     password = hash_string("crypt", new_pass);
 }
 
+void add_command(string cmd, string func)
+{
+    commands_map[cmd] = func; 
+}
+
+int have_command(string cmd)
+{
+    if (commands_map[cmd])
+        return 1;
+    else
+        return 0;
+}
 /************** User-level commands *************************/
 
 static void cmd_ooc(object user, string cmd, string str) {
@@ -1983,40 +2033,36 @@ static void cmd_follow(object user, string cmd, string str)
         tmp[number]->get_mobile()->get_user()->message(Name + " zaczyna podążać za Tobą.\n");
 }
 
-void heartbeat(void)
+/* Temporary command for packages delivery */
+static void cmd_give(object user, string cmd, string str)
 {
-    int cur_val;
+    string item, target;
+    object *tmp, *items;
 
-    if (TAGD->get_tag_value(body, "Combat")) {
-        call_out("heartbeat", 10);
+    if (str)
+        str = STRINGD->trim_whitespace(str);
+    if (!str || str == "" || sscanf(str, "%s %s", item, target) != 2) {
+        message("Użycie: " + cmd + " paczka <cel>\n");
         return;
     }
-
-    if (TAGD->get_tag_value(body, "Hp")) {
-        cur_val = TAGD->get_tag_value(body, "Hp");
-        cur_val += 3;
-        if (cur_val >= body->get_hp()) {
-            cur_val = body->get_hp();
-            TAGD->set_tag_value(body, "Hp", nil);
-            message("Jesteś już kompletnie zdrowy.\n");
-        }
-        else
-            TAGD->set_tag_value(body, "Hp", cur_val);
-        set_health(cur_val);
-    }
     
-    if (TAGD->get_tag_value(body, "Fatigue")) {
-        cur_val = TAGD->get_tag_value(body, "Fatigue");
-        cur_val += ((stats["kondycja"][0] * 10) / 3);
-        if (cur_val >= (stats["kondycja"][0] * 10)) {
-            cur_val = stats["kondycja"][0] * 10;
-            TAGD->set_tag_value(body, "Fatigue", nil);
-            message("Jesteś już kompletnie wypoczęty.\n");
-        }
-        else
-            TAGD->set_tag_value(body, "Fatigue", cur_val);
-        set_condition(cur_val);
+    items = find_first_objects(item, LOC_IMMEDIATE_INVENTORY);
+    if (!items || !sizeof(items)) {
+        message("Nie masz takiego przedmiotu jak '" + item + "'\n");
+        return;
     }
-
-    call_out("heartbeat", 10);
+    tmp = find_first_objects(target, LOC_IMMEDIATE_CURRENT_ROOM);
+    if(!tmp || !sizeof(tmp)) {
+        message("Nie możesz znaleźć jakiegokolwiek '" + target + "'.\n");
+        return;
+    }
+    if (tmp[0]->get_number() != TAGD->get_tag_value(items[0], "Recipient")) {
+        message("Nie możesz dać tego przedmiotu akurat tej osobie.\n");
+        return;
+    }
+    body->set_price(body->get_price() + 2);
+    items[0]->get_location()->remove_from_container(items[0]);
+    destruct_object(items[0]);
+    commands_map["daj"] = nil;
+    message("Przekazałeś paczkę odbiorcy i dostałeś 2 miedziaki.\n");
 }
