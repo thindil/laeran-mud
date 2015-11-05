@@ -33,6 +33,16 @@ string get_type(void)
     return "postman";
 }
 
+void set_recipients(string* new_recipients)
+{
+    recipients = new_recipients;
+}
+
+string* get_recipients(void)
+{
+    return recipients;
+}
+
 /* Initiate communication */
 void hook_social(object body, object target, string verb)
 {
@@ -45,16 +55,15 @@ void hook_social(object body, object target, string verb)
 }
 
 /* Postman iteraction */
-void hook_whisper(object body, string message)
+atomic void hook_whisper(object body, string message)
 {
   string* parts;
   object new_object, recipient;
   mixed* objs;
-  string items;
+  string items, desc;
   int number;
 
-  parts = explode(message, " ");
-  switch (parts[0])
+  switch (message)
     {
     case "wezme paczke":
         if (!packages) {
@@ -87,10 +96,16 @@ void hook_whisper(object body, string message)
             body->get_mobile()->get_user()->add_command("daj", "cmd_give");
             number = (int)recipients[random(sizeof(recipients))];
             recipient = MAPD->get_room_by_num(number);
-            new_object->set_look(PHRASED->new_simple_english_phrase("Duża, w miarę ciężka sześcienna skrzynia owinięta\n"
-                        + "papierem. Na góre widnieje napis: 'Dostarczyć do ") + recipient->get_brief() 
-                        + PHRASED->new_simple_english_phrase(" w ") + recipient->get_location()->get_brief());
+            desc = "Duża, w miarę ciężka sześcienna skrzynia owinięta papierem. Na górze widnieje napis: 'Dostarczyć\n"
+                + "do " + recipient->get_brief()->to_string(body->get_mobile()->get_user()) + " w "
+                + recipient->get_location()->get_brief()->to_string(body->get_mobile()->get_user()) + ".\n";
+            new_object->set_look(PHRASED->new_simple_english_phrase(desc));
             TAGD->set_tag_value(new_object, "Recipient", number);
+            whisper(body, "W porządku, oto Twoja paczka, zanieś ją teraz do " 
+                    + recipient->get_brief()->to_string(body->get_mobile()->get_user()) + " w "
+                    + recipient->get_location()->get_brief()->to_string(body->get_mobile()->get_user()) + ".\n"
+                    + "Jeżeli się zgubisz, możesz zawsze sprawdzić adres odbiorcy na paczce. Kiedy dotrzesz na\n"
+                    + "miejsce, 'daj paczka' odbiorcy a on już przekaże Tobie wynagrodzenie za dostawę.\n");
         }
       break;
     default:

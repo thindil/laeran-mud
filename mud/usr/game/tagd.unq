@@ -18,3 +18,7 @@
   ~name{Hp}
   ~type{1}
 }
+~object_tag{
+  ~name{Recipient}
+  ~type{1}
+}
