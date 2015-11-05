@@ -332,13 +332,11 @@ void set_up_substitutions(void) {
 
   conn = this_object()->query_conn();
   if(conn) {
-    if(sscanf(object_name(conn), MUDCLIENT_CONN + "#%*d") == 1) {
-      LOGD->write_syslog("Is MUDclient conn!");
+    if(sscanf(object_name(conn), MUDCLIENT_CONN + "#%*d") == 1) 
       mudclient_conn = 1;
-    } else {
-      LOGD->write_syslog("Not MUDclient conn!");
+    else
       mudclient_conn = 0;
-    }
+    LOGD->write_syslog("Loguje się z IP: " + query_ip_number(conn));
   } else {
     return;  /* Can't set up subs yet */
   }
