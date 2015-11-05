@@ -1,54 +1,49 @@
-~name{~enUS{set object weight, set object volume, set object length,
-            set object vol, set object height, set object value,
-            set obj weight, set obj volume, set obj length,
-            set obj vol, set obj height, set obj value,
-            weight, volume, length, height, vol}}
+~name{set object weight,set object volume,set object length,
+            set object vol,set object height,set object value,
+            set obj weight,set obj volume,set obj length,
+            set obj vol,set obj height,set obj value,
+            weight,volume,length,height,vol}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @set_obj_weight, @set_obj_height and @set_obj_vol commands set the
-weight, volume and height of an object.  Related commands like
-@set_obj_weight_capacity set containers' capacities for these same
-attributes.
+Komendy @set_obj_weight, @set_obj_height oraz @set_obj_vol ustawiają
+wagę, wysokość oraz objętość obiektu. Pokrewne komendy jak
+@set_obj_weight_cap ustawiają ograniczenia dla pojemności pojemników dla
+takich samych atrybutów.
 
-See also: weight, volume, length, capacity
+Zobacz również: waga, objetosc, dlugosc, pojemnosc
 
-}}
+}
 
 
-~name{~enUS{weight, obj weight, object weight}}
+~name{waga,waga obiektu}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The weight of an object is, well, how heavy it is.  Since this game
-doesn't allow changing gravity, the weight of the object is considered
-synonymous with its mass.  We use the normal surface-of-earth
-conversion rates of kilograms to pounds.  The weights are internally
-stored in kilograms.
+Waga obiektu określa jak ciężki on jest. Ponieważ gra nie pozwala
+zmieniać grawitacji, waga obiektu jest uważana za jego masę. Używamy
+normalnegej, ziemskiej konwersji kilogramów do funtów. Waga normalnie
+jest przechowywana w kilogramach.
 
-See also: @set_obj_weight, weight capacity, volume, length
+Zobacz również: @set_obj_weight, udzwig, pojemosc, dlugosc
 
-}}
+}
 
 
-~name{~enUS{set obj weight, set object weight, set weight, setweight,
-            setobjweight, setobjectweight, weightset}}
+~name{set obj weight,set_obj_weight}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-@set_obj_weight sets the weight of an object.  You call it with the
-object number and the new weight.  For instance:
+Komenda @set_obj_weight ustawi wagę obiektu. Wywołujesz ją z numerem
+obiektu oraz nową wagą. Na przykład:
 
 @set_obj_weight #300 10000.0
 
-This would set the weight of object #300 to 10,000 kilograms.
+To powinno ustawić wagę obiektu #300 na 10 000 kilogramów.
 
-See also: weight, weight capacity
+Zobacz również: waga, udzwig
 
-}}
+}
 
 
 ~name{~enUS{volume, vol, object volume, object vol}}

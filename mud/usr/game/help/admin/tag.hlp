@@ -1,84 +1,83 @@
-~name{~enUS{tag, tags}}
+~name{tag,tagi}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-Tags are extra named data that get attached to existing objects.
-For instance, mobiles might be tagged with a "cursedByGod" value,
-or objects might be tagged with an "UnlockedByKeyNumber" value.
+Tagi to specjalne nazwane dane, które mogą być dołączone do
+istniejących obiektów. Na przykład mob może być ztagowany z
+wartością "przeklętyPrzezBoga" a obiekt może być ztagowany z
+wartością "OtwieralnyPrzezKluczNumer"
 
-help new_tag_type
-help set_tag
+pomoc new_tag_type
+pomoc set_tag
+pomoc list_tag
 
-}}
+}
 
 
-~name{~enUS{new_tag_type, new_tag, add_tag_type, add_tag}}
+~name{new_tag_type,new_tag,add_tag_type,add_tag}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-@new_tag_type will create a new type of tag for any applicable object
-type.  The usage is "@new_tag_type <scope> <name> <type> [<getter>
-[<setter>]]".  Getter and setter are function names, and if you supply
-them then when that tag is gotten or set, those functions will be
-called on the object in question.  This allows non-tag values to get
-gotten or set as though they were tags.
+Komenda @new_tag_type spróbuje utworzyć nowy typ tagu na wybranym
+typie obiektów. Użycie to "@new_tag_type <cel> <nazwa> <typ> [<getter>
+[<setter>]]". Getter i setter to nazwy funkcji i jeżeli je podasz, wtedy
+kiedy tag będzie pobierany bądź ustawiany, te funkcje będą wywoływane w
+wywoływanym obiekcie. To pozwala ustawiać wartości niedostępne dla
+normalnych tagów tak jakby były tagami.
 
-Examples:
+Przykłady:
 @new_tag_type object UnlockedByKeyNumber integer
 @new_tag_type mob cursedByGod int is_cursed set_cursed
 @new_tag_type obj KeyNumber integer
 
-Currently type must be integer or float, but more types will be allowed
-later on.  Tag names are permitted to have spaces, but there is currently
-no way to specify that with this command.
+Obecnie typ może być tylko integer lub float ale więcej typów zostanie
+dodanych później. Nazwy tagów mogą posiadać spacje ale obecnie nie ma
+możliwości ustawienia takich nazw przy pomocy tej komendy.
 
-Use the stat command to view an object's tag values.
+Użyj komendy @stat aby zobaczyć ustawione wartości tagów na wybranym
+obiekcie.
 
-}}
+}
 
-~name{~enUS{set_tag, set_tag_value, set_value, set_obj_tag, set_object_tag,
-            set_object_tag_value, set_obj_tag_value, set_obj_tag_val,
-            set_object_tag_val}}
+~name{set_tag, set_tag_value}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-Set_tag allows you to set the tag value of a given tagged object,
-such as a room or mobile.  The usage is "@set_tag <name> <code>".
-The name must be a valid tag name -- see @new_tag_type.  Code can
-be any valid DGD code, but should evaluate to the type that you
-wish to set the tag to.  For an integer tag, for instance, this
-should be an integer.  For a tag of type mapping, it should be
-a mapping.
+Komenda @set_tag pozwala Tobie ustawić wartość wybranego tagu na
+podanym obiekcie jak pokój czy mob. Użycie to "@set_tag <nazwa> 
+<kod>". Nazwa musi być prawidłową nazwą tagu -- zobacz
+@new_tag_type. Kod może być dowolnym kodem DGD ale musi zwracać
+wartość tego samego typu co tag. Czyli dla tagu typu integer kod
+powinien również zwracać wartość typu integer. Może to być również
+zwykła wartość.
 
-Example:
+Przykłady:
 @set_tag #374 KeyNumber 7
 @set_tag $7 cursedByGod $7->getCurseLevel()
 
-The object may be specified by either an object number or a history
-value.  The history value must correspond to a tagged DGD object.
+Obiekt może być podany jako numer obiektu bądź numer z historii
+komand. Wartość z historii musi być taka sama jak ztagowany obiekt
+DGD.
 
-Tag names are permitted to have spaces, but there is currently no way
-to manipulate any tag whose name has a space using this command.
+Nazwy tagów mogą posiadać spacje, ale obecnie nie ma możliwości
+manipulowania jakimkolwiek tagiem posiadającym spację w nazwach przy
+użyciu tej komendy.
 
-Use the stat command to view an object's tag values.
+Użyj komendy @stat aby zobaczyć ustawione wartości tagów na wybranym
+obiekcie.
 
-}}
+}
 
 
-~name{~enUS{list_tag, list_tags}}
+~name{list_tag,list_tags}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @list_tags command shows a list of all tag names with their
-associated data types.  The usage is either "@list_tag object" or
-"@list_tag mobile".
+Komenda @list_tags pokazuje listę wszystkich tagów z przypisanymi
+im typami danych. Użycie to "@list_tag object" lub "@list_tag mobile".
 
-Tag settings for a specific object can be shown by using the stat
-command on that object.
+Ustawienia tagów dla wybranego obiektu mogą zostać sprawdzone przy
+pomocy komendy @stat na tym obiekcie.
 
-See alse: @new_tag_type
-}}
+Zobacz również: @new_tag_type
+}

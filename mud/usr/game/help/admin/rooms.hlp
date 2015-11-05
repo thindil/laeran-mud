@@ -98,41 +98,36 @@ Przykłady:
 }
 
 
-~name{~enUS{new_rooms, new_room, newrooms, add room, add rooms,
-            newroom, addroom, roomnew, roomadd, new, create, add,
-            create rooms, create room, createroom, createrooms}}
+~name{new_rooms,new_room,newrooms,add room,create room}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @new_room command allocates a new room.  If supplied a number it
-will attempt to allocate that room number, otherwise it will fail.
+Komenda @new_room tworzy nowy pokój. Jeżeli podano numer pokoju, próbuje
+utworzyć pokój z wybranym numerem, jeżeli się nie uda, przestaje działać.
 
-The new room will be registered with MAPD, and standard object and
-room commands will work perfectly well on it.  It should immediately
-be visible with @list_rooms, and @goto should take you to it if you
-wish.
+Nowy pokój będzie zarejestrowany z MAPD i standardowe komendy obiektów
+oraz pokojów będą perfekcyjnie działać z nim. Powininen być również od
+razu widoczny przy pomocy komendy @list a i komenda @goto powinna bez
+problemu zabrać Ciebie do tego pokoju.
 
-If no number is supplied, the new room will be in the same zone as
-your current location.
+Jeżeli nie podano numeru, nowy pokój będzie w tej samej strefie w której
+obecnie przebywasz.
 
-See also:  @new_portable, MAPD
+Zobacz również:  @new_portable, MAPD
 
-}}
+}
 
 
-~name{~enUS{delete_rooms, delete_room, deleterooms, deleteroom, roomdelete,
-            delete, destroy, destroy_rooms, destroy_room }}
+~name{delete_rooms,delete_room,deleterooms,deleteroom,delete}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @delete_room command will delete a room, removing all exits to and
-from it (see @clear_exits).  It is recommended that all contents be
-removed from the room first as no guarantees are made as to their
-locations afterward.
+Komenda @delete skasuje pokój, usuwając również wszystkie wyjścia z
+oraz prowadzące do niego (zobacz @clear_exits). Zaleca się aby wcześniej
+usunąć całą zawartość pokoju, jako że nie ma gwarancji że uda się jest
+zlokalizować po usunięciu.
 
-Remember that a "room" could instead be a portable object or a
-mobile's body.
+Zapamiętaj, że "pokój" może również oznaczać przenośny obiekt lub ciało
+mobka.
 
-}}
+}
