@@ -20,35 +20,38 @@ void set_up_heart_beat(void)
     }
 }
 
-/* delete dropped objects */
+/* delete dropped objects, add packages to postman */
 void heart_beat_clear(void)
 {
-  int* rooms;
-  int i;
-  object obj;
-  mixed tag;
-  
-  if(previous_program() != TIMED)
-    {
-      return;
+    int *rooms, *mobiles;
+    int i, packages;
+    object obj;
+    mixed tag;
+
+    if(previous_program() != TIMED)
+        return;
+    rooms = ({ });
+    for(i = 0; i < ZONED->num_zones(); i++)
+        rooms += MAPD->rooms_in_zone(i);
+    for (i = 0; i < sizeof(rooms); i++) {
+        obj = MAPD->get_room_by_num(rooms[i]);
+        tag = TAGD->get_tag_value(obj, "DropTime");
+        if (tag && time() - tag >= 300) {
+            if (obj->get_location())
+                obj->get_location()->remove_from_container(obj);
+            destruct_object(obj);
+        }
     }
-  rooms = ({ });
-  for(i = 0; i < ZONED->num_zones(); i++)
-    {
-      rooms += MAPD->rooms_in_zone(i);
-    }
-  for (i = 0; i < sizeof(rooms); i++)
-    {
-      obj = MAPD->get_room_by_num(rooms[i]);
-      tag = TAGD->get_tag_value(obj, "DropTime");
-      if (tag && time() - tag >= 300)
-	{
-	  if (obj->get_location())
-	    {
-	      obj->get_location()->remove_from_container(obj);
-	    }
-	  destruct_object(obj);
-	}
+    mobiles = MOBILED->all_mobiles();
+    for (i = 0; i < sizeof(mobiles); i++) {
+        obj = MOBILED->get_mobile_by_num(mobiles[i]);
+        if (obj->get_type() == "postman") {
+            packages = obj->get_packages();
+            packages += 5;
+            if (packages > 100)
+                packages = 100;
+            obj->set_packages(packages);
+        }
     }
 }
 

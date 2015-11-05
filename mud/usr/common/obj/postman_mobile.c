@@ -38,9 +38,19 @@ void set_recipients(string* new_recipients)
     recipients = new_recipients;
 }
 
+void set_packages(int new_packages)
+{
+    packages = new_packages;
+}
+
 string* get_recipients(void)
 {
     return recipients;
+}
+
+int get_packages(void)
+{
+    return packages;
 }
 
 /* Initiate communication */
