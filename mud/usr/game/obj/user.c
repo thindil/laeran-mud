@@ -340,6 +340,17 @@ static void player_logout(void)
     if(body) {      
         object meat_locker;
         object mobile;
+        mixed *objs;
+        int i;
+
+        /* remove packages from player on exit */
+        objs = body->objects_in_container();
+        for (i = 0; i < sizeof(objs); i++) {
+            if (objs[i]->get_brief()->to_string(this_object()) == "paczka") {
+                body->remove_from_container(objs[i]);
+                destruct_object(objs[i]);
+            }
+        }
 
         if (TAGD->get_tag_value(body, "Combat")) {
             combat->stop_combat();

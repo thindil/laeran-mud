@@ -65,7 +65,7 @@ void hook_social(object body, object target, string verb)
 }
 
 /* Postman iteraction */
-atomic void hook_whisper(object body, string message)
+void hook_whisper(object body, string message)
 {
   string* parts;
   object new_object, recipient;
