@@ -433,8 +433,10 @@ private string blurb_for_substate(int substate) {
         case SS_PROMPT_DAMAGE_TYPE:
                 if(new_obj && sizeof(new_obj->get_archetypes()))
                     return "Wprowadź typ zadawanych obrażeń przez obiekt albo wpisz 'none' aby\n"
-                        + "przyjąć wartość z archetypu. Dostępne na razie wartości to crush, impaled, cut\n";
-                return "Wprowadź typ zadawanych obrażeń przez obiekt. Dostępne na razie wartości to crush, impaled, cut\n";
+                        + "przyjąć wartość z archetypu. Dostępne na razie wartości to crush, impaled, cut.\n"
+                        + "Możesz również nacisnąć enter aby pominąć ten krok.\n";
+                return "Wprowadź typ zadawanych obrażeń przez obiekt. Dostępne na razie wartości to crush, impaled, cut.\n"
+                    + "Możesz również naciśnąć enter aby pominąć ten krok.\n";
         case SS_PROMPT_WLOCATION:
                 if(new_obj && sizeof(new_obj->get_archetypes()))
                     return "Wprowadź lokację (lub lokacje, oddzielone przecinkami) na które można założyć dany obiekt, "
@@ -1618,13 +1620,9 @@ static int prompt_damage_input(string input)
 
 static int prompt_damage_type_input(string input)
 {
-    if (!input || STRINGD->is_whitespace(input)) {
-        send_string("Spróbujmy ponownie.\n");
-        send_string(blurb_for_substate(substate));
-        return RET_NORMAL;
-    }
-    input = STRINGD->trim_whitespace(input);
-    if (!STRINGD->stricmp(input, "none"))
+    if (input)
+        input = STRINGD->trim_whitespace(input);
+    if (!input || input == "" || !STRINGD->stricmp(input, "none"))
         new_obj->set_damage_type("");
     else
         new_obj->set_damage_type(input);
