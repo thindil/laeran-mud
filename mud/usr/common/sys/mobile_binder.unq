@@ -27,3 +27,8 @@
   ~tag{townhall}
   ~code{/usr/common/obj/townhall_mobile}
 }
+
+~bind{
+  ~tag{postman}
+  ~code{/usr/common/obj/postman_mobile}
+}
