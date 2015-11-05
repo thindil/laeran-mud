@@ -134,7 +134,7 @@ static mixed* postman_from_dtd_unq(mixed* unq)
     ret = ({ });
     ctr = unq;
 
-    while(sizeof(ctr) > 0) {
+    while(sizeof(ctr[0]) > 0) {
         switch (ctr[0][0]) {
             case "packages":
                 packages = (int)ctr[0][1];
@@ -146,7 +146,7 @@ static mixed* postman_from_dtd_unq(mixed* unq)
                 ret += ({ ctr[0] });
                 break;
         }
-        ctr = ctr[1..];
+        ctr[0] = ctr[0][2..];
     }
 
     return ret;
