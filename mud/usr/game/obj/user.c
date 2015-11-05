@@ -670,33 +670,21 @@ void set_health(int hp)
 /* Set string value of condition for prompt */
 void set_condition(int fatigue)
 {
-  float percent;
+    float percent;
 
-  percent = (float)((float)fatigue / (float)(stats["kondycja"][0] * 10));
-  if (percent == 1.0)
-    {
-      condition = "Wypoczęty";
-    }
-  else if (percent < 1.0 && percent >= 0.8)
-    {
-      condition = "Nieco zmęczony";
-    }
-  else if (percent < 0.8 && percent >= 0.6)
-    {
-      condition = "Zmęczony";
-    }
-  else if (percent < 0.6 && percent >= 0.4)
-    {
-      condition = "Bardzo zmęczony";
-    }
-  else if (percent < 0.4 && percent >= 0.2)
-    {
-      condition = "Wykończony";
-    }
-  else
-    {
-      condition = "Padnięty";
-    }
+    percent = (float)((float)fatigue / (float)(stats["kondycja"][0] * 10));
+    if (percent == 1.0)
+        condition = "Wypoczęty";
+    else if (percent < 1.0 && percent >= 0.8)
+        condition = "Nieco zmęczony";
+    else if (percent < 0.8 && percent >= 0.6)
+        condition = "Zmęczony";
+    else if (percent < 0.6 && percent >= 0.4)
+        condition = "Bardzo zmęczony";
+    else if (percent < 0.4 && percent >= 0.2)
+        condition = "Wykończony";
+    else
+        condition = "Padnięty";
 }
 
 /* Show prompt to user */
@@ -1300,7 +1288,7 @@ static void cmd_movement(object user, string cmd, string str) {
     if (TAGD->get_tag_value(body, "Fatigue"))
         fatigue = TAGD->get_tag_value(body, "Fatigue");
     else
-        fatigue = 0;
+        fatigue = (stats["kondycja"][0] * 10);
 
     /* Currently, we ignore modifiers (str) and just move */
 
@@ -1315,10 +1303,10 @@ static void cmd_movement(object user, string cmd, string str) {
         return;
     }
 
-    fatigue++;
+    fatigue--;
     TAGD->set_tag_value(body, "Fatigue", fatigue);
     gain_exp("kondycja", 1);
-    set_condition((stats["kondycja"][0] * 10) - fatigue);
+    set_condition(fatigue);
 
     if (TAGD->get_tag_value(body, "Combat")) {
         combat->stop_combat();

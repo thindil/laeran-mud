@@ -457,60 +457,52 @@ nomask string close(object obj) {
  * the failure on failure.  (replace this by a phrase later?)
  */
 
-nomask string move(int dir) {
-  object dest;
-  object exit;
-  string reason;
-  int fatigue;
+nomask string move(int dir) 
+{
+    object dest;
+    object exit;
+    string reason;
+    int fatigue;
 
-  if(!SYSTEM() && !COMMON() && !GAME())
-    return "Access Denied!";
+    if(!SYSTEM() && !COMMON() && !GAME())
+        return "Access Denied!";
 
-  exit = location->get_exit(dir);
-  if (!exit) {
-    return "Nie ma wyjścia w tym kierunku!";
-  }
+    exit = location->get_exit(dir);
+    if (!exit) 
+        return "Nie ma wyjścia w tym kierunku!";
 
-  dest = exit->get_destination();
-  if (!dest) {
-    return "To wyjście prowadzi donikąd!";
-  }
+    dest = exit->get_destination();
+    if (!dest) 
+        return "To wyjście prowadzi donikąd!";
 
-  if (get_user()) {
-      if (TAGD->get_tag_value(body, "Fatigue"))
-          fatigue = TAGD->get_tag_value(body, "Fatigue");
-      else
-          fatigue = 0;
-      if (fatigue >= (get_user()->get_stat_val("kondycja") * 10)) {
-          return "Jesteś zbyt zmęczony aby podróżować. Odpocznij chwilę.";
-      }
-  }
+    if (get_user()) {
+        if (TAGD->get_tag_value(body, "Fatigue"))
+            fatigue = TAGD->get_tag_value(body, "Fatigue");
+        else
+            fatigue = get_user()->get_stat_val("kondycja") * 10;
+        if (fatigue == 0) 
+            return "Jesteś zbyt zmęczony aby podróżować. Odpocznij chwilę.";
+    }
 
-  /* NB.  I do want a = (not == ), as in other places like this*/
-  if (reason = location->can_leave(get_user(), body, dir)) {
-    return reason;
-  }
+    /* NB.  I do want a = (not == ), as in other places like this*/
+    if (reason = location->can_leave(get_user(), body, dir)) 
+        return reason;
 
-  if (reason = exit->can_pass(get_user(), body)) {
-    return reason;
-  }
+    if (reason = exit->can_pass(get_user(), body)) 
+        return reason;
 
-  if (reason = dest->can_enter(get_user(), body,
-                               EXITD->opposite_direction(dir))) {
-    return reason;
-  }
-  
-/*  if (!exit->is_open()) {
-    return "That way is closed.\n\r";
-  } */
+    if (reason = dest->can_enter(get_user(), body,
+                EXITD->opposite_direction(dir))) 
+        return reason;
 
-  location->leave(body, dir);
-  location->remove_from_container(body);
-  exit->pass(body);
-  dest->add_to_container(body);
-  dest->enter(body, EXITD->opposite_direction(dir));
 
-  return nil;
+    location->leave(body, dir);
+    location->remove_from_container(body);
+    exit->pass(body);
+    dest->add_to_container(body);
+    dest->enter(body, EXITD->opposite_direction(dir));
+
+    return nil;
 }
 
 
