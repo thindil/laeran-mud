@@ -37,6 +37,7 @@ static  void cmd_social(object user, string cmd, string str);
 private string lalign(string num, int width);
         void set_password(string new_pass);
         void stop_follow(object user);
+        void heartbeat(void);
 
 /* Macros */
 #define NEW_PHRASE(x) PHRASED->new_simple_english_phrase(x)
@@ -49,6 +50,7 @@ mapping stats;
 mapping skills;
 string health;
 string condition;
+static int heartbeat_handle;
 
 /*
  * NAME:	create()
@@ -64,6 +66,7 @@ void upgraded(varargs int clone) {
     ::upgraded(clone);
 
     state_password = STATE_NORMAL;
+    heartbeat_handle = -1;
     commands_map = ([
 		     "mow"       : "cmd_say",
 		     "emo"       : "cmd_emote",
@@ -320,6 +323,7 @@ void player_login(int first_time)
     /* Show room to player */
     message("\n");
     show_room_to_player(location);
+    heartbeat_handle = call_out("heartbeat", 10);
 }
 
 
@@ -360,6 +364,9 @@ static void player_logout(void)
     }
     save_user_to_file();
     CHANNELD->unsubscribe_user_from_all(this_object());
+
+    if (heartbeat_handle > -1)
+        remove_call_out(heartbeat_handle);
 
     message("\nDo zobaczenia!\n");
 }
@@ -1986,4 +1993,42 @@ static void cmd_follow(object user, string cmd, string str)
     message("Zaczynasz podążać za " + tmp[number]->get_brief()->to_string(user) + "\n");
     if (tmp[number]->get_mobile()->get_user())
         tmp[number]->get_mobile()->get_user()->message(Name + " zaczyna podążać za Tobą.\n");
+}
+
+void heartbeat(void)
+{
+    int cur_val;
+
+    if (TAGD->get_tag_value(body, "Combat")) {
+        call_out("heartbeat", 10);
+        return;
+    }
+
+    if (TAGD->get_tag_value(body, "Hp")) {
+        cur_val = TAGD->get_tag_value(body, "Hp");
+        cur_val += 3;
+        if (cur_val >= body->get_hp()) {
+            cur_val = body->get_hp();
+            TAGD->set_tag_value(body, "Hp", nil);
+            message("Jesteś już kompletnie zdrowy.\n");
+        }
+        else
+            TAGD->set_tag_value(body, "Hp", cur_val);
+        set_health(cur_val);
+    }
+    
+    if (TAGD->get_tag_value(body, "Fatigue")) {
+        cur_val = TAGD->get_tag_value(body, "Fatigue");
+        cur_val += ((stats["kondycja"][0] * 10) / 3);
+        if (cur_val >= (stats["kondycja"][0] * 10)) {
+            cur_val = stats["kondycja"][0] * 10;
+            TAGD->set_tag_value(body, "Fatigue", nil);
+            message("Jesteś już kompletnie wypoczęty.\n");
+        }
+        else
+            TAGD->set_tag_value(body, "Fatigue", cur_val);
+        set_condition(cur_val);
+    }
+
+    call_out("heartbeat", 10);
 }
