@@ -1343,8 +1343,9 @@ void stop_follow(object user)
 }
 
 static void cmd_movement(object user, string cmd, string str) {
-    int    dir, fatigue;
+    int    dir, fatigue, exp;
     string reason;
+    float capacity;
 
     if (TAGD->get_tag_value(body, "Fatigue"))
         fatigue = TAGD->get_tag_value(body, "Fatigue");
@@ -1364,9 +1365,24 @@ static void cmd_movement(object user, string cmd, string str) {
         return;
     }
 
-    fatigue--;
+    capacity = body->get_current_weight() / body->get_weight_capacity();
+    if (capacity <= 0.5) {
+        fatigue--;
+        exp = 1;
+    } else if(capacity > 0.5 && capacity <= 0.75) {
+        fatigue -= 2;
+        exp = 2;
+    } else if(capacity > 0.75 && capacity <= 0.95) {
+        fatigue -= 5;
+        exp =5;
+    } else {
+        fatigue -= 10;
+        exp = 10;
+    }
+    if (fatigue < 0)
+        fatigue = 0;
     TAGD->set_tag_value(body, "Fatigue", fatigue);
-    gain_exp("kondycja", 1);
+    gain_exp("kondycja", exp);
     set_condition(fatigue);
 
     if (TAGD->get_tag_value(body, "Combat")) {
