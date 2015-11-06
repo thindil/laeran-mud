@@ -1141,48 +1141,49 @@ string to_unq_flags(void) {
   return ret;
 }
 
-private void parse_all_tags(mixed* value) {
-  int    ctr, type, do_sscanf;
-  string format_code;
-  mixed  new_val;
+private void parse_all_tags(mixed* value) 
+{
+    int    ctr, type, do_sscanf;
+    string format_code;
+    mixed  new_val;
 
-  value = UNQ_PARSER->trim_empty_tags(value);
+    value = UNQ_PARSER->trim_empty_tags(value);
 
-  for(ctr = 0; ctr < sizeof(value); ctr += 2) {
-    value[ctr] = STRINGD->trim_whitespace(value[ctr]);
-    type = TAGD->object_tag_type(value[ctr]);
+    for(ctr = 0; ctr < sizeof(value); ctr += 2) {
+        value[ctr] = STRINGD->trim_whitespace(value[ctr]);
+        type = TAGD->object_tag_type(value[ctr]);
 
-    switch(type) {
-    case -1:
-      error("No such tag as '" + STRINGD->mixed_sprint(value[ctr])
-	    + "' defined in TagD!");
+        switch(type) {
+            case -1:
+                error("No such tag as '" + STRINGD->mixed_sprint(value[ctr])
+                        + "' defined in TagD!");
 
-    case T_INT:
-      do_sscanf = 1;
-      format_code = "%d";
-      break;
+            case T_INT:
+                do_sscanf = 1;
+                format_code = "%d";
+                break;
 
-    case T_FLOAT:
-      do_sscanf = 1;
-      format_code = "%f";
-      break;
+            case T_FLOAT:
+                do_sscanf = 1;
+                format_code = "%f";
+                break;
 
-    default:
-      error("Can't parse tags of type " + type + " yet!");
-    }
+            default:
+                error("Can't parse tags of type " + type + " yet!");
+        }
 
-    if(do_sscanf) {
-      if(typeof(value[ctr + 1]) != T_STRING)
-	error("Internal error:  Can't read tag out of non-string value!");
+        if(do_sscanf) {
+            if(typeof(value[ctr + 1]) != T_STRING)
+                error("Internal error:  Can't read tag out of non-string value!");
 
-      value[ctr + 1] = STRINGD->trim_whitespace(value[ctr + 1]);
+            value[ctr + 1] = STRINGD->trim_whitespace(value[ctr + 1]);
 
-      sscanf(value[ctr + 1], format_code, new_val);
-      TAGD->set_object_tag(this_object(), value[ctr], new_val);
-    } else {
-      /* Nothing yet, if not sscanf */
-    }
-  } /* END: for(ctr = 0; ctr < sizeof(value); ctr += 2) */
+            sscanf(value[ctr + 1], format_code, new_val);
+            TAGD->set_tag_value(this_object(), value[ctr], new_val);
+        } else {
+            /* Nothing yet, if not sscanf */
+        }
+    } 
 }
 
 /*
