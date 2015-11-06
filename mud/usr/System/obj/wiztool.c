@@ -186,6 +186,7 @@ void upgraded(varargs int clone) {
     "%kick"                : ({ "cmd_kick" }),
     "%ban"                 : ({ "cmd_ban" }),
     "%zmien_haslo"         : ({ "cmd_change_password" }),
+    "%loguj"               : ({ "cmd_log_user" }),
 
 	"%status"              : ({ "cmd_status" }),
 

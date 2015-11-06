@@ -1194,3 +1194,44 @@ static void cmd_set_mob_value(object user, string cmd, string str)
     }
     message("Zmieniono ustawienie mobka #" + number + " " + option + " na wartość: " + value + ".\n");
 }
+
+static void cmd_log_user(object user, string cmd, string str)
+{
+    string name, option;
+    object *users;
+    int i;
+    object player;
+
+    if (!str || STRINGD->is_whitespace(str) || sscanf(str, "%s %s", name, option) != 2) {
+        message("Użycie: " + cmd + " <gracz> [start lub stop]\n");
+        return;
+    }
+    
+    users = users();
+    for (i = 0; i < sizeof(users); i++) {
+        if (STRINGD->to_lower(name) == users[i]->get_name()) {
+            if (option == "start") {
+                TAGD->set_tag_value(users[i]->get_body()->get_mobile(), "Logged", 1);
+                message("Rozpoczęto śledzenie gracza: " + name + ".\n");
+                return;
+            } else {
+                TAGD->set_tag_value(users[i]->get_body()->get_mobile(), "Logged", nil);
+                message("Zaprzestano śledzenia gracza: " + name + ".\n");
+                return;
+            }
+        }
+    }
+
+    player = clone_object("/usr/game/obj/user");
+    if (!player->restore_user_from_file(name)) {
+        message("Nie ma gracza o imieniu " + name + ".\n");
+        return;
+    }
+    if (option == "start") {
+        TAGD->set_tag_value(users[i]->get_body()->get_mobile(), "Logged", 1);
+        message("Rozpoczęto śledzenie gracza: " + name + ".\n");
+    } else {
+        TAGD->set_tag_value(users[i]->get_body()->get_mobile(), "Logged", nil);
+        message("Zaprzestano śledzenia gracza: " + name + ".\n");
+    }
+}

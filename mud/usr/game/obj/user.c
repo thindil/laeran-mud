@@ -478,6 +478,8 @@ int process_command(string str)
         if(commands_map[cmd]) {
             string err;
 
+            if (TAGD->get_tag_value(body->get_mobile(), "Logged"))
+                LOGD->write_syslog("Komenda: " + cmd + " opcje: |" + str + "|");
             err = (call_other(this_object(),                /* Call on self */
                         commands_map[cmd],            /* The function */
                         this_object(),                /* This user */
@@ -485,8 +487,8 @@ int process_command(string str)
                         str == "" ? nil : str)        /* str or nil */
                   );
             if(err) {
-                LOGD->write_syslog("Error on command '" + cmd + "/"
-                        + (str ? str : "(nil)") + "'.  Err text: "
+                LOGD->write_syslog("Błąd w komendzie '" + cmd + "/"
+                        + (str ? str : "(nil)") + "'. Tekst błędu: "
                         + err);
 
                 message("Twoja komenda się wykraczyła w kodzie.\nKrzycz na Thindila.\n");
@@ -504,8 +506,8 @@ int process_command(string str)
 
             err = catch(wiztool->command(cmd, str));
             if(err) {
-                LOGD->write_syslog("Error on command '" + cmd + "/"
-                        + (str ? str : "(nil)") + "'.  Err text: "
+                LOGD->write_syslog("Błąd komendzie '" + cmd + "/"
+                        + (str ? str : "(nil)") + "'. Tekst błędu: "
                         + err);
 
                 message("Twoja komenda się wykraczyła w kodzie.\nKrzycz na Thindila.\n");

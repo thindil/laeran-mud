@@ -1,3 +1,7 @@
+~mobile_tag{
+  ~name{Logged}
+  ~type{1}
+}
 ~object_tag{
   ~name{Combat}
   ~type{1}
