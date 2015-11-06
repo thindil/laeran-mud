@@ -117,5 +117,7 @@ void from_dtd_unq(mixed* unq)
 
 int num_quests(void)
 {
+    if (!sizeof(quests))
+        return 0;
     return sizeof(quests);
 }
