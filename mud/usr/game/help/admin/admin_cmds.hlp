@@ -23,6 +23,7 @@ wymaga odpowiednich uprawnień aby mogły być wykonane pomyślnie.
 %zgloszenia         Zobacz zgłoszenia błędów/literówek/pomysłów
 %make_social        Stwórz nową komendę socjalną
 %zmien_haslo        Zmień hasło wybranemu graczowi
+%loguj              Zapisuj do syslog wszystkie komendy wykonane przez gracza
 
 }
 
@@ -327,5 +328,16 @@ hasło}
 Komenda %zmien_hasło służy do zmiany hasła dowolnego gracza. Jest składnia
 to "%zmien_haslo [gracz] [hasło]". Gracz któremu zmieniamy hasło nie musi
 być zalogowany.
+
+}
+
+~name{loguj,%loguj}
+~keywords{admin}
+~desc{
+
+Komenda %loguj służy do zapisywania wszystkich wykonanych komend przez
+wybranego gracza. Aby zacząć zapisywać do logu, należy użyć składni:
+"%loguj [gracz] start" aby przestać zapisywać komendy gracza do syslog, użyj
+składni "%loguj [gracz] stop".
 
 }

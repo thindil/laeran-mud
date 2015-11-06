@@ -35,9 +35,9 @@ static void create(varargs int clone)
 {
     ::create();
     if (clone) {
-        substate = SS_PROMPT_VERB;
+        substate = SS_PROMPT_NAME;
         stages = 1;
-        social = "~quest{\n";
+        quest = "~quest{\n";
     }
 }
 
