@@ -1,6 +1,7 @@
 ~DTD{
-  ~quest{name,stage}
+  ~quest{name,stage,reward}
   ~name{string}
+  ~reward{string}
   ~stage{text,condition?}
   ~text{string}
   ~condition{string}

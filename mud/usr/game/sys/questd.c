@@ -10,7 +10,7 @@ inherit unq DTD_UNQABLE;
 void upgraded(varargs int clone);
 
 /* Data from QuestD file*/
-string* quests;
+string** quests;
 string*** stages;
 
 static void create(varargs int clone) 
@@ -39,7 +39,8 @@ string to_unq_text(int number)
     int i;
 
     questtmp = "~quest{\n"
-           + "  ~name{" + quests[number] + "}\n";
+           + "  ~name{" + quests[number][0] + "}\n"
+           + "  ~reward{" + quests[number][1] + "}\n";
     for (i = 0; i < sizeof(stages[number]); i++) {
         questtmp += "  ~stage{\n"
                 + "    ~text{" + stages[number][i][0] + "}\n";
@@ -85,7 +86,10 @@ void from_dtd_unq(mixed* unq)
             while(sizeof(quest_unq) > 0) {
                 switch (quest_unq[0][0]) {
                     case "name":
-                        quests += ({ quest_unq[0][1] });
+                        quests += ({ ({ quest_unq[0][1] }) });
+                        break;
+                    case "reward":
+                        quests[number] += ({ quest_unq[0][1] });
                         break;
                     case "stage":
                         stage_unq = quest_unq[0][1];
