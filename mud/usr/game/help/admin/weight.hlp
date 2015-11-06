@@ -46,105 +46,84 @@ Zobacz również: waga, udzwig
 }
 
 
-~name{~enUS{volume, vol, object volume, object vol}}
+~name{objętość,objetosc,objętość obiektu}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The volume of an object is how much space it takes up.  Volumes are
-internally stored in liters (the same as a cubic decimeter).  Note
-that there are 1,000 liters to the cubic meter.  A decimeter is about
-as long as measuring from your thumb to your little finger across your
-outspread hand, and a cubic decimeter is the equivalent of a cube one
-decimeter on a side.  So it's a cube about one handspan on a side.
+Objętość obiektu oznacza jak dużo miejsca ów przedmiot zajmuje. Objętość
+jest podawana w litrach (czyli w decymetrach sześćiennych) Zapamiętaj, że
+1000 litrów to metr sześcienny.
 
-Or it's about a quart if you want to do it the simple way :-)
+Zobacz również: @set_obj_volume, pojemnosc, waga, dlugosc
 
-See also: @set_obj_volume, volume capacity, weight, length
-
-}}
+}
 
 
-~name{~enUS{set obj volume, set object volume,
-            set obj vol, set object vol, set vol, set volume}}
+~name{set obj volume,set obj vol,set_obj_vol}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-@set_obj_volume sets the volume of an object.  You call it with the
-object number and the new volume.  For instance:
+Komenda @set_obj_vol ustawia objęstość obiektu. Wywołujesz ją z numerem
+obiektu oraz jego nową objętością. Na przykład:
 
 @set_obj_volume #300 1500.0
 
-This would set the volume of object #300 to 1,500 liters, or one and a
-half cubic meters.
+To powinno ustawić objętość obiektu #300 na 1500 litrów lub półtora
+metra sześciennego.
 
-See also: volume, volume capacity
+Zobacz również: objetosc, pojemnosc
 
-}}
+}
 
 
-~name{~enUS{length, height}}
+~name{wysokość,wysokosc,dlugosc,długość}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The length of an object is how long it is along its longest axis.  So
-an arrow would be measured from the cleft at the bottom to the point.
-An orange or a ball would be measured across the center.  Texas would
-be measured from Brownsville in the far South to the far tip of the
-panhandle.  Length is internally measured in centimeters.
+Długość obiektu oznacza wartość jego najdłuższej osi. Na przykład
+strzała będzie mierzona od lotek do grotu. Pomarańcza czy piłka będzie
+mierzona od środka. Długość jest zapisywana w centymetrach.
 
-See also: @set_obj_length, length capacity, volume, weight
+Zobacz również: @set_obj_length, dlugosc pojemnika, objetosc, waga
 
-}}
+}
 
 
-~name{~enUS{set obj length, set object length,
-            set obj height, set object height, set length, setlength,
-            lengthset, setobjlength, setobjectlength, setobjheight,
-            setobjectheight}}
+~name{set obj length,set obj height,set_obj_len}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-@set_obj_length sets the length of an object.  You call it with the
-object number and the new length.  For instance:
+Komenda @set_obj_len ustawia długość obiektu. Wywołujesz ją z numerem
+obiektu oraz jego nową długością. Na przykład:
 
 @set_obj_length #300 100.0
 
-This would set the length of object #300 to 100 centimeters, or one
-meter in length (about 39 inches).
+To powinno ustawić długość obiektu #300 na 100 centymetrów czyli
+metr.
 
-See also: length, length capacity
+Zobacz również: dlugosc, dlugosc pojemnika
 
-}}
+}
 
 
-~name{~enUS{capacity, weight capacity, length capacity,
-            volume capacity, weight cap, length cap, volume cap,
-            vol capacity, vol cap, height capacity, height cap,
-            maximum, weight maximum, length maximum,
-            volume maximum, weight max, length max, volume max,
-            vol maximum, vol max, height maximum, height max}}
+~name{pojemnosc,pojemność,dlugosc pojemnika,długość pojemnika,udźwig,udzwig}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-A container may contain objects totalling less than or equal to its
-weight capacity and its volume capacity.  That is to say, the total of
-all weights together must be less than or equal to its weight
-capacity, and the same for volumes and its volume capacity.
+Pojemnik może posiadać w sobie obiektu o łącznej masie lub objętości
+mniejszej niż jego udźwig i pojemność. Tak więc suma wagi wszystkich
+obiektów w pojemniku musi być mniejsza bądź równa niż udźwig pojemnika.
+Tak samo jest z objętością obiektów i pojemnością.
 
-Every individual object must be less than its total length capacity,
-so a quiver of arrows could accomodate 20 arrows of its maximum length
-quite comfortably, but couldn't accomodate even one single javelin.
+Każdy obiekt w pojemniku musi być krótszy niż jego długość. Tak więc
+kołczan strzał bez problemu zmieści 20 strzał z maksymalną swoją
+długością ale nie zmieści nawet jednego oszczepu.
 
-See also: @set_weight_capacity, @set_height_capacity, @set_volume_capacity
-}}
+Zobacz również: @set_weight_cap, @set_height_cap, @set_volume_cap
+}
 
 
-~name{~enUS{@set_weight_capacity, @set_weight_cap,
+~name{@set_weight_capacity, @set_weight_cap,
             @set_volume_capacity, @set_volume_cap,
             @set_vol_capacity, @set_vol_cap,
             @set_length_capacity, @set_length_cap,
@@ -153,20 +132,19 @@ See also: @set_weight_capacity, @set_height_capacity, @set_volume_capacity
             @set_volume_maximum, @set_volume_max,
             @set_vol_maximum, @set_vol_max,
             @set_length_maximum, @set_length_max,
-            @set_height_maximum, @set_height_max}}
+            @set_height_maximum, @set_height_max}
 ~keywords{admin}
 ~desc{
-  ~enUS{
 
-The @set_weight_capacity, @set_volume_capacity and
-@set_length_capacity commands set the capacities of a container.
-For instance,
+Komendy @set_weight_cap, @set_volume_cap i @set_length_cap oraz
+ich odmiany ustawiają różne wartości maksymalne pojemnika. Na
+przykład:
 
-  @set_length_capacity #300 100.0
+  @set_length_cap #300 100.0
 
-This would set the length capacity of object #300 to 100.0
-centimeters, or one meter.
+To powinno ustawić długość pojemnika obiektu #300 na 100
+centymetrów czyli jeden metr.
 
-See also:  capacity, weight, volume, length
+Zobacz również:  pojemnosc, udzwig, waga
 
-}}
+}
