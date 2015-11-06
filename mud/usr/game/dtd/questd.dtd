@@ -1,0 +1,9 @@
+~DTD{
+  ~quest{number,name,stage+}
+  ~number{int}
+  ~name{string}
+  ~stage{snumber,text,finish}
+  ~snumber{int}
+  ~text{phrase}
+  ~finish{string}
+}
