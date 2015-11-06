@@ -41,6 +41,11 @@ static void create(void) {
   /* Load the mobilefile into MOBILED */
   read_object_dir(MOB_DIR, 2);
 
+  /* Load quests into QUESTD */
+  if (!find_object(QUESTD))
+      compile_object(QUESTD);
+  read_object_dir(QUEST_DIR, 4);
+
   /* Set up heart_beat functions */
   if(!find_object(HEART_BEAT))
       compile_object(HEART_BEAT);
@@ -138,6 +143,9 @@ static int read_object_dir(string path, int type) {
       case 3:
           dir = get_dir(path + "/socials*.unq");
           break;
+      case 4:
+          dir = get_dir(path + "/quests*.unq");
+          break;
       default:
           break;
   }
@@ -168,7 +176,11 @@ static int read_object_dir(string path, int type) {
         case 3:
             SOULD->from_unq_text(file);
             break;
-        default:break;
+        case 4:
+            QUESTD->from_unq_text(file);
+            break;
+        default:
+            break;
     }
   }
 }
