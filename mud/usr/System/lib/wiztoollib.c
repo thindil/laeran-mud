@@ -68,6 +68,8 @@ static void create(varargs int clone)
       auto::compile_object(SIMPLE_ROOM);
     if (!find_object(US_MAKE_SOCIAL))
         auto::compile_object(US_MAKE_SOCIAL);
+    if (!find_object(US_MAKE_QUEST))
+        auto::compile_object(US_MAKE_QUEST);
   }
 }
 

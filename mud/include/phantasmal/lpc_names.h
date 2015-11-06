@@ -84,6 +84,7 @@
 #define US_SET_DESC         "/usr/common/obj/ustate/set_desc"
 #define US_MAKE_SOCIAL      "/usr/common/obj/ustate/make_social"
 #define US_ENTER_CONJ       "/usr/common/obj/ustate/enter_conj"
+#define US_MAKE_QUEST       "/usr/common/obj/ustate/make_quest"
 
 /* Telnet Option Handlers */
 #define TELOPT_DEFAULT_HANDLER  "/usr/common/obj/telopt/default_dgd"
