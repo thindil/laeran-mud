@@ -33,16 +33,18 @@ private void release_system();
 static  void __co_write_rooms(object user, int* objects, int* zones,
 			      int ctr, int zone_ctr, string roomfile,
 			      string mobfile, string zonefile,
-			      int filesize, int extension, string socialdir);
+			      int filesize, int extension, string socialdir, string questdir);
 static  void __co_write_mobs(object user, int* objects, int ctr,
 			     string mobfile, string zonefile, int filesize,
-                 int extension, string socialdir);
+                 int extension, string socialdir, string questdir);
 static  void __co_write_zones(object user, int* objects, int ctr,
 			      string zonefile, int filesize, int extension,
-                  string socialdir);
+                  string socialdir, string questdir);
 static  void __co_write_users(object user, int ctr);
 static  void __co_write_socials(object user, string socialdir,
-                  int filesize, int extension, int ctr);
+                  int filesize, int extension, int ctr, string questdir);
+static  void __co_write_quests(object user, string questdir, int filesize,
+                  int extension, int ctr);
 static  void __co_write_tags(object user, int filesize, int extension,
                   int ctr);
 static  void __co_write_banned(object user);
@@ -295,7 +297,9 @@ static void create(varargs int clone)
 }
 
 void save_mud_data(object user, string room_dirname, string mob_dirname,
-		   string zone_dirname, string social_dirname, string callback) {
+		   string zone_dirname, string social_dirname, string quest_dirname, 
+           string callback) 
+{
     int   *objects, *save_zones;
     int    cohandle, iter;
     mixed  tmp;
@@ -342,7 +346,8 @@ void save_mud_data(object user, string room_dirname, string mob_dirname,
     }
 
     cohandle = call_out("__co_write_rooms", 0, user, objects, save_zones,
-            0, 0, room_dirname, mob_dirname, zone_dirname, 0, -1, social_dirname);
+            0, 0, room_dirname, mob_dirname, zone_dirname, 0, -1, social_dirname,
+            quest_dirname);
     if(cohandle < 1) {
         error("Can't schedule call_out to save objects!");
     } else {
@@ -375,7 +380,7 @@ void prepare_shutdown(void)
     LOGD->write_syslog("Shutting down MUD...", LOG_NORMAL);
   }
 
-  save_mud_data(this_user(), ROOM_DIR, MOB_DIR, ZONE_DIR, SOCIAL_DIR,
+  save_mud_data(this_user(), ROOM_DIR, MOB_DIR, ZONE_DIR, SOCIAL_DIR, QUEST_DIR,
 		"__shutdown_callback");
 }
 
@@ -444,7 +449,7 @@ private void release_system() {
 static void __co_write_rooms(object user, int* objects, int* save_zones,
 			     int ctr, int zone_ctr, string roomdir,
 			     string mobfile, string zonefile, int filesize,
-			     int extension, string socialdir)
+			     int extension, string socialdir, string questdir)
 {
     string unq_str, roomfile, err;
     object obj;
@@ -505,9 +510,9 @@ static void __co_write_rooms(object user, int* objects, int* save_zones,
         if((objects && ctr < sizeof(objects)) || zone_ctr < sizeof(save_zones)) {
             /* Still saving rooms... */
             if(call_out("__co_write_rooms", 0, user, objects, save_zones,
-                        ctr, zone_ctr, roomdir, mobfile, zonefile, filesize, extension, socialdir) < 1) {
+                        ctr, zone_ctr, roomdir, mobfile, zonefile, filesize, 
+                        extension, socialdir, questdir) < 1) 
                 error("Can't schedule call_out to continue writing rooms!");
-            }
             return;
         }
 
@@ -520,7 +525,7 @@ static void __co_write_rooms(object user, int* objects, int* save_zones,
 
         objects = MOBILED->all_mobiles();
         if(call_out("__co_write_mobs", 0, user, objects, 0, mobfile,
-                    zonefile, 0, 0, socialdir) < 1) {
+                    zonefile, 0, 0, socialdir, questdir) < 1) {
             error("Can't schedule call_out to start writing mobiles!");
         }
     } : {
@@ -532,7 +537,7 @@ static void __co_write_rooms(object user, int* objects, int* save_zones,
 
 static void __co_write_mobs(object user, int* objects, int ctr,
 			    string mobsdir, string zonefile, int filesize, int extension,
-                string socialdir) {
+                string socialdir, string questdir) {
   string unq_str, err, mobfile;
   object obj;
   int    chunk_ctr;
@@ -565,7 +570,7 @@ static void __co_write_mobs(object user, int* objects, int ctr,
     if(ctr < sizeof(objects)) {
       /* Still saving mobiles... */
       if(call_out("__co_write_mobs", 0, user, objects, ctr,
-		  mobsdir, zonefile, filesize, extension, socialdir) < 1) {
+		  mobsdir, zonefile, filesize, extension, socialdir, questdir) < 1) {
 	error("Can't schedule call_out to continue writing mobiles!");
       }
       return;
@@ -578,7 +583,7 @@ static void __co_write_mobs(object user, int* objects, int ctr,
     /* Done with mobiles, start on zones */
     LOGD->write_syslog("Writing zones to file " + zonefile, LOG_VERBOSE);
 
-    if(call_out("__co_write_zones", 0, user, objects, 0, zonefile, 0, 0, socialdir) < 1) {
+    if(call_out("__co_write_zones", 0, user, objects, 0, zonefile, 0, 0, socialdir, questdir) < 1) {
        error("Can't schedule call_out to start writing zones!");
      }
   } : {
@@ -590,7 +595,7 @@ static void __co_write_mobs(object user, int* objects, int ctr,
 
 static void __co_write_zones(object user, int* objects, int ctr,
 			     string zonedir, int filesize, int extension,
-                 string socialdir) {
+                 string socialdir, string questdir) {
     string unq_str, zonefile;
     int chunk_ctr, size;
 
@@ -620,7 +625,7 @@ static void __co_write_zones(object user, int* objects, int ctr,
 
     if (ctr < size)
     {
-        if(call_out("__co_write_zones", 0, user, objects, ctr, zonedir, filesize, extension, socialdir) < 1) 
+        if(call_out("__co_write_zones", 0, user, objects, ctr, zonedir, filesize, extension, socialdir, questdir) < 1) 
             error("Can't schedule call_out to start writing zones!");
         return;
     }
@@ -642,7 +647,7 @@ static void __co_write_zones(object user, int* objects, int ctr,
     /* Done with zones, start on socials */
     LOGD->write_syslog("Writing socials to files.", LOG_VERBOSE);
 
-    if(call_out("__co_write_socials", 0, user, socialdir, 0, 0, 0) < 1)
+    if(call_out("__co_write_socials", 0, user, socialdir, 0, 0, 0, questdir) < 1)
     {
         release_system();
         error("Can't schedule call_out to start writing users!");
@@ -650,7 +655,7 @@ static void __co_write_zones(object user, int* objects, int ctr,
 }
 
 static void __co_write_socials(object user, string socialdir,
-                  int filesize, int extension, int ctr) 
+                  int filesize, int extension, int ctr, string questdir) 
 {
     string unq_str, socialfile;
     int chunk_ctr;
@@ -678,12 +683,59 @@ static void __co_write_socials(object user, string socialdir,
     }
 
     if (ctr < SOULD->num_socials()) {
-        if (call_out("__co_write_socials", 0, user, socialdir, filesize, extension, ctr) < 1)
+        if (call_out("__co_write_socials", 0, user, socialdir, filesize, extension, ctr, questdir) < 1)
             error("Can't schedule call_out to start writing socials!");
         return;
     }
 
-    /* Done with socials, start on users */
+    delete_directory(questdir + ".old");
+    rename_file(questdir, questdir + ".old");
+    delete_directory(questdir);
+    make_dir(questdir);
+    /* Done with socials, start on quests */
+    LOGD->write_syslog("Writing quests to files.", LOG_VERBOSE);
+
+    if(call_out("__co_write_quests", 0, user, questdir, 0, 0, 0) < 1)
+    {
+        release_system();
+        error("Can't schedule call_out to start writing users!");
+    }
+}
+
+static void __co_write_quests(object user, string questdir, int filesize,
+                int extension, int ctr)
+{
+    string unq_str, questfile;
+    int chunk_ctr;
+    
+    if (extension == 0)
+        questfile = questdir + "/quests.unq";
+    else
+        questfile = questdir + "/quests" + extension + ".unq";
+
+    catch {
+        for (chunk_ctr = 0; ctr < QUESTD->num_quests() && chunk_ctr < SAVE_CHUNK; ctr ++, chunk_ctr ++) {
+            unq_str = QUESTD->to_unq_text(ctr);
+            filesize += strlen(unq_str);
+            if (filesize > 64000) {
+                extension ++;
+                questfile = questdir + "/quests" + extension + ".unq";
+                filesize = strlen(unq_str);
+            }
+            write_file(questfile, unq_str);
+        }
+    } : {
+        release_system();
+        if (user) user->message("Error writing quests!\n");
+        error("Error writing quests!");
+    }
+
+    if (ctr < QUESTD->num_quests()) {
+        if (call_out("__co_write_quests", 0, user, questdir, filesize, extension, ctr) < 1)
+            error("Can't schedule call_out to start writing quests!");
+        return;
+    }
+    /* Done with quests, start on users */
     LOGD->write_syslog("Writing users to files.", LOG_VERBOSE);
 
     if(call_out("__co_write_users", 0, user, 0) < 1)

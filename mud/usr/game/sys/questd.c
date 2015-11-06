@@ -11,7 +11,7 @@ void upgraded(varargs int clone);
 
 /* Data from QuestD file*/
 string* quests;
-mixed*  stages;
+string*** stages;
 
 static void create(varargs int clone) 
 {
@@ -39,14 +39,13 @@ string to_unq_text(int number)
     int i;
 
     questtmp = "~quest{\n"
-           + "  ~number{" + number + "}\n"
            + "  ~name{" + quests[number] + "}\n";
     for (i = 0; i < sizeof(stages[number]); i++) {
         questtmp += "  ~stage{\n"
-                + "    ~snumber{" + stages[number][0] + "}\n"
-                + "    ~text{" + stages[number][1] + "}\n"
-                + "    ~condition{" + stages[number][2] + "}\n"
-                + "  }\n";
+                + "    ~text{" + stages[number][i][0] + "}\n";
+        if (stages[number][i][1] != "")
+            questtmp += "    ~condition{" + stages[number][i][1] + "}\n";
+        questtmp += "  }\n";
     }
     questtmp += "}\n";
 
@@ -71,40 +70,34 @@ void from_unq(mixed *unq)
 
 void from_dtd_unq(mixed* unq) 
 {
-    mixed *quest_unq, *stage;
+    mixed *quest_unq, *stage_unq, *stage;
     int number;
     
     if(!SYSTEM() && !COMMON() && !GAME())
         return;
 
-    stage = allocate(3);
+    number = -1;
     while(sizeof(unq) > 0) {
         if (unq[0] == "quest") {
             quest_unq = unq[1];
+            number++;
 
             while(sizeof(quest_unq) > 0) {
                 switch (quest_unq[0][0]) {
-                    case "number":
-                        number = (int)quest_unq[0][1];
                     case "name":
                         quests += ({ quest_unq[0][1] });
-                        stages += ({ });
                         break;
                     case "stage":
-                        if (stage[0]) {
+                        stage_unq = quest_unq[0][1];
+                        stage = ({ stage_unq[0][1] });
+                        if (sizeof(stage_unq) == 2) 
+                            stage += ({ stage_unq[1][1] });
+                        else
+                            stage += ({ "" });
+                        if ((number + 1) <= sizeof(stages))
                             stages[number] += ({ stage });
-                            error(STRINGD->mixed_sprint(stage));
-                        }
-                        stage = allocate(3);
-                        break;
-                    case "snumber":
-                        stage[0] = quest_unq[0][1];
-                        break;
-                    case "text":
-                        stage[1] = quest_unq[0][1];
-                        break;
-                    case "condition":
-                        stage[2] = quest_unq[0][1];
+                        else
+                            stages += ({ ({ stage }) });
                         break;
                     default:
                         error("Nieznany tag '" + STRINGD->mixed_sprint(quest_unq[0])
@@ -116,6 +109,9 @@ void from_dtd_unq(mixed* unq)
         }
         unq = unq[2..];
     }
+}
 
-    error("\n Quests: " + STRINGD->mixed_sprint(quests) + "\nStages: " + STRINGD->mixed_sprint(stages));
+int num_quests(void)
+{
+    return sizeof(quests);
 }

@@ -1,10 +1,7 @@
 ~DTD{
-  ~qt{number,name,stage}
-  ~quest:qt{}
-  ~number{int}
+  ~quest{name,stage}
   ~name{string}
-  ~stage{snumber,text,condition?}
-  ~snumber{int}
+  ~stage{text,condition?}
   ~text{string}
   ~condition{string}
 }

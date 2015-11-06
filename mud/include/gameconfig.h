@@ -19,6 +19,7 @@
 #define COMBAT                 "/usr/game/obj/combat"
 #define QUESTD_DTD             "/usr/game/dtd/questd.dtd"
 #define QUEST_DIR              "/usr/game/object/quests"
+#define SAFE_QUEST_DIR         "/usr/game/object/safe_quests"
 #define QUESTD                 "/usr/game/sys/questd"
 
 #define START_ROOM             100
