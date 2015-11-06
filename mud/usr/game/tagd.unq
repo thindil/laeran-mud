@@ -2,6 +2,10 @@
   ~name{Logged}
   ~type{1}
 }
+~mobile_tag{
+  ~name{Quest}
+  ~type{2}
+}
 ~object_tag{
   ~name{Combat}
   ~type{1}
@@ -21,10 +25,6 @@
 ~object_tag{
   ~name{Hp}
   ~type{1}
-}
-~object_tag{
-  ~name{Quest}
-  ~type{2}
 }
 ~object_tag{
   ~name{Recipient}
