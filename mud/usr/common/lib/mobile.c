@@ -4,6 +4,8 @@
 #include <phantasmal/phrase.h>
 #include <phantasmal/lpc_names.h>
 
+#include <type.h>
+
 /* Mobile: structure for a sentient, not-necessarily-player critter's
    mind.  The mobile will be attached to a body under any normal
    circumstances.
@@ -605,55 +607,126 @@ void hook_enter(object entering_body, int direction) {
 }
 
 
+/* This function serializes tags from TagD so that they can be written
+   into the object file. */
+private string all_tags_to_unq(void) 
+{
+    mixed *all_tags;
+    string ret;
+    int    ctr;
+
+    all_tags = TAGD->mobile_all_tags(this_object());
+    ret = "";
+
+    for(ctr = 0; ctr < sizeof(all_tags); ctr += 2) {
+        ret += "~" + all_tags[ctr] + "{";
+        switch(TAGD->mobile_tag_type(all_tags[ctr])) {
+            case T_INT:
+            case T_FLOAT:
+                ret += all_tags[ctr + 1];
+                break;
+
+            case T_STRING:
+                ret += STRINGD->unq_escape(all_tags[ctr + 1]);
+                break;
+
+            case T_OBJECT:
+            case T_ARRAY:
+            case T_MAPPING:
+            default:
+                error("Can't output that tag type yet!");
+        }
+        ret += "}\n        ";
+    }
+
+    return ret;
+}
+
 /*
  * UNQ functions
  */
 
-string to_unq_text(void) {
-  string ret;
-  int    bodynum;
+string to_unq_text(void) 
+{
+    string ret;
+    int    bodynum;
 
-  if(!SYSTEM() && !COMMON() && !GAME())
-    return nil;
+    if(!SYSTEM() && !COMMON() && !GAME())
+        return nil;
 
-  if(body)
-    {
-      bodynum = body->get_number();
-    }
-  else
-    {
-      bodynum = -1;
-    }
+    if(body)
+        bodynum = body->get_number();
+    else
+        bodynum = -1;
 
-  ret  = "~mobile{\n";
-  ret += "  ~type{" + this_object()->get_type() + "}\n";
-  if (bodynum > -1)
-    {
-      ret += "  ~name{" + body->get_brief()->as_unq() + "}\n";
+    ret  = "~mobile{\n";
+    ret += "  ~type{" + this_object()->get_type() + "}\n";
+    if (bodynum > -1)
+        ret += "  ~name{" + body->get_brief()->as_unq() + "}\n";
+    ret += "  ~number{" + number + "}\n";
+    ret += "  ~body{" + bodynum + "}\n";
+    if (parentbody > 0)
+        ret += "  ~parentbody{" + parentbody + "}\n";
+    if (spawnroom > 0)
+        ret += "  ~spawnroom{" + spawnroom + "}\n";
+    if(function_object("mobile_unq_fields", this_object())) {
+        ret += "  ~data{\n";
+        ret += this_object()->mobile_unq_fields();
+        ret += "  }\n";
     }
-  ret += "  ~number{" + number + "}\n";
-  ret += "  ~body{" + bodynum + "}\n";
-  if (parentbody > 0)
-    {
-      ret += "  ~parentbody{" + parentbody + "}\n";
-    }
-  if (spawnroom > 0)
-    {
-      ret += "  ~spawnroom{" + spawnroom + "}\n";
-    }
-  if(function_object("mobile_unq_fields", this_object()))
-    {
-      ret += "  ~data{\n";
-      ret += this_object()->mobile_unq_fields();
-      ret += "  }\n";
-    }
-  ret += "}\n\n";
+    ret += "  ~tags{" + all_tags_to_unq() + "}\n";
+    ret += "}\n\n";
 
-  return ret;
+    return ret;
 }
 
 void from_dtd_unq(mixed* unq) {
   error("Override from_dtd_unq to call it!");
+}
+
+private void parse_all_tags(mixed* value) 
+{
+    int    ctr, type, do_sscanf;
+    string format_code;
+    mixed  new_val;
+
+    value = UNQ_PARSER->trim_empty_tags(value);
+
+    for(ctr = 0; ctr < sizeof(value); ctr += 2) {
+        value[ctr] = STRINGD->trim_whitespace(value[ctr]);
+        type = TAGD->mobile_tag_type(value[ctr]);
+
+        switch(type) {
+            case -1:
+                error("No such tag as '" + STRINGD->mixed_sprint(value[ctr])
+                        + "' defined in TagD!");
+
+            case T_INT:
+                do_sscanf = 1;
+                format_code = "%d";
+                break;
+
+            case T_FLOAT:
+                do_sscanf = 1;
+                format_code = "%f";
+                break;
+
+            default:
+                error("Can't parse tags of type " + type + " yet!");
+        }
+
+        if(do_sscanf) {
+            if(typeof(value[ctr + 1]) != T_STRING)
+                error("Internal error:  Can't read tag out of non-string value!");
+
+            value[ctr + 1] = STRINGD->trim_whitespace(value[ctr + 1]);
+
+            sscanf(value[ctr + 1], format_code, new_val);
+            TAGD->set_tag_value(this_object(), value[ctr], new_val);
+        } else {
+            /* Nothing yet, if not sscanf */
+        }
+    }
 }
 
 /* We don't override from_dtd_unq, but we *do* provide parsing functionality
@@ -661,57 +734,62 @@ void from_dtd_unq(mixed* unq) {
    choose to use this.  It extracts the fields it uses, leaving the
    rest.
 */
-static mixed mobile_from_dtd_unq(mixed* unq) {
-  mixed *ret, *ctr;
-  int    bodynum;
+static mixed mobile_from_dtd_unq(mixed* unq) 
+{
+    mixed *ret, *ctr;
+    int    bodynum;
 
-  ctr = unq;
+    ctr = unq;
 
-  while(sizeof(ctr) > 0)
+    while(sizeof(ctr) > 0)
     {
-      switch (ctr[0][0])
-	{
-	case "body":
-	  bodynum = ctr[0][1];
-	  if(bodynum != -1)
-	    {
-	      body = MAPD->get_room_by_num(bodynum);
-	      if(!body)
-		{
-		  error("Can't find body for mobile, object #" + bodynum + "!\n");
-		}
-	      location = body->get_location();
-	    }
-	  else
-	    {
-	      body = nil;
-	      location = nil;
-	    }
-	  break;
-	case "number":
-	  number = ctr[0][1];
-	  break;
-	case "type":
-	  break;
-	case "data":
-	  ret = ({ ctr[0][1] });
-	  break;
-	case "name":
-	  break;
-	case "parentbody":
-	  parentbody = ctr[0][1];
-	  break;
-	case "spawnroom":
-	  spawnroom = ctr[0][1];
-	  break;
-	default:
-	  error("Unrecognized field in mobile structure!");
-	  break;
-	}
-      ctr = ctr[1..];
+        switch (ctr[0][0])
+        {
+            case "body":
+                bodynum = ctr[0][1];
+                if(bodynum != -1)
+                {
+                    body = MAPD->get_room_by_num(bodynum);
+                    if(!body)
+                    {
+                        error("Can't find body for mobile, object #" + bodynum + "!\n");
+                    }
+                    location = body->get_location();
+                }
+                else
+                {
+                    body = nil;
+                    location = nil;
+                }
+                break;
+            case "number":
+                number = ctr[0][1];
+                break;
+            case "type":
+                break;
+            case "data":
+                ret = ({ ctr[0][1] });
+                break;
+            case "name":
+                break;
+            case "parentbody":
+                parentbody = ctr[0][1];
+                break;
+            case "spawnroom":
+                spawnroom = ctr[0][1];
+                break;
+            case "tags":
+                /* Fill in tags array for this object */
+                parse_all_tags(ctr[0][1]);
+                break;
+            default:
+                error("Unrecognized field in mobile structure!");
+                break;
+        }
+        ctr = ctr[1..];
     }
 
-  return ret;
+    return ret;
 }
 
 string get_type(void) {
