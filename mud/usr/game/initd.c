@@ -73,7 +73,7 @@ static void load_tagd(void) {
   mixed *dtd_unq;
   int    ctr, ctr2;
 
-  dtd_unq = load_file_with_dtd("/usr/game/tagd.unq", "/usr/game/tagd.dtd");
+  dtd_unq = load_file_with_dtd("/usr/game/tagd.unq", "/usr/game/dtd/tagd.dtd");
 
   for(ctr = 0; ctr < sizeof(dtd_unq); ctr += 2) {
     string tag_name, tag_get, tag_set, add_func;
