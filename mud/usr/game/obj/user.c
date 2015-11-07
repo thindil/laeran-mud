@@ -147,21 +147,23 @@ void upgraded(varargs int clone) {
 /*
  * Returns true if the filename isn't allowed
  */
-int filename_is_forbidden(string filename) {
-  if(previous_program() != PHANTASMAL_USER)
-    error("Wrong program calling filename_is_forbidden!");
+int filename_is_forbidden(string filename) 
+{
+    if(previous_program() != PHANTASMAL_USER)
+        error("Zły program wywołuje filename_is_forbidden!");
 
-  return 0;
+    return 0;
 }
 
 /*
  * Returns true if the long name isn't allowed
  */
-int name_is_forbidden(string name) {
-  if(previous_program() != PHANTASMAL_USER)
-    error("Wrong program calling name_is_forbidden!");
+int name_is_forbidden(string name) 
+{
+    if(previous_program() != PHANTASMAL_USER)
+        error("Zły program wywołuje name_is_forbidden!");
 
-  return 0;
+    return 0;
 }
 
 
@@ -176,7 +178,7 @@ void player_login(int first_time)
     mixed* inv;
 
     if(previous_program() != PHANTASMAL_USER)
-        error("Wrong program calling player_login!");
+        error("Zły program wywołuje player_login!");
 
     hostname = query_ip_number(query_conn());
     body = nil;
@@ -187,19 +189,19 @@ void player_login(int first_time)
 
     /* If start room can't be found, set the start room to the void */
     if (start_room == nil) {
-        LOGD->write_syslog("Can't find the start room!  Starting in the void...");
+        LOGD->write_syslog("Nie mogę znaleźć pokoju startowego! Zaczynamy w pustce...");
         start_room_num = 0;
         start_room = MAPD->get_room_by_num(start_room_num);
         start_zone = 0;
         if(start_room == nil) {
             /* Panic!  No void! */
-            error("Internal Error: no Void!");
+            error("Błąd wewnętrzny: nie ma Pustki!");
         }
     } else {
         start_zone = ZONED->get_zone_for_room(start_room);
         if(start_zone < 0) {
             /* What's with this start room? */
-            error("Internal Error:  no zone, not even zero, for start room!");
+            error("Błąd wewnętrzny: nie ma jakiejkolwiek strefy dla pokoju startowego!");
         }
     }
 
@@ -211,13 +213,11 @@ void player_login(int first_time)
         other_user = body->get_mobile()->get_user();
     }
     if(other_user && other_user->get_name() != name) {
-        LOGD->write_syslog("User is already set for this mobile!",
-                LOG_ERROR);
-        message("DUP: Body and mobile files are misconfigured!  Internal error!\n");
+        LOGD->write_syslog("Jest już ustawiony użytkownik dla tego mobka!", LOG_ERROR);
+        message("UWAGA: Zła konfiguracja plików z ciałem oraz mobkiem! Wewnętrzny błąd!\n");
 
-        other_user->message(
-                "Somebody has logged in with your name and account!\n");
-        other_user->message("Closing your connection now...\n");
+        other_user->message("Ktoś zalogował się na Twoje konto!\n");
+        other_user->message("Zamykamy Twoje połączenie...\n");
         destruct_object(other_user);
     }
 
@@ -237,7 +237,7 @@ void player_login(int first_time)
 
         body = clone_object(SIMPLE_ROOM);
         if(!body)
-            error("Can't clone player's body!");
+            error("Nie mogę sklonować ciała gracza!");
 
         body->set_container(1);
         body->set_open(1);
@@ -273,7 +273,7 @@ void player_login(int first_time)
 
         MAPD->add_room_to_zone(body, -1, start_zone);
         if(!MAPD->get_room_by_num(body->get_number())) {
-            LOGD->write_syslog("Error making new body!", LOG_ERR);
+            LOGD->write_syslog("Błąd przy tworzeniu nowego ciała!", LOG_ERR);
         }
         body_num = body->get_number();
 
@@ -286,7 +286,7 @@ void player_login(int first_time)
         /* Can't just clone mobile here, it causes problems later */
         mobile = MOBILED->clone_mobile_by_type("user");
         if(!mobile)
-            error("Can't clone mobile of type 'user'!");
+            error("Nie mogę sklonować mobka typu 'user'!");
         MOBILED->add_mobile_number(mobile, -1);
         mobile->assign_body(body);
         mobile->set_user(this_object());
@@ -334,7 +334,7 @@ void player_login(int first_time)
 static void player_logout(void)
 {
     if(previous_program() != PHANTASMAL_USER)
-        error("Wrong program calling player_logout!");
+        error("Zły program wywołuje player_logout!");
 
     /* Teleport body to meat locker */
     if(body) {      
@@ -370,7 +370,7 @@ static void player_logout(void)
                     mobile->teleport(meat_locker, 1);
                 }
             } else
-                LOGD->write_syslog("Can't find room #" + LOCKER_ROOM + " as meat locker!", LOG_ERR);
+                LOGD->write_syslog("Nie mogę znaleźć pokoju #" + LOCKER_ROOM + " jako przechowalnia ciał!", LOG_ERR);
         }
     }
     save_user_to_file();
@@ -2010,7 +2010,7 @@ static void cmd_settings(object user, string cmd, string str)
             push_new_state(US_ENTER_CONJ, user);
             break;
         default:
-            message("Nieznana opcja, spróbuj " + cmd + " [opis|mail|haslo]\n");
+            message("Nieznana opcja, spróbuj " + cmd + " [opis|mail|haslo|odmiana]\n");
             break;
     }
 }

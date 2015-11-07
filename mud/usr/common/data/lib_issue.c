@@ -41,18 +41,19 @@ void add_child(int child) {
   children += ({ child });
 }
 
-void remove_child(int child) {
-  int ctr;
+void remove_child(int child) 
+{
+    int ctr;
 
-  for(ctr = 0; ctr < sizeof(children); ctr++) {
-    if(child == children[ctr]) {
-      children = children[..ctr-1] + children[ctr+1..];
-      return;
+    for(ctr = 0; ctr < sizeof(children); ctr++) {
+        if(child == children[ctr]) {
+            children = children[..ctr-1] + children[ctr+1..];
+            return;
+        }
     }
-  }
 
-  error("Couldn't remove child #" + child + " from " + ob_name
-	+ " issue " + index);
+    error("Nie mogę usunąć potomka #" + child + " z " + ob_name
+            + " issue " + index);
 }
 
 int* get_children(void) {

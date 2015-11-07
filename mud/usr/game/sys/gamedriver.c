@@ -18,22 +18,22 @@ static void create(void)
 
 	file_tmp = read_file("/usr/game/text/welcome.msg");
 	if (!file_tmp)
-		error("Can't read /usr/game/text/welcome.msg!");
+		error("Nie mogę odczytać /usr/game/text/welcome.msg!");
 	welcome_message = file_tmp;
 
 	file_tmp = read_file("/usr/game/text/shutdown.msg");
 	if (!file_tmp)
-		error("Can't read /usr/game/text/shutdown.msg!");
+		error("Nie mogę odczytać /usr/game/text/shutdown.msg!");
 	shutdown_message = file_tmp;
 
 	file_tmp = read_file("/usr/game/text/suspended.msg");
 	if (!file_tmp)
-		error("Can't read /usr/game/text/suspended.msg!");
+		error("Nie mogę odczytać /usr/game/text/suspended.msg!");
 	suspended_message = file_tmp;
 
 	file_tmp = read_file("/usr/game/text/sitebanned.msg");
 	if (!file_tmp)
-		error("Can't read /usr/game/text/sitebanned.msg!");
+		error("Nie mogę odczytać /usr/game/text/sitebanned.msg!");
 	sitebanned_message = file_tmp;
 
     file_tmp = read_file("/usr/game/text/bans.txt");

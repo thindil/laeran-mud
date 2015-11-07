@@ -184,23 +184,24 @@ static string make_string_from_pos_bits(int bits) {
 
 /**** Functions to support word registration ****/
 
-private void update_wordmap(string word, int bits, int do_add) {
-  if(word_type_map[word]) {
-    if(do_add) {
-      word_type_map[word] |= bits;
-    } else {
-      word_type_map[word] &= ~bits;
+private void update_wordmap(string word, int bits, int do_add) 
+{
+    if(word_type_map[word]) {
+        if(do_add) {
+            word_type_map[word] |= bits;
+        } else {
+            word_type_map[word] &= ~bits;
 
-      if(word_type_map[word] == 0)
-	word_type_map[word] = nil;
-    }
-  } else {
-    if(do_add) {
-      word_type_map[word] = bits;
+            if(word_type_map[word] == 0)
+                word_type_map[word] = nil;
+        }
     } else {
-      error("Can't remove a nonexistent word from word_type_map!");
+        if(do_add) {
+            word_type_map[word] = bits;
+        } else {
+            error("Nie mogę usunąć nieistniejącego słowa z word_type_map!");
+        }
     }
-  }
 }
 
 /* TODO: some security for these functions */
@@ -223,7 +224,7 @@ void unref_noun(string noun) {
   int val;
 
   if(!noun_map[noun] || (val = noun_map[noun]) < 1) {
-    error("Unreferencing nonexistent noun '" + (noun ? "(nil)" : noun)
+    error("Nieistniejący rzeczownik '" + (noun ? "(nil)" : noun)
 	  + "'!");
   }
   if(val == 1) {
@@ -255,7 +256,7 @@ void unref_adj(string adj) {
   int val;
 
   if(!adj_map[adj] || (val = adj_map[adj]) < 1) {
-    error("Unreferencing nonexistent adjective '" + (adj ? "(nil)" : adj)
+    error("Nieistniejący przymiotnik '" + (adj ? "(nil)" : adj)
 	  + "'!");
   }
   if(val == 1) {
@@ -270,26 +271,28 @@ void unref_adj(string adj) {
   }
 }
 
-void register_verb(string verb, int transitive) {
-  if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only privileged code can register new verbs!");
+void register_verb(string verb, int transitive) 
+{
+    if(!SYSTEM() && !COMMON() && !GAME())
+        error("Tylko uprzywilejowany kod może rejestrować nowe słowa!");
 
-  if(transitive & VERB_TRANSITIVE) {
-    tverb_map[verb] = 1;
-    update_wordmap(verb, TVERB_BIT, 1);
-  }
+    if(transitive & VERB_TRANSITIVE) {
+        tverb_map[verb] = 1;
+        update_wordmap(verb, TVERB_BIT, 1);
+    }
 
-  if(transitive & VERB_INTRANSITIVE) {
-    iverb_map[verb] = 1;
-    update_wordmap(verb, IVERB_BIT, 1);
-  }
+    if(transitive & VERB_INTRANSITIVE) {
+        iverb_map[verb] = 1;
+        update_wordmap(verb, IVERB_BIT, 1);
+    }
 
-  regenerate_grammar = 1;
+    regenerate_grammar = 1;
 }
 
-void unregister_verb(string verb) {
+void unregister_verb(string verb) 
+{
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only privileged code can unregister verbs!");
+    error("Tylko uprzywilejowany kod może wyrejestrowywać słowa!");
 
   iverb_map[verb] = nil;
   tverb_map[verb] = nil;

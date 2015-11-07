@@ -36,7 +36,7 @@ static void create(void) {
     EXITD->add_deferred_exits();
     MAPD->do_room_resolution(1);
   } else 
-    error("Can't read object files!  Dying!\n");
+    error("Nie mogę odczytać plików z obiektami! Kończę!\n");
 
   /* Load the mobilefile into MOBILED */
   read_object_dir(MOB_DIR, 2);
@@ -85,7 +85,7 @@ static void load_tagd(void) {
     int    tag_type;
 
     if(typeof(dtd_unq[ctr + 1]) != T_ARRAY)
-      error("Internal error parsing TAGD file!");
+      error("Wewnętrzny błąd podczas parsowania pliku TAGD!");
 
     switch(dtd_unq[ctr]) {
     case "mobile_tag":
@@ -95,7 +95,7 @@ static void load_tagd(void) {
       add_func = "new_object_tag";
       break;
     default:
-      error("Unknown tag '" + STRINGD->mixed_sprint(dtd_unq[ctr]) + "'!");
+      error("Nieznany tag '" + STRINGD->mixed_sprint(dtd_unq[ctr]) + "'!");
     }
 
     tag_get = tag_set = nil;
@@ -116,7 +116,7 @@ static void load_tagd(void) {
 	tag_set = STRINGD->trim_whitespace(dtd_unq[ctr + 1][ctr2][1]);
 	break;
       default:
-	error("Unrecognized label in switch for TagD UNQ: "
+	error("Nieznana etykieta w TagD UNQ: "
 	      + STRINGD->mixed_sprint(dtd_unq[ctr + 1][ctr2]) + "!");
       }
     }
@@ -150,8 +150,8 @@ static int read_object_dir(string path, int type) {
           break;
   }
   if(!sizeof(dir[0])) {
-    LOGD->write_syslog("Can't find any '" + path
-		       + " files to load!", LOG_ERR);
+    LOGD->write_syslog("Nie mogę znaleźć żadnego pliku w '" + path
+		       + " do załadowania!", LOG_ERR);
     return -1;
   }
 

@@ -88,7 +88,7 @@ static mixed *iclause_iverb(mixed *symbols) {
   LOG("iclause_iverb\n");
 
   if(sizeof(symbols) != 1)
-    error("Internal parsing error!");
+    error("Wewnętrzny błąd parsera!");
 
   return ({ ({ IVERB_CLAUSE, nil, symbols[0] }) });
 }
@@ -97,7 +97,7 @@ static mixed *iclause_tverb_np(mixed *symbols) {
   LOG("iclause_tverb_np\n");
 
   if(sizeof(symbols) != 2)
-    error("Internal parsing error!");
+    error("Wewnętrzny błąd parsera!");
 
   return ({ ({ TVERB_CLAUSE, nil, symbols[0], symbols[1] }) });
 }
