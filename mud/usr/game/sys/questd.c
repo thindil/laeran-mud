@@ -55,18 +55,18 @@ string to_unq_text(int number)
 
 void from_unq_text(string unq_text) 
 {
-  if(!SYSTEM() && !COMMON() && !GAME())
-    return;
+    if(!SYSTEM() && !COMMON() && !GAME())
+        return;
 
-  unq::from_unq_text(unq_text);
+    unq::from_unq_text(unq_text);
 }
 
 void from_unq(mixed *unq) 
 {
-  if(!SYSTEM() && !COMMON() && !GAME())
-    return;
+    if(!SYSTEM() && !COMMON() && !GAME())
+        return;
 
-  unq::from_unq(unq);
+    unq::from_unq(unq);
 }
 
 void from_dtd_unq(mixed* unq) 
@@ -120,4 +120,79 @@ int num_quests(void)
     if (!sizeof(quests))
         return 0;
     return sizeof(quests);
+}
+
+void start_quest(float number, object mobile)
+{
+    if(!SYSTEM() && !COMMON() && !GAME())
+        return;
+
+    TAGD->set_tag_value(mobile, "Quest", number);
+    mobile->get_user()->message(stages[(int)number][0][0] + "\n");
+}
+
+void progress_quest(object mobile)
+{
+    int qnumber, snumber;
+    float number;
+    string *reward;
+    object item, new_object;
+    string result;
+
+    if(!SYSTEM() && !COMMON() && !GAME())
+        return;
+    
+    number = TAGD->get_tag_value(mobile, "Quest");
+    qnumber = (int)modf(number)[1];
+    snumber = (int)(modf(number)[0] * 100.0) + 1;
+    if ((snumber + 1) < sizeof(stages[qnumber])) {
+        TAGD->set_tag_value(mobile, "Quest", number + 0.01);
+        mobile->get_user()->message(stages[qnumber][snumber][0] + "\n");
+    } else {
+        TAGD->set_tag_value(mobile, "Quest", nil);
+        mobile->get_user()->message(stages[qnumber][snumber][0] + "\n");
+        reward = explode(quests[qnumber][1], ":");
+        switch (reward[0]) {
+            case "skill":
+                mobile->get_user()->gain_exp(reward[1], reward[2]);
+                break;
+            case "item":
+                item = MAPD->get_room_by_num(reward[1]);
+                new_object = clone_object(SIMPLE_ROOM);
+                MAPD->add_room_to_zone(new_object, -1, ZONED->get_zone_for_room(mobile->get_location()));
+                new_object->add_archetype(item);
+                new_object->set_brief(nil);
+                new_object->set_look(nil);
+                mobile->get_location()->add_to_container(new_object);
+                if (item->is_container())
+                    new_object->set_container(1);
+                if (item->is_open())
+                    new_object->set_open(1);
+                if (item->is_openable())
+                    new_object->set_openable(1);
+                if (item->is_weapon())
+                    new_object->set_weapon(1);
+                if (item->is_wearable())
+                    new_object->set_wearable(1);
+                result = mobile->place(new_object, mobile->get_body());
+                if (result) 
+                    mobile->get_user()->message(result + "\nTwoja nagroda upada na ziemię.\n");
+                break;
+            default:
+                error("Nieznana nagroda za przygodę.");
+        }
+    }
+}
+
+string* get_condition(float number)
+{
+    int qnumber, snumber;
+
+    if(!SYSTEM() && !COMMON() && !GAME())
+        return nil;
+
+    qnumber = (int)modf(number)[1];
+    snumber = (int)(modf(number)[0] * 100.0) + 1;
+
+    return explode(stages[qnumber][snumber][1], ":");
 }
