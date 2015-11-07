@@ -1034,7 +1034,7 @@ static void cmd_inventory(object user, string cmd, string str) {
   inv = weared = ({ });
   for(ctr = 0; ctr < sizeof(objs); ctr++) {
       if (objs[ctr]->is_dressed())
-          weared += ({ lalign("- " + objs[ctr]->get_brief()->to_string(user) + "\n", 25) });
+          weared += ({ lalign("- " + objs[ctr]->get_brief()->to_string(user), 25) });
       else
           inv += ({ lalign("- " + objs[ctr]->get_brief()->to_string(user), 25) });
   }
@@ -1049,7 +1049,7 @@ static void cmd_inventory(object user, string cmd, string str) {
       else
           msg += lalign("            ", 25);
       if (ctr < sizeof(weared))
-          msg += weared[ctr];
+          msg += weared[ctr] + "\n";
       else
           msg += "\n";
   }
