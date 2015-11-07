@@ -864,8 +864,7 @@ static void cmd_set_obj_string_value(object user, string cmd, string str)
   int     objnum;
   string  cmd_value_name, newvalue;
 
-  if(!str || sscanf(str, "%*s %*s %*s") == 3
-     || sscanf(str, "#%d %s", objnum, newvalue) < 1) {
+  if(!str || sscanf(str, "#%d %s", objnum, newvalue) < 1) {
     user->message("Użycie: " + cmd + " #<obiekt> [wartość]\n");
     return;
   }
@@ -880,8 +879,8 @@ static void cmd_set_obj_string_value(object user, string cmd, string str)
 
   obj = MAPD->get_room_by_num(objnum);
   if(!obj) {
-    user->message("The object must be a room or portable.  Obj #"
-		  + objnum + " is not.\n");
+    user->message("Obiekt musi być pokojem bądź przenośnym. Obiekt numer #"
+		  + objnum + " nie jest.\n");
     return;
   }
 
