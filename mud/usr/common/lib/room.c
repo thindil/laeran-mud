@@ -731,7 +731,7 @@ void get(object mover, object new_env)
     float quest;
 
     if (mover->get_mobile()->get_user() && mover == new_env
-            && TAGD->get_tag_value(mover->get_mobile(), "Quest")
+            && TAGD->get_tag_value(mover->get_mobile(), "Quest") != nil
             && sizeof(obj::get_archetypes())) {
         quest = TAGD->get_tag_value(mover->get_mobile(), "Quest");
         condition = QUESTD->get_condition(quest);

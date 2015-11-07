@@ -547,6 +547,14 @@ int get_skill_exp(string name)
     return skills[name][1];
 }
 
+int have_skill(string name)
+{
+    if (sizeof(map_indices(skills) & ({ name })))
+        return 1;
+    else
+        return 0;
+}
+
 void death()
 {
     object PHRASE phr;
@@ -598,54 +606,49 @@ void death()
 
 void gain_exp(string skill, int value)
 {
-  int exp, needexp, level;
+    int exp, needexp, level;
 
-  /* gain experience in stats */
-  if (sizeof(map_indices(stats) & ({ skill })))
+    /* gain experience in stats */
+    if (sizeof(map_indices(stats) & ({ skill })))
     {
-      exp = stats[skill][1] + value;
-      needexp = stats[skill][0] * 1000;
-      if (exp > needexp)
-	{
-	  exp -= needexp;
-	  stats[skill][0] ++;
-	  if (skill == "siła" && stats[skill][0] < 51)
-	    {
-	      body->set_weight_capacity(50.0 + (float)stats[skill][0]);
-	    }
-	}
-      stats[skill][1] = exp;
-      if (stats[skill][0] > 50)
-	{
-	  stats[skill][0] = 50;
-	  stats[skill][1] = 0;
-	}
-      return;
+        exp = stats[skill][1] + value;
+        needexp = stats[skill][0] * 1000;
+        if (exp > needexp)
+        {
+            exp -= needexp;
+            stats[skill][0] ++;
+            if (skill == "siła" && stats[skill][0] < 51)
+            {
+                body->set_weight_capacity(50.0 + (float)stats[skill][0]);
+            }
+        }
+        stats[skill][1] = exp;
+        if (stats[skill][0] > 50)
+        {
+            stats[skill][0] = 50;
+            stats[skill][1] = 0;
+        }
+        return;
     }
 
-  if (sizeof(map_indices(skills) & ({ skill })))
-    {
-      exp = skills[skill][1] + value;
-      needexp = skills[skill][0] * 100;
-      level = skills[skill][0];
+    if (have_skill(skill)) {
+        exp = skills[skill][1] + value;
+        needexp = skills[skill][0] * 100;
+        level = skills[skill][0];
+    } else {
+        exp = value;
+        needexp = 100;
+        level = 1;
     }
-  else
-    {
-      exp = value;
-      needexp = 100;
-      level = 1;
+    if (exp > needexp) {
+        exp -= needexp;
+        level ++;
     }
-  if (exp > needexp)
-    {
-      exp -= needexp;
-      level ++;
+    if (level > 100) {
+        level = 100;
+        exp = 0;
     }
-  if (level > 100)
-    {
-      level = 100;
-      exp = 0;
-    }
-  skills[skill] = ({ level, exp });
+    skills[skill] = ({ level, exp });
 }
 
 /* Set string value of health for prompt */

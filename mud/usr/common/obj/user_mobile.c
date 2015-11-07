@@ -64,10 +64,10 @@ void hook_social(object body, object target, string verb) {
     float quest;
 
     if(user) {
-        if (TAGD->get_tag_value(this_object(), "Quest") && verb == "pozdrow") {
+        if (TAGD->get_tag_value(this_object(), "Quest") != nil && verb == "pozdrow") {
             quest = TAGD->get_tag_value(this_object(), "Quest");
             condition = QUESTD->get_condition(quest);
-            if (condition[0] == "npc" && condition[1] == target->get_mobile()->get_number())
+            if (condition[0] == "npc" && (int)condition[1] == target->get_mobile()->get_number())
                 QUESTD->progress_quest(this_object());
         } else {
             ret = SOULD->get_social_string(user, body, target, verb);

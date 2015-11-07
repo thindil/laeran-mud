@@ -157,7 +157,7 @@ void progress_quest(object mobile)
         reward = explode(quests[qnumber][1], ":");
         switch (reward[0]) {
             case "skill":
-                mobile->get_user()->gain_exp(reward[1], reward[2]);
+                mobile->get_user()->gain_exp(reward[1], (int)reward[2]);
                 break;
             case "item":
                 item = MAPD->get_room_by_num(reward[1]);
