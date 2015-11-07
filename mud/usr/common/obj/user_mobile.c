@@ -3,6 +3,8 @@
 #include <phantasmal/map.h>
 #include <phantasmal/lpc_names.h>
 
+#include <gameconfig.h>
+
 inherit MOBILE;
 
 /* user associated with this mobile */
@@ -57,16 +59,24 @@ void hook_emote(object body, string message) {
 
 /* Args -- body, target, verb */
 void hook_social(object body, object target, string verb) {
-  string ret;
+    string ret;
+    string *condition;
+    float quest;
 
-  if(user) {
-    ret = SOULD->get_social_string(user, body, target, verb);
-    if(!ret) {
-      user->message("Error getting social string!\r\n");
-    } else {
-      user->message(ret + "\r\n");
+    if(user) {
+        if (TAGD->get_tag_value(this_object(), "Quest") && verb == "pozdrow") {
+            quest = TAGD->get_tag_value(this_object(), "Quest");
+            condition = QUESTD->get_condition(quest);
+            if (condition[0] == "npc" && condition[1] == target->get_mobile()->get_number())
+                QUESTD->progress_quest(this_object());
+        } else {
+            ret = SOULD->get_social_string(user, body, target, verb);
+            if(!ret) 
+                user->message("Nie można pobrać tekstu socjalnego!\n");
+            else
+                user->message(ret + "\n");
+        }
     }
-  }
 }
 
 void hook_whisper(object body, string message) {

@@ -5,6 +5,8 @@
 #include <phantasmal/map.h>
 #include <phantasmal/lpc_names.h>
 
+#include <gameconfig.h>
+
 #include <type.h>
 
 /* room.c:
@@ -723,7 +725,19 @@ string can_get(object user, object mover, object new_env) {
    to the new environment.  That'll be done separately.  This is
    just notification that that has happened.
 */
-void get(object mover, object new_env) {
+void get(object mover, object new_env) 
+{
+    string *condition;
+    float quest;
+
+    if (mover->get_mobile()->get_user() && mover == new_env
+            && TAGD->get_tag_value(mover->get_mobile(), "Quest")
+            && sizeof(obj::get_archetypes())) {
+        quest = TAGD->get_tag_value(mover->get_mobile(), "Quest");
+        condition = QUESTD->get_condition(quest);
+        if (condition[0] == "item" && obj::get_archetypes() & ({ condition[1] })) 
+            QUESTD->progress_quest(mover->get_mobile());
+    }
 }
 
 
