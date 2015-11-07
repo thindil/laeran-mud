@@ -32,3 +32,8 @@
   ~tag{postman}
   ~code{/usr/common/obj/postman_mobile}
 }
+
+~bind{
+  ~tag{alchemy}
+  ~code{/usr/common/obj/alchemy_mobile}
+}
