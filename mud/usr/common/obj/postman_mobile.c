@@ -67,10 +67,10 @@ void hook_social(object body, object target, string verb)
 /* Postman iteraction */
 void hook_whisper(object body, string message)
 {
-  string* parts;
+  string *parts, *nouns;
   object new_object, recipient;
   mixed* objs;
-  string items, desc;
+  string items, desc, rec_name;
   int number;
 
   switch (message)
@@ -106,14 +106,18 @@ void hook_whisper(object body, string message)
             body->get_mobile()->get_user()->add_command("daj", "cmd_give");
             number = (int)recipients[random(sizeof(recipients))];
             recipient = MAPD->get_room_by_num(number);
+            nouns = recipient->get_nouns(body->get_mobile()->get_user()->get_locale());
+            if (sizeof(nouns) < 5)
+                rec_name = recipient->get_brief()->to_string(body->get_mobile()->get_user());
+            else
+                rec_name = nouns[1];
             desc = "Duża, w miarę ciężka sześcienna skrzynia owinięta papierem. Na górze widnieje napis: 'Dostarczyć\n"
-                + "do " + recipient->get_brief()->to_string(body->get_mobile()->get_user()) + " w "
+                + "do " + rec_name + " w miejscu zwanym "
                 + recipient->get_location()->get_brief()->to_string(body->get_mobile()->get_user()) + ".\n";
             new_object->set_look(PHRASED->new_simple_english_phrase(desc));
             TAGD->set_tag_value(new_object, "Recipient", number);
             whisper(body, "W porządku, oto Twoja paczka, zanieś ją teraz do " 
-                    + recipient->get_brief()->to_string(body->get_mobile()->get_user()) + " w "
-                    + recipient->get_location()->get_brief()->to_string(body->get_mobile()->get_user()) + ".\n"
+                    + rec_name + " w miejscu zwanym " + recipient->get_location()->get_brief()->to_string(body->get_mobile()->get_user()) + ".\n"
                     + "Jeżeli się zgubisz, możesz zawsze sprawdzić adres odbiorcy na paczce. Kiedy dotrzesz na\n"
                     + "miejsce, 'daj paczka' odbiorcy a on już przekaże Tobie wynagrodzenie za dostawę.\n");
         }
