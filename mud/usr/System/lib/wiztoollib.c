@@ -1237,3 +1237,16 @@ static void cmd_log_user(object user, string cmd, string str)
         message("Zaprzestano śledzenia gracza: " + name + ".\n");
     }
 }
+
+static void cmd_make_quest(object user, string cmd, string str)
+{
+    object state;
+
+    if(str && !STRINGD->is_whitespace(str)) {
+        user->message("Użycie: " + cmd + "\n");
+        return;
+    }
+
+    state = clone_object(US_MAKE_QUEST);
+    user->push_new_state(US_MAKE_QUEST);
+}

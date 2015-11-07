@@ -77,7 +77,10 @@ void from_dtd_unq(mixed* unq)
     if(!SYSTEM() && !COMMON() && !GAME())
         return;
 
-    number = -1;
+    if (!sizeof(quests))
+        number = -1;
+    else
+        number = sizeof(quests) - 1;
     while(sizeof(unq) > 0) {
         if (unq[0] == "quest") {
             quest_unq = unq[1];
