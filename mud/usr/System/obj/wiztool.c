@@ -167,6 +167,7 @@ void upgraded(varargs int clone) {
     "%make_social"         : ({ "cmd_make_social" }),
     "@make_social"         : ({ "cmd_make_social" }),
     "@make_quest"          : ({ "cmd_make_quest" }),
+    "@list_quest"          : ({ "cmd_list_quests" }),
 
 	"@log"                 : ({ "cmd_writelog" }),
 	"%log"                 : ({ "cmd_writelog" }),

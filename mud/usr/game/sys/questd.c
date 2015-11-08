@@ -199,3 +199,15 @@ string* get_condition(float number)
 
     return explode(stages[qnumber][snumber][1], ":");
 }
+
+string* get_quests(void)
+{
+    string *qnames;
+    int i;
+
+    qnames = ({ });
+    for (i = 0; i < sizeof(quests); i++)
+        qnames += ({ quests[i][0] });
+
+    return qnames;
+}

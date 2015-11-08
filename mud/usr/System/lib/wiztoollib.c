@@ -1250,3 +1250,22 @@ static void cmd_make_quest(object user, string cmd, string str)
     state = clone_object(US_MAKE_QUEST);
     user->push_new_state(US_MAKE_QUEST);
 }
+
+static void cmd_list_quests(object user, string cmd, string str)
+{
+    string *quests;
+    string msg;
+    int i;
+
+    quests = QUESTD->get_quests();
+    if (!sizeof(quests)) {
+        message("Nie ma jeszcze jakichkolwiek przygód w grze.\n");
+        return;
+    }
+
+    msg = "Lista przygód w grze:\n";
+    for (i = 0; i < sizeof(quests); i++) 
+        msg += ralign((string)(i + 1), 5) + "   " + quests[i] + "\n";
+
+    user->message_scroll(msg);
+}
