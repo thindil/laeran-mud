@@ -160,7 +160,8 @@ nomask void social(string verb, object target) {
   if(!SYSTEM() && !COMMON() && !GAME())
     return;
 
-  location->enum_room_mobiles("hook_social", ({ }), body, target, verb);
+  this_object()->hook_social(body, target, verb);
+  location->enum_room_mobiles("hook_social", ({ this_object() }), body, target, verb);
   return;
 }
 
