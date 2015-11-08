@@ -113,7 +113,7 @@ void hook_whisper(object body, string message)
                 rec_name = nouns[1];
             desc = "Duża, w miarę ciężka sześcienna skrzynia owinięta papierem. Na górze widnieje napis: 'Dostarczyć\n"
                 + "do " + rec_name + " w miejscu zwanym "
-                + recipient->get_location()->get_brief()->to_string(body->get_mobile()->get_user()) + ".\n";
+                + recipient->get_location()->get_brief()->to_string(body->get_mobile()->get_user()) + "'.\n";
             new_object->set_look(PHRASED->new_simple_english_phrase(desc));
             TAGD->set_tag_value(new_object, "Recipient", number);
             whisper(body, "W porządku, oto Twoja paczka, zanieś ją teraz do " 
