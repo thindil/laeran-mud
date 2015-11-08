@@ -1,0 +1,33 @@
+~name{przygody}
+~keywords{admin}
+~desc{
+
+Na Laeran dostępny jest specjalny system przygód. Ogólnie rzecz biorąc,
+przygody do zestaw etapów przez jakie musi przejść gracz aby otrzymać określoną
+nagrodę. Aby przejść do kolejnego etapu przygody, gracz musi spełnić jakiś 
+warunek. Na chwilę obecną są dostępne następujące komendy do przygód:
+
+@make_quest             Tworzy nową przygodę poprzez odpowiedzi na pytania
+@list_quest             Pokazuje listę przygód dostępnych w grze.
+
+}
+
+~name{@list_quest,list_quest,lista przygód}
+~keywords{admin}
+~desc{
+
+Komenda @list_quest wyświetla listę wszystkich przygód w postaci ich numeru
+oraz nazwy jakie są dostępne w grze.
+
+}
+
+~name{@make_quest,make_quest,nowa przygoda}
+~keywords{admin}
+~desc{
+
+Komenda @make_quest pozwala stworzyć nową przygodę poprzed odpowiedzenie na
+parę pytań. Aby rozpocząć tworzenie nowej przygody, dobrze jest najpierw
+utworzyć wszystkie niezbędne pokoje, mobki, przedmioty, ponieważ w trakcie
+tworzenia trzeba będzie podawać numery obiektów.
+
+}
