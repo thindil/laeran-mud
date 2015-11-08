@@ -27,6 +27,7 @@ inherit PHANTASMAL_USER;
 static mapping commands_map;
 static object combat;
 static int state_password;
+static int heartbeat_handle;
 
 /* Prototypes */
         void upgraded(varargs int clone);
@@ -50,7 +51,7 @@ mapping stats;
 mapping skills;
 string health;
 string condition;
-static int heartbeat_handle;
+string* quests;
 
 /*
  * NAME:	create()
@@ -108,6 +109,7 @@ void upgraded(varargs int clone) {
 		     "socjalne"  : "cmd_socials",
 		     "komendy"   : "cmd_commands",
              "ustaw"     : "cmd_settings",
+             "przygody"  : "cmd_quests",
 
 		     "kanal"     : "cmd_channels",
 		     "kanaly"    : "cmd_channels",
@@ -230,6 +232,8 @@ void player_login(int first_time)
         health = "Zdrowy";
     if (!condition || condition == "")
         condition = "Wypoczęty";
+    if (quests == nil)
+        quests = ({ });
 
     if(!body) {
         location = start_room;
@@ -773,6 +777,11 @@ int have_command(string cmd)
         return 1;
     else
         return 0;
+}
+
+void add_quest(string name)
+{
+    quests += ({ name });
 }
 /************** User-level commands *************************/
 
@@ -2097,4 +2106,31 @@ static void cmd_give(object user, string cmd, string str)
     destruct_object(items[0]);
     commands_map["daj"] = nil;
     message("Przekazałeś paczkę odbiorcy i dostałeś 2 miedziaki.\n");
+}
+
+/* Show current quest info and old quests */
+static void cmd_quests(object user, string cmd, string str)
+{
+    string msg;
+    string *questinfo;
+    int i;
+    
+    if (TAGD->get_tag_value(body->get_mobile(), "Quest") == nil)
+        msg = "Obecnie nie uczestniczysz w jakiejkolwiek przygodzie.\n\n";
+    else {
+        questinfo = QUESTD->get_quest_info(TAGD->get_tag_value(body->get_mobile(), "Quest"));
+        msg = "Przygoda: " + questinfo[0] + "\n\n" + questinfo[1] + "\n\n";
+    }
+
+    if (!sizeof(quests)) {
+        msg += "Nie ukończyłeś jeszcze jakiejkolwiek przygody.\n";
+        message(msg);
+        return;
+    }
+
+    msg += "Lista ukończonych przygód:\n";
+    for (i = 0; i < sizeof(quests); i++)
+        msg += lalign((string)(i + 1), 5) + quests[i] + "\n";
+
+    message_scroll(msg);
 }

@@ -153,6 +153,7 @@ void progress_quest(object mobile)
         mobile->get_user()->message(stages[qnumber][snumber][0] + "\n");
     } else {
         TAGD->set_tag_value(mobile, "Quest", nil);
+        mobile->get_user()->add_quest(quests[qnumber][0]);
         mobile->get_user()->message(stages[qnumber][snumber][0] + "\n");
         reward = explode(quests[qnumber][1], ":");
         switch (reward[0]) {
@@ -210,4 +211,17 @@ string* get_quests(void)
         qnames += ({ quests[i][0] });
 
     return qnames;
+}
+
+string* get_quest_info(float number)
+{
+    int qnumber, snumber;
+
+    if(!SYSTEM() && !COMMON() && !GAME())
+        return nil;
+    
+    qnumber = (int)modf(number)[1];
+    snumber = (int)(modf(number)[0] * 100.0);
+
+    return ({ quests[qnumber][0], stages[qnumber][snumber][0] });
 }
