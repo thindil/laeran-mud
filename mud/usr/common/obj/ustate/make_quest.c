@@ -135,7 +135,7 @@ private string blurb_for_substate(int substate)
             return "Etap nr: " + stage + "\nWprowadź warunek jaki jest potrzebny do spełnienia aby wejść do "
                 + "tego etapu przygody.\nMożliwe wartości: 'item:numer przedmiotu' trzeba posiadać przedmiot, "
                 + "którego archetypem\njest przedmiot o podanym numerze. 'npc:numer mobka' trzeba pozdrowić "
-                + "mobka o wybranym\nnumerze.\n";
+                + "mobka o wybranym\nnumerze. 'room:numer pokoju' trzeba wejść do pokoju o wybranym numerze.\n";
         default:
             return "<NIEZNANY STAN>\n";
     }
@@ -304,14 +304,14 @@ static int prompt_stage_condition_input(string input)
     if (input)
         input = STRINGD->trim_whitespace(input);
     if (!input || STRINGD->is_whitespace(input)) {
-        send_string("Musisz podać nagrodę za przygodę. Spróbujmy ponownie.\n");
+        send_string("Musisz podać warunek aby przejść na ten etap przygody. Spróbujmy ponownie.\n");
         send_string(blurb_for_substate(substate));
         return RET_NORMAL;
     }
     
     parts = explode(input, ":");
     if(sizeof(parts) < 2) {
-        send_string("Musi być item:numer przedmiotu lub npc:numer mobka. Spróbujmy ponownie.\n");
+        send_string("Musi być item:numer przedmiotu, npc:numer mobka lub room:numer pokoju. Spróbujmy ponownie.\n");
         send_string(blurb_for_substate(substate));
         return RET_NORMAL;
     }

@@ -650,12 +650,21 @@ void leave(object leave_object, int dir) {
 }
 
 /* enter_object is the body entering, dir is the direction */
-void enter(object enter_object, int dir) {
-  object mob;
+void enter(object enter_object, int dir) 
+{
+    object mob;
+    string *condition;
+    float quest;
 
-  mob = enter_object->get_mobile();
+    mob = enter_object->get_mobile();
+    if (mob->get_user() && TAGD->get_tag_value(mob, "Quest") != nil) {
+        quest = TAGD->get_tag_value(mob, "Quest");
+        condition = QUESTD->get_condition(quest);
+        if (condition[0] == "room" && (int)condition[1] == this_object()->get_number()) 
+            QUESTD->progress_quest(mob);
+    }
 
-  enum_room_mobiles("hook_enter", ({ mob }), enter_object, dir );
+    enum_room_mobiles("hook_enter", ({ mob }), enter_object, dir );
 }
 
 
