@@ -16,6 +16,7 @@ pomoc prawne                Licencje itp prawne aspekty
 pomoc zaslugi               Kto jest odpowiedzialny za to wszytko
 pomoc walka                 Ogólne informacje o walce
 pomoc ustawienia            Jak zmienić niektóre ustawienia postaci
+pomoc przygody              Informacje o odbytych i obecnej przygodzie
 }
 
 ~name{main,pomoc_gracza,indeks}
@@ -90,4 +91,18 @@ zasadach (podszywanie się pod kogoś czy inne złośliwości będą oczywiście
 odpowiednio "nagrodzone").
 
 Zobacz rówież: zasady, patrz, socjalne
+}
+
+~name{przygody}
+~desc{
+
+Komenda "przygody" podaje ogólne informacje o przygodach na których byłeś
+bądź na której obecnie jesteś. Po prostu wpisz "przygody" aby dowiedzieć się
+więcej na temat przygód jakie przeżyła bądź w których uczestniczy Twoja
+postać.
+
+Same przygody można znaleźć w różnych miejscach świata. Jedna wielka prośba -
+nie pytaj się o rozwiązania czy lokacje przygód na kanale ogólnym - nie psujmy
+innym zabawy w odkrywanie tajemnic świata.
+
 }
