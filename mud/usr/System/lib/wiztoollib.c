@@ -1265,7 +1265,7 @@ static void cmd_list_quests(object user, string cmd, string str)
 
     msg = "Lista przygód w grze:\n";
     for (i = 0; i < sizeof(quests); i++) 
-        msg += ralign((string)(i + 1), 5) + "   " + quests[i] + "\n";
+        msg += ralign((string)i, 5) + "   " + quests[i] + "\n";
 
     user->message_scroll(msg);
 }
