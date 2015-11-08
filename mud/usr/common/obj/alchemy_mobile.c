@@ -36,7 +36,7 @@ void hook_social(object body, object target, string verb)
                     && !body->get_mobile()->get_user()->have_skill("alchemia/transformacja")) 
                 whisper(body, "Witaj, jak rozumiem, jesteś początkującym adeptem alchemii? Może szukasz wiedzy?\n"
                         + "Jeżeli tak, szepnij do mnie 'szukam wiedzy' a podpowiem Ci jak możesz nauczyć się\n"
-                        + "przemieniać ciała zabitych w złoto.\n");
+                        + "podstaw alchemicznej transformacji.\n");
             else if (body->get_mobile()->get_user()->have_skill("alchemia/transformacja"))
                 whisper(body, "Witaj ponownie, niestety obawiam się, że nie mam nic więcej do zaoferowania Tobie.\n"
                         + "Proszę wróć za jakiś czas.\n");
