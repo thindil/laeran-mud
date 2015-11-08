@@ -44,19 +44,19 @@ void destructed(int clone) {
 void set_direction(int new_dir) {
   if(previous_program() == EXITD) {
     direction = new_dir;
-  } else error("Only EXITD can set exit directions!");
+  } else error("Tylko EXITD może ustawiać kierunki wyjścia!");
 }
 
 void set_from_location(object new_loc) {
   if(previous_program() == EXITD) {
     from_location = new_loc;
-  } else error("Only EXITD can set exit from locations!");
+  } else error("Tylko EXITD może ustawiać punkt początkowy wyjścia!");
 }
 
 void set_destination(object new_dest) {
   if(previous_program() == EXITD) {
     destination = new_dest;
-  } else error("Only EXITD can set exit destinations!");
+  } else error("Tylko EXITD może ustawiać punkty docelowe wyjścia!");
 }
 
 void set_exit_type(int new_type) {
@@ -70,13 +70,13 @@ void set_exit_type(int new_type) {
               type = ET_TWOWAY;
               break;
     }
-  } else error("Only EXITD can set exit types!");
+  } else error("Tylko EXITD może ustawiać typy wyjścia!");
 }
 
 void set_link(int new_link) {
   if(previous_program() == EXITD) {
     link_to = new_link;
-  } else error("Only EXITD can set links!");
+  } else error("Tylko EXITD może ustawiać linki!");
 }
 
 int get_direction() {
@@ -124,7 +124,7 @@ static string to_unq_flags(void) {
     opp_dir = EXITD->opposite_direction(get_direction());
     other_exit = dest->get_exit(opp_dir);
     if(!other_exit) {
-      LOGD->write_syslog("Problem finding return exit!", LOG_WARN);
+      LOGD->write_syslog("Problem ze znalezieniem wyjścia powrotnego!", LOG_WARN);
     } else {
       ret += other_exit->get_number() + "}\n";
     }
@@ -246,7 +246,7 @@ private void set_flags(int flags, int value) {
 
 void set_all_flags(int flags) {
   if(previous_program() != EXITD)
-    error("Only EXITD may set_all_flags!");
+    error("Tylko EXITD może wywoływać set_all_flags!");
 
   objflags = flags;
 }
@@ -259,7 +259,7 @@ void set_container(int value) {
   object link_exit;
 
   if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM code can currently set an object as a container!");
+    error("Tylko SYSTEM i COMMON może obecnie ustawiać obiekt jako pojemnik!");
 
   if (get_link()>0 && previous_program() != EXIT) {
     link_exit = EXITD->get_exit_by_num(get_link());
@@ -274,7 +274,7 @@ void set_open(int value) {
   string err;
 
   if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM code can currently set an object as open!");
+    error("Tylko SYSTEM i COMMON może ustawiać obecnie obiekt jako otwarty!");
 
   if (get_link()>0 && previous_program() != EXIT) {
     link_exit = EXITD->get_exit_by_num(get_link());
@@ -288,7 +288,7 @@ void set_openable(int value) {
   object link_exit;
 
   if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM code can currently set an object as openable!");
+    error("Tylko SYSTEM i COMMON może ustawiać obecnie obiekt jako otwieralny!");
 
   if (get_link()>0 && previous_program() != EXIT) {
     link_exit = EXITD->get_exit_by_num(get_link());
@@ -302,7 +302,7 @@ void set_locked(int value) {
   object link_exit;
 
   if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM code can currently set an object as a container!");
+    error("Tylko SYSTEM i COMMON może ustawiać obecnie obiekt jako zablokowany!");
 
   if (get_link()>0 && previous_program() != EXIT) {
     link_exit = EXITD->get_exit_by_num(get_link());
@@ -316,7 +316,7 @@ void set_lockable(int value) {
   object link_exit;
 
   if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM code can currently set an object as open!");
+    error("Tylko SYSTEM i COMMON może ustawiać obecnie obiekt jako blokowalny!");
 
   if (get_link()>0 && previous_program() != EXIT) {
     link_exit = EXITD->get_exit_by_num(get_link());
@@ -329,7 +329,7 @@ void set_lockable(int value) {
 /* Return nil if a user can pass through a door, the reason if they cannot */
 string can_pass(object user, object pass_object) {
   if (!is_open())
-    return "The door is closed.";
+    return "Drzwi są zamknięte.";
 }
 
 /* Called when a user passes through the exit */

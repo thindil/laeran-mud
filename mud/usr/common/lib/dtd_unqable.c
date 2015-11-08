@@ -55,10 +55,10 @@ private void update_dtd_vars(void) {
 
     buf = read_file(dtd_filename);
     if(!buf) {
-      error("Can't read DTD file " + dtd_filename + "!");
+      error("Nie mogę odczytać pliku DTD " + dtd_filename + "!");
     }
     if(strlen(buf) > status(ST_STRSIZE) - 3) {
-      error("DTD file is too large in update_dtd_vars!");
+      error("Plik DTD jest zbyt duży w funkcji update_dtd_vars!");
     }
 
     dtd_text = buf;
@@ -80,8 +80,8 @@ string to_unq_text(void) {
   string result;
 
   if(!dtd) {
-    error("You must override the default to_unq_text method for "
-	  + object_name(this_object()) + " or supply a DTD!");
+    error("Musisz nadpisać domyślną funkcję to_unq_text dla "
+	  + object_name(this_object()) + " albo podać plik DTD!");
   }
 
   result = dtd->serialize_to_dtd(to_dtd_unq());
@@ -102,7 +102,7 @@ string get_parse_error_stack(void) {
    that parsing an UNQ file with a DTD yields.  This template
    can then be converted to text. */
 mixed* to_dtd_unq(void) {
-  error("You must override the default to_dtd_unq method for "
+  error("Musisz nadpisać domyślną funkcję to_dtd_unq dla "
 	+ object_name(this_object()));
 }
 
@@ -118,13 +118,13 @@ void from_unq(mixed* unq) {
   mixed* dtd_unq;
 
   if(!dtd) {
-    error("You must override the default from_unq method for "
-	  + object_name(this_object()) + " or supply a DTD!");
+    error("Musisz nadpisać domyślną metodę from_unq dla "
+	  + object_name(this_object()) + " albo podać DTD!");
   }
 
   dtd_unq = dtd->parse_to_dtd(unq);
   if(!dtd_unq)
-    error("Can't parse UNQ according to DTD!");
+    error("Nie mogę sparsować UNQ według DTD!");
 
   from_dtd_unq(dtd_unq);
 }
@@ -133,7 +133,7 @@ void from_unq(mixed* unq) {
 /* This method takes the result of parsing the object according to
    its DTD and loads it into the object. */
 void from_dtd_unq(mixed* unq) {
-  error("You must override the default from_dtd_unq method for "
+  error("Musisz nadpisać domyślną metodę from_dtd_unq dla "
 	+ object_name(this_object()));
 }
 
@@ -146,19 +146,19 @@ void load_from_file(string filename) {
 
   str = read_file(filename);
   if(!str)
-    error("Can't read file '" + filename + "' in load_from_file!");
+    error("Nie mogę odczytać pliku '" + filename + "' w load_from_file!");
   if(strlen(str) > status(ST_STRSIZE) - 3)
-    error("File '" + filename + "' is too large in load_from_file!");
+    error("Plik '" + filename + "' jest zbyt duży w load_from_file!");
 
   unq = UNQ_PARSER->basic_unq_parse(str);
   if(!unq)
-    error("Can't parse file contents to UNQ! (" + filename + ")");
+    error("Nie mogę sparsować zawarości pliku do UNQ! (" + filename + ")");
 
   dtd_unq = dtd->parse_to_dtd(unq);
   if(!dtd_unq) {
-    LOGD->write_syslog("Error stack:\n"
+    LOGD->write_syslog("Błąd:\n"
 		       + dtd->get_parse_error_stack(), LOG_WARN);
-    error("Can't parse UNQ according to DTD!");
+    error("Nie mogę sparsować UNQ według DTD!");
   }
 
   from_dtd_unq(dtd_unq);
