@@ -187,7 +187,7 @@ object* get_archetypes(void) {
    for purposes such as inheriting a primary description. */
 void set_archetypes(object* new_archetypes) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only SYSTEM, COMMON and GAME objects may set archetypes!");
+    error("Tylko obiekty typu SYSTEM, COMMON i GAME mogą ustawiać archetypy!");
 
   if(!new_archetypes)
     new_archetypes = ({ });
@@ -206,13 +206,13 @@ void set_archetypes(object* new_archetypes) {
 
 void add_archetype(object new_arch) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only SYSTEM, COMMON and GAME objects may set archetypes!");
+    error("Tylko obiekty SYSTEM, COMMON i GAME mogą dodawać archetypy!");
 
   archetypes += ({ new_arch });
 }
 
 void remove_archetype(object arch_to_remove) {
-  error("Not yet implemented!");
+  error("Jeszcze nie zaimplementowane!");
 }
 
 private atomic void add_remove_noun_adj(object phr, int do_add, int is_noun) {
@@ -221,7 +221,7 @@ private atomic void add_remove_noun_adj(object phr, int do_add, int is_noun) {
   string* words;
 
   if(PHRASED->num_locales() > sizeof(nouns)) {
-    error("Fix objects to support dynamic adding of locales!");
+    error("Napraw obiekty aby wspierały dynamiczne przydzielanie lokalizacji!");
   }
 
   taglist = phr->as_taglist();
@@ -242,14 +242,14 @@ private atomic void add_remove_noun_adj(object phr, int do_add, int is_noun) {
       case '{':
         locale = PHRASED->language_by_name(taglist[ctr][1..]);
         if(locale == -1)
-          error("Bad language tag " + taglist[ctr][1..]
-                + " passed when modifying nouns/adjs!");
+          error("Zły tak językowy " + taglist[ctr][1..]
+                + " podany kiedy modyfikowano rzeczowniki/przymiotniki!");
         break;
       case '}':
         locale = LANG_plPL;
         break;
       default:
-        error("Illegal phrase passed when modifying nouns/adjs!");
+        error("Niepoprawny phrase podany do modyfikacji rzeczowników/przymiotników!");
       }
     }
 
@@ -598,12 +598,12 @@ void set_location(object new_loc) {
     /* kludgy check */
     
     if (superset_of(new_loc)) {
-    	error("Circular containment attempted");
+    	error("Próba wpakowania w siebie samego");
     }
 
     if(detail_of && detail_of != new_loc) {
-      LOGD->write_syslog("Setting location of obj #" + tr_num
-                         + " despite detail_of being set!", LOG_ERROR);
+      LOGD->write_syslog("Ustawiania lokacji obiektu #" + tr_num
+                         + " pomimo ustawienia detail_of!", LOG_ERROR);
     }
     
     location = new_loc;
@@ -617,13 +617,13 @@ void add_to_container(object obj) {
 
 void prepend_to_container(object obj) {
   if(!obj)
-    error("Can't add (nil) to a container!");
+    error("Nie mogę dodać (nil) do pojemnika!");
 
   if(obj->get_location())
-    error("Remove from previous container before adding!");
+    error("Usuń z poprzedniego pojemnika zanim dodasz!");
 
   if(obj->get_detail_of())
-    error("Can't add a detail to a container!");
+    error("Nie mogę dodać detalu do pojemnika!");
 
   obj->set_location(this_object());
   if(obj->get_mobile()) {
@@ -636,13 +636,13 @@ void prepend_to_container(object obj) {
 
 void append_to_container(object obj) {
   if(!obj)
-    error("Can't add (nil) to a container!");
+    error("Nie mogę dodać (nil) do pojemnika!");
 
   if(obj->get_location())
-    error("Remove from previous container before adding!");
+    error("Usuń z poprzedniego pojemnika zanim dodasz!");
 
   if(obj->get_detail_of())
-    error("Can't add a detail to a container!");
+    error("Nie mogę dodać detalu do pojemnika!");
 
   obj->set_location(this_object());
   if(obj->get_mobile()) {
@@ -655,17 +655,17 @@ void append_to_container(object obj) {
 
 void remove_from_container(object obj) {
   if(obj->get_location() != this_object()) {
-    error("Trying to remove object from wrong container!");
+    error("Próbujesz usunąć obiekt ze złego pojemnika!");
   }
 
   if(obj->get_detail_of()) {
-    error("Trying to remove detail with remove_from_container!");
+    error("Próbujesz usunąć detal przy pomocy remove_from_container!");
   }
 
   if(objects & ({ obj }) ) {
     objects -= ({ obj });
   } else {
-    LOGD->write_syslog("Can't remove object from container!", LOG_ERR);
+    LOGD->write_syslog("Nie mogę usunąć obiektu z pojemnika!", LOG_ERR);
   }
 
   obj->set_location(nil);
@@ -701,7 +701,7 @@ int num_objects_in_container(void) {
 nomask void set_mobile(object new_mob) {
   if(previous_program() == MOBILE || previous_program() == MOBILED) {
     if(detail_of) {
-      error("A mobile can't (yet?) inhabit a detail!");
+      error("Mobki nie mogą jeszcze posiadać detali!");
     }
 
     if(mobile && location) {
@@ -714,7 +714,7 @@ nomask void set_mobile(object new_mob) {
       location->add_mobile(new_mob);
     }
   } else {
-    error("You can't set that from there!");
+    error("Nie możesz tego ustawić z tego programu!");
   }
 }
 
@@ -742,7 +742,7 @@ object* get_details(void) {
    object, not any that are inherited. */
 object* get_immediate_details(void) {
   if(!COMMON() && !SYSTEM() && !GAME())
-    error("Only privileged code can see immediate_details for an object!");
+    error("Tylko uprzywilejowany kod może zobaczy immediate_details obiektu!");
 
   if(details && sizeof(details)) {
     return details[..];
@@ -761,7 +761,7 @@ object *get_removed_details(void) {
 
 void set_removed_details(object *new_removed_details) {
   if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM or COMMON objects can set removed_details!");
+    error("Tylko obiekty SYSTEM lub COMMON mogą ustawiać removed_details!");
 
   if(!new_removed_details)
     new_removed_details = ({ });
@@ -775,10 +775,10 @@ object get_detail_of(void) {
 
 object set_detail_of(object obj) {
   if(previous_program() != OBJECT)
-    error("Only OBJECTs can set details with set_detail_of!");
+    error("Tylko OBJECT może ustawiać detale przy pomocy set_detail_of!");
 
   if(location && obj)
-    error("Remove from container before using set_detail_of!");
+    error("Usuń z pojemnika zanim użyjesz set_detail_of!");
 
   if(obj)
     set_location(obj);
@@ -788,7 +788,7 @@ object set_detail_of(object obj) {
 
 void add_detail(object obj) {
   if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM and COMMON objects may add details!");
+    error("Tylko obiekty SYSTEM i COMMON mogą dodawać detale!");
 
   if(sizeof(removed_details & ({ obj }))) {
     /* Our parent has this detail and we overrode it.  So we'll
@@ -811,7 +811,7 @@ void add_detail(object obj) {
 
 void remove_detail(object obj) {
   if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM and COMMON objects may remove details!");
+    error("Tylko obiekty SYSTEM i COMMON mogą usuwać detale!");
 
   /* TODO:  go through all children (in the archetype sense) and
      remove this detail from their removed_detail lists? */
@@ -830,7 +830,7 @@ void remove_detail(object obj) {
       return;
     }
 
-    error("You can't remove a detail that isn't in this object!");
+    error("Nie możesz usunąć detalu, który nie jest w tym obiekcie!");
   }
 
   obj->set_detail_of(nil);
@@ -903,7 +903,7 @@ nomask void set_number(int num) {
   if(prog == MAPD || prog == EXITD) {
     tr_num = num;
   } else {
-    error("Program " + prog + " not authorized to set object numbers!");
+    error("Program " + prog + " nie jest autoryzowany do ustawiania numerów obiektów!");
   }
 }
 
@@ -916,7 +916,7 @@ void remove_mobile(object rem_mob) {
       mobiles -= ({ rem_mob });
     }
   } else {
-    error("Only another OBJECT may remove mobiles directly!");
+    error("Tylko inny OBJECT może bezpośrednio usuwać mobki!");
   }
 }
 
@@ -924,6 +924,6 @@ void add_mobile(object add_mob) {
   if(previous_program() == OBJECT) {
     mobiles += ({ add_mob });
   } else {
-    error("Only another OBJECT may remove mobiles directly!");
+    error("Tylko inny OBJECT może bezpośrednio dodawać mobki!");
   }
 }

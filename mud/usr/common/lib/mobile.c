@@ -43,7 +43,7 @@ void upgraded(void) {
 
 void assign_body(object new_body) {
   if(!SYSTEM() && !COMMON() && !GAME()) {
-    error("Only authorized objects can assign a mobile a new body!");
+    error("Tylko autoryzowany kod może przypisywać nowe ciało mobkowi!");
   }
 
   if(body) {
@@ -69,7 +69,7 @@ object get_user(void) {
 }
 
 void set_user(object new_user) {
-  error("Can't set the user of this kind of mobile");
+  error("Nie mogę ustawić użytkownika dla tego typu mobków");
 }
 
 int get_number(void) {
@@ -98,7 +98,7 @@ void set_spawnroom(int new_spawnroom)
 
 nomask void set_number(int new_num) {
   if(previous_program() != MOBILED) {
-    error("Only MOBILED can set mobile numbers!");
+    error("Tylko MOBILED może ustawiać numery mobkom!");
   }
   number = new_num;
 }
@@ -272,7 +272,7 @@ nomask string place(object obj, object to) {
   int i;
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    return "Access denied!";
+    return "Brak dostępu!";
 
   /* find out how many rooms this object can be removed from, ending 
    * when we find the mobile's location.
@@ -292,7 +292,7 @@ nomask string place(object obj, object to) {
       } else {
         err = obj->get_brief()->as_markup(MARKUP_DEBUG);
       }
-      err += " is not in this room";
+      err += " nie jest w tym pokoju";
       return err;
     }
 
@@ -310,11 +310,11 @@ nomask string place(object obj, object to) {
        * so return an error
        */
       if (get_user()) {
-        err = to->get_brief()->to_string(get_user()); + " is not in this room";
+        err = to->get_brief()->to_string(get_user());
       } else {
         err = to->get_brief()->as_markup(MARKUP_DEBUG);
       }
-      err += " is not in this room";
+      err += " nie jest w tym pokoju";
 
       return err;
     }
@@ -362,7 +362,7 @@ nomask string open(object obj) {
   int isexit, objnum;
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    return "Access denied!";
+    return "Dostęp zabroniony!";
 
   isexit = 0;
 
@@ -415,7 +415,7 @@ nomask string close(object obj) {
   int isexit, objnum;
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    return "Access denied!";
+    return "Dostęp zabroniony!";
 
   isexit = 0;
 
@@ -468,7 +468,7 @@ nomask string move(int dir)
     int fatigue;
 
     if(!SYSTEM() && !COMMON() && !GAME())
-        return "Access Denied!";
+        return "Dostęp zabroniony!";
 
     exit = location->get_exit(dir);
     if (!exit) 
@@ -524,7 +524,7 @@ nomask string teleport(object dest, int force) {
   string reason;
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    return "Access Denied!";
+    return "Dostęp zabroniony!";
 
   if (!force) {
     if (location) {
@@ -635,9 +635,9 @@ private string all_tags_to_unq(void)
             case T_ARRAY:
             case T_MAPPING:
             default:
-                error("Can't output that tag type yet!");
+                error("Nie obsługuję jeszcze tego typu tagów!");
         }
-        ret += "}\n        ";
+        ret += "}\n";
     }
 
     return ret;
@@ -682,7 +682,7 @@ string to_unq_text(void)
 }
 
 void from_dtd_unq(mixed* unq) {
-  error("Override from_dtd_unq to call it!");
+  error("Nadpisz from_dtd_unq aby go wywoływać!");
 }
 
 private void parse_all_tags(mixed* value) 
@@ -699,8 +699,8 @@ private void parse_all_tags(mixed* value)
 
         switch(type) {
             case -1:
-                error("No such tag as '" + STRINGD->mixed_sprint(value[ctr])
-                        + "' defined in TagD!");
+                error("Nie ma takiego tagu jak '" + STRINGD->mixed_sprint(value[ctr])
+                        + "' zdefiniowanego w TagD!");
 
             case T_INT:
                 do_sscanf = 1;
@@ -713,12 +713,12 @@ private void parse_all_tags(mixed* value)
                 break;
 
             default:
-                error("Can't parse tags of type " + type + " yet!");
+                error("Nie mogę jeszcze obsłużyć tagów typu " + type + "!");
         }
 
         if(do_sscanf) {
             if(typeof(value[ctr + 1]) != T_STRING)
-                error("Internal error:  Can't read tag out of non-string value!");
+                error("Wewnętrzny błąd: Nie mogę odczytać tagów z innej wartości niż string!");
 
             value[ctr + 1] = STRINGD->trim_whitespace(value[ctr + 1]);
 
@@ -753,7 +753,7 @@ static mixed mobile_from_dtd_unq(mixed* unq)
                     body = MAPD->get_room_by_num(bodynum);
                     if(!body)
                     {
-                        error("Can't find body for mobile, object #" + bodynum + "!\n");
+                        error("Nie mogę znaleźć ciała dla mobka, obiekt #" + bodynum + "!\n");
                     }
                     location = body->get_location();
                 }
@@ -784,7 +784,7 @@ static mixed mobile_from_dtd_unq(mixed* unq)
                 parse_all_tags(ctr[0][1]);
                 break;
             default:
-                error("Unrecognized field in mobile structure!");
+                error("Nieznane pole w strukturze mobile!");
                 break;
         }
         ctr = ctr[1..];
@@ -794,5 +794,5 @@ static mixed mobile_from_dtd_unq(mixed* unq)
 }
 
 string get_type(void) {
-  error("Called get_type on /usr/common/lib/mobile without overriding!");
+  error("Wywołano get_type na /usr/common/lib/mobile bez nadpisania!");
 }

@@ -43,10 +43,10 @@ static void set_vals(int new_index, string new_owner, string new_name,
 		     mixed* new_inherit_from,
 		     string* new_depends_on, int new_prev_index) {
   if(ob_name != "")
-    error("Reinitializing ISSUE object!");
+    error("Ponowna inicjalizacja obiektu ISSUE!");
 
   if(new_name == "" || new_name == nil)
-    error("Initializing ISSUE object with invalid name!");
+    error("Inicjalizacja obiektu ISSUE z nieprawidłową nazwą!");
 
   index = new_index;
   ob_name = new_name;
@@ -99,7 +99,7 @@ void remove_parent(int parent) {
       return;
     }
   }
-  error("Cannot remove parent " + parent + " from issue " + index);
+  error("Nie mogę usunąć rodzica " + parent + " dla obiektu " + index);
 }
 
 int get_prev(void) {
@@ -109,18 +109,18 @@ int get_prev(void) {
 object clear_prev(void) {
   if(previous_program() == OBJECTD) {
     prev_index = -1;
-  } else error("Can't set prev from unprivileged program!");
+  } else error("Nie można wyczyścić prev z nieupoważnionego programu!");
 }
 
 void set_prev(int prev) {
   if(previous_program() == OBJECTD) {
     prev_index = prev;
-  } else error("Can't set prev from unprivileged program!");
+  } else error("Nie można ustawić prev z nieupoważnionego programu!");
 }
 
 void destruct(void) {
   if(destructed)
-    error("Object multiply notified of destruction!");
+    error("Obiekt ponownie usuwany!");
 
   destructed = 1;
 }
