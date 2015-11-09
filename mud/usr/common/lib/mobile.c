@@ -482,8 +482,8 @@ nomask string move(int dir)
         if (TAGD->get_tag_value(body, "Fatigue"))
             fatigue = TAGD->get_tag_value(body, "Fatigue");
         else
-            fatigue = get_user()->get_stat_val("kondycja") * 10;
-        if (fatigue == 0) 
+            fatigue = 0;
+        if (fatigue >= (get_user()->get_stat_val("kondycja") * 10)) 
             return "Jesteś zbyt zmęczony aby podróżować. Odpocznij chwilę.";
     }
 

@@ -751,15 +751,15 @@ void heartbeat(void)
     
     if (TAGD->get_tag_value(body, "Fatigue")) {
         cur_val = TAGD->get_tag_value(body, "Fatigue");
-        cur_val += ((stats["kondycja"][0] * 10) / 3);
-        if (cur_val >= (stats["kondycja"][0] * 10)) {
-            cur_val = stats["kondycja"][0] * 10;
+        cur_val -= ((stats["kondycja"][0] * 10) / 3);
+        if (cur_val <= 0) {
+            cur_val = 0;
             TAGD->set_tag_value(body, "Fatigue", nil);
             message("Jesteś już kompletnie wypoczęty.\n");
         }
         else
             TAGD->set_tag_value(body, "Fatigue", cur_val);
-        set_condition(cur_val);
+        set_condition((stats["kondycja"][0] * 10) -  cur_val);
     }
 
     call_out("heartbeat", 10);
@@ -1368,7 +1368,7 @@ static void cmd_movement(object user, string cmd, string str) {
     if (TAGD->get_tag_value(body, "Fatigue"))
         fatigue = TAGD->get_tag_value(body, "Fatigue");
     else
-        fatigue = (stats["kondycja"][0] * 10);
+        fatigue = 0;
 
     /* Currently, we ignore modifiers (str) and just move */
 
@@ -1385,23 +1385,23 @@ static void cmd_movement(object user, string cmd, string str) {
 
     capacity = body->get_current_weight() / body->get_weight_capacity();
     if (capacity <= 0.5) {
-        fatigue--;
+        fatigue++;
         exp = 1;
     } else if(capacity > 0.5 && capacity <= 0.75) {
-        fatigue -= 2;
+        fatigue += 2;
         exp = 2;
     } else if(capacity > 0.75 && capacity <= 0.95) {
-        fatigue -= 5;
+        fatigue += 5;
         exp =5;
     } else {
-        fatigue -= 10;
+        fatigue += 10;
         exp = 10;
     }
-    if (fatigue < 0)
-        fatigue = 0;
+    if (fatigue > (stats["kondycja"][0] * 10))
+        fatigue = stats["kondycja"][0] * 10;
     TAGD->set_tag_value(body, "Fatigue", fatigue);
     gain_exp("kondycja", exp);
-    set_condition(fatigue);
+    set_condition((stats["kondycja"][0] * 10) - fatigue);
 
     if (TAGD->get_tag_value(body, "Combat")) {
         combat->stop_combat();
