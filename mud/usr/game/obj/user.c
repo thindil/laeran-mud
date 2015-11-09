@@ -2195,6 +2195,10 @@ static void cmd_transform(object user, string cmd, string str)
         message("Nie możesz przemieniać żywych istot.\n");
         return;
     }
+    if (tmp[number]->get_detail_of()) {
+        message("Nie możesz przemienić tego obiektu.\n");
+        return;
+    }
     if (sizeof(tmp[number]->objects_in_container())) {
         message("Jakieś rzeczy znajdują się jeszcze w '" + item + "'. Wyjmij je najpierw aby móc trasnformować\n" 
                 + "'" + item + "'.\n");
