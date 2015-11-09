@@ -225,3 +225,20 @@ string* get_quest_info(float number)
 
     return ({ quests[qnumber][0], stages[qnumber][snumber][0] });
 }
+
+int was_on_quest(float number, object mobile)
+{
+    int qnumber, i;
+    string* plquests;
+
+    if(!SYSTEM() && !COMMON() && !GAME())
+        return -1;
+    
+    qnumber = (int)modf(number)[1];
+    plquests = mobile->get_user()->get_quests();
+    for (i = 0; i < sizeof(plquests); i++) {
+        if (plquests[i] == quests[qnumber][0])
+            return 1;
+    }
+    return 0;
+}

@@ -787,6 +787,11 @@ void add_quest(string name)
 {
     quests += ({ name });
 }
+
+string* get_quests(void)
+{
+    return quests;
+}
 /************** User-level commands *************************/
 
 static void cmd_ooc(object user, string cmd, string str) {
