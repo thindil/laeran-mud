@@ -242,7 +242,7 @@ private atomic void add_remove_noun_adj(object phr, int do_add, int is_noun) {
       case '{':
         locale = PHRASED->language_by_name(taglist[ctr][1..]);
         if(locale == -1)
-          error("Zły tak językowy " + taglist[ctr][1..]
+          error("Zły tag językowy " + taglist[ctr][1..]
                 + " podany kiedy modyfikowano rzeczowniki/przymiotniki!");
         break;
       case '}':

@@ -584,7 +584,8 @@ void death()
     new_body->set_volume_capacity(20.0);
     new_body->set_length_capacity(300.0);
     new_body->set_hp(10);
-    new_body->add_noun(body->get_nouns(locale));
+    phr = PHRASED->new_simple_english_phrase(implode(body->get_nouns(locale), ", ")); 
+    new_body->add_noun(phr);
     new_body->set_price(body->get_price());
     MAPD->add_room_to_zone(new_body, -1, ZONED->get_zone_for_room(location));
     mobile->assign_body(new_body);
