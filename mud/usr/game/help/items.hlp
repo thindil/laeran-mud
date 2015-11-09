@@ -13,6 +13,7 @@ otworz               Otwórz pojemnik
 zamknij              Zamknij pojemnik
 zaloz                Załóż przedmiot
 zdejmij              Zdejmij noszony przedmiot
+zamien               Zamień przedmiot w pieniądze
 
 }
 
@@ -160,4 +161,21 @@ nazwę założonego przedmiotu. Przykład: "zdejmij zbroja".
 
 Zobacz również: zaloz
 
+}
+
+~name{zamien,zamień,transformuj}
+~desc{
+
+Komenda zamień pozwala Tobie przemieniać niepotrzebne przedmioty w pieniądze.
+Jednak aby móc jej najpierw używać, musisz poznać odpowiednią umiejętność. Na
+pewno Alchemik w mieście może Ci w tym pomóc. On również zdradzi Tobie inne
+szczegóły związane z tą umiejętnością.
+
+Prawidłowa składnia polecenia to "zamien [obiekt] w zloto" lub "zamien [obiekt]
+w złoto".
+
+Możesz próbować zamienić prawie każdy przedmiot jaki znajdziesz w grze. Jednak
+najlepiej jest przemieniać ciała zabitych wrogów. Od poziomu Twojej
+umiejętności oraz tego jak niebezpieczny był przeciwnik zależy ile uda Ci się
+uzyskać sztuk miedzi.
 }
