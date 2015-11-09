@@ -195,7 +195,7 @@ static int prompt_input(string input)
             break;
     }
 
-    nouns += "," + input;
+    nouns += "," + STRINGD->unq_escape(input);
     if (substate != SS_PROMPT_FINISH) {
         send_string(blurp_for_substate(substate));
         return RET_NORMAL;
