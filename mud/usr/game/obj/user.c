@@ -133,6 +133,7 @@ void upgraded(varargs int clone) {
 		     "zamknij"   : "cmd_close",
 		     "zaloz"     : "cmd_wear",
 		     "zdejmij"   : "cmd_takeoff",
+             "zamien"    : "cmd_transform",
 
 		     "at"        : "cmd_attack",
 		     "atak"      : "cmd_attack",
@@ -2142,4 +2143,95 @@ static void cmd_quests(object user, string cmd, string str)
         msg += lalign((string)(i + 1), 5) + quests[i] + "\n";
 
     message_scroll(msg);
+}
+
+/* Transform items in money. */
+static void cmd_transform(object user, string cmd, string str)
+{
+    string item, target;
+    int number, gain, fatigue;
+    object *tmp, *items;
+
+    if (!skills["alchemia/transformacja"]) {
+        message("Nie możesz trasnformować rzeczy ponieważ nie masz odpowiedniej umiejętności.\n");
+        return;
+    }
+
+    if (str)
+        str = STRINGD->trim_whitespace(str);
+    if (!str || str == "" || sscanf(str, "%s w %s", item, target) < 2) {
+        message("Użycie: " + cmd + " <obiekt> w zloto \n");
+        return;
+    }
+    if (sscanf(item, "%d %s", number, item) < 2) 
+        number = 1;
+    number--;
+    if (number < 0) {
+        message("W marzeniach.\n");
+        return;
+    }
+    
+    if (!target || (target != "zloto" && target != "złoto")) {
+        message("Na razie możesz przemieniać inne rzeczy tylko w złoto.\n");
+        return;
+    }
+
+    items = find_first_objects("kreda", LOC_INVENTORY);
+    if (!items || !sizeof(items)) {
+        message("Nie posiadasz nawet kawałka kredy przy sobie!\n");
+        return;
+    }
+
+    tmp = find_first_objects(item, LOC_IMMEDIATE_CURRENT_ROOM);
+    if(!tmp || !sizeof(tmp)) {
+        message("Nie możesz znaleźć jakiegokolwiek '" + item + "'.\n");
+        return;
+    }
+    if (sizeof(tmp) < number) {
+        message("Nie możesz znaleźć aż tak wiele '" + item + "' w okolicy.\n");
+        return;
+    }
+    if (tmp[number]->get_mobile()) {
+        message("Nie możesz przemieniać żywych istot.\n");
+        return;
+    }
+    if (sizeof(tmp[number]->objects_in_container())) {
+        message("Jakieś rzeczy znajdują się jeszcze w '" + item + "'. Wyjmij je najpierw aby móc trasnformować\n" 
+                + "'" + item + "'.\n");
+        return;
+    }
+    if (TAGD->get_tag_value(body, "Fatigue") && (TAGD->get_tag_value(body, "Fatigue") + 10) > (stats["kondycja"][0] * 10)) {
+        message("Jesteś zbyt zmęczony aby transformować rzeczy. Odpocznij chwilę.\n");
+        return;
+    }
+    if (sizeof(tmp) > 1) {
+        message("Jest więcej niż jeden '" + item + "' w okolicy.\n"
+                + "Wybierasz " + tmp[number]->get_brief()->to_string(user) + ".\n");
+    }
+
+    message("Wyciągasz krędę i rysujesz na ziemi odpowiedni wzór alchemiczny.\n"
+            + "Po pewnym czasie kończysz i przykładasz ręce w odpowiednim punkcie,\n"
+            + "napełniając wzór mocą. Przez chwilę świeci on jasnym światłem a następnie\n"
+            + "znika wraz z " + item + " zamiast tego znajdujesz na ziemi monety.\n"
+            + "Szybko zbierasz je i chowasz do sakiewki.\n");
+    if (TAGD->get_tag_value(body, "Fatigue"))
+        fatigue = TAGD->get_tag_value(body, "Fatigue");
+    else
+        fatigue = 0;
+    if (tmp[number]->get_combat_rating()) {
+        gain = tmp[number]->get_combat_rating();
+        if (gain > skills["alchemia/transformacja"][0])
+            gain = skills["alchemia/transformacja"][0];
+    } else
+        gain = 1;
+    body->set_price(body->get_price() + gain);
+    location->remove_from_container(tmp[number]);
+    gain_exp("alchemia/transformacja", gain);
+    if (TAGD->get_tag_value(body, "Fatigue"))
+        fatigue = TAGD->get_tag_value(body, "Fatigue") + 10;
+    else
+        fatigue = 10;
+    TAGD->set_tag_value(body, "Fatigue", fatigue);
+    set_condition((stats["kondycja"][0] * 10) - fatigue);
+    message("Zdobywasz " + gain + " sztuk miedzi.\n");
 }
