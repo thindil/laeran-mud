@@ -589,6 +589,7 @@ void death()
     new_body->set_price(body->get_price());
     MAPD->add_room_to_zone(new_body, -1, ZONED->get_zone_for_room(location));
     mobile->assign_body(new_body);
+    body_num = new_body->get_number();
 
     nouns = body->get_nouns(locale);
     if (sizeof(nouns) < 7)
@@ -606,6 +607,8 @@ void death()
     body = new_body;
     location = MAPD->get_room_by_num(current_room);
     mobile->teleport(location, 1);
+    set_health(10);
+    set_condition(stats["kondycja"][0] * 10);
     show_room_to_player(location);
 }
 
