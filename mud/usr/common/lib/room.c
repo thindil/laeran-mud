@@ -54,7 +54,7 @@ private float weight_capacity, volume_capacity, length_capacity;
 private int damage, armor, price, hp, combat_rating, quality, durability, cur_durability;
 private int* wearlocations;
 private string *body_locations;
-private string skill, damage_type;
+private string skill, damage_type, craft_skill;
 private mapping damage_res;
 
 /* These are the total current amount of weight and volume
@@ -80,8 +80,7 @@ static void create(varargs int clone) {
     wearlocations = ({ });
     body_locations = ({ });
     damage_res = ([ ]);
-    damage_type = "";
-    skill = "";
+    damage_type = skill = craft_skill = "";
 
     pending_parents = nil;
     pending_location = -1;
@@ -282,7 +281,7 @@ mapping get_damage_res(void)
 
 int get_quality(void)
 {
-    if(quality == 0 && sizeof(obj::get_archetypes()))
+    if(quality < 1 && sizeof(obj::get_archetypes()))
         return obj::get_archetypes()[0]->get_quality();
 
     return quality;
@@ -296,6 +295,14 @@ int get_durability(void)
 int get_cur_durability(void)
 {
     return cur_durability;
+}
+
+string get_craft_skill(void)
+{
+  if(craft_skill == "" && sizeof(obj::get_archetypes()))
+    return obj::get_archetypes()[0]->get_craft_skill();
+
+  return craft_skill;
 }
 
 void set_weight(float new_weight) {
@@ -457,6 +464,14 @@ void set_cur_durablity(int new_cur_durability)
 
     cur_durability = new_cur_durability;
 }
+
+void set_craft_skill(string new_craft_skill) 
+{
+    if(!SYSTEM() && !COMMON() && !GAME())
+        error("Tylko autoryzowany kod może ustawiać umiejętność rzemieślniczą!");
+
+    craft_skill = new_craft_skill;
+}
 /*** Functions dealing with Exits ***/
 
 void clear_exits(void) {
@@ -604,15 +619,9 @@ static string is_open_cont(object user) {
 /* Check item for damage and destroy it when needed */
 int damage_item(object user)
 {
-    int tmpquality;
-
     if (!this_object()->get_quality())
         return 0;
-    if (this_object()->get_quality() < 0)
-        tmpquality = this_object()->get_quality() * -1;
-    else
-        tmpquality = this_object()->get_quality();
-    if (random(100) <= tmpquality) {
+    if (random(100) <= this_object()->get_quality()) {
         cur_durability--;
         if (cur_durability > 0)
             return 1;
@@ -1223,6 +1232,8 @@ string to_unq_flags(void) {
       ret += "  ~durability{" + durability + "}\n";
       ret += "  ~cur_durability{" + cur_durability + "}\n";
   }
+  if (craft_skill != "")
+      ret += "  ~craft_skill{" + craft_skill + "}\n";
 
   rem = get_removed_details();
   if(rem && sizeof(rem)) {
@@ -1411,6 +1422,9 @@ void from_dtd_tag(string tag, mixed value) {
             break;
         case "cur_durability":
             cur_durability = value;
+            break;
+        case "craft_skill":
+            craft_skill = value;
             break;
         case "wearlocations":
             value = explode(value, ", ");

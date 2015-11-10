@@ -60,7 +60,8 @@ private object obj_detail_of;
 #define SS_PROMPT_COMBAT_RATING    35
 #define SS_PROMPT_BODY_LOCATIONS   36
 #define SS_PROMPT_SKILL            37
-#define SS_PROMPT_QUALITY          38
+#define SS_PROMPT_CRAFT_SKILL      38
+#define SS_PROMPT_QUALITY          39
 
 
 /* Input function return values */
@@ -99,6 +100,7 @@ static int  prompt_hp_input(string input);
 static int  prompt_combat_rating_input(string input);
 static int  prompt_body_locations_input(string input);
 static int  prompt_skill_input(string input);
+static int  prompt_craft_skill_input(string input);
 static int  prompt_quality_input(string input);
 
 private string blurb_for_substate(int substate);
@@ -231,6 +233,9 @@ int from_user(string input) {
     break;
   case SS_PROMPT_SKILL:
     ret = prompt_skill_input(input);
+    break;
+  case SS_PROMPT_CRAFT_SKILL:
+    ret = prompt_craft_skill_input(input);
     break;
   case SS_PROMPT_QUALITY:
     ret = prompt_quality_input(input);
@@ -492,14 +497,20 @@ private string blurb_for_substate(int substate) {
                         + "wartość z archetypu. Aby pominąć ten krok, wciśnij enter. \n";
                 return "Podaj nazwę umiejętności potrzebną do używania tego obiektu. Aby pominąć ten krok, wciśnij \n"
                     + "enter.\n";
+        case SS_PROMPT_CRAFT_SKILL:
+                if(new_obj && sizeof(new_obj->get_archetypes()))
+                    return "Podaj nazwę umiejętności potrzebną do naprawy/tworzenia tego obiektu albo wpisz 'none' aby przyjąć\n"
+                        + "wartość z archetypu. Aby pominąć ten krok, wciśnij enter. Brak umiejętności oznacza że obiektu\n"
+                        + "nie można tworzyć/naprawiać.\n";
+                return "Podaj nazwę umiejętności potrzebną do naprawy/tworzenia tego obiektu. Aby pominąć ten krok, wciśnij \n"
+                    + "enter. Brak umiejętności oznacza, że obiektu nie można tworzyć/naprawiać.\n";
         case SS_PROMPT_QUALITY:
                 if(new_obj && sizeof(new_obj->get_archetypes()))
                     return "Podaj szansę na uszkodzenie się przedmiotu albo wpisz 'none' aby przyjąć wartość z archetypu.\n"
-                        + "Wartość oznacza procentową szansę na to że obiekt otrzyma jedno uszkodzenie. Wartość ujemna\n"
-                        + "oznacza że obiektu nie można naprawiać. Zero oznacza niezniszczalny obiekt.\n";
+                        + "Wartość oznacza procentową szansę na to że obiekt otrzyma jedno uszkodzenie. Zero oznacza\n"
+                        + "niezniszczalny obiekt.\n";
                 return "Podaj szansę na uszkodzenie się przedmiotu. Wartość oznacza procentową szansę na to, że obiekt\n"
-                    + "otrzyma jedno uszkodzenie. Wartość ujemna oznacza, że obiektu nie można naprawiać. Zero oznacza\n"
-                    + "niezniszczalny obiekt.\n";
+                    + "otrzyma jedno uszkodzenie. Zero oznacza niezniszczalny obiekt.\n";
         default:
                 return "<NIEZNANY STAN>\n";
     }
@@ -1978,10 +1989,23 @@ static int prompt_skill_input(string input)
   new_obj->set_skill(input);
 
   send_string("Zaakceptowano umiejętność.\n\n");
-  substate = SS_PROMPT_QUALITY;
+  substate = SS_PROMPT_CRAFT_SKILL;
   send_string(blurb_for_substate(substate));
 
   return RET_NORMAL;
+}
+
+static int prompt_craft_skill_input(string input)
+{
+    if (input = "none")
+        input = "";
+    new_obj->set_craft_skill(input);
+
+    send_string("Zaakceptowano umiejętność rzemieślniczą.\n\n");
+    substate = SS_PROMPT_QUALITY;
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
 }
 
 static int prompt_quality_input(string input)
@@ -2000,9 +2024,17 @@ static int prompt_quality_input(string input)
 
     input = STRINGD->trim_whitespace(input);
 
-    if(!STRINGD->stricmp(input, "none"))
-        value = 0;
-    else if (sscanf(input, "%d", value) < 1) {
+    if(sscanf(input, "%d", value) == 1) {
+        if (value < 0) {
+            send_string("Jakość obiektu nie powinnina być ujemna. Spróbuj ponownie.\n");
+            send_string(blurb_for_substate(substate));
+
+            return RET_NORMAL;
+        }
+    }
+    else if(!STRINGD->stricmp(input, "none"))
+        value = -1;
+    else {
         send_string("Podaj jakość obiektu. Spróbuj ponownie.\n");
         send_string(blurb_for_substate(substate));
 

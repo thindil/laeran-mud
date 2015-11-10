@@ -922,7 +922,7 @@ static void cmd_set_obj_int_value(object user, string cmd, string str)
     return;
   }
 
-  if(newvalue < 0 && cmd_value_name != "quality") {
+  if(newvalue < 0) {
     user->message("Wartości muszą być dodatnie, " + newvalue + " nie jest.\n");
     return;
   }

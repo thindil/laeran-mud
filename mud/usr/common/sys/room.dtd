@@ -6,7 +6,7 @@
        weight_capacity?,volume_capacity?,length_capacity?,removed_details?,
        tags?,data?,damage?,damage_type?,wearlocations?,armor?,damage_res?,
        price?,hp?,combat_rating?,body_locations?,skill?,current_weight?,
-       current_volume?,quality?,durability?,cur_durability?}
+       current_volume?,quality?,durability?,cur_durability?,craft_skill?}
   ~object:obj{}
   ~obj_type{string}
   ~number{int}
@@ -48,6 +48,7 @@
   ~quality{int}
   ~durability{int}
   ~cur_durability{int}
+  ~craft_skill{string}
   ~newexit{rnumber,direction,destination,return,type,rbdesc?,rgdesc?,
            rldesc?,redesc?,rnouns?,radjectives?,rflags?}
   ~rnumber{int}
