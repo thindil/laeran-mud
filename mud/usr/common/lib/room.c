@@ -602,12 +602,12 @@ static string is_open_cont(object user) {
 }
 
 /* Check item for damage and destroy it when needed */
-string damage_item(object user)
+int damage_item(object user)
 {
     int tmpquality;
 
     if (!this_object()->get_quality())
-        return nil;
+        return 0;
     if (this_object()->get_quality() < 0)
         tmpquality = this_object()->get_quality() * -1;
     else
@@ -615,14 +615,14 @@ string damage_item(object user)
     if (random(100) <= tmpquality) {
         cur_durability--;
         if (cur_durability > 0)
-            return get_brief()->to_string(user) + " trochę się uszkadza.";
+            return 1;
         else {
             this_object()->get_location()->remove_from_container(this_object());
             destruct_object(this_object());
-            return get_brief()->to_string(user) + " ulega zniszczeniu!";
+            return 2;
         }
     }
-    return nil;
+    return 0;
 }
 
 /* Note: Many functions are trivial here (always returning nil) but

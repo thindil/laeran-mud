@@ -1026,7 +1026,7 @@ static void cmd_look(object user, string cmd, string str)
     else
         user->send_phrase(tmp[0]->get_look());
     if (cmd[0] == 'z' && tmp[0]->get_quality()) {
-        user->message("------\n");
+        user->message("\n------\n");
         damage = (float)tmp[0]->get_cur_durability() / (float)tmp[0]->get_durability();
         if (damage == 1.0)
             user->message("Jest w znakomitym stanie.\n");
@@ -2263,7 +2263,11 @@ static void cmd_transform(object user, string cmd, string str)
     TAGD->set_tag_value(body, "Fatigue", fatigue);
     set_condition((stats["kondycja"][0] * 10) - fatigue);
     message("Zdobywasz " + gain + " sztuk miedzi.\n");
-    items[0]->damage_item(user);
+    number = items[0]->damage_item(user);
+    if (number == 1)
+        message("Wypisujesz nieco kredę.\n");
+    else if (number == 2)
+        message("Zużywasz cały kawałek kredy.\n");
 }
 
 /* Set aliases for commands. */
