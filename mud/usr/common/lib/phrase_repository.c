@@ -36,7 +36,7 @@ void upgraded(varargs int clone) {
       any_failures = 1;
   }
   if(any_failures) {
-    LOGD->write_syslog("Can't reload all files in phrase repository "
+    LOGD->write_syslog("Nie mogę przeładować wszystkich plików w repozytorium fraz "
 		       + object_name(this_object()), LOG_ERR);
   }
 }
@@ -49,7 +49,7 @@ object file_phrase(string path, string ident) {
     /* Load phrases from file */
     file = load_filemanaged_file(path);
     if(!file) {
-      LOGD->write_syslog("Requested phrase from nonexistent file " + path,
+      LOGD->write_syslog("Zarządano frazy z nieistniejącego pliku " + path,
 			 LOG_WARN);
       return nil;
     }
@@ -58,7 +58,7 @@ object file_phrase(string path, string ident) {
     return file[ident];
   }
 
-  LOGD->write_syslog("Couldn't find phrase " + ident + " in file.",
+  LOGD->write_syslog("Nie można znaleźć frazy " + ident + " w pliku.",
 		     LOG_WARN);
   return nil;
 }
@@ -75,8 +75,8 @@ mapping load_filemanaged_file(string path) {
   contents = read_file(path, 0, status(ST_STRSIZE) - 1);
   if(strlen(contents) > status(ST_STRSIZE) - 3) {
     /* File is too long... */
-    LOGD->write_syslog("File " + path
-		       + " is too large to load as a phrase file!",
+    LOGD->write_syslog("Plik " + path
+		       + " jest zbyt duży aby załadować go jako plik fraz!",
 		       LOG_ERR);
     return nil;
   }
@@ -84,7 +84,7 @@ mapping load_filemanaged_file(string path) {
   /* Load as UNQ */
   unq_data = UNQ_PARSER->basic_unq_parse(contents);
   if(!unq_data) {
-    LOGD->write_syslog("Can't parse filemanaged phrase file!", LOG_ERR);
+    LOGD->write_syslog("Nie mogę sparsować pliku fraz!", LOG_ERR);
     return nil;
   }
   if(sizeof(unq_data) == 0) return nil;
@@ -99,7 +99,7 @@ mapping load_filemanaged_file(string path) {
 	iter += 2;
 	continue;
       }
-      LOGD->write_syslog("Anonymous top-level data parsing UNQ!", LOG_ERR);
+      LOGD->write_syslog("Anonimowe top-level dane w parsowanym UNQ!", LOG_ERR);
       return nil;
     }
 
@@ -109,17 +109,17 @@ mapping load_filemanaged_file(string path) {
       phrase = PHRASED->unq_to_phrase(unq_data[iter + 1]);
 
       if(!phrase) {
-	LOGD->write_syslog("Null phrase from unq_to_phrase!", LOG_ERR);
+	LOGD->write_syslog("Null fraza z unq_to_phrase!", LOG_ERR);
 	return nil;
       }
     } else {
-      LOGD->write_syslog("Unrecognized data type " + typeof(unq_data[iter + 1])
-			 + " returned by UNQ", LOG_ERR);
+      LOGD->write_syslog("Nierozpoznany typ danych " + typeof(unq_data[iter + 1])
+			 + " zwrócony przez UNQ", LOG_ERR);
       return nil;
     }
     if(filemap[unq_data[iter]]) {
-      LOGD->write_syslog("Repeated label " + unq_data[iter] + " in file "
-			 + path + ".  Ignoring.", LOG_WARN);
+      LOGD->write_syslog("Powtórzona etykieta " + unq_data[iter] + " w pliku "
+			 + path + ".  Ignorowanie.", LOG_WARN);
     } else {
       filemap[unq_data[iter]] = phrase;
     }

@@ -6,19 +6,19 @@
 
 /* Phrase functions */
 string as_xml(void) {
-  error("Subclass must override this function!");
+  error("Subklasa musi nadpisać tę funkcję!");
 }
 
 void from_xml(string xml_markup) {
-  error("Subclass must override this function!");
+  error("Subklasa musi nadpisać tę funkcję!");
 }
 
 string as_unq(void) {
-  error("Subclass must override this function!");
+  error("Subklasa musi nadpisać tę funkcję!");
 }
 
 void from_unq(string unq_markup) {
-  error("Subclass must override this function!");
+  error("Subklasa musi nadpisać tę funkcję!");
 }
 
 
@@ -29,13 +29,13 @@ static string taglist_to_markup(mixed *taglist, int markup_type) {
   string label, tmp, body, result;
 
   if(markup_type != MARKUP_UNQ && markup_type != MARKUP_XML)
-    error("Unrecognized markup_type in taglist_to_markup!");
+    error("Nieznany markup_type w taglist_to_markup!");
 
   result = "";
   for(ctr = 0; ctr < sizeof(taglist); ctr+=2) {
     label = taglist[ctr];
     if(label == nil)
-      error("(nil) label converting a taglist!");
+      error("(nil) etykieta konwertownana w liście tagów!");
 
     if(label != "") {
       switch(label[0]) {
@@ -78,7 +78,7 @@ static string taglist_to_markup(mixed *taglist, int markup_type) {
 
       /* All labels should be marked as opening, standalone, or closing! */
       default:
-        error("Malformed label converting a taglist!");
+        error("Źle sformatowana etykieta w liście tagów!");
       }
     }
 
@@ -142,9 +142,9 @@ static string *unq_data_to_taglist(mixed *unq, varargs int no_trim) {
     taglist = final_taglist;
   }
 
-  if(sizeof(taglist) % 1) error("Odd-sized taglist being returned!");
+  if(sizeof(taglist) % 1) error("Nieparzysta lista tagów będzie zwrócona!");
   } : {
-    LOGD->write_syslog("Error converting UNQ data to taglist.  Data: "
+    LOGD->write_syslog("Błąd w konwersji danych UNQ do listy tagów.  Dane: "
                        + STRINGD->mixed_sprint(unq) + ", Taglist: "
                        + STRINGD->mixed_sprint(taglist), LOG_ERR);
     return nil;
@@ -163,7 +163,7 @@ static string *unq_to_taglist(string unq_string) {
 }
 
 static string *xml_to_taglist(string xml_string) {
-  error("Not yet implemented!");
+  error("Jeszcze nie zaimplementowane!");
 }
 
 static string *markup_to_taglist(string markup, int markup_type) {
@@ -173,6 +173,6 @@ static string *markup_to_taglist(string markup, int markup_type) {
   case MARKUP_XML:
     return xml_to_taglist(markup);
   default:
-    error("Unrecognized markup_type tag in markup_to_taglist!");
+    error("Nieznany markup_type tag w markup_to_taglist!");
   }
 }

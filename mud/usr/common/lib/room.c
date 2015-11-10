@@ -117,7 +117,7 @@ void destructed(int clone) {
     obj::get_location()->remove_detail(this_object());
 
   if(obj::get_location()) {
-    LOGD->write_syslog("Destructing a ROOM without removing it!",
+    LOGD->write_syslog("Niszczenie POKOJU bez usunięcia go!",
 		       LOG_WARN);
   }
 
@@ -282,7 +282,7 @@ void set_weight(float new_weight) {
   object loc;
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can set weights!");
+    error("Tylko autoryzowany kod może ustawiać wagę!");
 
   /* Remove from container and add back -- that way the weight
      will be correct */
@@ -301,7 +301,7 @@ void set_volume(float new_volume) {
   object loc;
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can set volumes!");
+    error("Tylko autoryzowany kod może ustawiać objętość!");
 
   /* Remove from container and add back -- that way the weight
      will be correct */
@@ -318,97 +318,97 @@ void set_volume(float new_volume) {
 
 void set_length(float new_length) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can set lengths!");
+    error("Tylko autoryzowany kod może ustawiać długość!");
 
   length = new_length;
 }
 
 void set_weight_capacity(float new_weight_capacity) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can set weight capacities!");
+    error("Tylko autoryzowany kod może ustawiać udźwig!");
 
   weight_capacity = new_weight_capacity;
 }
 
 void set_volume_capacity(float new_volume_capacity) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can set volume capacities!");
+    error("Tylko autoryzowany kod może ustawiać pojemność!");
 
   volume_capacity = new_volume_capacity;
 }
 
 void set_length_capacity(float new_length_capacity) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can set length capacities!");
+    error("Tylko autoryzowany kod może ustawiać maksymalną długość!");
 
   length_capacity = new_length_capacity;
 }
 
 void set_damage(int new_damage) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can set length capacities!");
+    error("Tylko autoryzowany kod może ustawiać obrażenia!");
 
   damage = new_damage;
 }
 
 void set_armor(int new_armor) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can set length capacities!");
+    error("Tylko autoryzowany kod może ustawiać zbroję!");
 
   armor = new_armor;
 }
 
 void set_price(int new_price) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can set length capacities!");
+    error("Tylko autoryzowany kod może ustawiać cenę!");
 
   price = new_price;
 }
 
 void set_wearlocations(int* new_wearlocations) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can set length capacities!");
+    error("Tylko autoryzowany kod może ustawiać lokacje do noszenia!");
 
   wearlocations = new_wearlocations;
 }
 
 void set_hp(int new_hp) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can set length capacities!");
+    error("Tylko autoryzowany kod może ustawiać punkty życia!");
 
   hp = new_hp;
 }
 
 void set_combat_rating(int new_combat_rating) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can set length capacities!");
+    error("Tylko autoryzowany kod może ustawiać poziom bojowy!");
 
   combat_rating = new_combat_rating;
 }
 
 void set_body_locations(string* new_body_locations) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can set length capacities!");
+    error("Tylko autoryzowany kod może ustawiać lokacje ciała!");
 
   body_locations = new_body_locations;
 }
 
 void set_skill(string new_skill) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can set length capacities!");
+    error("Tylko autoryzowany kod może ustawiać umiejętność!");
 
   skill = new_skill;
 }
 
 void set_damage_type(string new_damage_type) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can set length capacities!");
+    error("Tylko autoryzowany kod może ustawiać typ obrażeń!");
 
   damage_type = new_damage_type;
 }
 void set_damage_res(mapping new_damage_res) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can set length capacities!");
+    error("Tylko autoryzowany kod może ustawiać odporności!");
 
   damage_res = new_damage_res;
 }
@@ -418,13 +418,13 @@ void set_damage_res(mapping new_damage_res) {
 void clear_exits(void) {
   if(previous_program() == EXITD)
     exits = ({ });
-  else error("Only EXITD can clear exits!");
+  else error("Tylko EXITD może czyścić wyjścia!");
 }
 
 void add_exit(int dir, object exit) {
   if(previous_program() == EXITD) {
     exits = exits + ({ ({ dir, exit }) });
-  } else error("Only EXITD can add exits!");
+  } else error("Tylko EXITD może dodawać!");
 }
 
 int num_exits(void) {
@@ -460,9 +460,9 @@ void remove_exit(object exit) {
       }
     }
 
-    LOGD->write_syslog("Can't find exit to remove [" + sizeof(exits)
-		       + " exits]!", LOG_ERR);
-  } else error("Only EXITD can remove exits!");
+    LOGD->write_syslog("Nie można znaleźć wyjścia do usunięcia [" + sizeof(exits)
+		       + " wyjść]!", LOG_ERR);
+  } else error("Tylko EXITD może usuwać wyjścia!");
 }
 
 
@@ -500,35 +500,35 @@ private void set_flags(int flags, int value) {
 
 void set_container(int value) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can currently set an object as a container!");
+    error("Tylko autoryzowany kod może ustawiać obiekt jako pojemnik!");
 
   set_flags(OF_CONTAINER, value);
 }
 
 void set_open(int value) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can currently set an object as open!");
+    error("Tylko autoryzowany kod może ustawiać obiekt jako otwarty!");
 
   set_flags(OF_OPEN, value);
 }
 
 void set_openable(int value) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can currently set an object as openable!");
+    error("Tylko autoryzowany kod może ustawiać jako otwieralny!");
 
   set_flags(OF_OPENABLE, value);
 }
 
 void set_wearable(int value) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can currently set an object as openable!");
+    error("Tylko autoryzowany kod może ustawiać obiekt jako ubieralny!");
 
   set_flags(OF_WEARABLE, value);
 }
 
 void set_dressed(int value) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only authorized code can currently set an object as openable!");
+    error("Tylko autoryzowany kod może ustawiać obiekt jako założony!");
 
   set_flags(OF_DRESSED, value);
 }
@@ -547,12 +547,12 @@ void set_dressed(int value) {
  */
 static string is_open_cont(object user) {
   if (!is_container()) {
-    if(!user) return "not container";
-    return get_brief()->to_string(user) + " isn't a container!";
+    if(!user) return "nie pojemnik";
+    return get_brief()->to_string(user) + " nie jest pojemnikiem!";
   }
   if (!is_open()) {
-    if(!user) return "not open";
-    return get_brief()->to_string(user) + " isn't open!";
+    if(!user) return "nie otwarty";
+    return get_brief()->to_string(user) + " nie jest otwarty!";
   }
   return nil;
 }
@@ -576,13 +576,13 @@ static string is_open_cont(object user) {
    dir is the direction. */
 string can_leave(object user, object leave_object, int dir) {
   if(obj::get_mobile())
-    return "You can't leave a sentient being!"
-      + "  In fact, you shouldn't even be here.";
+    return "Nie możesz opuszczać żywych istot!"
+      + " Prawdę mówiąc, nawet nie powinieneś tu być.";
 
   if (dir == DIR_TELEPORT) {
     if (!is_container()) {
-      if(!user) return "not container";
-      return get_brief()->to_string(user) + " isn't a container.";
+      if(!user) return "nie pojemnik";
+      return get_brief()->to_string(user) + " nie jest pojemnikiem.";
     } else {
       return nil;
     }
@@ -600,12 +600,12 @@ string can_enter(object user, object enter_object, int dir) {
   object body;
 
   if(obj::get_mobile())
-    return "You can't enter a sentient being!  Don't be silly.";
+    return "Nie możesz wejść do żywej istoty. Nie bądź niemądry.";
 
   if (dir == DIR_TELEPORT) {
     if (!is_container()) {
-      if(!user) return "not container";
-      return get_brief()->to_string(user) + " isn't a container.";
+      if(!user) return "nie pojemnik";
+      return get_brief()->to_string(user) + " nie jest pojemnikiem.";
     } else {
       return nil;
     }
@@ -618,17 +618,17 @@ string can_enter(object user, object enter_object, int dir) {
   if(enter_object
      && (current_weight + enter_object->get_weight() > weight_capacity)) {
     if(!user)
-      return "too full";
+      return "przepełniony";
     else
-      return get_brief()->to_string(user) + " is too full!";
+      return get_brief()->to_string(user) + " jest przepełniony!";
   }
 
   if(enter_object
      && (current_volume + enter_object->get_volume() > volume_capacity)) {
     if(!user)
-      return "too full";
+      return "przepełniony";
     else
-      return get_brief()->to_string(user) + " is too full!";
+      return get_brief()->to_string(user) + " jest przepełniony!";
   }
 
   return nil;
@@ -715,9 +715,9 @@ void remove(object mover, object movee, object new_env) {
 */
 string can_get(object user, object mover, object new_env) {
   if(obj::get_mobile()) {
-    if(!user) return "sentient being";
+    if(!user) return "żywa istota";
     return get_brief()->to_string(user)
-      + " is a sentient being!  You can't pick them up.";
+      + " jest żywą istotą! Nie możesz ich podnosić.";
   }
   return nil;
 }
@@ -835,14 +835,14 @@ void prepend_to_container(object obj) {
   if(obj_weight >= 0.0)
     current_weight += obj_weight;
   else
-    LOGD->write_syslog("Negative weight in prepend_to_container!",
+    LOGD->write_syslog("Ujemna waga w prepend_to_container!",
 		       LOG_WARN);
 
   obj_volume = obj->get_volume();
   if(obj_volume >= 0.0)
     current_volume += obj_volume;
   else
-    LOGD->write_syslog("Negative volume in prepend_to_container!",
+    LOGD->write_syslog("Ujemna objętość w prepend_to_container!",
 		       LOG_WARN);
 
   obj::prepend_to_container(obj);
@@ -890,7 +890,7 @@ int* get_pending_parents(void) {
 
 void set_archetypes(object* new_arch) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only SYSTEM and COMMON objects may set archetypes!");
+    error("Tylko SYSTEM, COMMON i GAME mogą ustawiać archetypy!");
 
   ::set_archetypes(new_arch);
   pending_parents = nil;
@@ -914,7 +914,7 @@ object* get_pending_removed_adjectives(void) {
 
 void set_removed_details(object *new_removed_details) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only SYSTEM or COMMON objects can set removed_details!");
+    error("Tylko SYSTEM, COMMON i GAME mogą ustawiać removed_details!");
 
   pending_removed_details = ({ });
   ::set_removed_details(new_removed_details);
@@ -953,14 +953,12 @@ private string exits_to_unq(void) {
         opp_dir = EXITD->opposite_direction(exit->get_direction());
         other_exit = dest->get_exit(opp_dir);
         if(!other_exit || other_exit->get_destination() != this_object()) {
-          LOGD->write_syslog("Problem finding return exit!", LOG_WARN);
+          LOGD->write_syslog("Problem ze znalezieniem wyjścia powrotnego!", LOG_WARN);
         } else {
-/*          if(exit->get_number() < other_exit->get_number()) {  */
 	    ret += exit->to_unq_text();
-/*          } */
 	}
       } else {
-        LOGD->write_syslog("Couldn't find destination!", LOG_WARNING);
+        LOGD->write_syslog("Nie mogę znaleźć celu!", LOG_WARNING);
       }
     } else {
       ret += exit->to_unq_text();
@@ -997,7 +995,7 @@ private string all_tags_to_unq(void) {
     case T_ARRAY:
     case T_MAPPING:
     default:
-      error("Can't output that tag type yet!");
+      error("Nie obsługuję jeszcze tego typu tagów!");
     }
     ret += "}\n        ";
   }
@@ -1044,7 +1042,7 @@ private string serialize_list(mixed *list) {
       str_list += ({ list[ctr] });
       break;
     default:
-      error("Error in stringifying list -- unacceptable object "
+      error("Błąd w serialize_list - nieakceptowalny obiekt "
 	    + STRINGD->mixed_sprint(list[ctr]));
     }
   }
@@ -1178,8 +1176,8 @@ private void parse_all_tags(mixed* value)
 
         switch(type) {
             case -1:
-                error("No such tag as '" + STRINGD->mixed_sprint(value[ctr])
-                        + "' defined in TagD!");
+                error("Nie ma takiego taga jak '" + STRINGD->mixed_sprint(value[ctr])
+                        + "' zdefiniowanego w TagD!");
 
             case T_INT:
                 do_sscanf = 1;
@@ -1192,12 +1190,12 @@ private void parse_all_tags(mixed* value)
                 break;
 
             default:
-                error("Can't parse tags of type " + type + " yet!");
+                error("Nie mogę parsować typów tagów " + type + "!");
         }
 
         if(do_sscanf) {
             if(typeof(value[ctr + 1]) != T_STRING)
-                error("Internal error:  Can't read tag out of non-string value!");
+                error("Wewnętrzy błąd: Nie mogę odczytywać tagów wartości nie-string!");
 
             value[ctr + 1] = STRINGD->trim_whitespace(value[ctr + 1]);
 
@@ -1230,24 +1228,24 @@ void from_dtd_tag(string tag, mixed value) {
             break;
         case "detail":
             if(pending_location > -1) {
-                LOGD->write_syslog("Detail specified despite pending location!",
+                LOGD->write_syslog("Detal podany pomimo oczekującej lokacji!",
                         LOG_ERR);
-                LOGD->write_syslog("Obj #" + tr_num + ", detail field: "
-                        + value + ", existing location/detail: "
+                LOGD->write_syslog("Obiekt #" + tr_num + ", pole detalu: "
+                        + value + ", istniejąca lokacja/detal: "
                         + pending_location, LOG_ERR);
-                error("Error loading object #" + tr_num + "!  Check logfile.");
+                error("Błąd przy ładowaniu obiektu #" + tr_num + "! Sprawdź logi.");
             }
             pending_detail_of = value;
             pending_location = value;
             break;
         case "location":
             if(pending_location > -1) {
-                LOGD->write_syslog("Location specified despite pending location!",
+                LOGD->write_syslog("Lokacja podana pomimo oczekującej lokacji!",
                         LOG_ERR);
-                LOGD->write_syslog("Obj #" + tr_num + ", new location: "
-                        + value + ", existing location/detail: "
+                LOGD->write_syslog("Obiekt #" + tr_num + ", nowa lokacja: "
+                        + value + ", istniejąca lokacja/detal: "
                         + pending_location, LOG_ERR);
-                error("Error loading object #" + tr_num + "!  Check logfile.");
+                error("Błąd przy ładowaniu obiektu #" + tr_num + "! Sprawdź logi.");
             }
             pending_location = value;
             break;
@@ -1353,6 +1351,6 @@ void from_dtd_tag(string tag, mixed value) {
             parse_all_tags(value);
             break;
         default:
-            error("Don't recognize tag " + tag + " in function from_dtd_tag()");
+            error("Nie rozpoznaję tagu " + tag + " w funkcji from_dtd_tag()");
     }
 }
