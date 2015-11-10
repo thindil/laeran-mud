@@ -52,6 +52,7 @@ mapping skills;
 string health;
 string condition;
 string* quests;
+mapping aliases;
 
 /*
  * NAME:	create()
@@ -110,6 +111,7 @@ void upgraded(varargs int clone) {
 		     "komendy"   : "cmd_commands",
              "ustaw"     : "cmd_settings",
              "przygody"  : "cmd_quests",
+             "alias"     : "cmd_aliases",
 
 		     "kanal"     : "cmd_channels",
 		     "kanaly"    : "cmd_channels",
@@ -235,6 +237,8 @@ void player_login(int first_time)
         condition = "Wypoczęty";
     if (quests == nil)
         quests = ({ });
+    if (aliases == nil)
+        aliases = ([ ]);
 
     if(!body) {
         location = start_room;
@@ -438,6 +442,14 @@ int process_command(string str)
                 break;
             }
         }
+
+        /* Aliases */
+        if (map_sizeof(aliases) && sizeof(map_indices(aliases) & ({ cmd }))) {
+            command = explode(aliases[cmd], " ");
+            cmd = command[0];
+            str = implode(command[1..], " ") + " " + str;
+        }
+
         
         /* Set new password */
         if (cmd == "ustaw" && str == "haslo") {
@@ -2238,4 +2250,42 @@ static void cmd_transform(object user, string cmd, string str)
     TAGD->set_tag_value(body, "Fatigue", fatigue);
     set_condition((stats["kondycja"][0] * 10) - fatigue);
     message("Zdobywasz " + gain + " sztuk miedzi.\n");
+}
+
+/* Set aliases for commands. */
+static void cmd_aliases(object user, string cmd, string str)
+{
+    string msg;
+    string *indices, *parts;
+    int i;
+
+    msg = "";
+    if (str)
+        str = STRINGD->trim_whitespace(str);
+    if (!str || str == "") {
+        if (!map_sizeof(aliases)) 
+            msg += "Nie masz jeszcze zdefiniowanych jakichkolwiek aliasów.\n";
+        else {
+            indices = map_indices(aliases);
+            msg += "Lista aliasów:\n";
+            for (i = 0; i < sizeof(indices); i++)
+                msg += "- " + indices[i] + ": " + "'" + aliases[indices[i]] + "'" + "\n";
+        }
+        msg += "\nAby dodać nowy alias, użyj komendy alias [nazwa] [komenda], aby usunąć istniejący\n"
+            + "użyj komendy alias [nazwa].\n";
+    } else {
+        parts = explode(str, " ");
+        if (sizeof(parts) == 1) {
+            if (map_indices(aliases) & ({ parts[0] })) {
+                aliases[parts[0]] = nil;
+                msg += "Usunąłeś alias '" + parts[0] + "'.\n";
+            } else
+                msg += "Nie masz ustawionego aliasu '" + parts[0] + "'.\n";
+        } else {
+            aliases[parts[0]] = implode(parts [1..], " ");
+            msg += "Ustawiłeś alias '" + parts[0] + "' na '" + implode(parts[1..], " ") + "'.\n";
+        }
+    }
+
+    message(msg);
 }
