@@ -457,7 +457,7 @@ void set_durability(int new_durability)
     durability = new_durability;
 }
 
-void set_cur_durablity(int new_cur_durability) 
+void set_cur_durability(int new_cur_durability) 
 {
     if(!SYSTEM() && !COMMON() && !GAME())
         error("Tylko autoryzowany kod może ustawiać obecną wytrzymałość!");
@@ -1227,11 +1227,12 @@ string to_unq_flags(void) {
       ret += "  ~body_locations{" + serialize_list(body_locations) + "}\n";
   if (skill != "")
       ret += "  ~skill{" + skill + "}\n";
-  if (quality > 0) {
+  if (quality > 0) 
       ret += "  ~quality{" + quality + "}\n";
+  if (durability < 100)
       ret += "  ~durability{" + durability + "}\n";
+  if (cur_durability < 100)
       ret += "  ~cur_durability{" + cur_durability + "}\n";
-  }
   if (craft_skill != "")
       ret += "  ~craft_skill{" + craft_skill + "}\n";
 

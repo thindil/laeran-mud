@@ -136,6 +136,7 @@ void upgraded(varargs int clone) {
 		     "zaloz"     : "cmd_wear",
 		     "zdejmij"   : "cmd_takeoff",
              "zamien"    : "cmd_transform",
+             "napraw"    : "cmd_repair",
 
 		     "at"        : "cmd_attack",
 		     "atak"      : "cmd_attack",
@@ -1965,7 +1966,11 @@ static void cmd_attack(object user, string cmd, string str)
         message("Nie możesz znaleźć tego '" + target + "'.\n");
         return;
     }
-    number -= 1;
+    number--;
+    if (number < 0) {
+        message("W marzeniach\n");
+        return;
+    }
     if (!tmp[number]->get_mobile()) {
         message("Możesz atakować tylko istoty. Nie wyżywaj się na sprzęcie.\n");
         return;
@@ -2098,7 +2103,11 @@ static void cmd_follow(object user, string cmd, string str)
         message("Nie możesz znaleźć tego '" + target + "'.\n");
         return;
     }
-    number -= 1;
+    number--;
+    if (number < 0) {
+        message("W marzeniach.\n");
+        return;
+    }
     if (!tmp[number]->get_mobile()) {
         message("Możesz podążać tylko za żywymi istotami. Martwa natura nie porusza się.\n");
         return;
@@ -2256,13 +2265,15 @@ static void cmd_transform(object user, string cmd, string str)
     body->set_price(body->get_price() + gain);
     location->remove_from_container(tmp[number]);
     gain_exp("alchemia/transformacja", gain);
+    gain_exp("kondycja", gain);
+    gain_exp("inteligencja", gain);
     if (TAGD->get_tag_value(body, "Fatigue"))
         fatigue = TAGD->get_tag_value(body, "Fatigue") + 10;
     else
         fatigue = 10;
     TAGD->set_tag_value(body, "Fatigue", fatigue);
     set_condition((stats["kondycja"][0] * 10) - fatigue);
-    message("Zdobywasz " + gain + " sztuk miedzi.\n");
+    message("Zdobywasz " + gain + " miedziaków.\n");
     number = items[0]->damage_item(user);
     if (number == 1)
         message("Wypisujesz nieco kredę.\n");
@@ -2306,4 +2317,85 @@ static void cmd_aliases(object user, string cmd, string str)
     }
 
     message(msg);
+}
+
+/* Repair damaged items */
+static void cmd_repair(object user, string cmd, string str)
+{
+    string iname;
+    object *tmp, *tools;
+    int number, rnd, fatigue;
+
+    if (str)
+        str = STRINGD->trim_whitespace(str);
+    if (!str || str == "" || sscanf(str, "%s", iname) < 1) {
+        message("Użycie: " + cmd + " <przedmiot do naprawy>\n");
+        return;
+    }
+    if (sscanf(iname, "%d %s", number, iname) < 2)
+        number = 1;
+    number--;
+    if (number < 0) {
+        message("W marzeniach.\n");
+        return;
+    }
+
+    tools = find_first_objects("narzędzia", LOC_INVENTORY);
+    if (!tools || !sizeof(tools)) {
+        message("Nie posiadasz narzędzi przy sobie!\n");
+        return;
+    }
+
+    tmp = find_first_objects(iname, LOC_CURRENT_ROOM, LOC_INVENTORY);
+    if (!tmp || !sizeof(tmp)) {
+        message("Nie możesz znaleźć jakiegokolwiek '" + iname + "' w okolicy!\n");
+        return;
+    }
+    if (number > sizeof(tmp)) {
+        message("Nie ma aż tak dużo '" + iname + "' w okolicy.\n");
+        return;
+    }
+    iname = tmp[number]->get_brief()->to_string(user);
+    if (sizeof(tmp) > 1) 
+        message("Wybierasz " + iname + ".\n");
+
+    if (tmp[number]->get_cur_durability() == tmp[number]->get_durability()) {
+        message(iname + " jest w doskonałym stanie, nie potrzebuje naprawy.\n");
+        return;
+    }
+    if (tmp[number]->get_craft_skill() == "") {
+        message("Nie można naprawiać " + iname + ".\n");
+        return;
+    }
+
+    if (TAGD->get_tag_value(body, "Fatigue") && (TAGD->get_tag_value(body, "Fatigue") + 10) > (stats["kondycja"][0] * 10)) {
+        message("Jesteś zbyt zmęczony aby naprawiać rzeczy. Odpocznij chwilę.\n");
+        return;
+    }
+
+    if (have_skill(tmp[number]->get_craft_skill()))
+        rnd = random(skills[tmp[number]->get_craft_skill()][0]);
+    else
+        rnd = 1;
+    if (rnd < (100 - tmp[number]->get_quality())) 
+        tmp[number]->set_durability(tmp[number]->get_durability() - 3);
+    else
+        tmp[number]->set_durability(tmp[number]->get_durability() - 1);
+    tmp[number]->set_cur_durability(tmp[number]->get_durability());
+    gain_exp(tmp[number]->get_craft_skill(), 5);
+    gain_exp("kondycja", 5);
+    gain_exp("siła", 5);
+    gain_exp("zręczność", 5);
+    if (TAGD->get_tag_value(body, "Fatigue"))
+        fatigue = TAGD->get_tag_value(body, "Fatigue") + 10;
+    else
+        fatigue = 10;
+    TAGD->set_tag_value(body, "Fatigue", fatigue);
+    set_condition((stats["kondycja"][0] * 10) - fatigue);
+    message("Pracowałeś przez jakiś czas i naprawiłeś " + iname + ".\n");
+    number = tools[0]->damage_item(user);
+    if (number == 1)
+        message("Twoje narzędzia ulegają uszkodzeniu.\n");
+    else if (number == 2)
+        message("Twoje narzędzia ulegają zniszczeniu.\n");
 }
