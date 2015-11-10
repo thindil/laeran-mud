@@ -60,6 +60,7 @@ private object obj_detail_of;
 #define SS_PROMPT_COMBAT_RATING    35
 #define SS_PROMPT_BODY_LOCATIONS   36
 #define SS_PROMPT_SKILL            37
+#define SS_PROMPT_QUALITY          38
 
 
 /* Input function return values */
@@ -98,6 +99,7 @@ static int  prompt_hp_input(string input);
 static int  prompt_combat_rating_input(string input);
 static int  prompt_body_locations_input(string input);
 static int  prompt_skill_input(string input);
+static int  prompt_quality_input(string input);
 
 private string blurb_for_substate(int substate);
 
@@ -229,6 +231,9 @@ int from_user(string input) {
     break;
   case SS_PROMPT_SKILL:
     ret = prompt_skill_input(input);
+    break;
+  case SS_PROMPT_QUALITY:
+    ret = prompt_quality_input(input);
     break;
   case SS_PROMPT_LOOK_DESC:
   case SS_PROMPT_EXAMINE_DESC:
@@ -487,6 +492,14 @@ private string blurb_for_substate(int substate) {
                         + "wartość z archetypu. Aby pominąć ten krok, wciśnij enter. \n";
                 return "Podaj nazwę umiejętności potrzebną do używania tego obiektu. Aby pominąć ten krok, wciśnij \n"
                     + "enter.\n";
+        case SS_PROMPT_QUALITY:
+                if(new_obj && sizeof(new_obj->get_archetypes()))
+                    return "Podaj szansę na uszkodzenie się przedmiotu albo wpisz 'none' aby przyjąć wartość z archetypu.\n"
+                        + "Wartość oznacza procentową szansę na to że obiekt otrzyma jedno uszkodzenie. Wartość ujemna\n"
+                        + "oznacza że obiektu nie można naprawiać. Zero oznacza niezniszczalny obiekt.\n";
+                return "Podaj szansę na uszkodzenie się przedmiotu. Wartość oznacza procentową szansę na to, że obiekt\n"
+                    + "otrzyma jedno uszkodzenie. Wartość ujemna oznacza, że obiektu nie można naprawiać. Zero oznacza\n"
+                    + "niezniszczalny obiekt.\n";
         default:
                 return "<NIEZNANY STAN>\n";
     }
@@ -1965,7 +1978,41 @@ static int prompt_skill_input(string input)
   new_obj->set_skill(input);
 
   send_string("Zaakceptowano umiejętność.\n\n");
-  send_string("Zakończono prace nad przenośnym obiektem #" + new_obj->get_number() + ".\n");
+  substate = SS_PROMPT_QUALITY;
+  send_string(blurb_for_substate(substate));
 
-  return RET_POP_STATE;
+  return RET_NORMAL;
+}
+
+static int prompt_quality_input(string input)
+{
+    int     value;
+
+    value = 0;
+
+    if(!input || STRINGD->is_whitespace(input))
+    {
+        send_string("Spróbujmy ponownie.\n");
+        send_string(blurb_for_substate(substate));
+
+        return RET_NORMAL;
+    }
+
+    input = STRINGD->trim_whitespace(input);
+
+    if(!STRINGD->stricmp(input, "none"))
+        value = 0;
+    else if (sscanf(input, "%d", value) < 1) {
+        send_string("Podaj jakość obiektu. Spróbuj ponownie.\n");
+        send_string(blurb_for_substate(substate));
+
+        return RET_NORMAL;
+    }
+
+    new_obj->set_quality(value);
+
+    send_string("Zaakceptowano jakość obiektu.\n\n");
+    send_string("Zakończono prace nad przenośnym obiektem #" + new_obj->get_number() + ".\n");
+
+    return RET_POP_STATE;
 }

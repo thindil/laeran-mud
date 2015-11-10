@@ -6,7 +6,7 @@
        weight_capacity?,volume_capacity?,length_capacity?,removed_details?,
        tags?,data?,damage?,damage_type?,wearlocations?,armor?,damage_res?,
        price?,hp?,combat_rating?,body_locations?,skill?,current_weight?,
-       current_volume?}
+       current_volume?,quality?,durability?,cur_durability?}
   ~object:obj{}
   ~obj_type{string}
   ~number{int}
@@ -45,6 +45,9 @@
   ~combat_rating{int}
   ~body_locations{string}
   ~skill{string}
+  ~quality{int}
+  ~durability{int}
+  ~cur_durability{int}
   ~newexit{rnumber,direction,destination,return,type,rbdesc?,rgdesc?,
            rldesc?,redesc?,rnouns?,radjectives?,rflags?}
   ~rnumber{int}

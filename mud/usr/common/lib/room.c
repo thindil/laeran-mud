@@ -51,7 +51,7 @@ private int objflags;
    acceptable length. */
 private float weight, volume, length;
 private float weight_capacity, volume_capacity, length_capacity;
-private int damage, armor, price, hp, combat_rating;
+private int damage, armor, price, hp, combat_rating, quality, durability, cur_durability;
 private int* wearlocations;
 private string *body_locations;
 private string skill, damage_type;
@@ -71,10 +71,12 @@ static void create(varargs int clone) {
 
     current_weight = 0.0;
     current_volume = 0.0;
+    durability = 100;
+    cur_durability = 100;
 
     weight = volume = length = -1.0;
     weight_capacity = volume_capacity = length_capacity = -1.0;
-    damage = armor = price = hp = combat_rating = 0;
+    damage = armor = price = hp = combat_rating = quality = 0;
     wearlocations = ({ });
     body_locations = ({ });
     damage_res = ([ ]);
@@ -278,6 +280,24 @@ mapping get_damage_res(void)
   return damage_res;
 }
 
+int get_quality(void)
+{
+    if(quality == 0 && sizeof(obj::get_archetypes()))
+        return obj::get_archetypes()[0]->get_quality();
+
+    return quality;
+}
+
+int get_durability(void)
+{
+    return durability;
+}
+
+int get_cur_durability(void)
+{
+    return cur_durability;
+}
+
 void set_weight(float new_weight) {
   object loc;
 
@@ -406,6 +426,7 @@ void set_damage_type(string new_damage_type) {
 
   damage_type = new_damage_type;
 }
+
 void set_damage_res(mapping new_damage_res) {
   if(!SYSTEM() && !COMMON() && !GAME())
     error("Tylko autoryzowany kod może ustawiać odporności!");
@@ -413,6 +434,29 @@ void set_damage_res(mapping new_damage_res) {
   damage_res = new_damage_res;
 }
 
+void set_quality(int new_quality) 
+{
+    if(!SYSTEM() && !COMMON() && !GAME())
+        error("Tylko autoryzowany kod może ustawiać jakość!");
+
+    quality = new_quality;
+}
+
+void set_durability(int new_durability) 
+{
+    if(!SYSTEM() && !COMMON() && !GAME())
+        error("Tylko autoryzowany kod może ustawiać wytrzymałość!");
+
+    durability = new_durability;
+}
+
+void set_cur_durablity(int new_cur_durability) 
+{
+    if(!SYSTEM() && !COMMON() && !GAME())
+        error("Tylko autoryzowany kod może ustawiać obecną wytrzymałość!");
+
+    cur_durability = new_cur_durability;
+}
 /*** Functions dealing with Exits ***/
 
 void clear_exits(void) {
@@ -557,6 +601,29 @@ static string is_open_cont(object user) {
   return nil;
 }
 
+/* Check item for damage and destroy it when needed */
+string damage_item(object user)
+{
+    int tmpquality;
+
+    if (!quality)
+        return nil;
+    if (quality < 0)
+        tmpquality = quality * -1;
+    else
+        tmpquality = quality;
+    if (random(100) <= tmpquality) {
+        cur_durability--;
+        if (cur_durability > 0)
+            return get_brief()->to_string(user) + " trochę się uszkadza.";
+        else {
+            this_object()->get_location()->remove_from_container(this_object());
+            destruct_object(this_object());
+            return get_brief()->to_string(user) + " ulega zniszczeniu!";
+        }
+    }
+    return nil;
+}
 
 /* Note: Many functions are trivial here (always returning nil) but
  * can be overriden to control access into or out of a room 
@@ -1151,6 +1218,11 @@ string to_unq_flags(void) {
       ret += "  ~body_locations{" + serialize_list(body_locations) + "}\n";
   if (skill != "")
       ret += "  ~skill{" + skill + "}\n";
+  if (quality > 0) {
+      ret += "  ~quality{" + quality + "}\n";
+      ret += "  ~durability{" + durability + "}\n";
+      ret += "  ~cur_durability{" + cur_durability + "}\n";
+  }
 
   rem = get_removed_details();
   if(rem && sizeof(rem)) {
@@ -1330,6 +1402,15 @@ void from_dtd_tag(string tag, mixed value) {
             break;
         case "skill":
             skill = value;
+            break;
+        case "quality":
+            quality = value;
+            break;
+        case "durability":
+            durability = value;
+            break;
+        case "cur_durability":
+            cur_durability = value;
             break;
         case "wearlocations":
             value = explode(value, ", ");

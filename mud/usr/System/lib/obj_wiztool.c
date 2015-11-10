@@ -408,8 +408,17 @@ static void cmd_stat(object user, string cmd, string str) {
 
     if (function_object("get_body_locations", obj) && sizeof(obj->get_body_locations()))
         tmp += "Lokacje ciała: " + implode(obj->get_body_locations(), ", ") + "\n";
-    if (obj->get_skill())
+    if (function_object("get_skill", obj) && strlen(obj->get_skill()))
         tmp += "Umiejętność: " + obj->get_skill() + "\n";
+    if (function_object("get_quality", obj)) {
+        if (!obj->get_quality())
+            tmp += "Obiekt jest niezniszalny.\n";
+        else {
+            tmp += "Szansa na uszkodzenie obiektu wynosi: " + (string)obj->get_quality() + "%\n"
+                + "Obecna wytrzymałość obiektu wynosi: " + (string)obj->get_cur_durability() + "\n"
+                + "Maksymalna wytrzymałość obiektu wynosi: " + (string)obj->get_durability() + "\n";
+        }
+    }
 
     details = obj->get_immediate_details();
     if(details && sizeof(details)) {
@@ -913,7 +922,7 @@ static void cmd_set_obj_int_value(object user, string cmd, string str)
     return;
   }
 
-  if(newvalue < 0) {
+  if(newvalue < 0 && cmd_value_name != "quality") {
     user->message("Wartości muszą być dodatnie, " + newvalue + " nie jest.\n");
     return;
   }

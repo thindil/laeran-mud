@@ -944,91 +944,104 @@ static void cmd_whoami(object user, string cmd, string str)
     message_scroll(charinfo);
 }
 
-static void cmd_look(object user, string cmd, string str) {
-  object* tmp, *objs;
-  int     ctr;
+static void cmd_look(object user, string cmd, string str) 
+{
+    object* tmp, *objs;
+    int     ctr;
+    float   damage;
 
-  str = STRINGD->trim_whitespace(str);
-
-  if(!location) {
-    user->message("Jesteś w pustce!\n");
-    return;
-  }
-
-  if(!str || str == "") {
-    show_room_to_player(location);
-    return;
-  }
-
-  if (cmd[0] != 'z') {
-    /* trim an initial "at" off the front of the command if the verb
-       was "look" and not "examine". */
-    sscanf(str, "na %s", str);
-  }
-
-  if(sscanf(str, "w %s", str) || sscanf(str, "do srodka %s", str)
-     || sscanf(str, "do %s", str) || sscanf(str, "pomiedzy %s", str)) {
-    /* Look inside container */
     str = STRINGD->trim_whitespace(str);
+
+    if(!location) {
+        user->message("Jesteś w pustce!\n");
+        return;
+    }
+
+    if(!str || str == "") {
+        show_room_to_player(location);
+        return;
+    }
+
+    if (cmd[0] != 'z') {
+        /* trim an initial "at" off the front of the command if the verb
+           was "look" and not "examine". */
+        sscanf(str, "na %s", str);
+    }
+
+    if(sscanf(str, "w %s", str) || sscanf(str, "do srodka %s", str)
+            || sscanf(str, "do %s", str) || sscanf(str, "pomiedzy %s", str)) {
+        /* Look inside container */
+        str = STRINGD->trim_whitespace(str);
+        tmp = find_first_objects(str, LOC_CURRENT_ROOM, LOC_INVENTORY, LOC_BODY, LOC_CURRENT_EXITS);
+        if(!tmp) {
+            user->message("Nie znalazłeś jakiegokolwiek '" + str + "'.\n");
+            return;
+        }
+        if(sizeof(tmp) > 1) {
+            user->message("Widzisz więcej niż jeden '" + str +"'. Musisz wybrać który.\n");
+        }
+
+        if(!tmp[0]->is_container()) {
+            user->message("To nie jest pojemnik.\n");
+            return;
+        }
+
+        if(!tmp[0]->is_open()) {
+            user->message("Jest zamknięte.\n");
+            return;
+        }
+
+        if ((!tmp[0]->get_mobile()) || (user->is_admin()))
+            objs = tmp[0]->objects_in_container();
+        else
+            objs = nil;
+        if(objs && sizeof(objs)) {
+            for(ctr = 0; ctr < sizeof(objs); ctr++) {
+                user->message("- ");
+                user->send_phrase(objs[ctr]->get_brief());
+                user->message("\n");
+            }
+            user->message("-----\n");
+        } else {
+            user->message("Nie ma nic w ");
+            user->send_phrase(tmp[0]->get_brief());
+            user->message(".\n");
+        }
+        return;
+    }
+
     tmp = find_first_objects(str, LOC_CURRENT_ROOM, LOC_INVENTORY, LOC_BODY, LOC_CURRENT_EXITS);
-    if(!tmp) {
-      user->message("Nie znalazłeś jakiegokolwiek '" + str + "'.\n");
-      return;
+    if(!tmp || !sizeof(tmp)) {
+        user->message("Nie widzisz żadnego '" + str + "'.\n");
+        return;
     }
+
     if(sizeof(tmp) > 1) {
-      user->message("Widzisz więcej niż jeden '" + str +"'. Musisz wybrać który.\n");
+        user->message("Więcej niż jeden taki jest tutaj. "
+                + "Sprawdziłeś pierwszy.\n\n");
     }
 
-    if(!tmp[0]->is_container()) {
-      user->message("To nie jest pojemnik.\n");
-      return;
-    }
-
-    if(!tmp[0]->is_open()) {
-      user->message("Jest zamknięte.\n");
-      return;
-    }
-
-    if ((!tmp[0]->get_mobile()) || (user->is_admin()))
-      {
-	objs = tmp[0]->objects_in_container();
-      }
+    if(cmd[0] == 'z' && tmp[0]->get_examine()) 
+        user->send_phrase(tmp[0]->get_examine());
     else
-      {
-	objs = nil;
-      }
-    if(objs && sizeof(objs)) {
-      for(ctr = 0; ctr < sizeof(objs); ctr++) {
-        user->message("- ");
-        user->send_phrase(objs[ctr]->get_brief());
-        user->message("\n");
-      }
-    user->message("-----\n");
-    } else {
-      user->message("Nie ma nic w ");
-      user->send_phrase(tmp[0]->get_brief());
-      user->message(".\n");
+        user->send_phrase(tmp[0]->get_look());
+    if (cmd[0] == 'z' && tmp[0]->get_quality()) {
+        user->message("------\n");
+        damage = (float)tmp[0]->get_cur_durability() / (float)tmp[0]->get_durability();
+        if (damage == 1.0)
+            user->message("Jest w znakomitym stanie.\n");
+        else if (damage < 1.0 && damage >= 0.8)
+            user->message("Jest lekko porysowany.\n");
+        else if (damage < 0.8 && damage >= 0.6)
+            user->message("Jest lekko podniszczony.\n");
+        else if (damage < 0.6 && damage >= 0.4)
+            user->message("Jest uszkodzony.\n");
+        else if (damage < 0.4 && damage >= 0.2)
+            user->message("Jest mocno uszkodzony.\n");
+        else
+            user->message("Jest prawie zniszczony.\n");
     }
-    return;
-  }
-
-  tmp = find_first_objects(str, LOC_CURRENT_ROOM, LOC_INVENTORY, LOC_BODY, LOC_CURRENT_EXITS);
-  if(!tmp || !sizeof(tmp)) {
-    user->message("Nie widzisz żadnego '" + str + "'.\n");
-    return;
-  }
-
-  if(sizeof(tmp) > 1) {
-    user->message("Więcej niż jeden taki jest tutaj. "
-		  + "Sprawdziłeś pierwszy.\n\n");
-  }
-
-  if(cmd[0] == 'z' && tmp[0]->get_examine()) {
-    user->send_phrase(tmp[0]->get_examine());
-  } else {
-    user->send_phrase(tmp[0]->get_look());
-  }
-  user->message("\n");
+    user->message("\n");
 }
 
 /*
@@ -2250,6 +2263,7 @@ static void cmd_transform(object user, string cmd, string str)
     TAGD->set_tag_value(body, "Fatigue", fatigue);
     set_condition((stats["kondycja"][0] * 10) - fatigue);
     message("Zdobywasz " + gain + " sztuk miedzi.\n");
+    items[0]->damage_item(user);
 }
 
 /* Set aliases for commands. */
