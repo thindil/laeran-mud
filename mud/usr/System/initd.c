@@ -476,7 +476,7 @@ static void __co_write_rooms(object user, int* objects, int* save_zones,
                 err = catch(unq_str = obj->to_unq_text());
 
                 filesize += strlen(unq_str);
-                if (filesize > 64000) {
+                if (filesize > (status(ST_STRSIZE) - 1000)) {
                     extension ++;
                     roomfile = roomdir + "/zone" + save_zones[zone_ctr] + file_ext[extension] + ".unq";
                     filesize = strlen(unq_str);
@@ -554,7 +554,7 @@ static void __co_write_mobs(object user, int* objects, int ctr,
 
       err = catch(unq_str = obj->to_unq_text());
       filesize += strlen(unq_str);
-      if (filesize > 64000) {
+      if (filesize > (status(ST_STRSIZE) - 1000)) {
           extension ++;
           mobfile = mobsdir + "/mobiles" + extension + ".unq";
           filesize = strlen(unq_str);
@@ -610,7 +610,7 @@ static void __co_write_zones(object user, int* objects, int ctr,
         for (chunk_ctr = 0; ctr < size && chunk_ctr < SAVE_CHUNK; ctr++, chunk_ctr++) {
             unq_str = ZONED->to_unq_text(ctr);
             filesize += strlen(unq_str);
-            if (filesize > 64000) {
+            if (filesize > (status(ST_STRSIZE) - 1000)) {
                 extension ++;
                 zonefile = zonedir + "/zones" + extension + ".unq";
                 filesize = strlen(unq_str);
@@ -669,7 +669,7 @@ static void __co_write_socials(object user, string socialdir,
         for (chunk_ctr = 0; ctr < SOULD->num_socials() && chunk_ctr < SAVE_CHUNK; ctr ++, chunk_ctr ++) {
             unq_str = SOULD->to_unq_text(ctr);
             filesize += strlen(unq_str);
-            if (filesize > 64000) {
+            if (filesize > (status(ST_STRSIZE) - 1000)) {
                 extension ++;
                 socialfile = socialdir + "/socials" + extension + ".unq";
                 filesize = strlen(unq_str);
@@ -717,7 +717,7 @@ static void __co_write_quests(object user, string questdir, int filesize,
         for (chunk_ctr = 0; ctr < QUESTD->num_quests() && chunk_ctr < SAVE_CHUNK; ctr ++, chunk_ctr ++) {
             unq_str = QUESTD->to_unq_text(ctr);
             filesize += strlen(unq_str);
-            if (filesize > 64000) {
+            if (filesize > (status(ST_STRSIZE) - 1000)) {
                 extension ++;
                 questfile = questdir + "/quests" + extension + ".unq";
                 filesize = strlen(unq_str);
@@ -791,7 +791,7 @@ static void __co_write_tags(object user, int filesize, int extension, int ctr)
         for (chunk_ctr = 0; ctr < TAGD->num_tags() && chunk_ctr < SAVE_CHUNK; ctr ++, chunk_ctr ++) {
             unq_str = TAGD->to_unq_text(ctr);
             filesize += strlen(unq_str);
-            if (filesize > 64000) {
+            if (filesize > (status(ST_STRSIZE) - 1000)) {
                 extension ++;
                 tagfile = "/usr/game/tagd" + extension + ".unq";
                 filesize = strlen(unq_str);
