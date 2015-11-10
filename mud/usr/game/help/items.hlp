@@ -14,6 +14,7 @@ zamknij              Zamknij pojemnik
 zaloz                Załóż przedmiot
 zdejmij              Zdejmij noszony przedmiot
 zamien               Zamień przedmiot w pieniądze
+napraw               Napraw uszkodzone przedmioty
 
 }
 
@@ -135,7 +136,8 @@ Zobacz również: zbadaj
 
 Komenda zbadaj służy do bliższego przyjrzenia się obiektowi w poszukiwaniu
 jakiś ukrytych cech. Może być skrócona do "zb" bądź "zba". Na przykład:
-"zb drzwi".
+"zb drzwi". Dodatkowo komenda ta wyświetla informacje o tym jak bardzo
+zniszczony jest przedmiot.
 
 Zobacz również: patrz
 
@@ -177,5 +179,19 @@ w złoto".
 Możesz próbować zamienić prawie każdy przedmiot jaki znajdziesz w grze. Jednak
 najlepiej jest przemieniać ciała zabitych wrogów. Od poziomu Twojej
 umiejętności oraz tego jak niebezpieczny był przeciwnik zależy ile uda Ci się
-uzyskać sztuk miedzi.
+uzyskać miedziaków.
+}
+
+~name{naprawa,napraw,naprawianie}
+~desc{
+
+Wraz z czasem każdy używany przedmiot zaczyna się psuć. Większość z nich (ale
+nie wszystkie) można naprawić. Aby tego dokonać, potrzebujesz najpierw kupić
+narzędzia rzemieślnicze. Kiedy będziesz je już posiadać, użyj komendy "napraw
+<przedmiot>" gdzie <przedmiot> to nazwa przedmiotu, który chcesz naprawić.
+Uważaj jednak, każda naprawa zmniejsza maksymalną wytrzymałość przedmiotu,
+dlatego najlepiej jest naprawiać przedmioty kiedy są już bardzo mocno
+uszkodzone. Sam proces naprawy może uszkodzić narzędzia.
+
+Zobacz również: zbadaj
 }
