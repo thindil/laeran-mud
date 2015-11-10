@@ -1229,11 +1229,11 @@ string to_unq_flags(void) {
       ret += "  ~skill{" + skill + "}\n";
   if (quality > 0) 
       ret += "  ~quality{" + quality + "}\n";
-  if (durability < 100)
+  if (durability > 0 && durability < 100)
       ret += "  ~durability{" + durability + "}\n";
-  if (cur_durability < 100)
+  if (cur_durability > 0 && cur_durability < 100)
       ret += "  ~cur_durability{" + cur_durability + "}\n";
-  if (craft_skill != "")
+  if (craft_skill && craft_skill != "")
       ret += "  ~craft_skill{" + craft_skill + "}\n";
 
   rem = get_removed_details();
