@@ -606,12 +606,12 @@ string damage_item(object user)
 {
     int tmpquality;
 
-    if (!quality)
+    if (!this_object()->get_quality())
         return nil;
-    if (quality < 0)
-        tmpquality = quality * -1;
+    if (this_object()->get_quality() < 0)
+        tmpquality = this_object()->get_quality() * -1;
     else
-        tmpquality = quality;
+        tmpquality = this_object()->get_quality();
     if (random(100) <= tmpquality) {
         cur_durability--;
         if (cur_durability > 0)
