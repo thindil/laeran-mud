@@ -949,7 +949,8 @@ static void cmd_look(object user, string cmd, string str)
 {
     object* tmp, *objs;
     int     ctr;
-    float   damage;
+    float   damage, durability;
+    string  msg;
 
     str = STRINGD->trim_whitespace(str);
 
@@ -963,11 +964,8 @@ static void cmd_look(object user, string cmd, string str)
         return;
     }
 
-    if (cmd[0] != 'z') {
-        /* trim an initial "at" off the front of the command if the verb
-           was "look" and not "examine". */
+    if (cmd[0] != 'z') 
         sscanf(str, "na %s", str);
-    }
 
     if(sscanf(str, "w %s", str) || sscanf(str, "do srodka %s", str)
             || sscanf(str, "do %s", str) || sscanf(str, "pomiedzy %s", str)) {
@@ -980,6 +978,7 @@ static void cmd_look(object user, string cmd, string str)
         }
         if(sizeof(tmp) > 1) {
             user->message("Widzisz więcej niż jeden '" + str +"'. Musisz wybrać który.\n");
+            return;
         }
 
         if(!tmp[0]->is_container()) {
@@ -1017,30 +1016,42 @@ static void cmd_look(object user, string cmd, string str)
         return;
     }
 
-    if(sizeof(tmp) > 1) {
+    if(sizeof(tmp) > 1) 
         user->message("Więcej niż jeden taki jest tutaj. "
                 + "Sprawdziłeś pierwszy.\n\n");
-    }
 
     if(cmd[0] == 'z' && tmp[0]->get_examine()) 
         user->send_phrase(tmp[0]->get_examine());
     else
         user->send_phrase(tmp[0]->get_look());
+
     if (cmd[0] == 'z' && tmp[0]->get_quality()) {
-        user->message("\n------\n");
-        damage = (float)tmp[0]->get_cur_durability() / (float)tmp[0]->get_durability();
+        msg = "\n------\n";
+        durability = (float)tmp[0]->get_durability();
+        damage = (float)tmp[0]->get_cur_durability() / durability;
         if (damage == 1.0)
-            user->message("Jest w znakomitym stanie.\n");
+            msg += "Jest w dobrym stanie. ";
         else if (damage < 1.0 && damage >= 0.8)
-            user->message("Jest lekko porysowany.\n");
+            msg += "Jest lekko porysowany. ";
         else if (damage < 0.8 && damage >= 0.6)
-            user->message("Jest lekko podniszczony.\n");
+            msg += "Jest lekko podniszczony. ";
         else if (damage < 0.6 && damage >= 0.4)
-            user->message("Jest uszkodzony.\n");
+            msg += "Jest uszkodzony. ";
         else if (damage < 0.4 && damage >= 0.2)
-            user->message("Jest mocno uszkodzony.\n");
+            msg += "Jest mocno uszkodzony. ";
         else
-            user->message("Jest prawie zniszczony.\n");
+            msg += "Jest prawie zniszczony. ";
+        if (durability < 100.0 && durability >= 80.0)
+            msg += "Widać ślady po naprawie.";
+        else if (durability < 80.0 && durability >= 60.0)
+            msg += "Był już naprawiany kilka razy.";
+        else if (durability < 60.0 && durability >= 40.0)
+            msg += "Nosi ślady wielu napraw.";
+        else if (durability < 40.0 && durability >= 20.0)
+            msg += "Wygląda na zużyty.";
+        else
+            msg += "Przeszedł zbyt wiele napraw.";
+        user->message(msg + "\n");
     }
     user->message("\n");
 }
