@@ -29,9 +29,6 @@ string path_special(string file) {
     return nil;
   }
 
-  if(user != "System" && user != "common" && subdir == "script")
-    return INHERIT_SCRIPT_AUTO;
-
   if(user == "common") {
     return INHERIT_COMMON_AUTO;
   }

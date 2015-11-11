@@ -1,6 +1,5 @@
 /* Includable files */
 /* Note the .h on the end -- it's intentional */
-#define INHERIT_SCRIPT_AUTO "/include/phantasmal/inherit_script_auto.h"
 #define INHERIT_COMMON_AUTO "/include/phantasmal/inherit_common_auto.h"
 
 
@@ -47,7 +46,6 @@
 #define DTD_UNQABLE         "/usr/common/lib/dtd_unqable"
 #define TAGGED              "/usr/common/lib/tagged"
 #define PHRASE_REPOSITORY   "/usr/common/lib/phrase_repository"
-#define SCRIPT_AUTO         "/usr/common/lib/script_auto"
 #define COMMON_AUTO         "/usr/System/open/lib/common_auto"
 
 
