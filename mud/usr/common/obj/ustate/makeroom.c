@@ -62,6 +62,7 @@ private object obj_detail_of;
 #define SS_PROMPT_SKILL            37
 #define SS_PROMPT_CRAFT_SKILL      38
 #define SS_PROMPT_QUALITY          39
+#define SS_PROMPT_ROOM_TYPE        40
 
 
 /* Input function return values */
@@ -102,6 +103,7 @@ static int  prompt_body_locations_input(string input);
 static int  prompt_skill_input(string input);
 static int  prompt_craft_skill_input(string input);
 static int  prompt_quality_input(string input);
+static int  prompt_room_type_input(string input);
 
 private string blurb_for_substate(int substate);
 
@@ -239,6 +241,9 @@ int from_user(string input) {
     break;
   case SS_PROMPT_QUALITY:
     ret = prompt_quality_input(input);
+    break;
+  case SS_PROMPT_ROOM_TYPE:
+    ret = prompt_room_type_input(input);
     break;
   case SS_PROMPT_LOOK_DESC:
   case SS_PROMPT_EXAMINE_DESC:
@@ -511,6 +516,11 @@ private string blurb_for_substate(int substate) {
                         + "niezniszczalny obiekt.\n";
                 return "Podaj szansę na uszkodzenie się przedmiotu. Wartość oznacza procentową szansę na to, że obiekt\n"
                     + "otrzyma jedno uszkodzenie. Zero oznacza niezniszczalny obiekt.\n";
+        case SS_PROMPT_ROOM_TYPE:
+                if(new_obj && sizeof(new_obj->get_archetypes()))
+                    return "Podaj typ pokoju albo wpisz 'none' aby przyjąć wartość z archetypu. Dostępne wartości to:\n"
+                        + "zewnątrz, wnętrze, podziemia.\n";
+                return "Podaj typ pokoju. Dostępne wartości to: zewnąrz, wnętrze, podziemia.\n";
         default:
                 return "<NIEZNANY STAN>\n";
     }
@@ -982,50 +992,86 @@ static int prompt_nouns_input(string input) {
   return RET_NORMAL;
 }
 
-static int prompt_adjectives_input(string input) {
-  object PHRASE phr;
-  string adjectives;
+static int prompt_adjectives_input(string input) 
+{
+    object PHRASE phr;
+    string adjectives;
 
-  adjectives = STRINGD->trim_whitespace(input);
-  if(adjectives && adjectives != "") {
-    new_obj->add_adjective(process_words(adjectives));
-  }
+    adjectives = STRINGD->trim_whitespace(input);
+    if(adjectives && adjectives != "") 
+        new_obj->add_adjective(process_words(adjectives));
 
-  if(obj_type == OT_ROOM) {
-    new_obj->set_container(1);
-    new_obj->set_open(1);
+    if(obj_type == OT_ROOM) {
+        new_obj->set_container(1);
+        new_obj->set_open(1);
 
-    new_obj->set_weight(2000.0);    /* 2 metric tons */
-    new_obj->set_volume(1000000.0); /* Equiv of 10m cubic room */
-    new_obj->set_length(1000.0);    /* 10m -- too big to pick up */
-    new_obj->set_weight_capacity(2000000.0);   /* 2000 metric tons */
-    new_obj->set_volume_capacity(27000000.0);  /* Equiv of 30m cubic room */
-    new_obj->set_length_capacity(1500.0);      /* 15m */
+        new_obj->set_weight(2000.0);    /* 2 metric tons */
+        new_obj->set_volume(1000000.0); /* Equiv of 10m cubic room */
+        new_obj->set_length(1000.0);    /* 10m -- too big to pick up */
+        new_obj->set_weight_capacity(2000000.0);   /* 2000 metric tons */
+        new_obj->set_volume_capacity(27000000.0);  /* Equiv of 30m cubic room */
+        new_obj->set_length_capacity(1500.0);      /* 15m */
+
+        substate = SS_PROMPT_ROOM_TYPE;
+        send_string("Dobrze, teraz czas na typ pokoju\n");
+        send_string(blurb_for_substate(substate));
+    }
+
+    if(obj_type == OT_PORTABLE) {
+        substate = SS_PROMPT_WEIGHT;
+
+        send_string("Dobrze. Teraz ustalimy wagę obiektu.\n");
+        send_string(blurb_for_substate(substate));
+        return RET_NORMAL;
+    }
+
+    /* If it's not a portable or a room, it's a detail.  In that case,
+       don't bother with the weight, volume and length for this object.
+       It's part of another.  It *will* have capacities later, though,
+       if it's a container. */
+
+    substate = SS_PROMPT_CONTAINER;
+
+    push_new_state(US_ENTER_YN, "Czy obiekt jest pojemnikiem? ");
+
+    return RET_NORMAL;
+}
+
+static int prompt_room_type_input(string input)
+{
+    int value;
+
+    if(!input || STRINGD->is_whitespace(input)) {
+        send_string("Spróbujmy ponownie.\n");
+        send_string(blurb_for_substate(substate));
+
+        return RET_NORMAL;
+    }
+
+    input = STRINGD->trim_whitespace(input);
+    switch (input) {
+        case "zewnątrz":
+            value = 1;
+            break;
+        case "wewnątrz":
+            value = 2;
+            break;
+        case "podziemia":
+            value = 3;
+            break;
+        case "none":
+            value = 0;
+            break;
+        default:
+            send_string("Nie rozpocznaję typu pokoju. Spróbujmy ponownie.\n");
+            send_string(blurb_for_substate(substate));
+            return RET_NORMAL;
+    }
+    new_obj->set_room_type(value);
 
     send_string("\nUkończono pokój #" + new_obj->get_number() + ".\n");
     return RET_POP_STATE;
-  }
-
-  if(obj_type == OT_PORTABLE) {
-    substate = SS_PROMPT_WEIGHT;
-
-    send_string("Dobrze. Teraz ustalimy wagę obiektu.\n");
-    send_string(blurb_for_substate(substate));
-    return RET_NORMAL;
-  }
-
-  /* If it's not a portable or a room, it's a detail.  In that case,
-     don't bother with the weight, volume and length for this object.
-     It's part of another.  It *will* have capacities later, though,
-     if it's a container. */
-
-  substate = SS_PROMPT_CONTAINER;
-
-  push_new_state(US_ENTER_YN, "Czy obiekt jest pojemnikiem? ");
-
-  return RET_NORMAL;
 }
-
 
 static int prompt_weight_input(string input) {
   mapping units;

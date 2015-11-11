@@ -421,6 +421,23 @@ static void cmd_stat(object user, string cmd, string str) {
                 + "Maksymalna wytrzymałość obiektu wynosi: " + (string)obj->get_durability() + "\n";
         }
     }
+    if (function_object("get_room_type", obj) && obj->get_room_type()) {
+        tmp += "Typ pokoju: ";
+        switch (obj->get_room_type()) {
+            case 1:
+                tmp += "zewnętrzny\n";
+                break;
+            case 2:
+                tmp += "wewnętrzny\n";
+                break;
+            case 3:
+                tmp += "podziemia\n";
+                break;
+            default:
+                tmp += "nieznany\n";
+                break;
+        }
+    }
 
     details = obj->get_immediate_details();
     if(details && sizeof(details)) {
@@ -804,6 +821,43 @@ static void cmd_set_obj_wearlocations(object user, string cmd, string str)
 
     call_other(obj, "set_wearlocations", newvalue);
 
+    user->message("Wykonane.\n");
+}
+
+static void cmd_set_obj_room_type(object user, string cmd, string str)
+{
+    object  obj;
+    int     objnum, value;
+
+    if(!str || sscanf(str, "#%d %s", objnum, str) < 1) {
+        user->message("Użycie: " + cmd + " #<obiekt> [wartość]\n");
+        return;
+    }
+
+    if (!str)
+        str = "";
+
+    obj = MAPD->get_room_by_num(objnum);
+    if(!obj) {
+        user->message("The object must be a room or portable.  Obj #"
+                + objnum + " is not.\n");
+        return;
+    }
+    switch (str) {
+        case "zewnątrz":
+            value = 1;
+            break;
+        case "wewnątrz":
+            value = 2;
+            break;
+        case "podziemia":
+            value = 3;
+            break;
+        default:
+            value = 0;
+            break;
+    }
+    call_other(obj, "set_room_type", value);
     user->message("Wykonane.\n");
 }
 

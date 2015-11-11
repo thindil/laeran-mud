@@ -51,7 +51,7 @@ private int objflags;
    acceptable length. */
 private float weight, volume, length;
 private float weight_capacity, volume_capacity, length_capacity;
-private int damage, armor, price, hp, combat_rating, quality, durability, cur_durability;
+private int damage, armor, price, hp, combat_rating, quality, durability, cur_durability, room_type;
 private int* wearlocations;
 private string *body_locations;
 private string skill, damage_type, craft_skill;
@@ -76,7 +76,7 @@ static void create(varargs int clone) {
 
     weight = volume = length = -1.0;
     weight_capacity = volume_capacity = length_capacity = -1.0;
-    damage = armor = price = hp = combat_rating = quality = 0;
+    damage = armor = price = hp = combat_rating = quality = room_type = 0;
     wearlocations = ({ });
     body_locations = ({ });
     damage_res = ([ ]);
@@ -125,11 +125,9 @@ void destructed(int clone) {
   obj::destructed(clone);
 }
 
-void upgraded(varargs int clone) {
-  /* TODO:  ROOM should recalculate weights and volumes when
-     upgraded.  @stat might want to check the object as well. */
-
-  obj::upgraded();
+void upgraded(varargs int clone) 
+{
+    obj::upgraded();
 }
 
 
@@ -305,6 +303,14 @@ string get_craft_skill(void)
   return craft_skill;
 }
 
+int get_room_type(void)
+{
+  if(room_type < 1 && sizeof(obj::get_archetypes()))
+    return obj::get_archetypes()[0]->get_room_type();
+
+  return room_type;
+}
+
 void set_weight(float new_weight) {
   object loc;
 
@@ -471,6 +477,13 @@ void set_craft_skill(string new_craft_skill)
         error("Tylko autoryzowany kod może ustawiać umiejętność rzemieślniczą!");
 
     craft_skill = new_craft_skill;
+}
+
+void set_room_type(int new_room_type) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Tylko autoryzowany kod może ustawiać typ pokoju!");
+
+  room_type = new_room_type;
 }
 /*** Functions dealing with Exits ***/
 
@@ -1235,6 +1248,8 @@ string to_unq_flags(void) {
       ret += "  ~cur_durability{" + cur_durability + "}\n";
   if (craft_skill && craft_skill != "")
       ret += "  ~craft_skill{" + craft_skill + "}\n";
+  if (room_type)
+      ret += "  ~room_type{" + room_type + "}\n";
 
   rem = get_removed_details();
   if(rem && sizeof(rem)) {
@@ -1426,6 +1441,9 @@ void from_dtd_tag(string tag, mixed value) {
             break;
         case "craft_skill":
             craft_skill = value;
+            break;
+        case "room_type":
+            room_type = value;
             break;
         case "wearlocations":
             value = explode(value, ", ");

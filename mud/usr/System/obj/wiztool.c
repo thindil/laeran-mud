@@ -99,6 +99,7 @@ void upgraded(varargs int clone) {
     "@set_obj_wearlocations"      : ({ "cmd_set_obj_wearlocations" }),
     "@set_obj_body_locations"     : ({ "cmd_set_obj_body_locations" }),
     "@set_obj_damage_res"         : ({ "cmd_set_obj_damage_res" }),
+    "@set_obj_room_type"          : ({ "cmd_set_obj_room_type" }),
 
 	"@set_obj_weight"             : ({ "cmd_set_obj_value" }),
 	"@set_obj_volume"             : ({ "cmd_set_obj_value" }),
