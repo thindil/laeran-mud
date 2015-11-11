@@ -125,7 +125,10 @@ Zobacz również: wez, wsadz, wyjmij
 ~desc{
 
 Komenda patrz służy do przyjrzenia się bliżej przedmiotowi. Może być
-skrócona do samej litery "p". Na przykład, "p drzwi".
+skrócona do samej litery "p". Na przykład, "p drzwi". Wpisując "patrz w niebo",
+albo "p w niebo" możesz dowiedzieć się jaka jest obecnie pogoda w okolicy - pod
+warunkiem że owo "niebo" jest widoczne (np nie znajdujesz się pod ziemią albo w
+jakimś magicznym miejscu).
 
 Zobacz również: zbadaj
 
