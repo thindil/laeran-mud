@@ -34,15 +34,10 @@ static void create(varargs int clone) {
 
 void upgraded(varargs int clone) 
 {
-    int i;
-
     if(!SYSTEM() && !COMMON()) 
         return;
     set_dtd_file(ZONED_DTD);
     dtd::upgraded(clone);
-    for (i = 0; i < sizeof(zone_table); i++)
-        if (typeof(zone_table[i][2]) != T_MAPPING)
-            zone_table[i][2] = ([ "weather" : "none" ]);
 }
 
 void destructed(int clone) {
