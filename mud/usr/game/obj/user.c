@@ -2190,7 +2190,7 @@ static void cmd_quests(object user, string cmd, string str)
     message_scroll(msg);
 }
 
-/* Transform items in money. */
+/* Transform items in money or repair them. */
 static void cmd_transform(object user, string cmd, string str)
 {
     string item, target;
@@ -2198,14 +2198,14 @@ static void cmd_transform(object user, string cmd, string str)
     object *tmp, *items;
 
     if (!skills["alchemia/transformacja"]) {
-        message("Nie możesz trasnformować rzeczy ponieważ nie masz odpowiedniej umiejętności.\n");
+        message("Nie możesz transformować rzeczy ponieważ nie masz odpowiedniej umiejętności.\n");
         return;
     }
 
     if (str)
         str = STRINGD->trim_whitespace(str);
     if (!str || str == "" || sscanf(str, "%s w %s", item, target) < 2) {
-        message("Użycie: " + cmd + " <obiekt> w zloto \n");
+        message("Użycie: " + cmd + " <obiekt> w [zloto|nowy] \n");
         return;
     }
     if (sscanf(item, "%d %s", number, item) < 2) 
@@ -2216,8 +2216,8 @@ static void cmd_transform(object user, string cmd, string str)
         return;
     }
     
-    if (!target || (target != "zloto" && target != "złoto")) {
-        message("Na razie możesz przemieniać inne rzeczy tylko w złoto.\n");
+    if (!target || (target != "zloto" && target != "złoto" && target != "nowy")) {
+        message("Na razie możesz przemieniać inne rzeczy tylko w złoto bądź naprawiać.\n");
         return;
     }
 
@@ -2245,7 +2245,7 @@ static void cmd_transform(object user, string cmd, string str)
         return;
     }
     if (sizeof(tmp[number]->objects_in_container())) {
-        message("Jakieś rzeczy znajdują się jeszcze w '" + item + "'. Wyjmij je najpierw aby móc trasnformować\n" 
+        message("Jakieś rzeczy znajdują się jeszcze w '" + item + "'. Wyjmij je najpierw aby móc transformować\n" 
                 + "'" + item + "'.\n");
         return;
     }
@@ -2258,33 +2258,55 @@ static void cmd_transform(object user, string cmd, string str)
                 + "Wybierasz " + tmp[number]->get_brief()->to_string(user) + ".\n");
     }
 
-    message("Wyciągasz krędę i rysujesz na ziemi odpowiedni wzór alchemiczny.\n"
-            + "Po pewnym czasie kończysz i przykładasz ręce w odpowiednim punkcie,\n"
-            + "napełniając wzór mocą. Przez chwilę świeci on jasnym światłem a następnie\n"
-            + "znika wraz z " + item + " zamiast tego znajdujesz na ziemi monety.\n"
-            + "Szybko zbierasz je i chowasz do sakiewki.\n");
+    if (target == "zloto" || target == "złoto") {
+        message("Wyciągasz krędę i rysujesz na ziemi odpowiedni wzór alchemiczny.\n"
+                + "Po pewnym czasie kończysz i przykładasz ręce w odpowiednim punkcie,\n"
+                + "napełniając wzór mocą. Przez chwilę świeci on jasnym światłem a następnie\n"
+                + "znika wraz z " + item + " zamiast tego znajdujesz na ziemi monety.\n"
+                + "Szybko zbierasz je i chowasz do sakiewki.\n");
+        if (tmp[number]->get_combat_rating()) {
+            gain = tmp[number]->get_combat_rating();
+            if (gain > skills["alchemia/transformacja"][0])
+                gain = skills["alchemia/transformacja"][0];
+        } else
+            gain = 1;
+        body->set_price(body->get_price() + gain);
+        location->remove_from_container(tmp[number]);
+        message("Zdobywasz " + gain + " miedziaków.\n");
+    }
+    else if (target == "nowy") {
+        if (tmp[number]->get_cur_durability() == tmp[number]->get_durability()) {
+            message(item + " jest w doskonałym stanie, nie potrzebuje naprawy.\n");
+            return;
+        }
+        if (tmp[number]->get_craft_skill() == "") {
+            message("Nie można naprawiać " + item + ".\n");
+            return;
+        }
+        message("Wyciągasz kredę i rysujesz na ziemi odpowiedni wzór alchemiczny.\n"
+                + "Po pewnym czasie kończysz i przykładasz ręce w odpowiednim punkcie,\n"
+                + "napełniając wzór mocą. Przez chwilę świeci on jasnym światłem a następnie\n"
+                + "znika, zostawiając na ziemi naprawiony " + item + "\n");
+        if (random(skills["alchemia/transformacja"][0]) < (100 - tmp[number]->get_quality())) 
+            tmp[number]->set_durability(tmp[number]->get_durability() - 3);
+        else
+            tmp[number]->set_durability(tmp[number]->get_durability() - 1);
+        tmp[number]->set_cur_durability(tmp[number]->get_durability());
+        gain = 5;
+    }
+    gain_exp("alchemia/transformacja", gain);
+    gain_exp("kondycja", gain);
+    gain_exp("inteligencja", gain);
     if (TAGD->get_tag_value(body, "Fatigue"))
         fatigue = TAGD->get_tag_value(body, "Fatigue");
     else
         fatigue = 0;
-    if (tmp[number]->get_combat_rating()) {
-        gain = tmp[number]->get_combat_rating();
-        if (gain > skills["alchemia/transformacja"][0])
-            gain = skills["alchemia/transformacja"][0];
-    } else
-        gain = 1;
-    body->set_price(body->get_price() + gain);
-    location->remove_from_container(tmp[number]);
-    gain_exp("alchemia/transformacja", gain);
-    gain_exp("kondycja", gain);
-    gain_exp("inteligencja", gain);
     if (TAGD->get_tag_value(body, "Fatigue"))
         fatigue = TAGD->get_tag_value(body, "Fatigue") + 10;
     else
         fatigue = 10;
     TAGD->set_tag_value(body, "Fatigue", fatigue);
     set_condition((stats["kondycja"][0] * 10) - fatigue);
-    message("Zdobywasz " + gain + " miedziaków.\n");
     number = items[0]->damage_item(user);
     if (number == 1)
         message("Wypisujesz nieco kredę.\n");
