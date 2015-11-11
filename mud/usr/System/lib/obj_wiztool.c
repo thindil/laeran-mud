@@ -410,6 +410,8 @@ static void cmd_stat(object user, string cmd, string str) {
         tmp += "Lokacje ciała: " + implode(obj->get_body_locations(), ", ") + "\n";
     if (function_object("get_skill", obj) && strlen(obj->get_skill()))
         tmp += "Umiejętność: " + obj->get_skill() + "\n";
+    if (function_object("get_craft_skill", obj) && strlen(obj->get_craft_skill()))
+        tmp += "Umiejętność rzemieślnicza: " + obj->get_craft_skill() + "\n";
     if (function_object("get_quality", obj)) {
         if (!obj->get_quality())
             tmp += "Obiekt jest niezniszalny.\n";
