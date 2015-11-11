@@ -13,7 +13,7 @@ otworz               Otwórz pojemnik
 zamknij              Zamknij pojemnik
 zaloz                Załóż przedmiot
 zdejmij              Zdejmij noszony przedmiot
-zamien               Zamień przedmiot w pieniądze
+zamien               Zamień przedmiot w pieniądze lub napraw
 napraw               Napraw uszkodzone przedmioty
 
 }
@@ -180,6 +180,14 @@ Możesz próbować zamienić prawie każdy przedmiot jaki znajdziesz w grze. Jed
 najlepiej jest przemieniać ciała zabitych wrogów. Od poziomu Twojej
 umiejętności oraz tego jak niebezpieczny był przeciwnik zależy ile uda Ci się
 uzyskać miedziaków.
+
+Druga możliwość użycia tej komendy to naprawa przedmiotów. Aby tego dokonać
+wpisz "zamien [obiekt] w nowy". W odróżnieniu od normalnej komendy "napraw",
+obiekt naprawiany musi leżeć na ziemi. Poza tym obowiązują takie same
+ograniczenia jak w przypadku normalnej naprawy, z tym, że tutaj potrzebujesz
+tylko kredy a nie narzędzi.
+
+Zobacz również: naprawianie
 }
 
 ~name{naprawa,napraw,naprawianie}
@@ -191,7 +199,8 @@ narzędzia rzemieślnicze. Kiedy będziesz je już posiadać, użyj komendy "nap
 <przedmiot>" gdzie <przedmiot> to nazwa przedmiotu, który chcesz naprawić.
 Uważaj jednak, każda naprawa zmniejsza maksymalną wytrzymałość przedmiotu,
 dlatego najlepiej jest naprawiać przedmioty kiedy są już bardzo mocno
-uszkodzone. Sam proces naprawy może uszkodzić narzędzia.
+uszkodzone. Sam proces naprawy może uszkodzić narzędzia. Możesz również
+naprawiać przedmioty przy użyciu komendy "zamien".
 
-Zobacz również: zbadaj
+Zobacz również: zbadaj, zamien
 }
