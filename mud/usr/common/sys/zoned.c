@@ -11,18 +11,12 @@
 
 inherit dtd DTD_UNQABLE;
 
-
-/* Zone Attributes */
-#define ZONE_ATTR_VOLATILE         1
-
-
 /* Prototypes */
 void upgraded(varargs int clone);
 void set_segment_zone(int segment, int zonenum);
 
 mixed*  zone_table;
 mapping segment_map;
-int     player_zone;
 
 static void create(varargs int clone) {
   if(clone)
@@ -32,18 +26,23 @@ static void create(varargs int clone) {
 
   if(!find_object(UNQ_DTD)) compile_object(UNQ_DTD);
 
-  zone_table = ({ ({ "Unzoned", ([ ]), 0 }) });
+  zone_table = ({ ({ "Unzoned", ([ ]), ([ "weather": "none" ]) }) });
   segment_map = ([ ]);
-  player_zone = -1;
 
   upgraded();
 }
 
-void upgraded(varargs int clone) {
-  if(SYSTEM() || COMMON()) {
+void upgraded(varargs int clone) 
+{
+    int i;
+
+    if(!SYSTEM() && !COMMON()) 
+        return;
     set_dtd_file(ZONED_DTD);
     dtd::upgraded(clone);
-  }
+    for (i = 0; i < sizeof(zone_table); i++)
+        if (typeof(zone_table[i][2]) != T_MAPPING)
+            zone_table[i][2] = ([ "weather" : "none" ]);
 }
 
 void destructed(int clone) {
@@ -69,6 +68,20 @@ void init_from_file(string file) {
 
 /******* Functions for DTD_UNQABLE *************************/
 
+string serialize_list(mapping value)
+{
+    int i;
+    string result;
+    string *indices;
+
+    indices = map_indices(value);
+    result = "";
+    for (i = 0; i < sizeof(indices); i++)
+        result += indices[i] + ":" + value[indices[i]] + ", ";
+
+    return result;
+}
+
 string to_unq_text(int number)
 {
     string zonetmp;
@@ -79,9 +92,10 @@ string to_unq_text(int number)
     if (number < sizeof(zone_table)) {
         zonetmp = "~zone{\n"
                 + "     ~zonenum{" + number + "}\n"
-                + "     ~name{" + zone_table[number][0] + "}\n"
-                + "     ~attributes{" + zone_table[number][2] + "}\n"
-                + "}\n";
+                + "     ~name{" + zone_table[number][0] + "}\n";
+        if (map_sizeof(zone_table[number][2]))
+            zonetmp += "     ~attributes{" + serialize_list(zone_table[number][2]) + "}\n";
+        zonetmp += "}\n";
         return zonetmp;
     }
     else
@@ -106,37 +120,47 @@ string get_parse_error_stack(void) {
   return ::get_parse_error_stack();
 }
 
-void from_dtd_unq(mixed* unq) {
-  mixed *zones, *segment_unq;
-  int segnum,zonenum;
-  string zonename;
+void from_dtd_unq(mixed* unq) 
+{
+    mixed *zones, *segment_unq;
+    int segnum, zonenum, i;
+    string zonename;
+    string *pairs, *pair;
+    mixed *ctr;
+    mapping attributes;
 
-  mixed *ctr;
+    if(!SYSTEM() && !COMMON() && !GAME())
+        error("Calling ZoneD:from_dtd_unq unprivileged!");
 
-  if(!SYSTEM() && !COMMON() && !GAME())
-    error("Calling ZoneD:from_dtd_unq unprivileged!");
-
-  ctr = unq;
-  while (sizeof(ctr) > 0) {
-      switch (ctr[0]) {
-          case "zone":
-            segment_unq = ctr[1];
-            zonenum = segment_unq[0][1];
-            zonename = segment_unq[1][1];
-            if (zonename != "Unzoned")
-                zone_table += ({ ({ zonename, ([ ]), 0 }) });
-            break;
-          case "segment":
-            segment_unq = ctr[1];
-            segnum = segment_unq[0][1];
-            zonenum = segment_unq[1][1];
-            set_segment_zone(segnum, zonenum);
-            break;
-          default:
-            break;
-      }
-      ctr = ctr[2..];
-  }
+    ctr = unq;
+    while (sizeof(ctr) > 0) {
+        switch (ctr[0]) {
+            case "zone":
+                segment_unq = ctr[1];
+                zonenum = segment_unq[0][1];
+                zonename = segment_unq[1][1];
+                attributes = ([ ]);
+                if (sizeof(segment_unq) > 2) {
+                    pairs = explode(segment_unq[2][1], ", ");
+                    for (i = 0; i < sizeof(pairs); i++) {
+                        pair = explode(pairs[i], ":");
+                        attributes[pair[0]] = pair[1];
+                    }
+                } 
+                if (zonename != "Unzoned")
+                    zone_table += ({ ({ zonename, ([ ]), attributes }) });
+                break;
+            case "segment":
+                segment_unq = ctr[1];
+                segnum = segment_unq[0][1];
+                zonenum = segment_unq[1][1];
+                set_segment_zone(segnum, zonenum);
+                break;
+            default:
+                break;
+        }
+        ctr = ctr[2..];
+    }
 }
 
 /******* Regular ZONED functions ***************************/
@@ -211,7 +235,7 @@ int add_new_zone( string zonename ){
 
   if (zonename && zonename != ""){
     int zonenum;
-    zone_table += ({ ({ zonename, ([ ]), 0 }) });
+    zone_table += ({ ({ zonename, ([ ]), ([ "weather": "none" ]) }) });
 
     return num_zones()-1;
   } else {
@@ -219,45 +243,18 @@ int add_new_zone( string zonename ){
   }
 }
 
-int is_zone_volatile(int zonenum) {
-  if(!SYSTEM() && !COMMON() && !GAME())
-    return -1;
+string get_weather(int zonenum)
+{
+    if(!SYSTEM() && !COMMON() && !GAME())
+        return nil;
 
-  if(zonenum < 0 || zonenum > sizeof(zone_table))
-    error("Invalid zone number passed to ZoneD:is_zone_volatile!");
-
-  if(zone_table[zonenum][2] & ZONE_ATTR_VOLATILE)
-    return 1;
-
-  return 0;
+    return zone_table[zonenum][2]["weather"];
 }
 
-int get_player_zone(void) {
-  if(!SYSTEM() && !COMMON() && !GAME())
-    return -1;
+void set_weather(int zonenum, string value)
+{
+    if(!SYSTEM() && !COMMON() && !GAME())
+        return;
 
-  if(player_zone < 0)
-    return -1;
-
-  return player_zone;
-}
-
-void set_player_zone(int zonenum) {
-  if(!SYSTEM() && !COMMON() && !GAME())
-    return;
-
-  if(zonenum < 0 || zonenum > sizeof(zone_table))
-    error("Invalid zone number passed to ZoneD:set_player_zone!");
-
-  if(player_zone >= 0) {
-    /* Set former player zone as non-volatile */
-    zone_table[player_zone][2] &= ~ZONE_ATTR_VOLATILE;
-  }
-
-  player_zone = zonenum;
-
-  if(player_zone >= 0) {
-    /* Set new player zone as volatile */
-    zone_table[player_zone][2] |= ZONE_ATTR_VOLATILE;
-  }
+    zone_table[zonenum][2]["weather"] = value;
 }

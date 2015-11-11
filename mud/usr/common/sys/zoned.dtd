@@ -3,6 +3,6 @@
   ~segment{segnum,zonenum}
   ~segnum{int}
   ~zonenum{int}
-  ~attributes{int}
+  ~attributes{string}
   ~name{string}
 }
