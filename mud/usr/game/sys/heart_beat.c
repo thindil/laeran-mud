@@ -20,19 +20,54 @@ void set_up_heart_beat(void)
     }
 }
 
-/* delete dropped objects, add packages to postman */
+/* delete dropped objects, add packages to postman, change weather for zones */
 void heart_beat_clear(void)
 {
     int *rooms, *mobiles;
-    int i, packages;
+    int i, packages, roll, j;
     object obj;
     mixed tag;
+    string weather;
+    string *weathers;
+    object *users;
 
     if(previous_program() != TIMED)
         return;
     rooms = ({ });
-    for(i = 0; i < ZONED->num_zones(); i++)
+    weathers = ({ "clear", "overcast", "rain" });
+    users = users();
+    for(i = 0; i < ZONED->num_zones(); i++) {
         rooms += MAPD->rooms_in_zone(i);
+        weather = ZONED->get_attribute(i, "weather");
+        if (weather != "none" && random(100) > 50) {
+            roll = random(sizeof(weathers));
+            if (weather != weathers[roll]) {
+                weather = weathers[roll];
+                ZONED->set_attribute(i, "weather", weather);
+                for (j = 0; j < sizeof(users); j++) {
+                    if (ZONED->get_zone_for_room(users[j]->get_location()) != i)
+                        continue;
+                    if (users[j]->get_location()->get_room_type() == 1
+                            || users[j]->get_location()->get_room_type() == 2) {
+                        switch (weather) {
+                            case "clear":
+                                users[j]->message("Przejaśnia się.\n");
+                                break;
+                            case "overcast":
+                                users[j]->message("Zbierają się chmury.\n");
+                                break;
+                            case "rain":
+                                users[j]->message("Zaczyna padać.\n");
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }   
+            }
+        }
+    }
+
     for (i = 0; i < sizeof(rooms); i++) {
         obj = MAPD->get_room_by_num(rooms[i]);
         tag = TAGD->get_tag_value(obj, "DropTime");
@@ -42,6 +77,7 @@ void heart_beat_clear(void)
             destruct_object(obj);
         }
     }
+
     mobiles = MOBILED->all_mobiles();
     for (i = 0; i < sizeof(mobiles); i++) {
         obj = MOBILED->get_mobile_by_num(mobiles[i]);

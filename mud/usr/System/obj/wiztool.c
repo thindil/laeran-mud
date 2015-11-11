@@ -165,6 +165,7 @@ void upgraded(varargs int clone) {
 	"@set_seg_zone"        : ({ "cmd_set_segment_zone" }),
 	"@zonemap"             : ({ "cmd_zone_map" }),
     "@new_zone"            : ({ "cmd_new_zone" }),
+    "@set_zone_weather"    : ({ "cmd_set_zone_attribute" }),
 
 	"%od_report"           : ({ "cmd_od_report" }),
 	"%list_dest"           : ({ "cmd_list_dest" }),

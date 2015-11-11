@@ -1269,3 +1269,47 @@ static void cmd_list_quests(object user, string cmd, string str)
 
     user->message_scroll(msg);
 }
+
+static void cmd_set_zone_attribute(object user, string cmd, string str) 
+{
+    string attribute, value, new_value;
+    int number;
+
+    number = -1;
+    if (str)
+        str = STRINGD->trim_whitespace(str);
+    if (!str || str == "" || sscanf(str, "#%d %s", number, value) < 1) {
+        user->message("Użycie: " + cmd + " #<numer strefy> <wartość>\n");
+        return;
+    }
+    if (sscanf(cmd, "%*s_%*s_%s", attribute) < 1) {
+        error("Coś poszło nie tak!");
+    }
+
+    if (number < 0 || number > ZONED->num_zones()) {
+        user->message("Nieprawiłowy numer strefy!\n");
+        return;
+    }
+
+    if (attribute == "weather") {
+        switch (value) {
+            case "brak":
+                new_value = "none";
+                break;
+            case "pogodnie":
+                new_value = "clear";
+                break;
+            case "pochmurno":
+                new_value = "overcast";
+                break;
+            case "deszcz":
+                new_value = "rain";
+                break;
+            default:
+                user->message("Nieznana wartość pogody: " + value + "\n");
+                return;
+        }
+    }
+    ZONED->set_attribute(number, attribute, new_value);
+    user->message("Ustawiono.\n");
+}

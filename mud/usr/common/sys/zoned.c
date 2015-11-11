@@ -71,8 +71,11 @@ string serialize_list(mapping value)
 
     indices = map_indices(value);
     result = "";
-    for (i = 0; i < sizeof(indices); i++)
-        result += indices[i] + ":" + value[indices[i]] + ", ";
+    for (i = 0; i < sizeof(indices); i++) {
+        result += indices[i] + ":" + value[indices[i]];
+        if ((i + 1) < sizeof(indices))
+            result += ", ";
+    }
 
     return result;
 }
@@ -134,7 +137,7 @@ void from_dtd_unq(mixed* unq)
                 segment_unq = ctr[1];
                 zonenum = segment_unq[0][1];
                 zonename = segment_unq[1][1];
-                attributes = ([ ]);
+                attributes = ([ "weather": "none" ]);
                 if (sizeof(segment_unq) > 2) {
                     pairs = explode(segment_unq[2][1], ", ");
                     for (i = 0; i < sizeof(pairs); i++) {
@@ -238,18 +241,18 @@ int add_new_zone( string zonename ){
   }
 }
 
-string get_weather(int zonenum)
+string get_attribute(int zonenum, string attribute)
 {
     if(!SYSTEM() && !COMMON() && !GAME())
         return nil;
 
-    return zone_table[zonenum][2]["weather"];
+    return zone_table[zonenum][2][attribute];
 }
 
-void set_weather(int zonenum, string value)
+void set_attribute(int zonenum, string attribute, string value)
 {
     if(!SYSTEM() && !COMMON() && !GAME())
         return;
 
-    zone_table[zonenum][2]["weather"] = value;
+    zone_table[zonenum][2][attribute] = value;
 }
