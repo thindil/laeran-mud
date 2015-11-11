@@ -11,7 +11,7 @@ string parser;
 static void create(varargs int clone) {
   parser = read_file("/usr/common/obj/unq_parser.dpd", 0, status(ST_STRSIZE) - 1);
   if(strlen(parser) > status(ST_STRSIZE) - 3) {
-    error("Parser description too big loading file in unq_parser::create!");
+    error("Opis parsera w zbyt dużym pliku do załadowania w unq_parser::create!");
   }
 }
 
@@ -23,16 +23,16 @@ mixed* basic_unq_parse(string block) {
     tmp = parse_string(parser, block);
     /* -- Tentatively changed this to just log if tmp == nil. */
     if (tmp == nil) {
-      LOGD->write_syslog("Warning: parse_string() returned nil "
-			 + "in basic_unq_parse()", LOG_WARN);
+      LOGD->write_syslog("Ostrzeżenie: parse_string() zwróciło nil "
+			 + "w basic_unq_parse()", LOG_WARN);
       return nil;
     }
   } : {
     if (block == nil) {
-      LOGD->write_syslog("Error: no block passed to basic_unq_parse",
+      LOGD->write_syslog("Błąd: nie przekazano bloku do basic_unq_parse",
 			 LOG_WARN);
     } else {
-      LOGD->write_syslog("Error parsing block: " + block, LOG_WARN);
+      LOGD->write_syslog("Błąd w parsowaniu bloku: " + block, LOG_WARN);
     }
     return nil;
   }
@@ -49,21 +49,21 @@ mixed* unq_parse_with_dtd(string block, object dtd, varargs string filename) {
   unq = basic_unq_parse(block);
   if(!unq) {
     if(filename) {
-      error ("Can't tokenize/match file '" + filename
-	     + "' as UNQ in UNQ_PARSER::unq_parse_with_dtd!");
+      error ("Nie mogę przypisać pliku '" + filename
+	     + "' jako UNQ w UNQ_PARSER::unq_parse_with_dtd!");
     } else {
-      error ("Can't tokenize/match as UNQ in UNQ_PARSER::unq_parse_with_dtd!");
+      error ("Nie mogę przypisać jako UNQ w UNQ_PARSER::unq_parse_with_dtd!");
     }
   }
 
   struct = dtd->parse_to_dtd(unq);
   if(!struct) {
     if(filename) {
-      error("*** UNQ from file '" + filename
-	    + "' doesn't fit DTD in unq_parse_with_dtd:\n"
+      error("*** UNQ z pliku '" + filename
+	    + "' nie pasuje do wzoru DTD w unq_parse_with_dtd:\n"
 	    + dtd->get_parse_error_stack());
     } else {
-      error("*** UNQ input doesn't fit DTD in unq_parse_with_dtd:\n"
+      error("*** UNQ z wejścia nie pasuje do wzoruin DTD w unq_parse_with_dtd:\n"
 	    + dtd->get_parse_error_stack());
     }
   }
@@ -155,7 +155,7 @@ private mixed do_backslash_escaping(mixed tmp) {
     return tmp;
   }
 
-  error("Unrecognized type " + typeof(tmp) + " in do_backslash_escaping!");
+  error("Nierozpoznany typ " + typeof(tmp) + " w do_backslash_escaping!");
 }
 
 
@@ -167,7 +167,7 @@ mixed* trim_empty_tags(mixed* unq) {
   ret = ({ });
 
   if(sizeof(unq) % 2)
-    error("Odd-sized UNQ array passed to trim_empty_tags: "
+    error("Tablica UNQ parzystego rozmariu została przekazana do trim_empty_tags: "
 	  + STRINGD->mixed_sprint(unq));
 
   for(ctr = 0; ctr < sizeof(unq); ctr += 2) {
@@ -201,9 +201,9 @@ static mixed* anon_tag(mixed* tokens) {
 
   size = sizeof(tokens);
   if(size < 3) {
-    error("Incorrect-sized array passed to anon_tag!");
+    error("Tablica nieprawidłowego rozmaru została przekazana do anon_tag!");
   } else if (size == 3) {
-    error("Should never happen?");
+    error("Nie powinno się nigdy wydarzyć?");
     return ({ "", tokens[1] });
   } else if (size == 4 && tokens[2] == nil) {
     /* Previous was string returned by simple_anon_tag */
@@ -240,9 +240,9 @@ static mixed* named_tag(mixed* tokens) {
   tag_name = tokens[1];
 
   if(size < 5) {
-    error("Incorrect-sized array passed to named_tag!");
+    error("Nieprawidłowego rozmiaru tablica została przekazana do named_tag!");
   } else if(size == 5) {
-    error("Should never happen? [2]");
+    error("Nie powinno się nigdy wydarzyć? [2]");
     return ({ tag_name, tokens[3] });
   } else if (size == 6 && tokens[3] == nil) {
     /* Previous was string returned by simple_anon_tag */
@@ -265,7 +265,7 @@ static mixed* concat_strings(mixed* tokens) {
     if(typeof(tokens[ctr] == T_STRING)) {
       tmp += tokens[ctr];
     } else {
-      error("Unknown type concatenating strings");
+      error("Nieprawidłowy typ dla łączenia łańcuchów");
     }
   }
 

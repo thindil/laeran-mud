@@ -69,20 +69,20 @@ void telnet_sb(int option, string str) {
   switch(option) {
   case TELOPT_NAWS:
     if(strlen(str) != 4) {
-      LOGD->write_syslog("Unexpected format for TELOPT_NAWS response!",
+      LOGD->write_syslog("Niespodziewany format odpowiedzi dla TELOPT_NAWS!",
 			 LOG_WARN);
       return;
     }
     width = str[0] * 256 + str[1];
     height = str[2] * 256 + str[3];
 
-    LOGD->write_syslog("Setting window h/w to " + height + "," + width
-		       + " from TELOPT_NAWS", LOG_VERBOSE);
+    LOGD->write_syslog("Ustawianie w/s okna na h/w " + height + "," + width
+		       + " z TELOPT_NAWS", LOG_VERBOSE);
     previous_object()->naws_window_size(width, height);
     break;
   case TELOPT_TTYPE:
     if(str[0] != TELOPT_TTYPE_IS) {
-      LOGD->write_syslog("Received invalid TELOPT_TTYPE request!", LOG_WARN);
+      LOGD->write_syslog("Otrzymano nieprawidłowe żądanie TELOPT_TTYPE!", LOG_WARN);
       return;
     }
 

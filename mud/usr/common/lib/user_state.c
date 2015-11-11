@@ -29,7 +29,7 @@ void set_up_func(mixed params...) {
 
 void init(object new_user, object new_next_state) {
   if(previous_program() != SYSTEM_USER_IO)
-    error("Use push_new_state and pop_state functions for user states!");
+    error("Użyj funkcji push_new_state i pop_state dla stanów użytkownika!");
 
   user = new_user;
   next_state = new_next_state;
@@ -40,7 +40,7 @@ static object get_user(void) {
 }
 
 int from_user(string input) {
-  error("Implement from_user!");
+  error("Zaimplementuj from_user!");
 }
 
 void to_user(string output) {

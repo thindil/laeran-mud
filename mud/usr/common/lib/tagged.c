@@ -14,7 +14,7 @@ nomask mixed get_tag(string tag_name) {
   if(previous_program() == TAGD) {
     return tags[tag_name];
   }
-  error("Only TagD can directly get tag values!");
+  error("Tylko TagD może bezpośrednio brać wartości tagów!");
 }
 
 nomask mixed* get_all_tags(void) {
@@ -23,7 +23,7 @@ nomask mixed* get_all_tags(void) {
   int     ctr;
 
   if(previous_program() != TAGD)
-    error("Only TagD can directly get tag values!");
+    error("Tylko TagD może bezpośrednio brać wartości tagów!");
 
   ret = ({ });
   tag_names = map_indices(tags);
@@ -38,5 +38,5 @@ nomask void set_tag(string tag_name, mixed value) {
   if(previous_program() == TAGD)
     tags[tag_name] = value;
   else
-    error("Only TagD can directly get tag values!");
+    error("Tylko TagD może bezpośrednio ustawiać wartości tagów!");
 }

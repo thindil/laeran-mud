@@ -39,7 +39,7 @@ string as_markup(int markup_type) {
   case MARKUP_XML:
     return as_xml();
   default:
-    error("Illegal markup type in as_markup!");
+    error("Nieznany typ markup w as_markup!");
   }
 }
 
