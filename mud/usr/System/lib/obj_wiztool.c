@@ -370,7 +370,7 @@ static void cmd_stat(object user, string cmd, string str) {
             tmp += "Obiekt można nosić.\n";
             tmp += "Lokacje ciała: ";
             wlocationsnum = obj->get_wearlocations();
-            wlocations = ({"głowa", "tułów", "ręce", "dłonie", "nogi", "prawa dłoń", "lewa dłoń" });
+            wlocations = ({"głowa", "tułów", "ręce", "dłonie", "nogi", "prawa dłoń", "lewa dłoń", "plecy", "prawy pas", "lewy pas"});
             for (ctr = 0; ctr < sizeof(wlocationsnum); ctr++)
             {
                 tmp += wlocations[wlocationsnum[ctr]] + " ";
@@ -806,6 +806,15 @@ static void cmd_set_obj_wearlocations(object user, string cmd, string str)
             break;
         case "lewa dłoń":
             newvalue += ({6});
+            break;
+        case "plecy":
+            newvalue += ({7});
+            break;
+        case "prawy pas":
+            newvalue += ({8});
+            break;
+        case "lewy pas":
+            newvalue += ({9});
             break;
         default:
             break;

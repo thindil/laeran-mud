@@ -456,9 +456,9 @@ private string blurb_for_substate(int substate) {
                 if(new_obj && sizeof(new_obj->get_archetypes()))
                     return "Wprowadź lokację (lub lokacje, oddzielone przecinkami) na które można założyć dany obiekt, "
                         + " albo wpisz 'none' \n aby przyjąć wartości z archetypu.\n"
-                        + "Dostępne lokacje to: tułów, ręce, nogi, głowa, dłonie, prawa dłoń, lewa dłoń\n";
+                        + "Dostępne lokacje to: tułów, ręce, nogi, głowa, dłonie, prawa dłoń, lewa dłoń, plecy, prawy pas, lewy pas\n";
                 return "Wprowadź lokację (lub lokacje, oddzielone przecinkami) na które można założyć dany obiekt.\n"
-                    + "Dostępne lokacje to: tułów, ręce, nogi, głowa, dłonie, prawa dłoń, lewa dłoń\n";
+                    + "Dostępne lokacje to: tułów, ręce, nogi, głowa, dłonie, prawa dłoń, lewa dłoń, plecy prawy pas, lewy pas\n";
         case SS_PROMPT_ARMOR:
                 if(new_obj && sizeof(new_obj->get_archetypes()))
                     return "Wprowadź wartość zbroi przedmiotu, czyli ile obrażeń potrafi "
@@ -1768,6 +1768,15 @@ static int prompt_wlocation_input(string input)
       break;
     case "lewa dłoń":
       locations += ({6});
+      break;
+    case "plecy":
+      locations += ({7});
+      break;
+    case "prawy pas":
+      locations += ({8});
+      break;
+    case "lewy pas":
+      locations += ({9});
       break;
 	case "none":
 	  locations = nil;
