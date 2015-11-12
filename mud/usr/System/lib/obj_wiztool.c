@@ -356,6 +356,15 @@ static void cmd_stat(object user, string cmd, string str) {
             + " mobków.\n\n";
     }
 
+    if (function_object("num_exits", obj)) {
+        if (obj->num_exits()) {
+            tmp += "Posiada [" + obj->num_exits() + "] wyjść: ";
+            for (ctr = 0; ctr < obj->num_exits(); ctr++)
+                tmp += "#" + obj->get_exit_num(ctr)->get_number() + " ";
+            tmp += "\n\n";
+        }
+    }
+
     if (function_object("get_damage", obj))
         tmp += "Zadaje " + (string)obj->get_damage() + " obrażeń.\n";
     if (function_object("get_damage_type", obj))
