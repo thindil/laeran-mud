@@ -612,11 +612,17 @@ void set_wearable(int value) {
   set_flags(OF_WEARABLE, value);
 }
 
-void set_dressed(int value) {
-  if(!SYSTEM() && !COMMON() && !GAME())
-    error("Tylko autoryzowany kod może ustawiać obiekt jako założony!");
+void set_dressed(int value) 
+{
 
-  set_flags(OF_DRESSED, value);
+    if(!SYSTEM() && !COMMON() && !GAME())
+        error("Tylko autoryzowany kod może ustawiać obiekt jako założony!");
+
+    set_flags(OF_DRESSED, value);
+    if (value)  
+        obj::get_location()->set_current_volume(obj::get_location()->get_current_volume() - get_volume());
+    else 
+        obj::get_location()->set_current_volume(obj::get_location()->get_current_volume() + get_volume());
 }
 
 /*

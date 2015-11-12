@@ -337,7 +337,8 @@ void player_login(int first_time)
         volume = 0.0;
         for (i = 0; i < sizeof(inv); i++) {
             weight += inv[i]->get_weight();
-            volume += inv[i]->get_volume();
+            if (!inv[i]->is_dressed())
+                volume += inv[i]->get_volume();
         }
         body->set_current_volume(volume);
         body->set_current_weight(weight);
