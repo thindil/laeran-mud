@@ -221,7 +221,7 @@ static void cmd_look(object user, string cmd, string str)
                 msg = "";
                 break;
         }
-        msg += WORLDD->get_hour();
+        msg += WORLDD->get_hour() + WORLDD->get_date();
         user->message(msg + "\n");
         return;
     }

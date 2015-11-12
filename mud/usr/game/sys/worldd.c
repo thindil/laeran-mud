@@ -8,7 +8,7 @@
 void upgraded(varargs int clone);
 
 /* Data for world */
-int hour, minutes;
+int hour, minutes, day, month, year;
 
 static void create(varargs int clone)
 {
@@ -17,6 +17,9 @@ static void create(varargs int clone)
 
     hour = 0;
     minutes = 0;
+    day = 1;
+    month = 1;
+    year = 1;
     upgraded();
 }
 
@@ -48,8 +51,18 @@ void set_time(int add_hour, int add_minutes)
         hour++;
         minutes -= 60;
     }
-    if (hour >= 24)
+    if (hour >= 24) {
         hour = 0;
+        day++;
+        if (day == 31) {
+            day = 1;
+            month++;
+        }
+        if (month == 13) {
+            month = 1;
+            year++;
+        }
+    }
 
     msg = "";
     if (hour == 6 && !minutes)
@@ -83,4 +96,15 @@ string get_hour(void)
         return "Południe. ";
     else
         return "Godzina" + (string)(hour - 12) + " po południu. ";
+}
+
+string get_date(void)
+{
+    string *months;
+
+    months = ({ "stycznia", "lutego", "marca", "kwietnia", "maja", "czerwca", "lipca",
+            "sieprnia", "września", "października", "listopada", "grudzienia" });
+
+    return "Jest " + day + " " + months[(month - 1)] + " roku " + year + ".";
+
 }
