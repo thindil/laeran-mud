@@ -279,70 +279,75 @@ nomask int receive_message(string str)
  * NAME:	show_room_to_player()
  * DESCRIPTION:	give room desc to current player
  */
-static void show_room_to_player(object ROOM location) {
-  string tmp;
-  object PHRASE phr;
-  int    ctr;
-  mixed* objs;
+static void show_room_to_player(object ROOM location) 
+{
+    string tmp;
+    object PHRASE phr;
+    int    ctr;
+    mixed* objs;
 
-  if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only privileged code may call show_room_to_player!");
+    if(!SYSTEM() && !COMMON() && !GAME())
+        error("Only privileged code may call show_room_to_player!");
 
-  if(!location) {
-    send_system_phrase("you are nowhere");
-    message("\n");
-    return;
-  }
-
-  phr = location->get_brief();
-  if(phr)
-    tmp = phr->to_string(this_object());
-  if(tmp) {
-    message(tmp);
-    if(is_admin())
-      message(" [" + location->get_number() + "]");
-    message("\n");
-  } else {
-    send_system_phrase("(unnamed location)");
-    message("\n");
-  }
-
-  phr = location->get_look();
-  tmp = phr ? phr->to_string(this_object()) : nil;
-  if(tmp) {
-    message(tmp);
-    message("\n");
-  } else {
-    send_system_phrase("(no room desc)");
-    message("\n");
-  }
-
-  message("*****\n");
-
-  objs = location->objects_in_container();
-  for(ctr = 0; ctr < sizeof(objs); ctr++) {
-    if(objs[ctr] != body) {
-      message("- ");
-      send_phrase(objs[ctr]->get_brief());
-      message("\n");
+    if(!location) {
+        send_system_phrase("you are nowhere");
+        message("\n");
+        return;
     }
-  }
 
-  message("\n");
-  if(location->num_exits()) {
-    message("Wyjścia: \n");
-    for(ctr = 0; ctr < location->num_exits(); ctr++) {
-      object exit;
-
-      exit = location->get_exit_num(ctr);
-      phr = EXITD->get_name_for_dir(exit->get_direction());
-      tmp = "- " + phr->to_string(this_object()) + ": ";
-      phr = exit->get_destination()->get_brief();
-      tmp += phr->to_string(this_object()) + "\n";
-      message(tmp);
+    phr = location->get_brief();
+    if(phr)
+        tmp = phr->to_string(this_object());
+    if(tmp) {
+        message(tmp);
+        if(is_admin())
+            message(" [" + location->get_number() + "]");
+        message("\n");
+    } else {
+        send_system_phrase("(unnamed location)");
+        message("\n");
     }
+
+    phr = location->get_look();
+    tmp = phr ? phr->to_string(this_object()) : nil;
+    if(tmp) {
+        message(tmp);
+        message("\n");
+    } else {
+        send_system_phrase("(no room desc)");
+        message("\n");
+    }
+
+    message("*****\n");
+
+    objs = location->objects_in_container();
+    for(ctr = 0; ctr < sizeof(objs); ctr++) {
+        if(objs[ctr] != body) {
+            message("- ");
+            send_phrase(objs[ctr]->get_brief());
+            message("\n");
+        }
+    }
+
     message("\n");
-  }
+    if(location->num_exits()) {
+        message("Wyjścia: \n");
+        for(ctr = 0; ctr < location->num_exits(); ctr++) {
+            object exit;
+
+            exit = location->get_exit_num(ctr);
+            phr = EXITD->get_name_for_dir(exit->get_direction());
+            tmp = "- " + phr->to_string(this_object()) + ": ";
+            phr = exit->get_destination()->get_brief();
+            tmp += phr->to_string(this_object());
+            if (!exit->is_open())
+                tmp += " [Zamknięte]";
+            if (exit->is_locked())
+                tmp += " [Zablokowane]";
+            message(tmp + "\n");
+        }
+        message("\n");
+    }
 }
 
 
