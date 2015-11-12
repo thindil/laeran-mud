@@ -21,6 +21,8 @@
 #define QUEST_DIR              "/usr/game/object/quests"
 #define SAFE_QUEST_DIR         "/usr/game/object/safe_quests"
 #define QUESTD                 "/usr/game/sys/questd"
+#define WORLDD                 "/usr/game/sys/worldd"
+#define WORLD_DATA             "/usr/game/object/world.dat"
 
 #define START_ROOM             100
 #define LOCKER_ROOM            1

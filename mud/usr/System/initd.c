@@ -830,6 +830,8 @@ static void __co_write_banned(object user)
         write_file("/usr/game/text/bans.txt", bans);
     }
 
+    WORLDD->save_world_data();
+
     /* This is the callback from %shutdown or %reboot or whatever,
        it's the function to call after all data has successfully
        been saved. */

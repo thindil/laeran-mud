@@ -209,22 +209,21 @@ static void cmd_look(object user, string cmd, string str)
         ctr = ZONED->get_zone_for_room(user->get_location());
         switch (ZONED->get_attribute(ctr, "weather")) {
             case "clear":
-                msg = "Jest pogodnie.\n";
+                msg = "Jest pogodnie. ";
                 break;
             case "overcast":
-                msg = "Niebo jest zachmurzone.\n";
+                msg = "Niebo jest zachmurzone. ";
                 break;
             case "rain":
-                msg = "Pada deszcz.\n";
+                msg = "Pada deszcz. ";
                 break;
             default:
                 msg = "";
                 break;
         }
-        if (strlen(msg)) {
-            user->message(msg);
-            return;
-        }
+        msg += WORLDD->get_hour();
+        user->message(msg + "\n");
+        return;
     }
 
     if (cmd[0] != 'z') 

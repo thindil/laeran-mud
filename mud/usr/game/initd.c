@@ -46,6 +46,11 @@ static void create(void) {
       compile_object(QUESTD);
   read_object_dir(QUEST_DIR, 4);
 
+  /* Load world data into WORLDD */
+  if (!find_object(WORLDD))
+      compile_object(WORLDD);
+  WORLDD->load_world_data();
+
   /* Set up heart_beat functions */
   if(!find_object(HEART_BEAT))
       compile_object(HEART_BEAT);

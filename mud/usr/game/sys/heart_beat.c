@@ -100,6 +100,7 @@ void heart_beat_func(void)
 
     if (previous_program() != TIMED)
         return;
+
     mobiles = MOBILED->all_mobiles();
     for (i = 0; i < sizeof(mobiles); i++) {
         mobile = MOBILED->get_mobile_by_num(mobiles[i]);
@@ -165,6 +166,8 @@ void heart_beat_func(void)
         if (mobile->get_type() == "wander" && !TAGD->get_tag_value(mobile->get_body(), "Combat"))
             mobile->random_move();
     }
+
+    WORLDD->set_time(0, 30);
 }
 
 void heart_beat_save(void)
