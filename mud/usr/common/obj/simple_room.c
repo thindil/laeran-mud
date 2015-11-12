@@ -14,8 +14,8 @@ static void create(varargs int clone) {
   room::create(clone);
   unq::create(clone);
   if(clone) {
-    bdesc = PHR("a room");
-    ldesc = PHR("You see a room here.");
+    bdesc = PHR("Pokój");
+    ldesc = PHR("Widzisz pokój tutaj.");
     edesc = nil;
 
     MAPD->add_room_object(this_object());
@@ -52,19 +52,19 @@ void from_dtd_unq(mixed* unq) {
   mixed  dtd_tag_val;
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Can't call from_dtd_unq unprivileged!");
+    error("Nie możesz wywoływać from_dtd_unq bez uprawnień!");
 
   if(unq[0] != "object")
-    error("Doesn't look like object data!");
+    error("Nie wygląda jak dane obiektu!");
 
   for (ctr = 0; ctr < sizeof(unq[1]); ctr++) {
     dtd_tag_name = unq[1][ctr][0];
     dtd_tag_val  = unq[1][ctr][1];
 
     if(dtd_tag_name == "data") {
-      error("Simple_room should not have a data field!"
-	    + "  Did you forget an obj_type{} field in some "
-	    + "other type of room?");
+      error("Simple_room nie powinien posiadać pola data!"
+	    + "  Czyżbyś zapomniał pola obj_type{} w jakimś "
+	    + "innym typie pokoju?");
     } else {
       from_dtd_tag(dtd_tag_name, dtd_tag_val);
     }

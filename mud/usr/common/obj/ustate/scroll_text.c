@@ -27,7 +27,7 @@ static void pop_state(void) {
 
 string get_text(void) {
   if(previous_program() != US_SCROLL_TEXT)
-    error("Only scrollstates can call get_text!");
+    error("Tylko scrollstates mogą wywoływać get_text!");
 
   if(is_clone) return nil;
   return text[previous_object()];
@@ -35,9 +35,9 @@ string get_text(void) {
 
 void set_text(string newtext) {
   if(previous_program() != US_SCROLL_TEXT)
-    error("Only scrollstates can call set_text!");
+    error("Tylko scrollstates mogą wywoływać set_text!");
 
-  if(is_clone) error("Can't set text of a clone!");
+  if(is_clone) error("Nie mogę ustawoć tekstu dla klonu!");
   text[previous_object()] = newtext;
 }
 
@@ -45,7 +45,7 @@ void append_text(string newtext) {
   string tmp;
 
   if(previous_program() != US_SCROLL_TEXT)
-    error("Only scrollstates can call append_text!");
+    error("Tylko scrollstates mogą wywoływać append_text!");
 
   tmp = text[previous_object()];
   if(!tmp) tmp = "";
@@ -61,7 +61,7 @@ static void scroll_page(void) {
   text = call_other(US_SCROLL_TEXT, "get_text");
 
   if(!text) {
-    LOGD->write_syslog("No text found in US_SCROLL_TEXT:scroll_page!",
+    LOGD->write_syslog("Nie znaleziono tekstu w US_SCROLL_TEXT:scroll_page!",
 		       LOG_ERROR);
     return;
   }

@@ -35,7 +35,7 @@ mixed index(int ind) {
 }
 
 void set_index(int ind, mixed value) {
-  if(ind < 0) error("heavy_array: Can't set negative index!");
+  if(ind < 0) error("heavy_array: Nie można ustawić ujemnego indeksu!");
   if(ind >= size) {
     val += allocate(ind - size + 1);
     size = ind + 1;

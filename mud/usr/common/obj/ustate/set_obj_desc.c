@@ -25,7 +25,7 @@ void set_up_func(varargs object obj, string desctype, int desc_loc) {
 }
 
 int from_user(string output) {
-  error("From_user called in set_obj_desc func!");
+  error("From_user wywołane w funkcji set_obj_desc!");
 }
 
 void pass_data(mixed data) {
@@ -38,7 +38,7 @@ void pass_data(mixed data) {
   }
 
   if(!typeof(data) == T_STRING) {
-    error("Incorrect data type in set_obj_desc user state!");
+    error("Nieprawidłowy typ danych w stanie użytkownika set_obj_desc!");
   }
 
   data = STRINGD->trim_whitespace(data);
@@ -50,7 +50,7 @@ void pass_data(mixed data) {
   }
   phr->from_unq(data);
 
-  send_string("Set " + func_name + " description.\n");
+  send_string("Ustawiono opis " + func_name + ".\n");
 
   pop_state();
 }

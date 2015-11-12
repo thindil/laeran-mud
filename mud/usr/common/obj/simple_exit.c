@@ -43,7 +43,7 @@ void from_dtd_unq(mixed* unq) {
   int ctr;
 
   if(unq[0] != "newexit")
-    error("Doesn't look like exit data!");
+    error("Nie wygląda jak dane dla wyjścia!");
 
   for (ctr = 0; ctr < sizeof(unq[1]); ctr++) {
     from_dtd_tag(unq[1][ctr][0], unq[1][ctr][1]);
@@ -55,10 +55,10 @@ void from_dtd_unq(mixed* unq) {
  */
 private string is_open_cont() {
   if (!is_container()) {
-    return "That object isn't a container!";
+    return "Obiekt nie jest pojemnikiem!";
   }
   if (!is_open()) {
-    return "That object isn't open!";
+    return "Obiekt nie jest otwarty!";
   }
   return nil;
 }

@@ -83,7 +83,7 @@ private int     set_up_fields_mapping(mapping fields, string label);
 */
 mixed is_builtin(string label) {
   if(is_clone)
-    error("Call is_builtin only on shared issue of unq_dtd!");
+    error("Wywołuj is_builtin tylko na głównym obiekcie unq_dtd!");
 
   return builtins[label];
 }
@@ -112,30 +112,30 @@ string serialize_to_dtd(mixed* unq) {
   accum_error = "";
 
   if(sizeof(unq) % 2) {
-    accum_error += "Odd-sized UNQ chunk passed to serialize_to_dtd!\n";
+    accum_error += "Parzysty rozmiar UNQ przekazany do serialize_to_dtd!\n";
     return nil;
   }
 
   while(sizeof(unq) > 0) {
     if(sizeof(unq) == 1) {
-      accum_error += "Internal error (odd chunk-size) in serialize_to_dtd!\n";
+      accum_error += "Wewnętrzny błąd (dziwny rozmiar danych) w serialize_to_dtd!\n";
       return nil;
     }
 
     if(!unq[0]) {
-      accum_error += "Label (nil) passed to serialize_to_dtd!";
+      accum_error += "Etykieta (nil) przekazana do serialize_to_dtd!";
       return nil;
     }
 
     if(dtd[unq[0]]) {
       data = serialize_to_dtd_type(unq[0], unq[1], 0);
       if(!data) {
-	accum_error += "Error on label '" + unq[0] + "'.\n";
+	accum_error += "Błąd w etykiecie '" + unq[0] + "'.\n";
 	return nil;
       }
       ret += data;
     } else {
-      accum_error += "Unrecognized type '" + unq[0] + "'.\n";
+      accum_error += "Nierozpoznany typ '" + unq[0] + "'.\n";
       return nil;
     }
 
@@ -162,7 +162,7 @@ private string serialize_to_dtd_type(string label, mixed unq,
     tmp = indent_spaces(indent) + "~" + label + "{" + tmp + "}\n";
   }
   if(!tmp) {
-    accum_error += "Couldn't serialize as type " + implode(dtd[label], "")
+    accum_error += "Nie można szeregować " + implode(dtd[label], "")
       + "\n";
     return nil;
   }
@@ -178,7 +178,7 @@ private string serialize_to_string_with_mods(mixed* type, mixed unq, int indent)
   int repmin, repmax;
 
   if(sizeof(type) != 1 && sizeof(type) != 2)
-    error("Illegal type given to serialize_to_string_with_mods!");
+    error("Niedozwolony typ podany w serialize_to_string_with_mods!");
 
   if(sizeof(type) == 1) {
     if(UNQ_DTD->is_builtin(type[0]))
@@ -187,8 +187,8 @@ private string serialize_to_string_with_mods(mixed* type, mixed unq, int indent)
     if(dtd[type[0]])
       return serialize_to_dtd_type(type[0], unq, indent);
 
-    accum_error += "Unrecognized type '" + type[0]
-      + "' in serialize_to_string_with_mods!\n";
+    accum_error += "Nierozpoznany typ '" + type[0]
+      + "' w serialize_to_string_with_mods!\n";
     return nil;
   }
 
@@ -206,7 +206,7 @@ private string serialize_to_string_with_mods(mixed* type, mixed unq, int indent)
   } else if (sscanf(type[1], "<%d>", repmin) == 1) {
     repmax = repmin;
   } else {
-    accum_error += "Unrecognized type modifier " + type[1] + "!\n";
+    accum_error += "Nierozpoznany modyfikator typu " + type[1] + "!\n";
     return nil;
   }
 
@@ -215,7 +215,7 @@ private string serialize_to_string_with_mods(mixed* type, mixed unq, int indent)
     return unq;
   }
   if(typeof(unq) != T_ARRAY) {
-    accum_error += "Unreasonable type serializing UNQ as "
+    accum_error += "Niemożliwy do szeregowania typ UQ jako UNQ "
       + implode(type, ",") + "!\n";
     return nil;
   }
@@ -223,7 +223,7 @@ private string serialize_to_string_with_mods(mixed* type, mixed unq, int indent)
   /* Multiple entries */
   /* First, check to see that the number of entries is reasonable */
   if (sizeof(unq) < repmin || sizeof(unq) > repmax) {
-    accum_error += "Number of entries doesn't fit + mod\n";
+    accum_error += "Liczba wpisów nie pasuje do modyfikatora +\n";
     return nil;
   }
 
@@ -234,7 +234,7 @@ private string serialize_to_string_with_mods(mixed* type, mixed unq, int indent)
     is_struct = 1;
   } else {
     accum_error += "Type '" + type[0]
-      + "' doesn't seem to be struct or builtin!\n";
+      + "' nie wygląda na strukturę bądź wbudowany typ!\n";
     return nil;
   }
 
@@ -269,7 +269,7 @@ private string serialize_to_dtd_struct(string label, mixed unq,
   ret = indent_spaces(indent) + "~" + label + "{\n";
   type = dtd[label];
   if(!type || type[0] != "struct") {
-    accum_error += "Non-struct passed to serialize_to_dtd_struct!\n";
+    accum_error += "Nie struktura przekazana do serialize_to_dtd_struct!\n";
     return nil;
   }
 
@@ -287,8 +287,8 @@ private string serialize_to_dtd_struct(string label, mixed unq,
 
     if(sizeof(type) != 2
        || !UNQ_DTD->is_builtin(type[1][0])) {
-      accum_error += "Can't serialize struct '" + label + "' from '"
-	+ unq + "' (type " + typeof(unq) + ").\n";
+      accum_error += "Nie mogę szeregować struktury '" + label + "' z '"
+	+ unq + "' (typ " + typeof(unq) + ").\n";
       return nil;
     }
 
@@ -307,15 +307,15 @@ private string serialize_to_dtd_struct(string label, mixed unq,
     string tmp;
 
     if(!fields[unq[ctr][0]]) {
-      accum_error += "Unrecognized field '" + STRINGD->mixed_sprint(unq[ctr])
-	+ "' at offset " + ctr + ".\n";
+      accum_error += "Nie rozpoznane pole '" + STRINGD->mixed_sprint(unq[ctr])
+	+ "' na indeksie " + ctr + ".\n";
       return nil;
     }
 
     tmp = serialize_to_dtd_type(unq[ctr][0], unq[ctr][1],
 				indent + INDENT_LEVEL);
     if(!tmp) {
-      accum_error += "Error writing field '" + unq[ctr][0] + "' of struct.\n";
+      accum_error += "Błąd przy zapisywaniu pola '" + unq[ctr][0] + "' w strukturze.\n";
       return nil;
     }
     /* ret += indent_spaces(indent) + "~" + unq[ctr][0] + tmp + "\n"; */
@@ -330,7 +330,7 @@ private string serialize_to_dtd_struct(string label, mixed unq,
 private string serialize_to_builtin(string type, mixed unq, int indent) {
   if(type == "string") {
     if(typeof(unq) != T_STRING) {
-      accum_error += "Type " + typeof(unq) + " is not a string!\n";
+      accum_error += "Typ " + typeof(unq) + " nie jest string!\n";
       return nil;
     }
     return "{" + unq + "}";
@@ -338,7 +338,7 @@ private string serialize_to_builtin(string type, mixed unq, int indent) {
 
   if(type == "int") {
     if(typeof(unq) != T_INT) {
-      accum_error += "Type " + typeof(unq) + " is not an int!\n";
+      accum_error += "Typ " + typeof(unq) + " nie jest int!\n";
       return nil;
     }
     return "{" + unq + "}";
@@ -346,7 +346,7 @@ private string serialize_to_builtin(string type, mixed unq, int indent) {
 
   if(type == "float") {
     if(typeof(unq) != T_FLOAT) {
-      accum_error += "Type " + typeof(unq) + " is not a float!\n";
+      accum_error += "Typ " + typeof(unq) + " nie jest float!\n";
     }
     return "{" + unq + "}";
   }
@@ -364,10 +364,10 @@ private string serialize_to_builtin(string type, mixed unq, int indent) {
        || typeof(unq) == T_FLOAT)
       return "{" + unq + "}";
 
-    error("Can't yet serialize arbitrary UNQ, implement now!");
+    error("Nie mogę jeszcze szeregować UNQ, zaimplementuj mnie!");
   }
 
-  accum_error += "Don't recognize type " + type + " serializing builtins!\n";
+  accum_error += "Nie rozpoznaję typu " + type + " w szeregowaniu do wbudowanych!\n";
   return nil;
 }
 
@@ -387,22 +387,22 @@ mixed* parse_to_dtd(mixed* unq) {
   unq = UNQ_PARSER->trim_empty_tags(unq);
 
   write_log("============================================================");
-  write_log("Parsing to DTD: '" + STRINGD->mixed_sprint(unq) + "'\n-----");
+  write_log("Parsowanie do DTD: '" + STRINGD->mixed_sprint(unq) + "'\n-----");
 
   for(ctr = 0; ctr < sizeof(unq); ctr+=2) {
     label = STRINGD->trim_whitespace(unq[ctr]);
     if(dtd[label]) {
       data = parse_to_dtd_type(label, unq[ctr + 1]);
       if(data == nil) {
-	accum_error += "Mismatch on label '" + label + "'\n";
+	accum_error += "Pomyłka przy etykiecie '" + label + "'\n";
 	return nil;
       }
-      write_log("Finished parsing type '" + label + "'.");
+      write_log("Zakończono parsowanie typu '" + label + "'.");
       ret += data;
       continue;
     }
 
-    accum_error += "Don't recognize label '" + label + "' in DTD.\n";
+    accum_error += "Nie rozpoznaję etykiety '" + label + "' w DTD.\n";
     return nil;
   }
 
@@ -426,11 +426,11 @@ private mixed* parse_to_dtd_type(string label, mixed unq) {
     unq = UNQ_PARSER->trim_empty_tags(unq);
   }
 
-  write_log("Parsing to DTD type '" + label + "'");
+  write_log("Parsowanie do DTD typu '" + label + "'");
 
   type = dtd[label];
   if(typeof(type) != T_ARRAY && typeof(type) != T_STRING)
-    error("Invalid type in DTD in parse_to_dtd_type!");
+    error("Nieprawidłowy typ w DTD w parse_to_dtd_type!");
 
   /* If it's a struct */
   if(type[0] == "struct") {
@@ -442,8 +442,8 @@ private mixed* parse_to_dtd_type(string label, mixed unq) {
   tmp = parse_to_string_with_mods(type, unq);
 
   if(tmp == nil) {
-    accum_error += "Couldn't parse " + STRINGD->mixed_sprint(unq)
-      + " as type " + implode(type,"") + "\n";
+    accum_error += "Nie można sparsować " + STRINGD->mixed_sprint(unq)
+      + " jako typu " + implode(type,"") + "\n";
     return nil;
   }
   return ({ label, tmp });
@@ -457,7 +457,7 @@ private mixed parse_to_string_with_mods(mixed* type, mixed unq) {
   int repmin, repmax;
 
   if(sizeof(type) != 1 && sizeof(type) != 2)
-    error("Illegal type given to parse_to_string_with_mods!");
+    error("Niedozwolony typ podany do parse_to_string_with_mods!");
 
   if(unq == nil)
     return nil;
@@ -469,8 +469,8 @@ private mixed parse_to_string_with_mods(mixed* type, mixed unq) {
     if(dtd[type[0]])
       return parse_to_dtd_type(type[0], unq);
 
-    accum_error += "Unrecognized type '" + type[0]
-      + "' in parse_to_string_with_mods!\n";
+    accum_error += "Nierozpoznany typ '" + type[0]
+      + "' w parse_to_string_with_mods!\n";
     return nil;
   }
 
@@ -490,7 +490,7 @@ private mixed parse_to_string_with_mods(mixed* type, mixed unq) {
   } else if (sscanf(type[1], "<%d>", repmin) == 1) {
     repmax = repmin;
   } else {
-    accum_error += "Unrecognized type modifier " + type[1] + "!\n";
+    accum_error += "Nierozpoznany modyfikator typu " + type[1] + "!\n";
     return nil;
   }
 
@@ -508,15 +508,15 @@ private mixed parse_to_string_with_mods(mixed* type, mixed unq) {
       if(repmin <= 1 && repmax >= 1)
 	return ({ tmp });
       else {
-	accum_error += "Number of entries doesn't fit " + type[1]
-	  + " modifier\n";
+	accum_error += "Liczba danych nie pasuje do " + type[1]
+	  + " modyfikatora\n";
 	return nil;
       }
     }
 
     if(typeof(unq) != T_ARRAY) {
       /* Not a string and not an array.  Error! */
-      error("Unreasonable type parsing UNQ!");
+      error("Bezsensowny typ parsowany w UNQ!");
     }
 
     /* Okay, multiple entries -- typeof(unq) is T_ARRAY */
@@ -526,7 +526,7 @@ private mixed parse_to_string_with_mods(mixed* type, mixed unq) {
       mixed tmp;
 
       if(!STRINGD->is_whitespace(unq[ctr])) {
-	accum_error += "Labelled data found parsing "
+	accum_error += "Oznaczone dane znalezione podczas parsowania "
 	  + type[0] + type[1] + "!\n";
 	return nil;
       }
@@ -538,8 +538,7 @@ private mixed parse_to_string_with_mods(mixed* type, mixed unq) {
     }
 
     if (sizeof(ret) < repmin || sizeof(ret) > repmax) {
-      accum_error += "Number of entries doesn't fit " + type[1]
-	+ " modifier\n";
+      accum_error += "Liczba danych nie pasuje do modyfikatora " + type[1] + "\n";
       return nil;
     }
 
@@ -547,7 +546,7 @@ private mixed parse_to_string_with_mods(mixed* type, mixed unq) {
   }
 
   accum_error
-    += "Don't yet support modifier characters on non-builtin types!\n";
+    += "Nie ma wsparcia jeszcze dla modyfikatorów dla nie-wbudowanych typów!\n";
   return nil;
 }
 
@@ -558,7 +557,7 @@ private mixed parse_to_builtin(string type, mixed unq) {
   string err;
 
   if(!UNQ_DTD->is_builtin(type))
-    error("Type " + type + " isn't builtin in parse_to_builtin!");
+    error("Typ " + type + " nie jest wbudowany w parse_to_builtin!");
 
   /* Nil won't parse as anything -- save some checking code below */
   if(unq == nil)
@@ -566,7 +565,7 @@ private mixed parse_to_builtin(string type, mixed unq) {
 
   if(type == "string") {
     if(typeof(unq) != T_STRING) {
-      accum_error += "Type " + typeof(unq) + " is not a string\n";
+      accum_error += "Typ " + typeof(unq) + " nie jest string\n";
       return nil;
     }
     return STRINGD->trim_whitespace(unq);
@@ -576,13 +575,13 @@ private mixed parse_to_builtin(string type, mixed unq) {
     int val;
 
     if(typeof(unq) != T_STRING) {
-      accum_error += "Type " + typeof(unq)
-	+ " is not a string while parsing int\n";
+      accum_error += "Typ " + typeof(unq)
+	+ " nie jest string kiedy parsowano int\n";
       return nil;
     }
     unq = STRINGD->trim_whitespace(unq);
     if(!sscanf(unq, "%d", val)) {
-      accum_error += unq + " is not an integer.\n";
+      accum_error += unq + " nie jest int.\n";
       return nil;
     }
 
@@ -593,13 +592,13 @@ private mixed parse_to_builtin(string type, mixed unq) {
     float val;
 
     if(typeof(unq) != T_STRING) {
-      accum_error += "Type " + typeof(unq)
-	+ " is not a string while parsing float\n";
+      accum_error += "Typ " + typeof(unq)
+	+ " nie jest string kiedy parsowano float\n";
       return nil;
     }
 
     if(!sscanf(unq, "%f", val)) {
-      accum_error += unq + " is not a float.\n";
+      accum_error += unq + " nie jest float.\n";
       return nil;
     }
 
@@ -613,7 +612,7 @@ private mixed parse_to_builtin(string type, mixed unq) {
       return PHRASED->new_simple_english_phrase(unq);
 
     if(typeof(unq) != T_ARRAY)
-      error("Don't recognized parsed UNQ object in parse_to_builtin(phrase)!");
+      error("Nie rozpoznany obiekt UNQ w parse_to_builtin(phrase)!");
 
     err = catch(tmp = PHRASED->unq_to_phrase(unq));
 
@@ -631,19 +630,19 @@ private mixed parse_to_builtin(string type, mixed unq) {
     }
 
     if(typeof(unq) != T_ARRAY) {
-      accum_error += "Builtin 'unq' object is not an array or string!\n";
+      accum_error += "Wbudowany obiekt 'unq' nie jest array lub string!\n";
       return nil;
     }
 
     if(sizeof(unq) % 2) {
-      accum_error += "Builtin 'unq' array is not a multiple of 2!\n";
+      accum_error += "Wbudowana tablica 'unq' nie ma indeksy podzielnego przez 2!\n";
       return nil;
     }
 
     return unq;
   }
 
-  error("Builtins array modified without modifying parse_to_builtin!");
+  error("Wbudowana tablica zmodyfikowana bez modyfikacji parse_to_builtin!");
 }
 
 /* Parse_to_dtd_struct assumes some input preprocessing -- label is
@@ -664,12 +663,12 @@ private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
   int     bucket_count;
   int     repmin, repmax;
 
-  write_log("Parsing to dtd struct '" + t_label + "', arg: '"
+  write_log("Przekazywanie do struktury dtd '" + t_label + "', arg: '"
 	    + STRINGD->mixed_sprint(unq) + "'");
 
   type = dtd[t_label];
   if(type[0] != "struct")
-    error("Non-struct passed to parse_to_dtd_struct!");
+    error("Nie struktura przekazana do parse_to_dtd_struct!");
 
   if(typeof(unq) == T_STRING
      || (sizeof(type) == 2
@@ -677,16 +676,16 @@ private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
     /* Hrm.  The struct had better consist of a single built-in field
        in this case. */
     if(sizeof(type) > 2) {
-      accum_error += "The string '" + unq
-	+ "' cannot be parsed as multiple fields for struct '" + t_label
+      accum_error += "Łańcuch '" + unq
+	+ "' nie może być sparsowany jako wielokrotne pola dla struktury '" + t_label
 	+ "'.\n";
       return nil;
     }
 
     if(!UNQ_DTD->is_builtin(type[1][0])) {
-      accum_error += "The string '" + unq
-	+ "' cannot be parsed as non-builtin field '" + type[1][0]
-	+ "' of DTD struct '" + t_label + "'\n";
+      accum_error += "Łańcuch '" + unq
+	+ "' nie może być sparsowany jako nie wbudowane pole '" + type[1][0]
+	+ "' struktury DTD '" + t_label + "'\n";
       return nil;
     }
 
@@ -704,8 +703,8 @@ private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
   /* Write fields mapping to log file */
   /* Re-use instance tracker variable for this */
   instance_tracker = map_indices(fields);
-  write_log("Fields array for " + t_label + " struct, " + bucket_count
-	    + " buckets.");
+  write_log("Tablica pól dla struktury " + t_label + ", " + bucket_count
+	    + " wiader.");
   for(ctr = 0; ctr < sizeof(instance_tracker); ++ctr) {
     write_log(fields[instance_tracker[ctr]][0] + " - "
 	      + instance_tracker[ctr]);
@@ -729,8 +728,8 @@ private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
 
     match_label = label = STRINGD->trim_whitespace(unq[ctr]);
     if (fields[match_label] == nil) {
-      accum_error += "Unrecognized field " + (label ? label : "(nil)")
-	+ " in structure\n";
+      accum_error += "Nierozpoznane pole " + (label ? label : "(nil)")
+	+ " w strukturze\n";
       return nil;
     }
 
@@ -740,15 +739,15 @@ private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
     }
 
     if (match_label == nil) {
-      accum_error += "Unrecognized field " + label + " in structure\n";
+      accum_error += "Nierozpoznane pole " + label + " w strukturze\n";
       return nil;
     }
     index = fields[match_label][0];
 
     tmp = parse_to_dtd_type(label, unq[ctr + 1]);
     if(tmp == nil) {
-      accum_error += "Error parsing label '" + label
-	+ "' of structure '" + t_label + "'.\n";
+      accum_error += "Błąd przy parsowaniu etykiety '" + label
+	+ "' struktury '" + t_label + "'.\n";
       return nil;
     }
     instance_tracker[index] += ({ tmp });
@@ -778,7 +777,7 @@ private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
     } else if (sscanf(vals[ctr][1], "<%d>", repmin) == 1) {
       repmax = repmin;
     } else {
-      accum_error += "Unrecognized type modifier " + vals[ctr][1] + "!\n";
+      accum_error += "Nierozpoznany modyfikator typu " + vals[ctr][1] + "!\n";
       return nil;
     }
 
@@ -792,21 +791,21 @@ private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
       for (ctr2 = 0; ctr2 < sizeof(types); ctr2++) {
 	/* Compare instance-tracker bucket numbers */
 	if (fields[types[ctr2]][0] == vals[ctr][0]) {
-	  accum_error += "Wrong # of fields of type '"
-	    + types[ctr2] + "' in struct '" + t_label + "'.  " + num
-	    + " given, between " + repmin + " and "
-	    + (repmax == INT_MAX ? "an infinite number": repmax)
-	    + " required.\n";
+	  accum_error += "Zły # pól typu '"
+	    + types[ctr2] + "' w strukturze '" + t_label + "'.  " + num
+	    + " podany, pomiędzy " + repmin + " i "
+	    + (repmax == INT_MAX ? "nieskończoność": repmax)
+	    + " wymagany.\n";
 	  return nil;
 	}
       }
 
-      accum_error += "Wrong # of fields in instance bucket #"
+      accum_error += "Zły # pól w instacji wiadra #"
 	+ STRINGD->mixed_sprint(vals[ctr][0])
-	+ "(unknown) in struct '" + t_label + "'.  "
-	+ num + " given, between " + repmin + " and "
-	+ (repmax == INT_MAX ? "an infinite number": repmax)
-	+ " required.\n";
+	+ "(nieznany) w strukturze '" + t_label + "'.  "
+	+ num + " podany, pomiędzy " + repmin + " i "
+	+ (repmax == INT_MAX ? "nieskończoność": repmax)
+	+ " wymagany.\n";
 	  return nil;
     }
   }
@@ -829,12 +828,12 @@ void load(string new_dtd) {
   string import;
 
   if(!is_clone)
-    error("Can't use non-clone UNQ DTD!  Stop it!");
+    error("Nie mogę używać niesklonowanego UNQ DTD! Zatrzymanie!");
 
   new_unq = UNQ_PARSER->basic_unq_parse(new_dtd);
 
   if(!new_unq)
-    error("Can't parse UNQ data passed to unq_dtd:load!");
+    error("Nie mogę parsować danych UNQ podanych do unq_dtd:load!");
 
   new_unq = UNQ_PARSER->trim_empty_tags(new_unq);
 
@@ -843,7 +842,7 @@ void load(string new_dtd) {
     if (STRINGD->stricmp(str, "dtd") == 0) {
       /* parse DTD */
       if (typeof(new_unq[ctr2 + 1]) != T_ARRAY) {
-	error("This doesn't look complex enough to be a real DTD!");
+	error("Nie wygląda dostatecznie skomplikowanie aby być prawdziwym DTD!");
       }
 
       new_unq[ctr2+1] = UNQ_PARSER->trim_empty_tags(new_unq[ctr2+1]);
@@ -854,19 +853,19 @@ void load(string new_dtd) {
     } else if (STRINGD->stricmp(str, "import") == 0) {
       /* import another file */
       if (typeof(new_unq[ctr2 + 1]) != T_STRING) {
-	error ("Filename must be a string in import!");
+	error ("Nazwa pliku musi być string w import!");
       }
 
       import = read_file(new_unq[ctr2 + 1]);
 
       if (import == nil) {
-	error("Could not load file " + new_unq[ctr + 1]);
+	error("Nie mozna załadować pliku " + new_unq[ctr + 1]);
       }
       
       /* recusively call load */
       load(import);
     } else {
-      error("Unknown tag type: " + new_unq[ctr2]);
+      error("Nieznany typ tagu: " + new_unq[ctr2]);
     }
   }
 }
@@ -881,7 +880,7 @@ private void new_dtd_element(string label, mixed data) {
   }
 
   if(dtd[label] || label == "struct" || UNQ_DTD->is_builtin(label))
-    error("Redefining label " + label + " in UNQ DTD!");
+    error("Ponowna definicja etykiety " + label + " w UNQ DTD!");
 
   if(typeof(data) == T_STRING) {
     data = STRINGD->trim_whitespace(data);
@@ -894,24 +893,24 @@ private void new_dtd_element(string label, mixed data) {
 	/* Mark down the inheritance relationship */
 	base_type[label] = inh;
       } else {
-	error("Base type " + inh + " not defined when parsing " + label);
+	error("Bazowy typ " + inh + " nie zdefiniowany kiedy parsowano " + label);
       }
     }
 
     return;
   } else if (typeof(data) == T_ARRAY) {
     if (sizeof(data) != 0) {
-      error("complex subtypes not yet supported!");
+      error("rozbudowane subtype jeszcze nie są wspierane!");
     } else {
       if (inh != nil) {
 	/* add types allowed for base type of the derived type */
 	dtd[label] = dtd[inh];
       } else {
-	error("Base type " + inh + " not defined when parsing " + label);
+	error("Bazowy typ " + inh + " nie zdefiniowany kiedy parsowano " + label);
       }
     }
   } else {
-    error("Type error -- problem with UNQ parser?");
+    error("Błąd typu -- problem z parserem UNQ?");
   }
 }
 
@@ -920,7 +919,7 @@ private mixed* dtd_string_with_mods(string str) {
 
   str = STRINGD->trim_whitespace(str);
   if(str == nil)
-    error("Nil passed to dtd_string_with_mods!");
+    error("Nil przekazany do dtd_string_with_mods!");
 
   if(STRINGD->is_ident(str))
     return ({ str });
@@ -935,7 +934,7 @@ private mixed* dtd_string_with_mods(string str) {
   if(mod == "?" || mod == "*" || mod == "+")
     return ({ str, mod });
 
-  error("Can't recognize modifiers in modified UNQ type '" + str + "'");
+  error("Nie mogę rozpoznać modyfikatorów typu w UNQ '" + str + "'");
 }
 
 private mixed* dtd_struct(string* array) {
@@ -995,7 +994,7 @@ private int set_up_fields_mapping(mapping fields, string label) {
 	fields[type[ctr][0]] = ({ count - 1, type[ctr][1] });
       }
     } else {
-      error("Unknown type in DTD struct type!");
+      error("Nieznany typ w strukturze DTD!");
     }
   }
 
