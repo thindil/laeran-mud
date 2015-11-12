@@ -21,15 +21,15 @@ void upgraded(varargs int clone)
 {
 }
 
-string get_type(void) {
-  return "wander";
+string get_type(void) 
+{
+    return "wander";
 }
 
 void random_move(void)
 {
     int    num_ex, ctr;
     object exit, dest;
-    string reason;
 
     if (TAGD->get_tag_value(this_object()->get_body(), "Combat"))
         return;
@@ -52,9 +52,7 @@ void random_move(void)
         if (ZONED->get_zone_for_room(dest) != ZONED->get_zone_for_room(location))
             return;
 
-        reason = this_object()->move(dir);
-        if(reason)
-            error(reason);
+        this_object()->move(dir);
     }
 }
 
