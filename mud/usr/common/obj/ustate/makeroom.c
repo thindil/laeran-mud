@@ -2028,22 +2028,20 @@ static int prompt_body_locations_input(string input)
 
 static int prompt_skill_input(string input)
 {
-  if (input = "none")
-    {
-      input = "";
-    }
-  new_obj->set_skill(input);
+    if (input == "none")
+        input = "";
+    new_obj->set_skill(input);
 
-  send_string("Zaakceptowano umiejętność.\n\n");
-  substate = SS_PROMPT_CRAFT_SKILL;
-  send_string(blurb_for_substate(substate));
+    send_string("Zaakceptowano umiejętność.\n\n");
+    substate = SS_PROMPT_CRAFT_SKILL;
+    send_string(blurb_for_substate(substate));
 
-  return RET_NORMAL;
+    return RET_NORMAL;
 }
 
 static int prompt_craft_skill_input(string input)
 {
-    if (input = "none")
+    if (input == "none")
         input = "";
     new_obj->set_craft_skill(input);
 
