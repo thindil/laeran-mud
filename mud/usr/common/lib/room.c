@@ -485,6 +485,20 @@ void set_room_type(int new_room_type) {
 
   room_type = new_room_type;
 }
+
+void set_current_volume(float new_current_volume) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Tylko autoryzowany kod może ustawiać obecną objętość!");
+
+  current_volume = new_current_volume;
+}
+
+void set_current_weight(float new_current_weight) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Tylko autoryzowany kod może ustawiać obecny ciężar!");
+
+  current_weight = new_current_weight;
+}
 /*** Functions dealing with Exits ***/
 
 void clear_exits(void) {
@@ -902,18 +916,19 @@ void put(object mover, object movee, object old_env) {
    need to explicitly override it.  If we did, we'd get double-count
    on weight and volume added that way */
 
-void append_to_container(object obj) {
-  float obj_weight, obj_volume;
+void append_to_container(object obj) 
+{
+    float obj_weight, obj_volume;
 
-  obj_weight = obj->get_weight();
-  if(obj_weight >= 0.0)
-    current_weight += obj_weight;
+    obj_weight = obj->get_weight();
+    if(obj_weight >= 0.0)
+        current_weight += obj_weight;
 
-  obj_volume = obj->get_volume();
-  if(obj_volume >= 0.0)
-    current_volume += obj_volume;
+    obj_volume = obj->get_volume();
+    if(obj_volume >= 0.0)
+        current_volume += obj_volume;
 
-  obj::append_to_container(obj);
+    obj::append_to_container(obj);
 }
 
 

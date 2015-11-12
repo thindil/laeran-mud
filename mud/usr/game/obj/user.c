@@ -190,6 +190,7 @@ void player_login(int first_time)
     int    start_room_num, start_zone, rnd, i;
     object start_room, other_user;
     mixed* inv;
+    float  weight, volume;
 
     if(previous_program() != PHANTASMAL_USER)
         error("Zły program wywołuje player_login!");
@@ -330,12 +331,16 @@ void player_login(int first_time)
         if(location->get_number() <= LOCKER_ROOM)
             mobile->teleport(start_room, 1);
 
-        /* Recound player current weight and volume */
+        /* Recount player current weight and volume */
         inv = body->objects_in_container();
+        weight = 0.0;
+        volume = 0.0;
         for (i = 0; i < sizeof(inv); i++) {
-            body->remove_from_container(inv[i]);
-            body->append_to_container(inv[i]);
+            weight += inv[i]->get_weight();
+            volume += inv[i]->get_volume();
         }
+        body->set_current_volume(volume);
+        body->set_current_weight(weight);
     }
 
     /* Show room to player */
