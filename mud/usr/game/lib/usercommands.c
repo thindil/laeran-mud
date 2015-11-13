@@ -309,7 +309,7 @@ static void cmd_look(object user, string cmd, string str)
             msg += "Nosi ślady wielu napraw.";
         else if (durability < 40.0 && durability >= 20.0)
             msg += "Wygląda na zużyty.";
-        else
+        else if (durability < 20.0)
             msg += "Przeszedł zbyt wiele napraw.";
         user->message(msg + "\n");
     }
