@@ -353,7 +353,7 @@ private string blurb_for_substate(int substate) {
                 tmp += "\n";
             }
 
-            tmp += "r\nPodaj oddzielone spacją nowe rzeczowniki odwołujące się do tego obiektu oraz odmiana nazwy.\n"
+            tmp += "\nPodaj oddzielone spacją nowe rzeczowniki odwołujące się do tego obiektu oraz odmiana nazwy.\n"
                 + "Przykład: miecz miecza mieczowi miecz mieczem mieczu miecza ostrze bron broń\n\n";
 
             return tmp;
@@ -980,18 +980,19 @@ static int prompt_nouns_input(string input) {
 
   if(obj_type == OT_PORTABLE
      && (!input || STRINGD->is_whitespace(input))) {
-    send_string("Nie. Chcesz mieć przynajmmniej jeden przymiotnik. Spróbuj ponownie.\n");
-    send_string(blurb_for_substate(SS_PROMPT_NOUNS));
+    send_string("Nie. Chcesz mieć przynajmmniej jeden rzeczownik. Spróbuj ponownie.\n");
+    send_string(blurb_for_substate(substate));
     return RET_NORMAL;
   }
 
   nouns = STRINGD->trim_whitespace(input);
-  new_obj->add_noun(process_words(nouns));
+  if (strlen(nouns))
+      new_obj->add_noun(process_words(nouns));
 
   substate = SS_PROMPT_ADJECTIVES;
 
   send_string("Dobrze. Teraz to samo dla przymiotników.\n");
-  send_string(blurb_for_substate(SS_PROMPT_ADJECTIVES));
+  send_string(blurb_for_substate(substate));
 
   return RET_NORMAL;
 }
