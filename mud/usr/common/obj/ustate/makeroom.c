@@ -676,134 +676,138 @@ static int prompt_obj_detail_of_input(string input) {
   return RET_NORMAL;
 }
 
-static int prompt_obj_number_input(string input) {
-  string segown;
-  object location;
-  int    zonenum;
+static int prompt_obj_number_input(string input) 
+{
+    string segown, zonename;
+    object location;
+    int    zonenum;
 
-  if(!input || STRINGD->is_whitespace(input)) {
-    /* Autoassign */
-    obj_number = -1;
+    if(!input || STRINGD->is_whitespace(input)) {
+        /* Autoassign */
+        obj_number = -1;
 
-    send_string("Numer obiektu będzie przypisany automatycznie.\n");
-  } else {
-    if(sscanf(input, "%*s %*d") == 2
-       || sscanf(input, "%*d %*s") == 2
-       || sscanf(input, "%d", obj_number) != 1) {
-      send_string("Proszę wprowadzić *tylko* numer.\n");
-      send_string(blurb_for_substate(SS_PROMPT_OBJ_NUMBER));
-      return RET_NORMAL;
+        send_string("Numer obiektu będzie przypisany automatycznie.\n");
+    } else {
+        if(sscanf(input, "%*s %*d") == 2
+                || sscanf(input, "%*d %*s") == 2
+                || sscanf(input, "%d", obj_number) != 1) {
+            send_string("Proszę wprowadzić *tylko* numer.\n");
+            send_string(blurb_for_substate(SS_PROMPT_OBJ_NUMBER));
+            return RET_NORMAL;
+        }
+        /* Object number was parsed. */
+        if(obj_number < 1) {
+            send_string("Numer obiektu musi być większy od zera.\n");
+            send_string(blurb_for_substate(SS_PROMPT_OBJ_NUMBER));
+
+            return RET_NORMAL;
+        }
+        if(MAPD->get_room_by_num(obj_number)) {
+            send_string("Jest już obiekt o numerze #" + obj_number + ".\n");
+            send_string(blurb_for_substate(SS_PROMPT_OBJ_NUMBER));
+
+            return RET_NORMAL;
+        }
+        segown = OBJNUMD->get_segment_owner(obj_number / 100);
+        if(obj_number >= 0 && segown && segown != MAPD) {
+            user->message("Obiekt #" + obj_number
+                    + " w segmencie posiadanym przez "
+                    + segown + "!\n");
+            send_string(blurb_for_substate(SS_PROMPT_OBJ_NUMBER));
+
+            return RET_NORMAL;
+        }
+
+        /* Okay, object number looks good -- continue. */
     }
-    /* Object number was parsed. */
-    if(obj_number < 1) {
-      send_string("Nie wygląda na poprawny numer obiektu.\n");
-      send_string("Numer obiektu musi być większy od zera.\n");
-      send_string(blurb_for_substate(SS_PROMPT_OBJ_NUMBER));
 
-      return RET_NORMAL;
-    }
-    if(MAPD->get_room_by_num(obj_number)) {
-      send_string("Jest już obiekt o numerze #" + obj_number + ".\n");
-      send_string(blurb_for_substate(SS_PROMPT_OBJ_NUMBER));
-
-      return RET_NORMAL;
-    }
-    segown = OBJNUMD->get_segment_owner(obj_number / 100);
-    if(obj_number >= 0 && segown && segown != MAPD) {
-      user->message("Obiekt #" + obj_number
-		    + " w segmencie posiadanym przez "
-		    + segown + "!\n");
-      send_string(blurb_for_substate(SS_PROMPT_OBJ_NUMBER));
-
-      return RET_NORMAL;
-    }
-
-    /* Okay, object number looks good -- continue. */
-  }
-
-  if(obj_type == OT_DETAIL) {
-    location = obj_detail_of;
-  } else {
-    location = get_user()->get_location();
-    if(location && obj_type == OT_ROOM) {
-      /* The new room should be put into the same place as the room
-	 the user is currently standing in.  Makes a good default. */
-      location = location->get_location();
-    }
-  }
-
-  /* Rooms, portables and details are now all cloned from the same
-     base. */
-  new_obj = clone_object(SIMPLE_ROOM);
-
-  if(!new_obj) {
-    send_string("Przykro mi, osiągnąłeś limit obiektów albo pamięci!\n");
-
-    return RET_POP_STATE;
-  }
-
-  zonenum = -1;
-  if(obj_number < 0) {
-    /* Get zone based on object type and location */
     if(obj_type == OT_DETAIL) {
-      zonenum = ZONED->get_zone_for_room(obj_detail_of);
-    } else if(get_user()->get_location()) {
-      zonenum = ZONED->get_zone_for_room(get_user()->get_location());
+        location = obj_detail_of;
     } else {
-      zonenum = 0;
+        location = get_user()->get_location();
+        if(location && obj_type == OT_ROOM) {
+            /* The new room should be put into the same place as the room
+               the user is currently standing in.  Makes a good default. */
+            location = location->get_location();
+        }
     }
 
-    if(zonenum < 0) {
-      LOGD->write_syslog("Odd, zone is less than 0 in @make_room...",
-			 LOG_WARN);
-      zonenum = 0;
+    /* Rooms, portables and details are now all cloned from the same
+       base. */
+    new_obj = clone_object(SIMPLE_ROOM);
+
+    if(!new_obj) {
+        send_string("Przykro mi, osiągnąłeś limit obiektów albo pamięci!\n");
+
+        return RET_POP_STATE;
     }
-  }
-  MAPD->add_room_to_zone(new_obj, obj_number, zonenum);
 
-  zonenum = ZONED->get_zone_for_room(new_obj);
+    zonenum = -1;
+    if(obj_number < 0) {
+        /* Get zone based on object type and location */
+        if(obj_type == OT_DETAIL) {
+            zonenum = ZONED->get_zone_for_room(obj_detail_of);
+        } else if(get_user()->get_location()) {
+            zonenum = ZONED->get_zone_for_room(get_user()->get_location());
+        } else {
+            zonenum = 0;
+        }
 
-  if(obj_type == OT_DETAIL
-     && !obj_detail_of) {
-    send_string("Ktoś skasował obiekt bazowy kiedy tworzyłeś ten\n Nie stworzono detalu."
-		+ " Wychodzenie z OLC!\n");
-    destruct_object(new_obj);
-    return RET_POP_STATE;
-  }
+        if(zonenum < 0) {
+            LOGD->write_syslog("Odd, zone is less than 0 in @make_room...",
+                    LOG_WARN);
+            zonenum = 0;
+        }
+    }
+    MAPD->add_room_to_zone(new_obj, obj_number, zonenum);
 
-  if(obj_detail_of) {
-    obj_detail_of->add_detail(new_obj);
-  } else if(location) {
-    location->add_to_container(new_obj);
-  }
+    zonenum = ZONED->get_zone_for_room(new_obj);
 
-  send_string("Dodano obiekt #" + new_obj->get_number()
-	      + " do strefy #" + zonenum
-	      + " (" + ZONED->get_name_for_zone(zonenum) + ")" + ".\n");
-  if(obj_detail_of) {
-    send_string("To jest detal obiektu ");
-  } else {
-    send_string("Jego lokacja to ");
-  }
-  if(location) {
-    string tmp;
+    if(obj_type == OT_DETAIL
+            && !obj_detail_of) {
+        send_string("Ktoś skasował obiekt bazowy kiedy tworzyłeś ten\n Nie stworzono detalu."
+                + " Wychodzenie z OLC!\n");
+        destruct_object(new_obj);
+        return RET_POP_STATE;
+    }
 
-    if(location->get_brief()) {
-      tmp = location->get_brief()->to_string(get_user());
+    if(obj_detail_of) {
+        obj_detail_of->add_detail(new_obj);
+    } else if(location) {
+        location->add_to_container(new_obj);
+    }
+
+    if (zonenum > -1)
+        zonename = ZONED->get_name_for_zone(zonenum);
+    else
+        zonename = "brak strefy";
+    send_string("Dodano obiekt #" + new_obj->get_number()
+            + " do strefy #" + zonenum
+            + " (" + zonename + ")" + ".\n");
+    if(obj_detail_of) {
+        send_string("To jest detal obiektu ");
     } else {
-      tmp = "(nieopisany)";
+        send_string("Jego lokacja to ");
+    }
+    if(location) {
+        string tmp;
+
+        if(location->get_brief()) {
+            tmp = location->get_brief()->to_string(get_user());
+        } else {
+            tmp = "(nieopisany)";
+        }
+
+        send_string("#" + location->get_number() + "(" + tmp + ")\n\n");
+    } else {
+        send_string("nigdzie\n\n");
     }
 
-    send_string("#" + location->get_number() + "(" + tmp + ")\n\n");
-  } else {
-    send_string("nigdzie\n\n");
-  }
+    /* Okay, now keep entering data... */
+    substate = SS_PROMPT_OBJ_PARENT;
+    send_string(blurb_for_substate(substate));
 
-  /* Okay, now keep entering data... */
-  substate = SS_PROMPT_OBJ_PARENT;
-  send_string(blurb_for_substate(substate));
-
-  return RET_NORMAL;
+    return RET_NORMAL;
 }
 
 static int prompt_obj_parent_input(string input) {
