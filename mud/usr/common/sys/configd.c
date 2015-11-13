@@ -55,6 +55,6 @@ void set_path_special_object(object new_obj) {
 
     INITD->set_path_special_object(find_object(PATHSPECIAL));
   } else {
-    error("Only GAME_INITD can set the path_special object!");
+    error("Tylko GAME_INITD może ustawiać obiekt path_special!");
   }
 }

@@ -22,7 +22,7 @@ int is_subscribed(object user, int channel);
 
 static void create(varargs int clone) {
   if(clone) {
-    error("Can't clone CHANNELD!");
+    error("Nie można klonować CHANNELD!");
   }
 
   upgraded();
@@ -51,8 +51,8 @@ void upgraded(varargs int clone) {
   }
 
   if(num_channels != sizeof(channel_attributes)) {
-    LOGD->write_syslog("Warning!  ChannelD doesn't fully upgrade yet"
-		       + " when recompiled!", LOG_ERR);
+    LOGD->write_syslog("Ostrzeżenie!  ChannelD nie został do końca zaktualizowany"
+		       + " podczas rekompilacji!", LOG_ERR);
   }
 }
 
@@ -170,10 +170,10 @@ int subscribe_user(object user, int channel, varargs int arg) {
   int    attrib, ctr;
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only privileged code may subscribe users to channels!");
+    error("Tylko uprzywilejowany kod może subskrybować użytkowników do kanałów!");
 
   if(channel < 0 || channel >= num_channels) {
-    error("You may only subscribe to an existing channel!");
+    error("Możesz subskrybować tylko istniejące kanały!");
   }
   attrib = channel_attributes[channel][1];
 
@@ -205,7 +205,7 @@ int unsubscribe_user(mixed user, int channel) {
     channels[channel][name] = nil;
 
     if(channels[channel][name]) {
-      LOGD->write_syslog("Failed unsubscribe attempt!", LOG_WARNING);
+      LOGD->write_syslog("Nie udało się usunąć subskrypcji!", LOG_WARNING);
     }
 
     return 1;
