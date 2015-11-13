@@ -94,23 +94,19 @@ static void cmd_tell(object self, string cmd, string str) {
 /* Whisper to someone */
 static void cmd_whisper(object self, string cmd, string str)
 {
-  object *user;
-  string username;
+    object *user;
+    string username;
 
-  if (sscanf(str, "%s %s", username, str) != 2)
+    if (sscanf(str, "%s %s", username, str) != 2)
     {
-      user->message("Użycie: " + cmd + " <imię> <tekst>\n");
-      return;
+        user->message("Użycie: " + cmd + " <imię> <tekst>\n");
+        return;
     }
-  user = user->find_first_objects(username, LOC_CURRENT_ROOM);
-  if (!user)
-    {
-      user->message("Nie ma kogoś o imieniu " + username + " w okolicy.\n");
-    }
-  else
-    {
-      user->get_mobile()->whisper(user[0], str);
-    }
+    user = self->find_first_objects(username, LOC_CURRENT_ROOM);
+    if (!user)
+        user->message("Nie ma kogoś o imieniu " + username + " w okolicy.\n");
+    else
+        self->get_mobile()->whisper(user[0], str);
 }
 
 /* Show info about character */
