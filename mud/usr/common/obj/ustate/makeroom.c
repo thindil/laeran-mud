@@ -519,8 +519,8 @@ private string blurb_for_substate(int substate) {
         case SS_PROMPT_ROOM_TYPE:
                 if(new_obj && sizeof(new_obj->get_archetypes()))
                     return "Podaj typ pokoju albo wpisz 'none' aby przyjąć wartość z archetypu. Dostępne wartości to:\n"
-                        + "zewnątrz, wnętrze, podziemia.\n";
-                return "Podaj typ pokoju. Dostępne wartości to: zewnąrz, wnętrze, podziemia.\n";
+                        + "zewnątrz, wewnątrz, podziemia.\n";
+                return "Podaj typ pokoju. Dostępne wartości to: zewnąrz, wewnątrz, podziemia.\n";
         default:
                 return "<NIEZNANY STAN>\n";
     }
@@ -1019,6 +1019,7 @@ static int prompt_adjectives_input(string input)
         substate = SS_PROMPT_ROOM_TYPE;
         send_string("Dobrze, teraz czas na typ pokoju\n");
         send_string(blurb_for_substate(substate));
+        return RET_NORMAL;
     }
 
     if(obj_type == OT_PORTABLE) {
