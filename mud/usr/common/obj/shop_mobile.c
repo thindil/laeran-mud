@@ -144,6 +144,37 @@ void hook_whisper(object body, string message)
     whisper(body, "Nie mam takiego przedmiotu na sprzedaż");
 }
 
+/* Open/close shop based on time */
+void hook_time(int hour)
+{
+    int i;
+    object exit;
+
+    for (i = 0; i < location->num_exits(); i++) {
+        exit = location->get_exit_num(i);
+        if (hour > 21 || hour < 6) {
+            if (exit->is_open() && exit->is_openable()) {
+                if (sizeof(location->mobiles_in_container()) > 1) {
+                    say("Zamykamy, proszę wyjść.");
+                    emote("wypycha wszystkich za drzwi i zamyka je.");
+                    location->enum_room_mobiles("move", ({ this_object() }), exit->get_direction() );
+                }
+                close(exit);
+                exit->set_locked(1);
+            }
+        } else {
+            if (exit->is_locked()) {
+                exit->set_locked(0);
+            }
+            if (!exit->is_open() && exit->is_openable()) {
+                if (sizeof(location->mobiles_in_container()) > 1) 
+                    emote("otwiera drzwi.");
+                open(exit);
+            }
+        }
+    }
+}
+
 void from_dtd_unq(mixed* unq) 
 {
   /* Set the body, location and number fields */

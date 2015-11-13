@@ -607,6 +607,10 @@ void hook_leave(object leaving_body, int direction) {
 void hook_enter(object entering_body, int direction) {
 }
 
+void hook_time(int hour)
+{
+}
+
 
 /* This function serializes tags from TagD so that they can be written
    into the object file. */

@@ -44,6 +44,8 @@ void set_time(int add_hour, int add_minutes)
     string msg;
     int i;
     object* users;
+    int *mobiles;
+    object mob;
 
     hour += add_hour;
     minutes += add_minutes;
@@ -83,6 +85,12 @@ void set_time(int add_hour, int add_minutes)
                     || users[i]->get_location()->get_room_type() == 2) 
                         users[i]->message(msg);
         }   
+    }
+
+    mobiles = MOBILED->all_mobiles();
+    for (i = 0; i < sizeof(mobiles); i++) {
+        mob = MOBILED->get_mobile_by_num(mobiles[i]);
+        mob->hook_time(hour);
     }
 }
 
