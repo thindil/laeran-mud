@@ -301,8 +301,10 @@ static void cmd_stat(object user, string cmd, string str) {
         tmp += "Jego długość to " + obj->get_length() + " centymetry.\n";
     }
 
-    if(function_object("is_locked", obj))
-    {
+    if (function_object("get_destination", obj)) 
+        tmp += "Prowadzi do pokoju #" + obj->get_destination()->get_number() + "\n";
+
+    if(function_object("is_locked", obj)) {
         if (obj->is_locked())
             tmp += "Obiekt jest zablokowany.\n";
         else
