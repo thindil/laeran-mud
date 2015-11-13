@@ -80,15 +80,16 @@ static void cmd_emote(object user, string cmd, string str) {
 }
 
 static void cmd_tell(object self, string cmd, string str) {
-  object user;
-  string username;
+    object user;
+    string username;
 
-  if (sscanf(str, "%s %s", username, str) != 2 ||
-      !(user=user->find_user(username))) {
-    user->message("Użycie: " + cmd + " <imię> <tekst>\n");
-  } else {
-    user->message(user->get_Name() + " mówi Tobie: " + str + "\n");
-  }
+    if (str)
+        str = STRINGD->trim_whitespace(str);
+    if (!str || str == "" || sscanf(str, "%s %s", username, str) != 2 ||
+            !(user=self->find_user(username))) 
+        self->message("Użycie: " + cmd + " <imię> <tekst>\n");
+    else 
+        user->message(self->get_Name() + " mówi Tobie: " + str + "\n");
 }
 
 /* Whisper to someone */
@@ -97,14 +98,15 @@ static void cmd_whisper(object self, string cmd, string str)
     object *user;
     string username;
 
-    if (sscanf(str, "%s %s", username, str) != 2)
-    {
-        user->message("Użycie: " + cmd + " <imię> <tekst>\n");
+    if (str)
+        str = STRINGD->trim_whitespace(str);
+    if (!str || str == "" || sscanf(str, "%s %s", username, str) != 2) {
+        self->message("Użycie: " + cmd + " <imię> <tekst>\n");
         return;
     }
     user = self->find_first_objects(username, LOC_CURRENT_ROOM);
     if (!user)
-        user->message("Nie ma kogoś o imieniu " + username + " w okolicy.\n");
+        self->message("Nie ma kogoś o imieniu " + username + " w okolicy.\n");
     else
         self->get_mobile()->whisper(user[0], str);
 }
