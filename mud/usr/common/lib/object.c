@@ -185,23 +185,33 @@ object* get_archetypes(void) {
    primary archetype listed first and later archetypes listed in
    descending order of priority.  The primary archetype is used
    for purposes such as inheriting a primary description. */
-void set_archetypes(object* new_archetypes) {
-  if(!SYSTEM() && !COMMON() && !GAME())
-    error("Tylko obiekty typu SYSTEM, COMMON i GAME mogą ustawiać archetypy!");
+void set_archetypes(object* new_archetypes) 
+{
+    int ctr, num_loc;
 
-  if(!new_archetypes)
-    new_archetypes = ({ });
+    if(!SYSTEM() && !COMMON() && !GAME())
+        error("Tylko obiekty typu SYSTEM, COMMON i GAME mogą ustawiać archetypy!");
 
-  /* If the two lists contain the same elements, the xor of them
-     will be empty.  Otherwise, it won't, and the list of parents
-     has changed, not just in order but in content. */
-  if(sizeof(new_archetypes ^ archetypes)) {
-    removed_details = ({ });
-    removed_nouns = ({ });
-    removed_adjectives = ({ });
-  }
+    if(!new_archetypes)
+        new_archetypes = ({ });
 
-  archetypes = new_archetypes[..];
+    /* If the two lists contain the same elements, the xor of them
+       will be empty.  Otherwise, it won't, and the list of parents
+       has changed, not just in order but in content. */
+    if(sizeof(new_archetypes ^ archetypes)) {
+        removed_details = ({ });
+
+        num_loc = PHRASED->num_locales();
+        removed_nouns = allocate(num_loc);
+        removed_adjectives = allocate(num_loc);
+
+        for(ctr = 0; ctr < num_loc; ctr++) {
+            removed_nouns[ctr] = ({ });
+            removed_adjectives[ctr] = ({ });
+        }
+    }
+
+    archetypes = new_archetypes[..];
 }
 
 void add_archetype(object new_arch) {
@@ -215,90 +225,88 @@ void remove_archetype(object arch_to_remove) {
   error("Jeszcze nie zaimplementowane!");
 }
 
-private atomic void add_remove_noun_adj(object phr, int do_add, int is_noun) {
-  int     locale, ctr, ctr2;
-  mixed*  taglist;
-  string* words;
+private atomic void add_remove_noun_adj(object phr, int do_add, int is_noun) 
+{
+    int     locale, ctr, ctr2;
+    mixed*  taglist;
+    string* words;
 
-  if(PHRASED->num_locales() > sizeof(nouns)) {
-    error("Napraw obiekty aby wspierały dynamiczne przydzielanie lokalizacji!");
-  }
+    if(PHRASED->num_locales() > sizeof(nouns))
+        error("Napraw obiekty aby wspierały dynamiczne przydzielanie lokalizacji!");
 
-  taglist = phr->as_taglist();
-  if(!taglist) return;
+    taglist = phr->as_taglist();
+    if(!taglist) return;
 
-  if(is_noun)
-    unregister_my_nouns();
-  else
-    unregister_my_adjs();
-
-  locale = LANG_plPL;
-
-  for(ctr = 0; ctr < sizeof(taglist); ctr += 2) {
-    string *cur_words;
-
-    if(taglist[ctr] != "") {
-      switch(taglist[ctr][0]) {
-      case '{':
-        locale = PHRASED->language_by_name(taglist[ctr][1..]);
-        if(locale == -1)
-          error("Zły tag językowy " + taglist[ctr][1..]
-                + " podany kiedy modyfikowano rzeczowniki/przymiotniki!");
-        break;
-      case '}':
-        locale = LANG_plPL;
-        break;
-      default:
-        error("Niepoprawny phrase podany do modyfikacji rzeczowników/przymiotników!");
-      }
-    }
-
-    /* Now modify nouns or adjs */
     if(is_noun)
-      cur_words = get_nouns(locale);
+        unregister_my_nouns();
     else
-      cur_words = get_adjectives(locale);
+        unregister_my_adjs();
 
-    words = explode(taglist[ctr + 1], ",");
+    locale = LANG_plPL;
 
-    for(ctr2 = 0; ctr2 < sizeof(words); ctr2++) {
-      words[ctr2] = STRINGD->trim_whitespace(words[ctr2]);
+    for(ctr = 0; ctr < sizeof(taglist); ctr += 2) {
+        string *cur_words;
 
-      if(words[ctr2] && words[ctr2] != "") {
-        if(do_add) {
-          if(is_noun)
-            removed_nouns[locale] -= ({ words[ctr2] });
-          else
-            removed_adjectives[locale] -= ({ words[ctr2] });
-
-          /* If no parent defines this already, add it to this
-             object */
-          if(is_noun && !sizeof(cur_words & ({ words[ctr2] }))) {
-            nouns[locale] += ({ words[ctr2] });
-          } else if(!is_noun && !sizeof(cur_words & ({ words[ctr2] }))) {
-            adjectives[locale] += ({ words[ctr2] });
-          }
-        } else {
-          if(is_noun)
-            nouns[locale] -= ({ words[ctr2] });
-          else
-            adjectives[locale] -= ({ words[ctr2] });
-
-          /* If a parent defines this, put it into the 'removed' list */
-          if(is_noun && sizeof(cur_words & ({ words[ctr2] }))) {
-            removed_nouns[locale] += ({ words[ctr2] });
-          } else if(!is_noun && sizeof(cur_words & ({ words[ctr2] }))) {
-            removed_adjectives[locale] += ({ words[ctr2] });
-          }
+        if(taglist[ctr] != "") {
+            switch(taglist[ctr][0]) {
+                case '{':
+                    locale = PHRASED->language_by_name(taglist[ctr][1..]);
+                    if(locale == -1)
+                        error("Zły tag językowy " + taglist[ctr][1..]
+                                + " podany kiedy modyfikowano rzeczowniki/przymiotniki!");
+                    break;
+                case '}':
+                    locale = LANG_plPL;
+                    break;
+                default:
+                    error("Niepoprawny phrase podany do modyfikacji rzeczowników/przymiotników!");
+            }
         }
-      }
-    }
-  }
 
-  if(is_noun)
-    register_my_nouns();
-  else
-    register_my_adjs();
+        /* Now modify nouns or adjs */
+        if(is_noun)
+            cur_words = get_nouns(locale);
+        else
+            cur_words = get_adjectives(locale);
+
+        words = explode(taglist[ctr + 1], ",");
+
+        for(ctr2 = 0; ctr2 < sizeof(words); ctr2++) {
+            words[ctr2] = STRINGD->trim_whitespace(words[ctr2]);
+
+            if(words[ctr2] && words[ctr2] != "") {
+                if(do_add) {
+                    if(is_noun)
+                        removed_nouns[locale] -= ({ words[ctr2] });
+                    else
+                        removed_adjectives[locale] -= ({ words[ctr2] });
+
+                    /* If no parent defines this already, add it to this
+                       object */
+                    if(is_noun && !sizeof(cur_words & ({ words[ctr2] }))) 
+                        nouns[locale] += ({ words[ctr2] });
+                    else if(!is_noun && !sizeof(cur_words & ({ words[ctr2] }))) 
+                        adjectives[locale] += ({ words[ctr2] });
+                } else {
+                    if(is_noun)
+                        nouns[locale] -= ({ words[ctr2] });
+                    else
+                        adjectives[locale] -= ({ words[ctr2] });
+
+                    /* If a parent defines this, put it into the 'removed' list */
+                    if(is_noun && sizeof(cur_words & ({ words[ctr2] }))) 
+                        removed_nouns[locale] += ({ words[ctr2] });
+                    else if(!is_noun && sizeof(cur_words & ({ words[ctr2] }))) 
+                        removed_adjectives[locale] += ({ words[ctr2] });
+                }
+            }
+        }
+    }
+
+    if(is_noun)
+        register_my_nouns();
+    else
+        register_my_adjs();
 }
 
 void add_noun(object phr) {
