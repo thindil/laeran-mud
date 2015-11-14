@@ -79,7 +79,7 @@ object get_brief(void) {
 object get_look(void) {
   object desc;
 
-  desc = ::get_brief();
+  desc = ::get_look();
   if(!desc)
     return EXITD->get_name_for_dir(direction);
 
