@@ -309,7 +309,7 @@ static void cmd_stat(object user, string cmd, string str) {
             tmp += "Obiekt jest zablokowany.\n";
         else
             tmp += "Obiekt jest odblokowany.\n";
-        if (obj->lockable())
+        if (obj->is_lockable())
             tmp += "Obiekt można swobodnie odblokowywać i zablokowywać.\n";
         else
             tmp += "Obiekt nie można swobodnie odblokowywać i zablokowywać.\n";
