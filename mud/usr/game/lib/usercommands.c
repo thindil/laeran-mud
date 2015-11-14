@@ -285,6 +285,22 @@ static void cmd_look(object user, string cmd, string str)
     else
         user->send_phrase(tmp[0]->get_look());
 
+    if (cmd[0] == 'z' && tmp[0]->get_mobile()->get_user()) {
+        objs = tmp[0]->objects_in_container();
+        if (objs && sizeof(objs)) {
+            msg = "";
+            for (ctr = 0; ctr < sizeof(objs); ctr++) {
+                if (objs[ctr]->is_dressed()) {
+                    if (msg == "")
+                        msg = "\n\nNosi na sobie:\n";
+                    msg += "- " + objs[ctr]->get_brief()->to_string(user) + "\n";
+                }
+            }
+            if (msg != "")
+                user->message(msg);
+        }
+    }
+
     if (cmd[0] == 'z' && tmp[0]->get_quality()) {
         msg = "\n------\n";
         durability = (float)tmp[0]->get_durability();
