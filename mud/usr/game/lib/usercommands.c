@@ -317,10 +317,11 @@ static void cmd_look(object user, string cmd, string str)
 }
 
 static void cmd_inventory(object user, string cmd, string str) {
-  int    ctr, size;
+  int    ctr, size, i;
   mixed* objs;
-  string *inv, *weared;
+  string *inv, *weared, *wearlocations;
   string msg;
+  int *wlocs;
 
   if(str && !STRINGD->is_whitespace(str)) {
     user->message("Użycie: " + cmd + "\n");
@@ -333,22 +334,29 @@ static void cmd_inventory(object user, string cmd, string str) {
     return;
   }
   inv = weared = ({ });
+  wearlocations = ({"głowa", "tułów", "ręce", "dłonie", "nogi", "prawa dłoń", "lewa dłoń", 
+          "plecy", "prawa strona pasa", "lewa strona pasa"});
   for(ctr = 0; ctr < sizeof(objs); ctr++) {
-      if (objs[ctr]->is_dressed())
-          weared += ({ lalign("- " + objs[ctr]->get_brief()->to_string(user), 25) });
-      else
-          inv += ({ lalign("- " + objs[ctr]->get_brief()->to_string(user), 25) });
+      if (objs[ctr]->is_dressed()) {
+          wlocs = objs[ctr]->get_wearlocations();
+          msg = "- " + objs[ctr]->get_brief()->to_string(user) + " ( ";
+          for (i = 0; i < sizeof(wlocs); i++)
+              msg += wearlocations[wlocs[i]] + " ";
+          msg += ")";
+          weared += ({ msg });
+      } else
+          inv += ({ lalign("- " + objs[ctr]->get_brief()->to_string(user), 30) });
   }
   if (sizeof(weared) > sizeof(inv))
       size = sizeof(weared);
   else
       size = sizeof(inv);
-  msg = lalign("=Inwentarz=", 25) + lalign("=Założone=", 25) + "\n";
+  msg = lalign("=Inwentarz=", 30) + "=Założone=\n";
   for (ctr = 0; ctr < size; ctr ++) {
       if (ctr < sizeof(inv))
           msg += inv[ctr];
       else
-          msg += lalign("            ", 25);
+          msg += lalign("            ", 30);
       if (ctr < sizeof(weared))
           msg += weared[ctr] + "\n";
       else
