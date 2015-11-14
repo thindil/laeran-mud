@@ -285,7 +285,7 @@ static void cmd_look(object user, string cmd, string str)
     else
         user->send_phrase(tmp[0]->get_look());
 
-    if (cmd[0] == 'z' && tmp[0]->get_mobile()->get_user()) {
+    if (cmd[0] == 'z' && tmp[0]->get_mobile() && tmp[0]->get_mobile()->get_user()) {
         objs = tmp[0]->objects_in_container();
         if (objs && sizeof(objs)) {
             msg = "";
