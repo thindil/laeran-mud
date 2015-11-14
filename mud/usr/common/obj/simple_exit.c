@@ -81,7 +81,7 @@ object get_look(void) {
 
   desc = ::get_look();
   if(!desc)
-    return EXITD->get_name_for_dir(direction);
+      desc = ::get_brief();
 
   return desc;
 }
