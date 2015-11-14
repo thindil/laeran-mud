@@ -28,7 +28,7 @@ private object add_struct_for_mobile(mixed* unq);
 
 static void create(varargs int clone) {
   if(clone)
-    error("Cloning mobiled is not allowed!");
+    error("Nie można klonować mobiled!");
 
   mobile_segments = ({ });
 
@@ -43,18 +43,18 @@ private void load_tag_codes(void) {
 
   bind_file = read_file(MOBILE_BIND_FILE);
   if(!bind_file)
-    error("Cannot read binder file " + MOBILE_BIND_FILE + "!");
+    error("Nie mogę odczytać pliku " + MOBILE_BIND_FILE + "!");
 
   unq_data = UNQ_PARSER->unq_parse_with_dtd(bind_file, binder_dtd);
   if(!unq_data)
-    error("Cannot parse binder text in MOBILED::init()!");
+    error("Nie mogę sparsować tekstu w MOBILED::init()!");
 
   if (sizeof(unq_data) % 2)
-    error("Odd sized unq chunk in MOBILED::init()!");
+    error("Nieparzysty rozmiar kawałka unq w MOBILED::init()!");
 
   for (ctr = 0; ctr < sizeof(unq_data); ctr += 2) {
     if (STRINGD->stricmp(unq_data[ctr],"bind"))
-      error("Not a code/tag binding in MOBILED::init()!");
+      error("Nie kod/tag przywiązania w MOBILED::init()!");
 
     if (!STRINGD->stricmp(unq_data[ctr+1][0][0],"tag")) {
       tag = unq_data[ctr+1][0][1];
@@ -65,7 +65,7 @@ private void load_tag_codes(void) {
     }
 
     if (tag_code[tag] != nil) {
-      error("Tag " + tag + " is already bound in MOBILED::init()!");
+      error("Tag " + tag + " jest już określony w MOBILED::init()!");
     }
 
     tag_code[tag] = file;
@@ -104,11 +104,11 @@ void init(void) {
   if(!initialized) {
     mobfile_dtd_string = read_file(MOB_FILE_DTD);
     if(!mobfile_dtd_string)
-      error("Can't read file " + MOB_FILE_DTD + "!");
+      error("Nie mogę odczytać pliku " + MOB_FILE_DTD + "!");
 
     binder_dtd_string = read_file(BIND_DTD);
     if(!binder_dtd_string)
-      error("Can't read file " + BIND_DTD + "!");
+      error("Nie mogę odczytać pliku " + BIND_DTD + "!");
 
     binder_dtd = clone_object(UNQ_DTD);
     binder_dtd->load(binder_dtd_string);
@@ -118,7 +118,7 @@ void init(void) {
 
     load_tag_codes();
   } else
-    error("MOBILED is already initialized in MOBILED::init()!");
+    error("MOBILED jest już zainicjalizowany w MOBILED::init()!");
 
   initialized = 1;
 }
@@ -131,17 +131,17 @@ int add_mobile_number(object mobile, int num) {
     return -1;
 
   if(!mobile)
-    error("No mobile supplied to MOBILED::add_mobile_number!");
+    error("Nie podano mobka do MOBILED::add_mobile_number!");
 
   if(!initialized)
-    error("Can't add mobiles to uninitialized MOBILED!");
+    error("Nie mogę dodawać mobków do niezainicjalizowanego MOBILED!");
 
   newnum = allocate_mobile_obj(num, mobile);
   if(newnum <= 0) {
-    error("Can't allocate mobile number!");
+    error("Nie mogę przypisać numeru mobkowi!");
   }
 
-  LOGD->write_syslog("Allocating mobile number: " + newnum, LOG_VERBOSE);
+  LOGD->write_syslog("Przypisywanie numeru mobkowi: " + newnum, LOG_VERBOSE);
 
   mobile->set_number(newnum);
 
@@ -152,7 +152,7 @@ private int allocate_mobile_obj(int num, object obj) {
   int segment;
 
   if(num >= 0 && OBJNUMD->get_object(num))
-    error("Object already exists with number " + num);
+    error("Już istnieje obiekt o numerze " + num);
 
   if(num != -1) {
     OBJNUMD->allocate_in_segment(num / 100, num, obj);
@@ -174,7 +174,7 @@ private int allocate_mobile_obj(int num, object obj) {
   }
 
   segment = OBJNUMD->allocate_new_segment();
-  LOGD->write_syslog("Allocating segment " + segment + " to MOBILED.",
+  LOGD->write_syslog("Przypisywanie semgentu " + segment + " do MOBILED.",
 		     LOG_VERBOSE);
 
   mobile_segments += ({ segment });
@@ -208,7 +208,7 @@ void remove_mobile(object mobile) {
     if(mobile)
       destruct_object(mobile);
   } else {
-    error("Can't usefully remove a (nil) mobile!");
+    error("Nie można usunąć mobka (nil)!");
   }
 }
 
@@ -254,7 +254,7 @@ int* all_mobiles(void) {
 
 string get_file_by_mobile_type(string mobtype) {
   if(!SYSTEM())
-    error("Only SYSTEM code can query the MOBILED for mobile types!");
+    error("Tylko kod SYSTEM może pytać MOBILED o typy mobków!");
 
   return tag_code[mobtype];
 }
@@ -275,15 +275,15 @@ void add_unq_text_mobiles(string unq_text, string filename) {
     return;
 
   if(!initialized)
-    error("Can't add mobiles to uninitialized MOBILED!");
+    error("Nie mogę dodawać mobków do niezainicjalizowanego MOBILED!");
 
   unq_data = UNQ_PARSER->unq_parse_with_dtd(unq_text, mobfile_dtd);
   if(!unq_data) {
     if(filename) { 
-      error("Cannot parse file '" + filename
-	    + "' in add_unq_text_mobiles!");
+      error("Nie mogę odczytać pliku '" + filename
+	    + "' w add_unq_text_mobiles!");
    } else {
-      error("Cannot parse text in add_unq_text_mobiles!");
+      error("Nie mogę odczytać tekstu w add_unq_text_mobiles!");
     }
   }
 
@@ -298,13 +298,13 @@ void add_dtd_unq_mobiles(mixed *unq, string filename) {
     return;
 
   if(!initialized)
-    error("Can't add mobiles to uninitialized MOBILED!");
+    error("Nie mogę dodawać mobków do niezainicjalizowanego MOBILED!");
 
   iter = 0;
   while(iter < sizeof(unq)) {
     mobile = add_struct_for_mobile( ({ unq[iter], unq [iter + 1] }) );
     if(!mobile)
-      error("Loaded mobile is (nil) in add_dtd_unq_mobiles!");
+      error("Załadowany mob to (nil) w add_dtd_unq_mobiles!");
     iter += 2;
   }
 }
@@ -321,7 +321,7 @@ private object add_struct_for_mobile(mixed* unq) {
   }
 
   if(STRINGD->stricmp(unq[0], "mobile")) {
-    error("UNQ doesn't look like a mobile in add_struct_for_mobile!");
+    error("UNQ nie wygląada jak mob w add_struct_for_mobile!");
   }
 
   ctr = unq[1];
@@ -334,12 +334,12 @@ private object add_struct_for_mobile(mixed* unq) {
   }
   if(!type) {
     /* There doesn't seem to be a "type" field in the UNQ passed in */
-    error("Can't find 'type' field in mobfile!  "
-	  + "Do you need to delete or update it?");
+    error("Nie mogę znaleźć pola 'type' w pliku z mobkiem!  "
+	  + "Może musisz je dodać bądź usunąć mobka?");
   }
 
   if(!tag_code[type]) {
-    error("Can't find binding for mobile type '" + type + "'.");
+    error("Nie mogę znaleźć przywiązania dla typu mobków '" + type + "'.");
   }
 
   mobile = clone_object(tag_code[type]);
@@ -348,7 +348,7 @@ private object add_struct_for_mobile(mixed* unq) {
   num = mobile->get_number();
   num = add_mobile_number(mobile, num);
   if(num < 0) {
-    error("Can't assign mobile number in add_struct_for_mobile!");
+    error("Nie mogę przypisać numeru mobka w add_struct_for_mobile!");
   }
   mobile->set_number(num);
 
@@ -356,10 +356,10 @@ private object add_struct_for_mobile(mixed* unq) {
   if(body) {
     body->set_mobile(mobile);
   } else {
-    LOGD->write_syslog("Body is (nil), mob #" + num, LOG_WARN);
+    LOGD->write_syslog("Ciało to (nil), mob #" + num, LOG_WARN);
   }
 
-  LOGD->write_syslog("Added struct for mobile!", LOG_VERBOSE);
+  LOGD->write_syslog("Dodano strukture dla mobka!", LOG_VERBOSE);
 
   return mobile;
 }

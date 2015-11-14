@@ -109,7 +109,7 @@ void destructed(int clone) {
 /* Return phrase for direction name */
 object get_name_for_dir(int direction) {
   if (direction <= 0) {
-    error("Can't get the name of a special direction!");
+    error("Ujemna wartość dla kierunku!");
   }
   return name_for_dir[direction];
 }
@@ -118,10 +118,10 @@ object get_name_for_dir(int direction) {
 object get_short_for_dir(int direction) {
   object phr;
   if (direction <= 0) {
-    error("Can't get the short name of a special direction!");
+    error("Ujemna wartość dla kierunku!");
   }
   phr = shortname_for_dir[direction];
-  if(!phr) error("Can't get short name for direction " + direction);
+  if(!phr) error("Nie mogę pobrać krótkiej nazwy dla kierunku " + direction);
   return phr;
 }
 
@@ -134,7 +134,7 @@ int direction_by_string(string direc) {
 
 int opposite_direction(int direction) {
   if (direction <= 0) {
-    error("Can't get the opposite direction of a special direction!");
+    error("Ujemna wartość dla kierunku!");
   }
 
   if(direction % 2) {
@@ -171,7 +171,7 @@ private void push_or_add_newexit(int roomnum1, mixed *value) {
 
 void room_request_complex_exit(int roomnum1, mixed value) {
   if(previous_program() != ROOM) {
-    error("Only ROOM can request deferred exit creation!");
+    error("Tylko ROOM może żądać stworzenia wiszącego wejścia!");
   }
   push_or_add_newexit(roomnum1, value);
 }
@@ -208,7 +208,7 @@ private int allocate_exit_obj(int num, object obj) {
   int segment;
 
   if(num >= 0 && OBJNUMD->get_object(num))
-    error("Object already exists with number " + num);
+    error("Istnieje już obiekt z numerem " + num);
 
   if(num != -1) {
     OBJNUMD->allocate_in_segment(num / 100, num, obj);
@@ -298,7 +298,7 @@ void add_twoway_exit_between(object room1, object room2, int direction,
     return;
 
   if (direction <= 0) {
-    error("Can't add two-way exit in a nonstandard direction!");
+    error("Ujemna wartość kierunku!");
   }
 
   dir = get_name_for_dir(direction);
@@ -329,7 +329,7 @@ void add_twoway_exit_between(object room1, object room2, int direction,
   num2 = allocate_exit_obj(num2, exit2);
 
   if(num1 < 0 || num2 < 0) {
-    error("Exit numbers not assigned successfully!");
+    error("Numery wyjść nie przypisane poprawnie!");
   }
 
   exit1->set_number(num1);
@@ -341,7 +341,7 @@ void add_twoway_exit_between(object room1, object room2, int direction,
      || exit2->get_number() < 0) {
     destruct_object(exit1);
     destruct_object(exit2);
-    error("Exit numbers not assigned successfully!");
+    error("Numery wyjść nie przypisane poprawnie!");
   }
 
   exit1->set_brief(PHRASED->new_simple_english_phrase("exit"));
@@ -357,7 +357,7 @@ void add_oneway_exit_between(object room1, object room2, int direction,
     return;
 
   if (direction <= 0) {
-    error("Can't add an exit in a special direction!");
+    error("Podano ujemną wartość kierunku!");
   }
 
   exit1 = clone_object(SIMPLE_EXIT);
@@ -375,14 +375,14 @@ void add_oneway_exit_between(object room1, object room2, int direction,
   num1 = allocate_exit_obj(num1, exit1);
 
   if(num1 < 0 ) {
-    error("Exit number not assigned successfully!");
+    error("Numer wyjścia nie przypisany poprawnie!");
   }
 
   exit1->set_number(num1);
   exit1->set_link(-1);
 
   if(exit1->get_number() < 0) {
-    error("Exit number not assigned successfully!");
+    error("Numer wyjścia nie przypisany poprawnie!");
     destruct_object(exit1);
   }
 }
@@ -414,7 +414,7 @@ void clear_all_exits(object room) {
     return;
 
   if(!room)
-    error("Passed nil to clear_all_exits!");
+    error("Podano nil w clear_all_exits!");
 
   while(exit = room->get_exit_num(0)) {
     if (exit->get_exit_type() == ET_TWOWAY) {

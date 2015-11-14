@@ -77,22 +77,22 @@ void init(string room_dtd_str, string bind_dtd_str) {
 
     bind_file = read_file(ROOM_BIND_FILE);
     if (!bind_file)
-      error("Cannot read binder file " + ROOM_BIND_FILE + "!");
+      error("Nie mogę odczytać pliku " + ROOM_BIND_FILE + "!");
 
     unq_data = UNQ_PARSER->unq_parse_with_dtd(bind_file, bind_dtd);
     if(!unq_data)
-      error("Cannot parse binder text in MAPD::init()!");
+      error("Nie mogę sparsować tekstu w MAPD::init()!");
 
     if (sizeof(unq_data) % 2)
-      error("Odd sized unq chunk in MAPD::init()!");
+      error("Nieparzysty rozmiar kawałka unq w MAPD::init()!");
 
     for (ctr = 0; ctr < sizeof(unq_data); ctr += 2) {
       if (STRINGD->stricmp(unq_data[ctr],"bind"))
-	error("Not a code/tag binding in MAPD::init()!");
+	error("Nie kod/tag w MAPD::init()!");
 
       if (typeof(unq_data[ctr+1]) != T_ARRAY || sizeof(unq_data[ctr+1]) != 2) {
 	/* Should never get here for proper DTD */
-	error("Internal error in MAPD->init()");
+	error("Wewnętrzny błąd w MAPD->init()");
       }
 
 
@@ -105,7 +105,7 @@ void init(string room_dtd_str, string bind_dtd_str) {
       }
 
       if (tag_code[tag] != nil) {
-	error("Tag " + tag + " is already bound in MAPD::init()!");
+	error("Tag " + tag + " jest już określony w MAPD::init()!");
       }
 
       /* Assign file to tag, and make sure it exists and is clonable */
@@ -115,7 +115,7 @@ void init(string room_dtd_str, string bind_dtd_str) {
     }
 
     initialized = 1;
-  } else error("MAPD already initialized!");
+  } else error("MAPD już zainicjalizowany!");
 }
 
 void destructed(int clone) {
@@ -143,14 +143,14 @@ void destructed(int clone) {
 
 void add_unq_binding(string tag_name, string tag_path) {
   if(!GAME() && !COMMON() && !SYSTEM())
-    error("Only privileged code may add a room binding!");
+    error("Tylko uprzywilejowany kod może dodawać wiązania dla pokoi!");
 
   if(!tag_name)
-    error("(Nil) isn't a valid tag in add_unq_binding!");
+    error("(Nil) nie jest prawidłowym tagiem w add_unq_binding!");
 
   if (tag_code[tag_name] != nil) {
-    error("Tag name '" + tag_name
-	  + "' is already bound in MAPD::add_unq_binding()!");
+    error("Tag o nazwie '" + tag_name
+	  + "' jest już określony w MAPD::add_unq_binding()!");
   }
 
   /* Assign file to tag, and make sure it exists and is clonable */
@@ -163,10 +163,10 @@ void add_unq_binding(string tag_name, string tag_path) {
 
 void set_binding_handler(object bhandler) {
   if(previous_program() != GAME_INITD)
-    error("Only GAME_INITD may set the room-binding handler!");
+    error("Tylko GAME_INITD może ustawiać room-binding handler!");
 
   if(!bhandler)
-    error("(Nil) isn't a valid handler in set_binding_handler!");
+    error("(Nil) nie jest prawidłowym handler w set_binding_handler!");
 
   /* do the assignment */
   default_binding_handler = bhandler;
@@ -180,7 +180,7 @@ void add_room_object(object room) {
 
   name = object_name(room);
   if(room_objects[name])
-    error("Room already registered in add_room_object!");
+    error("Pokój jest już zarejestrowany w add_room_object!");
 
   room_objects[name] = room;
 }
@@ -194,17 +194,17 @@ void add_room_to_zone(object room, int num, int req_zone) {
   allocated = 0;
 
   if(!room_objects[object_name(room)])
-    error("Adding num for unregistered object " + object_name(room) + "!");
+    error("Dodawanie numeru do niezarejstrowanego obiektu " + object_name(room) + "!");
 
   num = assign_room_to_zone(num, room, req_zone);
   if(num < 0) {
-    error("Error assigning room number!");
+    error("Błąd przy przypisywaniu numeru!");
   }
 
   seg = num / 100;
   zone = ZONED->get_segment_zone(seg);
   if(zone != req_zone && req_zone != -1)
-    error("Room assigned to unreasonable segment!  Wrong zone!");
+    error("Pokój przypisany do dziwnego segmentu! Zła strefa!");
 
   if(zone == -1)
     zone = 0;  /* Fix offset */
@@ -220,7 +220,7 @@ void remove_room_object(object room) {
 
   name = object_name(room);
   if(!room_objects[name]) {
-    error("Removing room not in room_objects mapping!");
+    error("Usuwanie pokoju którego nie ma w room_objects!");
   }
   room_objects[name] = nil;
 
@@ -249,15 +249,15 @@ private int assign_room_to_zone(int num, object room, int req_zone) {
 
     segown = OBJNUMD->get_segment_owner(segnum);
     if(segown && strlen(segown) && segown != MAPD) {
-      LOGD->write_syslog("Can't allocate room number " + num
-			 + " in non-MAPD segment!", LOG_WARN);
+      LOGD->write_syslog("Nie mogę przypisać numeru pokoju " + num
+			 + " w segmencie nie należącym do MAPD!", LOG_WARN);
       return -1;
     }
     zone = ZONED->get_segment_zone(segnum);
     if(zone != req_zone && req_zone >= 0)
-      error("Room number (#" + num
-	    + ", zone #" + zone + ") not in requested zone (#" + req_zone
-	    + ") in assign_room_to_zone!");
+      error("Pokój o numerze (#" + num
+	    + ", strefa #" + zone + ") nie jest w wybranej strefie (#" + req_zone
+	    + ") w assign_room_to_zone!");
 
     OBJNUMD->allocate_in_segment(segnum, num, room);
 
@@ -305,12 +305,12 @@ private object add_struct_for_room(mixed* unq) {
   }
 
   if(STRINGD->stricmp(unq[0], "object")) {
-    error("Label '" + unq[0] + "' doesn't look like the start of an object!");
+    error("Etykieta '" + unq[0] + "' nie wygląda jak początek obiektu!");
   }
 
   if(!STRINGD->stricmp(unq[1][0][0], "obj_type")) {
     if(typeof(unq[1][0][1]) != T_STRING)
-      error("UNQ obj_type data is not a string!");
+      error("UNQ obj_type dane nie są string!");
 
     tag_name = STRINGD->trim_whitespace(unq[1][0][1]);
   } else {
@@ -323,7 +323,7 @@ private object add_struct_for_room(mixed* unq) {
     err = catch(room_program
 		= default_binding_handler->type_for_tag(tag_name));
     if(err) {
-      error("Error calling type_for_tag on binding handler, type " + tag_name
+      error("Błąd w wywołaniu type_for_tag na binding handler, typ " + tag_name
 	    + ": " + err);
     }
   } else {
@@ -332,22 +332,22 @@ private object add_struct_for_room(mixed* unq) {
 
   if(room_program == nil) {
     error("Tag " + tag_name
-	  + " is not bound to any room type!");
+	  + " nie jest przypisany do jakiegokolwiek typu pokoju!");
   }
 
   if (!find_object(room_program)) {
     catch {
       compile_object(room_program);
     } : {
-      error("Could not compile object '" + room_program
-	    + "' for tag '" + tag_name + "'!");
+      error("Nie mogę skompilować obiektu '" + room_program
+	    + "' dla tagu '" + tag_name + "'!");
     }
   }
 
   err = catch(room = clone_object(room_program));
   if(err) {
-    error("Error cloning program " + room_program + " of type '" + tag_name
-	  + "' when making new room: " + err);
+    error("Błąd przy klonowaniu programu " + room_program + " typu '" + tag_name
+	  + "' kiedy tworzono nowy pokój: " + err);
   }
   room->from_dtd_unq(unq);
 
@@ -356,12 +356,12 @@ private object add_struct_for_room(mixed* unq) {
   num = room->get_number();
   num = assign_room_to_zone(num, room, -1); /* assign to any zone */
   if(num < 0) {
-    error("Can't assign room number!");
+    error("Nie mogę przyznać numeru pokoju!");
   }
   room->set_number(num);
 
   if(!room_objects[object_name(room)])
-    error("You forgot to register with MAPD in a room object def maybe?");
+    error("Zapomniałeś zarejestrować z MAPD wybranego pokoju?");
 
   return room;
 }
@@ -455,7 +455,7 @@ private int resolve_location(object room) {
   } else {
     container = get_room_by_num(0);  /* Else, add to The Void */
     if(!container)
-      error("Can't find room #0!  Panic!");
+      error("Nie mogę znaleźć pokoju #0! Panika!");
 
     container->add_to_container(room);
     return 1;
@@ -477,7 +477,7 @@ void do_room_resolution(int fully) {
   object* new_unres;
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only privileged code can request room resolution!");
+    error("Tylko uprzywilejowany kod może żądać analizy pokoju!");
 
   done_resolve = ([ ]);
   finished = 0;
@@ -527,7 +527,7 @@ void do_room_resolution(int fully) {
     string tmp;
     int    ctr;
 
-    tmp = "Can't resolve the following rooms: ";
+    tmp = "Nie mogę przeanalizować następujących pokoi: ";
     for(ctr = 0; ctr < sizeof(unresolved_rooms) - 1; ctr++) {
       tmp += unresolved_rooms[ctr]->get_number() + ", ";
     }
@@ -535,8 +535,8 @@ void do_room_resolution(int fully) {
     /* This makes sure there's no final comma */
     tmp += unresolved_rooms[sizeof(unresolved_rooms) - 1]->get_number();
 
-    LOGD->write_syslog("Can't resolve rooms: " + tmp, LOG_FATAL);
-    error("Can't resolve all rooms!  Edit room files to fix this!");
+    LOGD->write_syslog("Nie mogę sprawdzić pokoi: " + tmp, LOG_FATAL);
+    error("Nie mogę sprawdzić wszystkich pokoi! Edytuj pliki z pokojami aby to naprawić!");
   }
 }
 
