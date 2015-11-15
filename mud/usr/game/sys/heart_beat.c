@@ -14,7 +14,6 @@ void set_up_heart_beat(void)
   if(previous_program() == GAME_INITD)
     {
       TIMED->set_heart_beat(TIMED_TEN_MINUTES, "heart_beat_clear");
-      TIMED->set_heart_beat(TIMED_HALF_MINUTE, "heart_beat_func");
       TIMED->set_heart_beat(TIMED_ONE_HOUR, "heart_beat_dump");
       TIMED->set_heart_beat(TIMED_ONE_DAY, "heart_beat_save");
     }
@@ -77,11 +76,6 @@ void heart_beat_clear(void)
             destruct_object(obj);
         }
     }
-}
-
-void heart_beat_func(void)
-{
-    WORLDD->set_time(0, 30);
 }
 
 void heart_beat_save(void)

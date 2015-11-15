@@ -1,6 +1,7 @@
 #include <kernel/kernel.h>
 
 #include <phantasmal/lpc_names.h>
+#include <phantasmal/timed.h>
 
 #include <gameconfig.h>
 
@@ -9,6 +10,7 @@ void upgraded(varargs int clone);
 
 /* Data for world */
 int hour, minutes, day, month, year;
+private int registered;
 
 static void create(varargs int clone)
 {
@@ -27,6 +29,10 @@ void upgraded(varargs int clone)
 {
     if (!SYSTEM() && !COMMON() && !GAME())
         return;
+    if (!registered) {
+        TIMED->set_heart_beat(TIMED_HALF_MINUTE, "set_time", 0, 30);
+        registered = 1;
+    }
 }
 
 void save_world_data(void)
