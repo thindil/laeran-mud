@@ -186,7 +186,7 @@ static void cmd_whoami(object user, string cmd, string str)
 static void cmd_look(object user, string cmd, string str) 
 {
     object* tmp, *objs;
-    int     ctr;
+    int     ctr, index;
     float   damage, durability;
     string  msg;
 
@@ -227,8 +227,15 @@ static void cmd_look(object user, string cmd, string str)
     if (cmd[0] != 'z') 
         sscanf(str, "na %s", str);
 
-    if(sscanf(str, "w %s", str) || sscanf(str, "do srodka %s", str)
-            || sscanf(str, "do %s", str) || sscanf(str, "pomiedzy %s", str)) {
+    if(sscanf(str, "w %d %s",index, str) || sscanf(str, "do srodka %d %s", index, str)
+            || sscanf(str, "do %d %s", index, str) || sscanf(str, "pomiedzy %d %s", index, str)) {
+        if (!index)
+            index = 1;
+        index--;
+        if (index < 0) {
+            user->message("W marzeniach.\n");
+            return;
+        }
         /* Look inside container */
         str = STRINGD->trim_whitespace(str);
         tmp = user->find_first_objects(str, LOC_CURRENT_ROOM, LOC_INVENTORY, LOC_BODY, LOC_CURRENT_EXITS);
@@ -236,37 +243,47 @@ static void cmd_look(object user, string cmd, string str)
             user->message("Nie znalazłeś jakiegokolwiek '" + str + "'.\n");
             return;
         }
+        if (index >= sizeof(tmp)) {
+            user->message("Nie ma tak dużo '" + str + "' w okolicy.\n");
+            return;
+        }
         if(sizeof(tmp) > 1) {
-            user->message("Widzisz więcej niż jeden '" + str +"'. Musisz wybrać który.\n");
+            user->message("Widzisz więcej niż jeden '" + str +"'. Wybierasz " 
+                    + tmp[index]->get_brief()->to_string(user) + ".\n");
             return;
         }
 
-        if(!tmp[0]->is_container()) {
+        if(!tmp[index]->is_container()) {
             user->message("To nie jest pojemnik.\n");
             return;
         }
 
-        if(!tmp[0]->is_open()) {
+        if(!tmp[index]->is_open()) {
             user->message("Jest zamknięte.\n");
             return;
         }
 
-        if ((!tmp[0]->get_mobile()) || (user->is_admin()))
-            objs = tmp[0]->objects_in_container();
+        if ((!tmp[index]->get_mobile()) || (user->is_admin()))
+            objs = tmp[index]->objects_in_container();
         else
             objs = nil;
         if(objs && sizeof(objs)) {
             for(ctr = 0; ctr < sizeof(objs); ctr++) {
-                user->message("- ");
-                user->send_phrase(objs[ctr]->get_brief());
-                user->message("\n");
+                user->message("- " + objs[ctr]->get_brief()->to_string(user) + "\n");
             }
             user->message("-----\n");
         } else {
-            user->message("Nie ma nic w ");
-            user->send_phrase(tmp[0]->get_brief());
-            user->message(".\n");
+            user->message("Nie ma nic w " + tmp[index]->get_brief()->to_string(user) + ".\n");
         }
+        return;
+    }
+
+    sscanf(str, "%d %s", index, str);
+    if (!index)
+        index = 1;
+    index--;
+    if (index < 0) {
+        user->message("W marzeniach.\n");
         return;
     }
 
@@ -275,18 +292,22 @@ static void cmd_look(object user, string cmd, string str)
         user->message("Nie widzisz żadnego '" + str + "'.\n");
         return;
     }
+    if (index >= sizeof(tmp)) {
+        user->message("Nie ma tak dużo '" + str + "' w okolicy.\n");
+        return;
+    }
 
     if(sizeof(tmp) > 1) 
         user->message("Więcej niż jeden taki jest tutaj. "
-                + "Sprawdziłeś pierwszy.\n\n");
+                + "Sprawdzasz " + tmp[index]->get_brief()->to_string(user) + ".\n\n");
 
-    if(cmd[0] == 'z' && tmp[0]->get_examine()) 
-        user->send_phrase(tmp[0]->get_examine());
+    if(cmd[0] == 'z' && tmp[index]->get_examine()) 
+        user->send_phrase(tmp[index]->get_examine());
     else
-        user->send_phrase(tmp[0]->get_look());
+        user->send_phrase(tmp[index]->get_look());
 
-    if (cmd[0] == 'z' && tmp[0]->get_mobile() && tmp[0]->get_mobile()->get_user()) {
-        objs = tmp[0]->objects_in_container();
+    if (cmd[0] == 'z' && tmp[index]->get_mobile() && tmp[index]->get_mobile()->get_user()) {
+        objs = tmp[index]->objects_in_container();
         if (objs && sizeof(objs)) {
             msg = "";
             for (ctr = 0; ctr < sizeof(objs); ctr++) {
@@ -301,10 +322,10 @@ static void cmd_look(object user, string cmd, string str)
         }
     }
 
-    if (cmd[0] == 'z' && tmp[0]->get_quality()) {
+    if (cmd[0] == 'z' && tmp[index]->get_quality()) {
         msg = "\n------\n";
-        durability = (float)tmp[0]->get_durability();
-        damage = (float)tmp[0]->get_cur_durability() / durability;
+        durability = (float)tmp[index]->get_durability();
+        damage = (float)tmp[index]->get_cur_durability() / durability;
         if (damage == 1.0)
             msg += "Jest w dobrym stanie. ";
         else if (damage < 1.0 && damage >= 0.8)
