@@ -240,10 +240,10 @@ string mixed_sprint(mixed data) {
     return tmp + "])";
 
   case T_OBJECT:
-    return "<Object (" + object_name(data) + ")>";
+    return "<Obiekt (" + object_name(data) + ")>";
 
   default:
-    error("Unrecognized DGD type in mixed_sprint");
+    error("Nieznany typ DGD w mixed_sprint");
   }
 }
 
@@ -357,7 +357,7 @@ string* alpha_sort_list(string* list) {
   }
 
   /* We shouldn't actually get here */
-  error("Internal error sorting strings!");
+  error("Wewnętrzny błąd w sortowaniu łańcuchów!");
 }
 
 

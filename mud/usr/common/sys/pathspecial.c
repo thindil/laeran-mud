@@ -48,5 +48,5 @@ void set_game_path_object(object new_obj) {
   if(previous_program() == CONFIGD)
     game_path_object = new_obj;
   else
-    error("Only ConfigD can set the game_path_object!");
+    error("Tylko ConfigD może ustawiać game_path_object!");
 }

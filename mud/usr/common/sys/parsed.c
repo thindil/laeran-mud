@@ -57,17 +57,17 @@ void upgraded(varargs int clone) {
   grammar_file = read_file(NL_GRAMMAR_FILE);
 
   if (grammar_file == nil) {
-    error("Error reading grammar from file " + NL_GRAMMAR_FILE);
+    error("Błąd odczytywania gramatyki z pliku " + NL_GRAMMAR_FILE);
   }
   if (token_file == nil) {
-    error("Error reading token grammar from file " + NL_TOKEN_FILE);
+    error("Błąd odczytywania tokenów gramatycznych z pliku " + NL_TOKEN_FILE);
   }
 
-  LOG("Loaded token file:\n");
+  LOG("Odczytano plik tokenów:\n");
   LOG(token_file);
   LOG("\n");
   LOG("******************************************************\n");
-  LOG("Loaded grammar file:\n");
+  LOG("Odczytano plik gramatyki:\n");
   LOG(grammar_file);
   LOG("\n");
 }
@@ -140,7 +140,7 @@ private string* pos_grammars(void) {
 	output += ")/\n";
       }
     } else {
-      output += "# Skipping " + make_string_from_pos_bits(ctr) + "\n";
+      output += "# Pominięto " + make_string_from_pos_bits(ctr) + "\n";
     }
   }
 
@@ -241,7 +241,7 @@ private void set_grammar(void) {
     LOG("*********************************************\n");
     LOG("*********************************************\n");
     LOG("*********************************************\n");
-    LOG("Setting grammar:\n" + grammar + "\n");
+    LOG("Ustawianie gramatyki:\n" + grammar + "\n");
   }
 }
 
@@ -253,7 +253,7 @@ mixed *parse_cmd(string cmd){
   set_grammar();
 
   LOG("*********************************************\n");
-  LOG("Parsing string: " + cmd + "$\n");
+  LOG("Parsowanie stringa: " + cmd + "$\n");
 
   if(!cmd || STRINGD->is_whitespace(cmd))
     return ({ });
@@ -263,7 +263,7 @@ mixed *parse_cmd(string cmd){
 
     return ret;
   } : {
-    error("Parsing failed.  Command is '" + cmd + "'.");
+    error("Parsowanie nieudane. Komenda to '" + cmd + "'.");
     return nil;
   }
 }

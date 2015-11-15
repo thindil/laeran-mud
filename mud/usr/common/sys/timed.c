@@ -78,16 +78,16 @@ void set_heart_beat(int how_often, string funcname, mixed args...) {
     return;
 
   if((how_often >= TIMED_HIGHEST) || (how_often <= 0)) {
-    error("Illegal value for how_often in TIMED::periodic_call_out!");
+    error("Nieprawidłowa wartość dla how_often w TIMED::periodic_call_out!");
   }
 
   if(per_queue[how_often][object_name(previous_object())]) {
-    error("Already have a heart_beat registered for "
+    error("Masz już zarejestrowany heart_beat dla "
 	  + object_name(previous_object()) + "!\n"
-	  + "Unregister it first!");
+	  + "Wyrejestruj go najpierw!");
   }
 
-  LOGD->write_syslog("Setting up periodic call_out in TIMED", LOG_VERBOSE);
+  LOGD->write_syslog("Ustawianie okresowego call_out w TIMED", LOG_VERBOSE);
   per_queue[how_often][object_name(previous_object())]
     = ({ funcname, args });
   if(per_call_out[how_often] <= 0) {
@@ -112,7 +112,7 @@ void stop_heart_beat(int how_often) {
 private void priv_start_call_out(int how_often) {
   if(per_call_out[how_often] > 0) {
     LOGD->write_syslog("Call_out #" + how_often
-		       + " is already started in TIMED::priv_start_call_out!",
+		       + " jest już rozpoczęty w TIMED::priv_start_call_out!",
 		       LOG_WARNING);
     return;
   }
@@ -120,12 +120,12 @@ private void priv_start_call_out(int how_often) {
     per_call_out[how_often] = call_out("__priv_co_hook", delay_tab[how_often],
 				       how_often);
   } else {
-    LOGD->write_syslog("Trying to schedule zero-time callout!", LOG_ERR);
+    LOGD->write_syslog("Próba zaplanowania bezczasowego callout!", LOG_ERR);
   }
 
   if(per_call_out[how_often] <= 0) {
-    LOGD->write_syslog("Can't schedule call_out # " + how_often
-		       + " in TIMED::priv_start_call_out!", LOG_ERROR);
+    LOGD->write_syslog("Nie mogę zaplanować call_out # " + how_often
+		       + " w TIMED::priv_start_call_out!", LOG_ERROR);
     per_call_out[how_often] = 0;
   }
 }
@@ -135,15 +135,15 @@ private void priv_stop_call_out(int how_often) {
 
   if(per_call_out[how_often] <= 0) {
     LOGD->write_syslog("Call_out #" + how_often
-		       + " is already stopped in TIMED::priv_stop_call_out!",
+		       + " jest już zatrzymany w TIMED::priv_stop_call_out!",
 		       LOG_WARNING);
     return;
   }
   ret = remove_call_out(per_call_out[how_often]);
   if(ret < 0) {
-    LOGD->write_syslog("Call_out #" + how_often + ", handle #"
+    LOGD->write_syslog("Call_out #" + how_often + ", uchwyt #"
 		       + per_call_out[how_often]
-		       + " doesn't exist in TIMED::priv_stop_call_out!",
+		       + " nie istnieje w TIMED::priv_stop_call_out!",
 		       LOG_WARNING);
   }
   per_call_out[how_often] = 0;
@@ -155,7 +155,7 @@ void __priv_co_hook(int how_often) {
   object call_obj;
 
   if(!KERNEL()) {
-    error("TIMED::__priv_co_hook can be called only by KERNEL code!");
+    error("TIMED::__priv_co_hook może być wywołany tylko przed kod KERNEL!");
   }
 
   /* Schedule the next call */
@@ -169,7 +169,7 @@ void __priv_co_hook(int how_often) {
     if(call_obj) {
       call_other(call_obj, tmp[0], tmp[1]...);
     } else {
-      LOGD->write_syslog("Can't find object " + keys[ctr] + " to call!",
+      LOGD->write_syslog("Nie mogę znaleźć obiektu " + keys[ctr] + " do wywołania!",
 			 LOG_WARN);
       stop_object_call_out(how_often, keys[ctr]);
     }

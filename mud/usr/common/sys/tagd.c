@@ -22,20 +22,20 @@ private void check_value_type(int type, mixed value) {
   if(typeof(value) == type || typeof(value) == T_NIL)
     return;
   
-  error("Type mismatch:  type " + typeof(value)
-	+ " won't fit into a tag of type " + type + "!");
+  error("Pomyłka w typach:  typ " + typeof(value)
+	+ " nie pasuje do tagu o typie " + type + "!");
 }
 
 void new_mobile_tag(string name, int type,
 		    varargs string get_function, string set_function) {
   if(!GAME() && !COMMON() && !SYSTEM())
-    error("Only game code can create new mobile tag types!");
+    error("Tylko uprzywilejowany kod może tworzyć nowe tagi dla mobów!");
 
   if(mobile_tags[name])
-    error("Mobile tag type '" + name + "' already exists!");
+    error("Tag dla mobków '" + name + "' już istnieje!");
 
   if(type <= T_NIL || type > T_MAPPING)
-	error(type + " is not a valid type for a tag!");
+	error(type + " nie jest prawidłowym typem dla tagu!");
 
   mobile_tags[name] = ({ type, get_function, set_function });
 }
@@ -44,19 +44,19 @@ void new_object_tag(string name, int type,
 		    varargs string get_function, string set_function,
 		    int inherit_type) {
   if(!GAME() && !COMMON() && !SYSTEM())
-    error("Only game code can create new object tag types!");
+    error("Tylko uprzywilejowany kod może tworzyć nowe tagi dla obiektów!");
 
   if(object_tags[name])
-    error("Object tag type '" + name + "' already exists!");
+    error("Tag dla obiektów '" + name + "' już istnieje!");
 
   if(type <= T_NIL || type > T_MAPPING)
-	error(type + " is not a valid type for a tag!");
+	error(type + " nie jest prawidłowym typem dla tagu!");
 
   if(inherit_type < TAG_INHERIT_NONE || inherit_type > TAG_INHERIT_MAX)
-    error("Don't recognize TAG_INHERIT number " + inherit_type + " as a valid type!");
+    error("Nie rozpoznaję numeru TAG_INHERIT " + inherit_type + " jako prawidłowego numeru!");
 
   if(inherit_type == TAG_INHERIT_MERGE && type == T_OBJECT) {
-	error("Can't automatically merge two or more objects.  Change object type or inherit type!");
+	error("Nie mogę atomatycznie połączyć dwóch lub więcej obiektów. Zmień typ dziedziczenia albo obiektu!");
   }
 
   object_tags[name] = ({ type, get_function, set_function, inherit_type });
@@ -66,14 +66,14 @@ mixed mobile_get_tag_value(object mobile, string name) {
   mixed *tag_arr;
 
   if(!GAME() && !COMMON() && !SYSTEM())
-    error("Only Game code can get mobile tag values!");
+    error("Tylko uprzywilejowany kod może pobierać wartości tagów mobili!");
 
   if(function_object("set_number", mobile) != MOBILE)
-    error("Can only call mobile_get_tag_value on mobiles!");
+    error("Można wywoływać mobile_get_tag_value tylko na mobkach!");
 
   tag_arr = mobile_tags[name];
   if(!tag_arr)
-    error("No such mobile tag type as '" + name + "'!");
+    error("Nie ma takiego tagu dla mobili jak '" + name + "'!");
 
   return call_other(mobile, (tag_arr[1] ? tag_arr[1] : "get_tag"), name);
 }
@@ -82,14 +82,14 @@ void mobile_set_tag_value(object mobile, string name, mixed value) {
   mixed *tag_arr;
 
   if(!GAME() && !COMMON() && !SYSTEM())
-    error("Only Game code can set mobile tag values!");
+    error("Tylko uprzywilejowany kod może ustawiać tagi dla mobili!");
 
   if(function_object("set_number", mobile) != MOBILE)
-    error("Can only call mobile_set_tag_value on mobiles!");
+    error("Można wywoływać call mobile_set_tag_value tylko na mobkach!");
 
   tag_arr = mobile_tags[name];
   if(!tag_arr)
-    error("No such mobile tag type as '" + name + "'!");
+    error("Nie ma takiego tagu dla mobili jak '" + name + "'!");
 
   check_value_type(tag_arr[0], value);
 
@@ -103,14 +103,14 @@ mixed object_get_tag_value(object obj, string name) {
   int     ctr;
 
   if(!GAME() && !COMMON() && !SYSTEM())
-    error("Only Game code can get object tag values!");
+    error("Tylko uprzywilejowany kod może pobierać wartości tagów dla obiektów!");
 
   if(function_object("set_number", obj) != OBJECT)
-    error("Can only call object_get_tag_value on objects!");
+    error("Można wywoływać object_get_tag_value tylko na obiektach!");
 
   tag_arr = object_tags[name];
   if(!tag_arr)
-    error("No such object tag type as '" + name + "'!");
+    error("Nie ma takiego tagu obiektów jak '" + name + "'!");
 
   tag_val = call_other(obj, (tag_arr[1] ? tag_arr[1] : "get_tag"), name);
   if(tag_val) return tag_val;
@@ -151,14 +151,14 @@ void object_set_tag_value(object obj, string name, mixed value) {
   mixed *tag_arr;
 
   if(!GAME() && !COMMON() && !SYSTEM())
-    error("Only Game code can set object tag values!");
+    error("Tylko uprzywilejowany kod może ustawiać wartości tagów dla obiektów!");
 
   if(function_object("set_number", obj) != OBJECT)
-    error("Can only call object_set_tag_value on objects!");
+    error("Można wywoływać object_set_tag_value tylko na obiektach!");
 
   tag_arr = object_tags[name];
   if(!tag_arr)
-    error("No such object tag type as '" + name + "'!");
+    error("Nie ma takiego tagu dla obiektów jak '" + name + "'!");
 
   check_value_type(tag_arr[0], value);
 
@@ -167,7 +167,7 @@ void object_set_tag_value(object obj, string name, mixed value) {
 
 mixed get_tag_value(object tagged_object, string name) {
   if(!GAME() && !COMMON() && !SYSTEM())
-    error("Only game code may call get_tag_value!");
+    error("Tylko uprzywilejowany kod może wywoływać get_tag_value!");
 
   switch(function_object("set_number", tagged_object)) {
   case OBJECT:
@@ -175,13 +175,13 @@ mixed get_tag_value(object tagged_object, string name) {
   case MOBILE:
     return mobile_get_tag_value(tagged_object, name);
   default:
-    error("Don't recognized tagged object type in get_tag_value!");
+    error("Nie rozpoznany typ tagu w get_tag_value!");
   }
 }
 
 void set_tag_value(object tagged_object, string name, mixed value) {
   if(!GAME() && !COMMON() && !SYSTEM())
-    error("Only game code may call set_tag_value!");
+    error("Tylko uprzywilejowany kod może wywoływać set_tag_value!");
 
   switch(function_object("set_number", tagged_object)) {
   case OBJECT:
@@ -191,41 +191,41 @@ void set_tag_value(object tagged_object, string name, mixed value) {
     mobile_set_tag_value(tagged_object, name, value);
     return;
   default:
-    error("Don't recognize tagged object type in set_tag_value!");
+    error("Nie rozpoznany typ tagu w set_tag_value!");
   }
 }
 
 string* mobile_tag_names(void) {
   if(!GAME() && !COMMON() && !SYSTEM())
-    error("Only game code may call mobile_tag_names!");
+    error("Tylko uprzywilejowany kod może wywoływać mobile_tag_names!");
 
   return map_indices(mobile_tags);
 }
 
 string* object_tag_names(void) { 
   if(!GAME() && !COMMON() && !SYSTEM())
-    error("Only game code may call object_tag_names!");
+    error("Tylko uprzywilejowany kod może wywoływać object_tag_names!");
 
   return map_indices(object_tags);
 }
 
 mixed* mobile_all_tags(object mobile) {
   if(!GAME() && !COMMON() && !SYSTEM())
-    error("Only game code may call mobile_all_tags!");
+    error("Tylko uprzywilejowany kod może wywoływać mobile_all_tags!");
 
   return mobile->get_all_tags();
 }
 
 mixed* object_all_tags(object obj) {
   if(!GAME() && !COMMON() && !SYSTEM())
-    error("Only game code may call object_all_tags!");
+    error("Tylko uprzywilejowany kod może wywoływać object_all_tags!");
 
   return obj->get_all_tags();
 }
 
 int mobile_tag_type(string tag_name) {
   if(!GAME() && !COMMON() && !SYSTEM())
-    error("Only game code may call mobile_tag_type!");
+    error("Tylko uprzywilejowany kod może wywoływać mobile_tag_type!");
 
   if(mobile_tags[tag_name])
     return mobile_tags[tag_name][0];
@@ -235,7 +235,7 @@ int mobile_tag_type(string tag_name) {
 
 int object_tag_type(string tag_name) {
   if(!GAME() && !COMMON() && !SYSTEM())
-    error("Only game code may call object_tag_type!");
+    error("Tylko uprzywilejowany kod może wywoływać object_tag_type!");
 
   if(object_tags[tag_name])
     return object_tags[tag_name][0];
@@ -286,7 +286,7 @@ string to_unq_text(int number)
 int num_tags(void)
 {
   if(!GAME() && !COMMON() && !SYSTEM())
-    error("Only game code may call num_tags!");
+    error("Tylko uprzywilejowany kod może wywoływać num_tags!");
 
   return sizeof(map_indices(object_tags)) + sizeof(map_indices(mobile_tags));
 }

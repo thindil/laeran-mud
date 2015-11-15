@@ -20,7 +20,7 @@ mapping segment_map;
 
 static void create(varargs int clone) {
   if(clone)
-    error("Cloning zoned is not allowed!");
+    error("Nie można sklonować ZONED!");
 
   dtd::create(clone);
 
@@ -56,7 +56,7 @@ void init_from_file(string file) {
     return;
 
   if(strlen(file) > status(ST_STRSIZE) - 3)
-    error("Zonefile is too large in ZONED->init_from_file!");
+    error("Plik stref jest za duży w ZONED->init_from_file!");
   from_unq_text(file);
 }
 
@@ -128,7 +128,7 @@ void from_dtd_unq(mixed* unq)
     mapping attributes;
 
     if(!SYSTEM() && !COMMON() && !GAME())
-        error("Calling ZoneD:from_dtd_unq unprivileged!");
+        error("Wywołanie ZoneD:from_dtd_unq bez uprawnień!");
 
     ctr = unq;
     while (sizeof(ctr) > 0) {
@@ -200,7 +200,7 @@ int get_segment_zone(int segment) {
 
 void set_segment_zone(int segment, int zonenum) {
   if(segment < 0 || zonenum < 0 || zonenum > sizeof(zone_table))
-    error("Segment or zone doesn't exist in set_segment_zone!");
+    error("Segment lub strefa nie istnieją w set_segment_zone!");
 
   if(segment_map[segment] != nil) {
     int oldzone;
@@ -218,7 +218,7 @@ int get_zone_for_room(object room) {
     return -1;
 
   if(!room)
-    error("Invalid room passed to ZoneD:get_zone_for_room!");
+    error("Nieprawidłowy pokój przekazany do ZoneD:get_zone_for_room!");
 
   roomnum = room->get_number();
   segment = roomnum / 100;
@@ -237,7 +237,7 @@ int add_new_zone( string zonename ){
 
     return num_zones()-1;
   } else {
-    error("Illegal or (nil) zone name given to ZONED!");
+    error("Nieprawidłowa lub (nil) nazwa strefy podana do ZONED!");
   }
 }
 

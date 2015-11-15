@@ -13,7 +13,7 @@ void upgraded(varargs int clone);
 
 static void create(varargs int clone) {
   if(clone) {
-    error("Can't clone objnumd!");
+    error("Nie można klonować objnumd!");
   }
   segments = ([ ]);
   segments_full = -1;
@@ -63,7 +63,7 @@ int get_highest_segment(void) {
 
 private void set_segment_owner(int segment, int owner) {
   if(segment < 0)
-    error("Can't allocate negative segment in set_segment_owner!");
+    error("Nie można przypisywać ujemnych segmentów w set_segment_owner!");
 
   if(segments[segment]) {
     segments[segment][0] = owner;
@@ -87,12 +87,12 @@ int allocate_new_segment(void) {
 
   owner = owner_for_program(previous_program());
   if(owner == -1)
-    error("Unknown owner " + previous_program()
-	  + " calling allocate_new_segment!");
+    error("Nieznany właściciel " + previous_program()
+	  + " wywołał allocate_new_segment!");
 
   seg = segments_full + 1;
   if(get_segment_owner(seg)) {
-    error("Internal error -- attempting to reassign segment!");
+    error("Wewnętrzny błąd -- próba ponownego przydzielenia segmentu!");
   }
 
   set_segment_owner(seg, owner);
@@ -101,14 +101,14 @@ int allocate_new_segment(void) {
 }
 
 private void unallocate_segment(int segment) {
-  error("Should not use?");
+  error("Nie powinno być używane?");
 
   if(segments_full >= segment) {
     segments_full = segment - 1;
   }
 
   if(segment == highest_segment) {
-    error("Haven't implemented recalculating highest segment!");
+    error("Nie zaimplementowano przeliczanie najwyższego segmentu!");
   }
 
   segments[segment] = nil;
@@ -123,14 +123,14 @@ void allocate_in_segment(int segment, int tr_num, object obj) {
   int    owner;
 
   if(tr_num < 0)
-    error("Negative tracking number in allocate_in_segment!");
+    error("Ujemny numer śledzenia w allocate_in_segment!");
   if(tr_num / 100 != segment)
-    error("Tracking number not in segment in allocate_in_segment!");
+    error("Śledzony numer nie jest w segmencie w allocate_in_segment!");
 
   owner = owner_for_program(previous_program());
   if(owner == -1)
-    error("Unknown owner " + previous_program()
-	  + " calling allocate_in_segment!");
+    error("Nieznany właściciel " + previous_program()
+	  + " wywołał allocate_in_segment!");
 
   offs = tr_num % 100;
   seg = segments[segment];
@@ -139,19 +139,19 @@ void allocate_in_segment(int segment, int tr_num, object obj) {
     set_segment_owner(segment, owner);
     seg = segments[segment];
     if(!seg)
-      error("Cannot allocate segment -- why?");
+      error("Nie można przydzielić segmentu -- dlaczego?");
   }
   if(seg[0] != owner)
-    error(owners[owner] + " can't allocate object " + tr_num + " in segment "
+    error(owners[owner] + " nie można przydzielić obiektu " + tr_num + " do segmentu "
 	  + segment + "!\n"
-	  + "That segment is owned by " + owners[seg[0]] + "!");
+	  + "Ten segment jest posiadany przez " + owners[seg[0]] + "!");
 
   if(sizeof(segments[segment][1]) <= offs) {
     seg[1] += allocate(offs - sizeof(seg[1]) + 1);
   }
 
   if(seg[1][offs])
-    error("Reassigning used number #" + tr_num + " in allocate_in_segment!");
+    error("Ponowne przyznawanie użytego numeru #" + tr_num + " w allocate_in_segment!");
 
   seg[1][offs] = obj;
 }
@@ -165,15 +165,15 @@ void remove_from_segment(int segment, int tr_num) {
 
   seg = segments[segment];
   if(!seg)
-    error("Can't remove from unallocated segment!");
+    error("Nie można usuwać z nieprzydzielonego segmentu!");
 
   if(tr_num / 100 != segment)
-    error("Can't remove tr_num from different segment!");
+    error("Nie można usunąć tr_num z innego segmentu!");
 
   offs = tr_num % 100;
 
   if(sizeof(seg[1]) <= offs || !seg[1][offs])
-    error("Object not in segment in remove_from_segment!");
+    error("Obiekt nie jest w segmencie w remove_from_segment!");
 
   seg[1][offs] = nil;
 }
@@ -186,7 +186,7 @@ object get_object(int tr_num) {
   object ret;
 
   if(tr_num < 0)
-    error("Tracking numbers must be >= 0!");
+    error("Numer śledzony musi być większy od zera!");
   segment = tr_num / 100;
   offs = tr_num % 100;
   owner = segments[segment] ? segments[segment][0] : -1;
@@ -249,8 +249,8 @@ int* objects_in_segment(int segment) {
 
   seg = segments[segment];
   if(!seg || previous_program() != owners[seg[0]])
-    error("Can't get listing of segment " + segment
-	  + " that you don't own!");
+    error("Nie można wylistować segmentu " + segment
+	  + " ponieważ nie jesteś jego właścielem!");
 
   objs = ({ });
   for(ctr = 0, tr_num = segment*100; ctr < sizeof(seg[1]); ctr++, tr_num++) {

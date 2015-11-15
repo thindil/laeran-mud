@@ -29,7 +29,7 @@ int     num_soc;
 
 static void create(varargs int clone) {
   if(clone) {
-    error("Can't clone CONFIGD!");
+    error("Nie można klonować SOULD!");
   }
 
   sould_strings = ([ ]);
@@ -129,8 +129,8 @@ void from_dtd_unq(mixed* unq) {
                         entry[SOULD_OTHER_TARGET] = soc_unq[0][1];
                         break;
                     default:
-                        error("Unrecognized tag '" + STRINGD->mixed_sprint(soc_unq[0])
-                                + "' in social entry parsing SoulD file!");
+                        error("Nieznany tag '" + STRINGD->mixed_sprint(soc_unq[0])
+                                + "' w socjalnej komendzie w pliku SoulD!");
                         break;
                 }
                 soc_unq = soc_unq[1..];
@@ -203,7 +203,7 @@ string get_social_string(object user, object body,
     }
 
     if(!unq)
-        error("Can't resolve UNQ for social verb '" + verb + "'!");
+        error("Nie mogę odczytać UNQ dla socjalnej komendy '" + verb + "'!");
 
     /* Go through and replace tags */
     result = "";
@@ -222,9 +222,9 @@ string get_social_string(object user, object body,
             phr = body->get_brief();
             result += phr->to_string(user);      
         } else 
-            error("Unrecognized tag " + STRINGD->mixed_sprint(unq[0])
+            error("Nieznany tag " + STRINGD->mixed_sprint(unq[0])
                     + "/" + STRINGD->mixed_sprint(unq[1])
-                    + " in string substitution for social verb '" + verb + "'");
+                    + " w łańcuchu dla komendy socjalnej '" + verb + "'");
         unq = unq[2..];
     }
 
