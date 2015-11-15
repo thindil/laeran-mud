@@ -92,8 +92,8 @@ static void create(varargs int clone)
         pending_removed_nouns = ({ });
         pending_removed_adjectives = ({ });
         if (!registered) {
-            TIMED->set_heart_beat(TIMED_TEN_MINUTES, "heartbeat");
             registered = 1;
+            TIMED->set_heart_beat(TIMED_TEN_MINUTES, "heartbeat");
         }
     }
 }
@@ -127,6 +127,11 @@ void destructed(int clone) {
   if(obj::get_location()) {
     LOGD->write_syslog("Niszczenie POKOJU bez usunięcia go!",
 		       LOG_WARN);
+  }
+
+  if (registered) {
+      registered = 0;
+      TIMED->stop_heart_beat(TIMED_TEN_MINUTES);
   }
 
   obj::destructed(clone);

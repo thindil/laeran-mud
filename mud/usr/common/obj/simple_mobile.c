@@ -20,8 +20,8 @@ static void create(varargs int clone)
 void upgraded(varargs int clone)
 {
     if (clone && !registered) {
-        TIMED->set_heart_beat(TIMED_HALF_MINUTE, "heart_beat");
         registered = 1;
+        TIMED->set_heart_beat(TIMED_HALF_MINUTE, "heart_beat");
     }
 }
 
