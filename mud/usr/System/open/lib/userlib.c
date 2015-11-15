@@ -338,7 +338,10 @@ static void show_room_to_player(object ROOM location)
             exit = location->get_exit_num(ctr);
             phr = EXITD->get_name_for_dir(exit->get_direction());
             tmp = "- " + phr->to_string(this_object()) + ": ";
-            phr = exit->get_destination()->get_brief();
+            if (exit->is_open())
+                phr = exit->get_destination()->get_brief();
+            else
+                phr = exit->get_brief();
             tmp += phr->to_string(this_object());
             if (!exit->is_open())
                 tmp += " [Zamknięte]";
