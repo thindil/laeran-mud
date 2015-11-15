@@ -6,6 +6,7 @@
 #include <phantasmal/log.h>
 #include <phantasmal/version.h>
 #include <phantasmal/lpc_names.h>
+#include <phantasmal/timed.h>
 
 #include <status.h>
 #include <type.h>
@@ -206,6 +207,16 @@ static void create(varargs int clone)
   /* Start up logging channels in the LogD */
   LOGD->start_channels();
 
+  /* Start up ChannelD, TimeD and SoulD so that they'll be available
+     to GAME_INITD */
+  if(!find_object(CHANNELD)) 
+      compile_object(CHANNELD);
+  if(!find_object(SOULD)) 
+      compile_object(SOULD);
+  if(!find_object(TIMED)) 
+      compile_object(TIMED); 
+
+
   /* Compile, find and install the TelnetD */
   if(!find_object(TELNETD)) { compile_object(TELNETD); }
   "/kernel/sys/userd"->set_telnet_manager(0,find_object(TELNETD));
@@ -217,8 +228,6 @@ static void create(varargs int clone)
   /* Compile the Phrase manager (before HelpD) */
   if(!find_object(PHRASED)) { compile_object(PHRASED); }
 
-  /* driver->message("Parsing help file...\n"); */
-
   /* Set up online help */
   if(!find_object(HELPD)) { compile_object(HELPD); }
 
@@ -227,8 +236,6 @@ static void create(varargs int clone)
     error("Can't load file " + HELP_DTD + "!");
 
   HELPD->load_help_dtd(help_dtd);
-
-  /* driver->message("Loading phantasmal object system...\n"); */
 
   /* Compile the Objnumd and ZoneD */
   if(!find_object(OBJNUMD)) { compile_object(OBJNUMD); }
@@ -245,13 +252,6 @@ static void create(varargs int clone)
       DRIVER->message("Can't read zone list!  Starting blank!\n");
       LOGD->write_syslog("Can't read zone list!  Starting blank!\n", LOG_WARN);
   }
-
-
-  /* Start up ChannelD, TimeD and SoulD so that they'll be available
-     to GAME_INITD */
-  if(!find_object(CHANNELD)) compile_object(CHANNELD);
-  if(!find_object(SOULD)) compile_object(SOULD);
-  if(!find_object(TIMED))   { compile_object(TIMED); }
 
   /* Start appropriate daemons for object, mobile and zone loading */
   if(!find_object(MAPD)) { compile_object(MAPD); }
@@ -293,7 +293,15 @@ static void create(varargs int clone)
     }
   }
 
+  TIMED->set_heart_beat(TIMED_ONE_HOUR, "statedump");
+  TIMED->set_heart_beat(TIMED_ONE_DAY, "save_mud_data", nil, ROOM_DIR, MOB_DIR, ZONE_DIR, SOCIAL_DIR, QUEST_DIR, nil);
+
   ERRORD->done_with_init();
+}
+
+void statedump(void)
+{
+    dump_state();
 }
 
 void save_mud_data(object user, string room_dirname, string mob_dirname,
@@ -306,7 +314,7 @@ void save_mud_data(object user, string room_dirname, string mob_dirname,
 
     ACCESSD->save();
 
-    if(!SYSTEM() && !GAME()) {
+    if(!SYSTEM() && previous_program() != TIMED) {
         error("Only privileged code can call save_mud_data!");
         return;
     }

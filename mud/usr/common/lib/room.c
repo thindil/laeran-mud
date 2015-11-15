@@ -4,6 +4,7 @@
 #include <phantasmal/phrase.h>
 #include <phantasmal/map.h>
 #include <phantasmal/lpc_names.h>
+#include <phantasmal/timed.h>
 
 #include <gameconfig.h>
 
@@ -25,6 +26,7 @@ private int  pending_detail_of;
 private int* pending_removed_details;
 private object* pending_removed_nouns;
 private object* pending_removed_adjectives;
+private int  registered;
 
 /* Flags */
 /* The objflags field contains a set of boolean object flags */
@@ -64,31 +66,36 @@ private float current_weight, current_volume;
 
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
 
-static void create(varargs int clone) {
-  obj::create(clone);
-  if(clone) {
-    exits = ({ });
+static void create(varargs int clone) 
+{
+    obj::create(clone);
+    if(clone) {
+        exits = ({ });
 
-    current_weight = 0.0;
-    current_volume = 0.0;
-    durability = 100;
-    cur_durability = 100;
+        current_weight = 0.0;
+        current_volume = 0.0;
+        durability = 100;
+        cur_durability = 100;
 
-    weight = volume = length = -1.0;
-    weight_capacity = volume_capacity = length_capacity = -1.0;
-    damage = armor = price = hp = combat_rating = quality = room_type = 0;
-    wearlocations = ({ });
-    body_locations = ({ });
-    damage_res = ([ ]);
-    damage_type = skill = craft_skill = "";
+        weight = volume = length = -1.0;
+        weight_capacity = volume_capacity = length_capacity = -1.0;
+        damage = armor = price = hp = combat_rating = quality = room_type = 0;
+        wearlocations = ({ });
+        body_locations = ({ });
+        damage_res = ([ ]);
+        damage_type = skill = craft_skill = "";
 
-    pending_parents = nil;
-    pending_location = -1;
-    pending_detail_of = -1;
-    pending_removed_details = ({ });
-    pending_removed_nouns = ({ });
-    pending_removed_adjectives = ({ });
-  }
+        pending_parents = nil;
+        pending_location = -1;
+        pending_detail_of = -1;
+        pending_removed_details = ({ });
+        pending_removed_nouns = ({ });
+        pending_removed_adjectives = ({ });
+        if (!registered) {
+            TIMED->set_heart_beat(TIMED_TEN_MINUTES, "heartbeat");
+            registered = 1;
+        }
+    }
 }
 
 void destructed(int clone) {
@@ -130,6 +137,17 @@ void upgraded(varargs int clone)
     obj::upgraded();
 }
 
+void heartbeat(void)
+{
+    mixed tag;
+    
+    tag = TAGD->get_tag_value(this_object(), "DropTime");
+    if (tag && (time() - tag >= 300)) {
+        if (get_location())
+            get_location()->remove_from_container(this_object());
+        destruct_object(this_object());
+    }
+}
 
 /*
  * Get and set functions for fields

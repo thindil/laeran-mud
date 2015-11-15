@@ -4,6 +4,7 @@
 
 #include <phantasmal/log.h>
 #include <phantasmal/lpc_names.h>
+#include <phantasmal/timed.h>
 
 #include <type.h>
 #include <limits.h>
@@ -17,6 +18,7 @@ void set_segment_zone(int segment, int zonenum);
 
 mixed*  zone_table;
 mapping segment_map;
+private int registered;
 
 static void create(varargs int clone) {
   if(clone)
@@ -28,6 +30,11 @@ static void create(varargs int clone) {
 
   zone_table = ({ ({ "Unzoned", ([ ]), ([ "weather": "none" ]) }) });
   segment_map = ([ ]);
+
+  if (!registered) {
+      TIMED->set_heart_beat(TIMED_TEN_MINUTES, "heartbeat");
+      registered = 1;
+  }
 
   upgraded();
 }
@@ -255,4 +262,46 @@ void set_attribute(int zonenum, string attribute, string value)
         return;
 
     zone_table[zonenum][2][attribute] = value;
+}
+
+void heartbeat(void) 
+{
+    int i, roll, j;
+    object obj;
+    string weather;
+    string *weathers;
+    object *users;
+
+    weathers = ({ "clear", "overcast", "rain" });
+    users = users();
+    for(i = 0; i < num_zones(); i++) {
+        weather = get_attribute(i, "weather");
+        if (weather != "none" && random(100) > 50) {
+            roll = random(sizeof(weathers));
+            if (weather != weathers[roll]) {
+                weather = weathers[roll];
+                set_attribute(i, "weather", weather);
+                for (j = 0; j < sizeof(users); j++) {
+                    if (get_zone_for_room(users[j]->get_location()) != i)
+                        continue;
+                    if (users[j]->get_location()->get_room_type() == 1
+                            || users[j]->get_location()->get_room_type() == 2) {
+                        switch (weather) {
+                            case "clear":
+                                users[j]->message("Przejaśnia się.\n");
+                                break;
+                            case "overcast":
+                                users[j]->message("Zbierają się chmury.\n");
+                                break;
+                            case "rain":
+                                users[j]->message("Zaczyna padać.\n");
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }   
+            }
+        }
+    }
 }

@@ -15,7 +15,6 @@
 #define GAME_INITD             "/usr/game/initd"
 
 #define GAME_DRIVER            "/usr/game/sys/gamedriver"
-#define HEART_BEAT             "/usr/game/sys/heart_beat"
 #define COMBAT                 "/usr/game/obj/combat"
 #define QUESTD_DTD             "/usr/game/dtd/questd.dtd"
 #define QUEST_DIR              "/usr/game/object/quests"

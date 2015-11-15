@@ -51,11 +51,6 @@ static void create(void) {
       compile_object(WORLDD);
   WORLDD->load_world_data();
 
-  /* Set up heart_beat functions */
-  if(!find_object(HEART_BEAT))
-      compile_object(HEART_BEAT);
-  HEART_BEAT->set_up_heart_beat();
-
   if(!find_object(COMBAT))
       compile_object(COMBAT);
 
