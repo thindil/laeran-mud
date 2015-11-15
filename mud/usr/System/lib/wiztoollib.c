@@ -537,36 +537,37 @@ static void cmd_full_rebuild(object user, string cmd, string str) {
 
 
 static void cmd_list_mobiles(object user, string cmd, string str) {
-  int*   mobiles;
-  int    ctr;
-  object mob, phr;
-  string tmp;
+    int*   mobiles;
+    int    ctr;
+    object mob, phr;
+    string tmp;
 
-  if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\n");
-    return;
-  }
-
-  mobiles = MOBILED->all_mobiles();
-
-  for(ctr = 0; ctr < sizeof(mobiles); ctr++) {
-    mob = MOBILED->get_mobile_by_num(mobiles[ctr]);
-    tmp = ralign("" + mobiles[ctr], 8);
-    tmp += "   ";
-
-    tmp += ralign(mob->get_type(), 8);
-    tmp += "     ";
-
-    if(mob->get_body()) {
-      phr = mob->get_body()->get_brief();
-      tmp += phr->to_string(user);
-    } else {
-      tmp += "<bodiless mob>";
+    if(str && !STRINGD->is_whitespace(str)) {
+        user->message("Usage: " + cmd + "\n");
+        return;
     }
-    tmp += "\n";
-    user->message(tmp);
-  }
-  user->message("-----\n");
+
+    mobiles = MOBILED->all_mobiles();
+
+    tmp = "";
+    for(ctr = 0; ctr < sizeof(mobiles); ctr++) {
+        mob = MOBILED->get_mobile_by_num(mobiles[ctr]);
+        tmp += ralign("" + mobiles[ctr], 8);
+        tmp += "   ";
+
+        tmp += ralign(mob->get_type(), 8);
+        tmp += "     ";
+
+        if(mob->get_body()) {
+            phr = mob->get_body()->get_brief();
+            tmp += phr->to_string(user);
+        } else {
+            tmp += "<bodiless mob>";
+        }
+        tmp += "\n";
+    }
+    tmp += "-----\n";
+    user->message_scroll(tmp);
 }
 
 
