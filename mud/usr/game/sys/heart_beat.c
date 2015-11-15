@@ -23,8 +23,8 @@ void set_up_heart_beat(void)
 /* delete dropped objects, add packages to postman, change weather for zones */
 void heart_beat_clear(void)
 {
-    int *rooms, *mobiles;
-    int i, packages, roll, j;
+    int *rooms;
+    int i, roll, j;
     object obj;
     mixed tag;
     string weather;
@@ -75,18 +75,6 @@ void heart_beat_clear(void)
             if (obj->get_location())
                 obj->get_location()->remove_from_container(obj);
             destruct_object(obj);
-        }
-    }
-
-    mobiles = MOBILED->all_mobiles();
-    for (i = 0; i < sizeof(mobiles); i++) {
-        obj = MOBILED->get_mobile_by_num(mobiles[i]);
-        if (obj->get_type() == "postman") {
-            packages = obj->get_packages();
-            packages += 5;
-            if (packages > 100)
-                packages = 100;
-            obj->set_packages(packages);
         }
     }
 }

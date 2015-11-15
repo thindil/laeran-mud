@@ -2,11 +2,13 @@
 
 #include <phantasmal/lpc_names.h>
 #include <phantasmal/phrase.h>
+#include <phantasmal/timed.h>
 
 inherit MOBILE;
 
 static int packages;
 static string *recipients;
+private int registered; 
 
 /* prototypes */
 void upgraded(varargs int clone);
@@ -25,6 +27,10 @@ void upgraded(varargs int clone)
     if (clone) {
         packages = 5;
         recipients = ({ });
+        if (!registered) {
+            TIMED->set_heart_beat(TIMED_TEN_MINUTES, "heart_beat");
+            registered = 1;
+        }
     }
 }
 
@@ -51,6 +57,13 @@ string* get_recipients(void)
 int get_packages(void)
 {
     return packages;
+}
+
+void heart_beat(void)
+{
+    packages += 5;
+    if (packages > 100)
+        packages = 100;
 }
 
 /* Initiate communication */
