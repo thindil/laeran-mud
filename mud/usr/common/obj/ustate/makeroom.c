@@ -1649,49 +1649,48 @@ static int prompt_length_capacity_input(string input) {
 
 static int prompt_damage_input(string input)
 {
-  int     value;
+    int value;
 
-  value = 0;
+    value = 0;
 
-  if(!input || STRINGD->is_whitespace(input))
-    {
-      send_string("Spróbujmy ponownie.\n");
-      send_string(blurb_for_substate(substate));
+    if(!input || STRINGD->is_whitespace(input)) {
+        send_string("Spróbujmy ponownie.\n");
+        send_string(blurb_for_substate(substate));
 
-      return RET_NORMAL;
+        return RET_NORMAL;
     }
 
-  input = STRINGD->trim_whitespace(input);
+    input = STRINGD->trim_whitespace(input);
 
-  if(sscanf(input, "%d", value) == 1)
-    {
-      if (value < 0)
-	{
-	  send_string("Obrażenia powinny być dodatnie bądź zero. Spróbuj ponownie.\n");
-	  send_string(blurb_for_substate(substate));
+    if(sscanf(input, "%d", value) == 1) {
+        if (value < 0) {
+            send_string("Obrażenia powinny być dodatnie bądź zero. Spróbuj ponownie.\n");
+            send_string(blurb_for_substate(substate));
 
-	  return RET_NORMAL;
-	}
+            return RET_NORMAL;
+        }
     }
-  else if(!STRINGD->stricmp(input, "none"))
-    {
-      value = -1;
-    }
-  else
-    {
-      send_string("Broń powinna zadawać jakieś obrażenia. Spróbuj ponownie.\n");
-      send_string(blurb_for_substate(substate));
-	  
-      return RET_NORMAL;
+    else if(!STRINGD->stricmp(input, "none"))
+        value = -1;
+    else {
+        send_string("Broń powinna zadawać jakieś obrażenia. Spróbuj ponownie.\n");
+        send_string(blurb_for_substate(substate));
+
+        return RET_NORMAL;
     }
 
-  new_obj->set_damage(value);
+    new_obj->set_damage(value);
 
-  send_string("Zaakceptowano obrażenia.\n\n");
-  substate = SS_PROMPT_DAMAGE_TYPE;
-  send_string(blurb_for_substate(substate));
+    send_string("Zaakceptowano obrażenia.\n\n");
+    if (value) {
+        substate = SS_PROMPT_DAMAGE_TYPE;
+        send_string(blurb_for_substate(substate));
+    } else {
+        substate = SS_PROMPT_WEARABLE;
+        push_new_state(US_ENTER_YN, "Obiekt można zakładać na ciało? ");
+    }
 
-  return RET_NORMAL;
+    return RET_NORMAL;
 }
 
 static int prompt_damage_type_input(string input)
@@ -1962,7 +1961,10 @@ static int prompt_hp_input(string input)
   new_obj->set_hp(value);
 
   send_string("Zaakceptowano punkty życia obiektu.\n\n");
-  substate = SS_PROMPT_COMBAT_RATING;
+  if (value)
+      substate = SS_PROMPT_COMBAT_RATING;
+  else
+      substate = SS_PROMPT_SKILL;
   send_string(blurb_for_substate(substate));
 
   return RET_NORMAL;
