@@ -13,6 +13,9 @@ pokoju. Jednak w takim wypadku nie otrzyma się
 jakiejkolwiek nagrody za walkę. Jeżeli wygrasz walkę,
 na miejscu pojawią się zwłoki przeciwnika, z których
 (jeżeli to możliwe) będziesz mógł zebrać zdobycze.
+Same zwłoki przeciwnika można również przemienić w
+pieniądze. Aby dowiedzieć się wiecej na ten temat,
+użyj komendy "pomoc zamien".
 
 }
 
@@ -24,7 +27,10 @@ przeciwnikiem. Jej pełna forma to: 'atakuj <cel>' gdzie
 'cel' musi być żywą istotą (na chwilę obecną jest niemożliwe
 atakowanie innych graczy). Po wpisaniu tej komendy, jeżeli
 wszystko jest w porządku, po paru sekundach rozpoczyna się
-walka.
+walka. Prędkość z jaką atakujesz zależy od Twojej umiejętności 
+w posługiwaniu się wybraną bronią, siły oraz ciężaru broni.
+Dlatego na początku walka może rozpoczynać się z dość dużym
+opóźnieniem.
 
 Zobacz również: śmierć
 }
