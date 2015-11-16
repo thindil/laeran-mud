@@ -228,9 +228,10 @@ static void cmd_look(object user, string cmd, string str)
     if (cmd[0] != 'z') 
         sscanf(str, "na %s", str);
 
-    if(sscanf(str, "w %d %s",index, str) || sscanf(str, "do srodka %d %s", index, str)
-            || sscanf(str, "do %d %s", index, str) || sscanf(str, "pomiedzy %d %s", index, str)) {
-        if (!index)
+    if(sscanf(str, "w %s", str) || sscanf(str, "do srodka %s", str)
+            || sscanf(str, "do %s", str) || sscanf(str, "pomiedzy %s", str)) {
+        sscanf(str, "%d %s", index, str);
+        if (!index) 
             index = 1;
         index--;
         if (index < 0) {
@@ -280,7 +281,7 @@ static void cmd_look(object user, string cmd, string str)
     }
 
     sscanf(str, "%d %s", index, str);
-    if (!index)
+    if (!index) 
         index = 1;
     index--;
     if (index < 0) {

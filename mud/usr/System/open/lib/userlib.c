@@ -381,49 +381,42 @@ static string* string_to_words(string str) {
    their details searched, but not objects inside those details.
 */
 static object* search_contained_objects(object* objs, string str,
-					varargs int only_details) {
-  object *ret, *contents, *details, temp;
-  string *words, err;
-  int ctr, temp2;
+					varargs int only_details) 
+{
+    object *ret, *contents, *details, temp;
+    string *words, err;
+    int ctr, temp2;
 
-  words = string_to_words(str);
-  temp2 = 0;
+    words = string_to_words(str);
+    temp2 = 0;
 
-  ret = ({ });
-  if (sizeof(objs)) {
-    temp = objs[0];
-    temp2 = 1;
-  }
-
-  while(sizeof(objs))
-    {
-      if(objs[0] == location || (!only_details && objs[0]->is_container() && objs[0]->is_open()))
-	{
-	  if (!objs[0]->get_mobile() || is_admin())
-	    {
-	      contents = objs[0]->objects_in_container();
-	      if(contents)
-		{
-		  objs += contents;
-		}
-	    }
-	}
-      
-      if(objs[0]->match_words(this_object(), words))
-	{
-	  ret += ({ objs[0] });
-	}
-
-      details = objs[0]->get_details();
-      if(details && sizeof(details))
-	{
-	  objs += details;
-	}
-
-      objs = objs[1..];
+    ret = ({ });
+    if (sizeof(objs)) {
+        temp = objs[0];
+        temp2 = 1;
     }
 
-  return sizeof(ret) ? ret : nil;
+    while(sizeof(objs))
+    {
+        if(objs[0] == location || (!only_details && objs[0]->is_container() && objs[0]->is_open())) {
+            if (!objs[0]->get_mobile() || is_admin()) {
+                contents = objs[0]->objects_in_container();
+                if(contents)
+                    objs += contents;
+            }
+        }
+
+        if(objs[0]->match_words(this_object(), words))
+            ret += ({ objs[0] });
+
+        details = objs[0]->get_details();
+        if(details && sizeof(details))
+            objs += details;
+
+        objs = objs[1..];
+    }
+
+    return sizeof(ret) ? ret : nil;
 }
 
 private object* find_objects_in_loc(int loc, string str) {
