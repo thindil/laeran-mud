@@ -115,17 +115,17 @@ static void create(varargs int clone)
     if(sscanf(status()[ST_VERSION], "DGD %d.%d", major, minor) != 2) {
       minor = 0;
       if(sscanf(status()[ST_VERSION], "DGD %d", major) != 1) {
-        error("DGD driver version unparseable!");
+        error("Nieznana wersja drivera DGD!");
       }
     }
   }
   
   if((major == 1 && minor < 4)) {
-    error("Need to upgrade to DGD version 1.5 or higher!");
+    error("Musisz zaktualizować DGD do wersji 1.5 lub wyższej!");
   } else if (major > 1 || (major == 1 && minor > 5)) {
-    DRIVER->message("This version of Phantasmal is not tested\n");
-    DRIVER->message("with DGD beyond 1.5.X.  Please upgrade Phantasmal!\n");
-    error("Upgrade Phantasmal!");
+    DRIVER->message("Ta wersja Phantasmal nie była testowana\n");
+    DRIVER->message("z DGD powyżej 1.5.X. Proszę zaktualizować Phantasmal!\n");
+    error("Zaktualizuj Phantasmal!");
   }
 
   /* DGD keeps a separate version number for the Kernel Library.  We
@@ -139,21 +139,21 @@ static void create(varargs int clone)
     if(sscanf(KERNEL_LIB_VERSION, "%d.%d", major, minor) != 2) {
       minor = 0;
       if(sscanf(KERNEL_LIB_VERSION, "%d", major) != 1) {
-        error("Kernel Library version unparseable!");
+        error("Nieznana wersja biblioteki kernela!");
       }
     }
   }
   if(major < 1
      || (major == 1 && minor < 3)) {
-    error("Need to upgrade to Kernel Library version 1.3 or higher!");
+    error("Muisz zaktualizować bibliotekę kernela do wersji 1.3 lub wyższej!");
   } else if (major > 1 || (major == 1 && minor > 6)) {
-    DRIVER->message("This version of Phantasmal is not tested\n");
-    DRIVER->message("with Kernel Library beyond 1.6.  Please upgrade Phantasmal!\n");
-    error("Upgrade Phantasmal!");
+    DRIVER->message("Ta wersja Phantasmal nie była testowana\n");
+    DRIVER->message("z biblioteką kernela powyżej 1.6. Proszę zaktualizować Phantasmal!\n");
+    error("Zaktualizuj Phantasmal!");
   } else if (minor >= 3 && patch > 3) {
-    DRIVER->message("This is a very new Kernel Library version, or at\n");
-    DRIVER->message("least newer than this version of Phantasmal.  If\n");
-    DRIVER->message("you have problems, please upgrade Phantasmal!\n");
+    DRIVER->message("To jest bardzo nowa wersja biblioteki kernela, albo\n");
+    DRIVER->message("nowsza niż wersja Phantasmal. Jeżeli\n");
+    DRIVER->message("masz problemy, zaktualizuj Phantasmal!\n");
   }
 
   access::create();
@@ -185,7 +185,7 @@ static void create(varargs int clone)
   if(!find_object(LOGD)) { compile_object(LOGD); }
   /* Channels aren't set yet... */
   LOGD->write_syslog("\n-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-\n"
-		     + "Starting Phantasmal v" + PHANTASMAL_VERSION
+		     + "Start Phantasmal v" + PHANTASMAL_VERSION
 		     + "...\n"
 		     + "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-");
 
@@ -233,7 +233,7 @@ static void create(varargs int clone)
 
   help_dtd = read_file(HELP_DTD);
   if(!help_dtd)
-    error("Can't load file " + HELP_DTD + "!");
+    error("Nie można załadować pliku " + HELP_DTD + "!");
 
   HELPD->load_help_dtd(help_dtd);
 
@@ -243,14 +243,14 @@ static void create(varargs int clone)
 
   bind_dtd = read_file(BIND_DTD);
   if (!bind_dtd) {
-    error("Can't read file " + BIND_DTD + "!");
+    error("Nie można odczytać pliku " + BIND_DTD + "!");
   }
 
   /* Load zone name list information -- BEFORE first call to
      any MAPD function. */ 
   if (read_zones_dir() == -1) {
-      DRIVER->message("Can't read zone list!  Starting blank!\n");
-      LOGD->write_syslog("Can't read zone list!  Starting blank!\n", LOG_WARN);
+      DRIVER->message("Nie ma listy stref! Zaczynamy z pustą!\n");
+      LOGD->write_syslog("Nie mogę odczytać listy stref! Zaczynamy z pustą!\n", LOG_WARN);
   }
 
   /* Start appropriate daemons for object, mobile and zone loading */
@@ -265,14 +265,14 @@ static void create(varargs int clone)
 
   mapd_dtd = read_file(MAPD_ROOM_DTD);
   if(!mapd_dtd)
-    error("Can't read file " + MAPD_ROOM_DTD + "!");
+    error("Nie mogę odczytać pliku " + MAPD_ROOM_DTD + "!");
   MAPD->init(mapd_dtd, bind_dtd);
 
   /* Set up The Void (room #0) */
   if(!find_object(THE_VOID)) { compile_object(THE_VOID); }
   the_void = clone_object(THE_VOID);
   if(!the_void)
-    error("Error occurred while cloning The Void!");
+    error("Błąd podczas klonowania Pustki!");
   MAPD->add_room_to_zone(the_void, 0, 0);
 
   /* Set up the MOBILED */
@@ -289,7 +289,7 @@ static void create(varargs int clone)
 
       call_other_unprotected(find_object(GAME_INITD), "???");
     } : {
-      error("Error in GAME_INITD:create()!");
+      error("Błąd w GAME_INITD:create()!");
     }
   }
 
@@ -315,34 +315,34 @@ void save_mud_data(object user, string room_dirname, string mob_dirname,
     ACCESSD->save();
 
     if(!SYSTEM() && previous_program() != TIMED) {
-        error("Only privileged code can call save_mud_data!");
+        error("Tylko uprzywilejowany kod może wywoływać save_mud_data!");
         return;
     }
 
     if(pending_callback) {
-        error("Somebody else is already saving!");
+        error("Ktoś inny akurat zapisuje!");
     }
     pending_callback = callback;
 
     if(__sys_suspended) {
-        LOGD->write_syslog("System was still suspended! (unsuspending)",
+        LOGD->write_syslog("System był ciągle wstrzymany! (odwieszanie)",
                 LOG_ERROR);
         release_system();
     }
 
     errors_in_writing = 0;
 
-    LOGD->write_syslog("Writing World Data to files...", LOG_NORMAL);
-    LOGD->write_syslog("Rooms: '" + room_dirname + "/*', Mobiles: '"
-            + mob_dirname + "/*', Zones: '"
-            + zone_dirname + "/*'", LOG_VERBOSE);
+    LOGD->write_syslog("Zapisywanie danych gry do plików...", LOG_NORMAL);
+    LOGD->write_syslog("Pokoje: '" + room_dirname + "/*', Mobki: '"
+            + mob_dirname + "/*', Strefy: '" + zone_dirname + "/*', Socjalne: '"
+            + social_dirname + "/*', Przygody: '" + quest_dirname + "/*'", LOG_VERBOSE);
 
     delete_directory(room_dirname + ".old");
     rename_file(room_dirname, room_dirname + ".old");
     delete_directory(room_dirname);
     make_dir(room_dirname);
 
-    LOGD->write_syslog("Writing rooms to files " + room_dirname, LOG_VERBOSE);
+    LOGD->write_syslog("Zapisywanie pokojów do plików w " + room_dirname, LOG_VERBOSE);
 
     objects = MAPD->rooms_in_zone(0);
     if(!objects) objects = ({ });
@@ -357,7 +357,7 @@ void save_mud_data(object user, string room_dirname, string mob_dirname,
             0, 0, room_dirname, mob_dirname, zone_dirname, 0, -1, social_dirname,
             quest_dirname);
     if(cohandle < 1) {
-        error("Can't schedule call_out to save objects!");
+        error("Nie mogę zaplanować call_out aby zapisać obiekty!");
     } else {
         suspend_system();
     }
@@ -367,7 +367,7 @@ void prepare_reboot(void)
 {
   if(previous_program() != SYSTEM_WIZTOOLLIB
      && previous_program() != DRIVER)
-    error("Can't call prepare_reboot from there!");
+    error("Nie można wywołać prepare_reboot z tego miejsca!");
 
   if(find_object(LOGD)) {
     LOGD->write_syslog("Zapisywanie stanu gry...", LOG_NORMAL);
@@ -375,17 +375,16 @@ void prepare_reboot(void)
 
   ACCESSD->save();
 
-  /* save_mud_data(nil, "__reboot_callback"); */
 }
 
 void prepare_shutdown(void)
 {
   if(previous_program() != SYSTEM_WIZTOOLLIB
      && previous_program() != DRIVER)
-    error("Can't call prepare_shutdown from there!");
+    error("Nie można wywołać prepare_shutdown z tego miejsca!");
 
   if(find_object(LOGD)) {
-    LOGD->write_syslog("Shutting down MUD...", LOG_NORMAL);
+    LOGD->write_syslog("Wyłączanie gry...", LOG_NORMAL);
   }
 
   save_mud_data(this_user(), ROOM_DIR, MOB_DIR, ZONE_DIR, SOCIAL_DIR, QUEST_DIR,
@@ -394,7 +393,7 @@ void prepare_shutdown(void)
 
 void force_shutdown(void) {
   if(previous_program() != SYSTEM_WIZTOOLLIB)
-    error("Nope, you can't just shut down the system.  Nice try.");
+    error("Nie, nie możesz po prostu wyłączyć gry. Niezła próba.");
 
   ::shutdown();
 }
@@ -402,7 +401,7 @@ void force_shutdown(void) {
 void reboot(void)
 {
     if(find_object(LOGD)) 
-        LOGD->write_syslog("Rebooting!", LOG_NORMAL);
+        LOGD->write_syslog("Rebootowanie!", LOG_NORMAL);
   
 }
 
@@ -430,7 +429,7 @@ void set_path_special_object(object new_obj) {
 */
 private void suspend_system() {
   if(__sys_suspended) {
-    LOGD->write_syslog("System already suspended...", LOG_ERROR);
+    LOGD->write_syslog("System jest już wstrzymany...", LOG_ERROR);
   }
   __sys_suspended = 1;
   RSRCD->suspend_callouts();
@@ -443,7 +442,7 @@ private void suspend_system() {
 */
 private void release_system() {
   if(!__sys_suspended) {
-    LOGD->write_syslog("System not suspended, won't unsuspend.", LOG_ERROR);
+    LOGD->write_syslog("System nie był wstrzymany, nie odwieszam.", LOG_ERROR);
     return;
   }
   __sys_suspended = 0;
@@ -491,8 +490,8 @@ static void __co_write_rooms(object user, int* objects, int* save_zones,
                 }
 
                 if(err || !write_file(roomfile, unq_str)) {
-                    LOGD->write_syslog("Couldn't write room " + objects[ctr]
-                            + " to file!");
+                    LOGD->write_syslog("Nie mogę zapisać pokoju " + objects[ctr]
+                            + " do pliku!");
                     errors_in_writing = 1;
                 }
             }
@@ -520,12 +519,12 @@ static void __co_write_rooms(object user, int* objects, int* save_zones,
             if(call_out("__co_write_rooms", 0, user, objects, save_zones,
                         ctr, zone_ctr, roomdir, mobfile, zonefile, filesize, 
                         extension, socialdir, questdir) < 1) 
-                error("Can't schedule call_out to continue writing rooms!");
+                error("Nie mogę zaplanować call_out do kontynuacji zapisywania pokoi!");
             return;
         }
 
         /* Done with rooms, start on mobiles */
-        LOGD->write_syslog("Writing mobiles to dir " + mobfile, LOG_VERBOSE);
+        LOGD->write_syslog("Zapisywanie mobków do katalogu " + mobfile, LOG_VERBOSE);
         delete_directory(mobfile + ".old");
         rename_file(mobfile, mobfile + ".old");
         delete_directory(mobfile);
@@ -534,12 +533,12 @@ static void __co_write_rooms(object user, int* objects, int* save_zones,
         objects = MOBILED->all_mobiles();
         if(call_out("__co_write_mobs", 0, user, objects, 0, mobfile,
                     zonefile, 0, 0, socialdir, questdir) < 1) {
-            error("Can't schedule call_out to start writing mobiles!");
+            error("Nie mogę zaplanować call_out aby zacząć zapisywać mobki!");
         }
     } : {
         release_system();
-        if(user) user->message("Error writing rooms!\n");
-        error("Error writing rooms!");
+        if(user) user->message("Błąd podczas zapisywania pokojów!\n");
+        error("Błąd podczas zapisywania pokojów!");
     }
 }
 
@@ -569,8 +568,8 @@ static void __co_write_mobs(object user, int* objects, int ctr,
       }
 
       if(err || !write_file(mobfile, unq_str)) {
-	LOGD->write_syslog("Couldn't write mobile " + objects[ctr]
-			   + " to file!");
+	LOGD->write_syslog("Nie mogę zapisać mobka " + objects[ctr]
+			   + " do pliku!");
 	errors_in_writing = 1;
       }
     }
@@ -579,7 +578,7 @@ static void __co_write_mobs(object user, int* objects, int ctr,
       /* Still saving mobiles... */
       if(call_out("__co_write_mobs", 0, user, objects, ctr,
 		  mobsdir, zonefile, filesize, extension, socialdir, questdir) < 1) {
-	error("Can't schedule call_out to continue writing mobiles!");
+	error("Nie mogę zaplanować call_out aby kontyuować zapisywanie mobków!");
       }
       return;
     }
@@ -589,15 +588,15 @@ static void __co_write_mobs(object user, int* objects, int ctr,
     make_dir(zonefile);
 
     /* Done with mobiles, start on zones */
-    LOGD->write_syslog("Writing zones to file " + zonefile, LOG_VERBOSE);
+    LOGD->write_syslog("Zapisywanie stref do katalogu " + zonefile, LOG_VERBOSE);
 
     if(call_out("__co_write_zones", 0, user, objects, 0, zonefile, 0, 0, socialdir, questdir) < 1) {
-       error("Can't schedule call_out to start writing zones!");
+       error("Nie mogę zaplanować call_out aby zacząć zapisywać strefy!");
      }
   } : {
     release_system();
-    if(user) user->message("Error writing mobiles!\n");
-    error("Error writing mobiles!");
+    if(user) user->message("Błąd przy zapisie mobków!\n");
+    error("Błąd przy zapisie mobków!");
   }
 }
 
@@ -627,14 +626,14 @@ static void __co_write_zones(object user, int* objects, int ctr,
         }
     } : {
         release_system();
-        if(user) user->message("Error writing zones!\n");
-        error("Error writing zones!");
+        if(user) user->message("Błąd przy zapisie stref!\n");
+        error("Błąd przy zapisie stref!");
     }
 
     if (ctr < size)
     {
         if(call_out("__co_write_zones", 0, user, objects, ctr, zonedir, filesize, extension, socialdir, questdir) < 1) 
-            error("Can't schedule call_out to start writing zones!");
+            error("Nie mogę zaplanować call_out do kontynuacji zapisu stref!");
         return;
     }
 
@@ -643,7 +642,7 @@ static void __co_write_zones(object user, int* objects, int ctr,
 
         release_system();
 
-        if(user) user->message("Errors in writing saved data!\r\n");
+        if(user) user->message("Błędy z zapisie danych!\n");
 
         return;
     }
@@ -653,12 +652,12 @@ static void __co_write_zones(object user, int* objects, int ctr,
     make_dir(socialdir);
 
     /* Done with zones, start on socials */
-    LOGD->write_syslog("Writing socials to files.", LOG_VERBOSE);
+    LOGD->write_syslog("Zapisywanie socjalnych do plików.", LOG_VERBOSE);
 
     if(call_out("__co_write_socials", 0, user, socialdir, 0, 0, 0, questdir) < 1)
     {
         release_system();
-        error("Can't schedule call_out to start writing users!");
+        error("Nie mogę zaplanować call_out aby zacząć zapisywać socjalne!");
     }
 }
 
@@ -686,13 +685,13 @@ static void __co_write_socials(object user, string socialdir,
         }
     } : {
         release_system();
-        if (user) user->message("Error writing socials!\n");
-        error("Error writing socials!");
+        if (user) user->message("Błąd podczas zapisu socjalnych!\n");
+        error("Błąd podczas zapisu socjalnych!");
     }
 
     if (ctr < SOULD->num_socials()) {
         if (call_out("__co_write_socials", 0, user, socialdir, filesize, extension, ctr, questdir) < 1)
-            error("Can't schedule call_out to start writing socials!");
+            error("Nie mogę zaplanować call_out do kontynuacji zapisu socjalnych!");
         return;
     }
 
@@ -701,12 +700,12 @@ static void __co_write_socials(object user, string socialdir,
     delete_directory(questdir);
     make_dir(questdir);
     /* Done with socials, start on quests */
-    LOGD->write_syslog("Writing quests to files.", LOG_VERBOSE);
+    LOGD->write_syslog("Zapisywanie przygód do plików.", LOG_VERBOSE);
 
     if(call_out("__co_write_quests", 0, user, questdir, 0, 0, 0) < 1)
     {
         release_system();
-        error("Can't schedule call_out to start writing users!");
+        error("Nie mogę zaplanować call_out aby zacząć zapisywać przygody!");
     }
 }
 
@@ -734,22 +733,22 @@ static void __co_write_quests(object user, string questdir, int filesize,
         }
     } : {
         release_system();
-        if (user) user->message("Error writing quests!\n");
-        error("Error writing quests!");
+        if (user) user->message("Bład przy zapisie przygód!\n");
+        error("Błąd przy zapisie przygód!");
     }
 
     if (ctr < QUESTD->num_quests()) {
         if (call_out("__co_write_quests", 0, user, questdir, filesize, extension, ctr) < 1)
-            error("Can't schedule call_out to start writing quests!");
+            error("Nie mogę zaplanować call_out aby kontynuować zapisywanie przygód!");
         return;
     }
     /* Done with quests, start on users */
-    LOGD->write_syslog("Writing users to files.", LOG_VERBOSE);
+    LOGD->write_syslog("Zapisywanie zalogowanych graczy do plików.", LOG_VERBOSE);
 
     if(call_out("__co_write_users", 0, user, 0) < 1)
     {
         release_system();
-        error("Can't schedule call_out to start writing users!");
+        error("Nie mogę zaplanować call_out aby zacząć zapisywać graczy!");
     }
 }
 
@@ -764,24 +763,24 @@ static void __co_write_users(object user, int ctr)
             users[ctr]->save_user_to_file();
     } : {
         release_system();
-        if (user) user->message("Error writing users!\n");
-        error("Error writing users!");
+        if (user) user->message("Błąd podczas zapisywania graczy!\n");
+        error("Błąd podczas zapisywania graczy!");
     }
 
     if (ctr < sizeof(users)) {
         if (call_out("__co_write_users", 0, user, ctr) < 1)
-            error("Can't schedule call_out to start writing users!");
+            error("Nie mogę zaplanować call_out aby kontynuować zapisywanie graczy!");
         return;
     }
 
     /* Done with users, start on tags */
-    LOGD->write_syslog("Writing tags to file.", LOG_VERBOSE);
+    LOGD->write_syslog("Zapisywanie tagów do pliku.", LOG_VERBOSE);
     remove_file("/usr/game/tagd.unq");
 
     if(call_out("__co_write_tags", 0, user, 0, 0, 0) < 1)
     {
         release_system();
-        error("Can't schedule call_out to start writing tags!");
+        error("Nie mogę zaplanować call_out aby zacząć zapisywać tagi!");
     }
 }
 
@@ -808,23 +807,23 @@ static void __co_write_tags(object user, int filesize, int extension, int ctr)
         }
     } : {
         release_system();
-        if (user) user->message("Error writing tags!\n");
-        error("Error writing tags!");
+        if (user) user->message("Błąd podczas zapisywania tagów!\n");
+        error("Błąd podczas zapisywania tagów!");
     }
 
     if (ctr < TAGD->num_tags()) {
         if (call_out("__co_write_tagd", 0, user, filesize, extension, ctr) < 1)
-            error("Can't schedule call_out to start writing tags!");
+            error("Nie mogę zaplanować call_out aby zacząć zapisywać tagi!");
         return;
     }
 
     /* Done with tagss, start on banned ip */
-    LOGD->write_syslog("Writing bans to file.", LOG_VERBOSE);
+    LOGD->write_syslog("Zapisywanie banów do pliku.", LOG_VERBOSE);
 
     if(call_out("__co_write_banned", 0, user) < 1)
     {
         release_system();
-        error("Can't schedule call_out to start writing banned!");
+        error("Nie mogę zaplanować call_out aby zacząć zapisywać zbanowanych!");
     }
 }
 
@@ -850,13 +849,13 @@ static void __co_write_banned(object user)
         }
     } : {
         release_system();
-        if(user) user->message("Error calling callback!\n");
-        error("Error calling callback!");
+        if(user) user->message("Błąd przy wywołaniu callback!\n");
+        error("Błąd przy wywołaniu!");
     }
 
     release_system();
-    LOGD->write_syslog("Finished writing saved data...", LOG_NORMAL);
-    if(user) user->message("Finished writing data.\n"); 
+    LOGD->write_syslog("Zakończono zapisywanie danych...", LOG_NORMAL);
+    if(user) user->message("Zakończono zapisywanie danych.\n"); 
 }
 
 static void __shutdown_callback(void) {
