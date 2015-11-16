@@ -8,11 +8,10 @@
 #include <config.h>
 
 static object fighter1, fighter2;
-static int combat_call;
+static int fighter1_call, fighter2_call;
 static mapping combat_info1, combat_info2;
 
 void stop_combat(void);
-void fighter2_attack(void);
 void combat_info(string message, string message2);
 
 static void create(varargs int clone)
@@ -23,7 +22,8 @@ static void create(varargs int clone)
       fighter2 = nil;
       combat_info1 = ([ ]);
       combat_info2 = ([ ]);
-      combat_call = 0;
+      fighter1_call = 0;
+      fighter2_call = 0;
     }
 }
 
@@ -50,6 +50,7 @@ void start_combat(object new_fighter1, object new_fighter2)
     combat_info1["damage"] = fighter1->get_mobile()->get_user()->get_stat_val("siła") / 10;
     combat_info1["armor"] = ({({0, "głowa", 0}), ({0, "tułów", 0}), ({0, "ręce", 0}), ({0, "dłonie", 0}), ({0, "nogi", 0})});
     combat_info1["damage_res"] = ([ ]);
+    combat_info1["delay"] = 2.0 - ((float)fighter1->get_mobile()->get_user()->get_stat_val("siła") / 100.0); 
     if (TAGD->get_tag_value(fighter1, "Fatigue"))
         fatigue = TAGD->get_tag_value(fighter1, "Fatigue");
     else
@@ -80,6 +81,10 @@ void start_combat(object new_fighter1, object new_fighter2)
     combat_info1["hit"] = fighter1->get_mobile()->get_user()->get_stat_val("siła") + fighter1->get_mobile()->get_user()->get_skill_val(combat_info1["skill"]);
     combat_info1["evade"] = fighter1->get_mobile()->get_user()->get_stat_val("zręczność") + fighter1->get_mobile()->get_user()->get_skill_val("walka/unik");
     combat_info1["exp"] = combat_info1["hit"] + combat_info1["evade"] + combat_info1["hp"];
+    combat_info1["delay"] -= ((float)fighter1->get_mobile()->get_user()->get_skill_val(combat_info1["skill"]) / 100.0);
+    combat_info1["delay"] += (float)(combat_info1["stam_cost"] - 1);
+    if (combat_info1["delay"] > 4.0)
+        combat_info1["delay"] = 4.0;
     combat_info1["hits"] = 0;
 
     if (TAGD->get_tag_value(fighter2, "Hp"))
@@ -108,6 +113,7 @@ void start_combat(object new_fighter1, object new_fighter2)
         else
             fatigue = 0;
         combat_info2["stamina"] = (fighter2->get_mobile()->get_user()->get_stat_val("kondycja") * 10) - fatigue;
+        combat_info2["delay"] = 2.0 - ((float)fighter2->get_mobile()->get_user()->get_stat_val("siła") / 100.0); 
         for (i = 0; i < sizeof(objs); i++) {
             if (objs[i]->is_dressed()) {
                 tmp = objs[i]->get_wearlocations();
@@ -126,6 +132,10 @@ void start_combat(object new_fighter1, object new_fighter2)
         }
         combat_info2["hit"] = fighter2->get_mobile()->get_user()->get_stat_val("siła") + fighter2->get_mobile()->get_user()->get_skill_val(combat_info1["skill"]);
         combat_info2["evade"] = fighter1->get_mobile()->get_user()->get_stat_val("zręczność") + fighter2->get_mobile()->get_user()->get_skill_val("walka/unik");
+        combat_info2["delay"] -= ((float)fighter2->get_mobile()->get_user()->get_skill_val(combat_info2["skill"]) / 100.0);
+        combat_info2["delay"] += (float)(combat_info2["stam_cost"] - 1);
+        if (combat_info2["delay"] > 4.0)
+            combat_info2["delay"] = 4.0;
     }
     else /* is mobile */
     {
@@ -136,13 +146,17 @@ void start_combat(object new_fighter1, object new_fighter2)
         combat_info2["evade"] = fighter2->get_combat_rating();
         locs = fighter2->get_body_locations();
         combat_info2["armor"] = allocate(sizeof(locs));
+        combat_info2["delay"] = 3.0 - ((float)(fighter2->get_combat_rating()) / 50.0);
+        if (combat_info2["delay"] < 2.0)
+            combat_info2["delay"] = 2.0;
         for (i = 0; i < sizeof(locs); i++)
             combat_info2["armor"][i] = ({fighter2->get_armor(), locs[i], 0});
         combat_info2["damage_res"] = fighter2->get_damage_res();
     }
     combat_info2["exp"] = combat_info2["hit"] + combat_info2["evade"] + combat_info2["hp"];
     combat_info2["hits"] = 0;
-    combat_call = call_out("fighter1_attack", 2);
+    fighter1_call = call_out("fighter1_attack", combat_info1["delay"]);
+    fighter2_call = call_out("fighter2_attack", combat_info2["delay"]);
 }
 
 void fighter1_attack(void)
@@ -195,7 +209,7 @@ void fighter1_attack(void)
     }
     combat_info(message, message2);
     if (combat_info2["hp"] > 0)
-        fighter2_attack();
+        fighter1_call = call_out("fighter1_attack", combat_info1["delay"]);
 }
 
 void fighter2_attack(void)
@@ -250,7 +264,7 @@ void fighter2_attack(void)
     }
     combat_info(message, message2);
     if (combat_info1["hp"] > 0)
-        combat_call = call_out("fighter1_attack", 2);
+        fighter2_call = call_out("fighter2_attack", combat_info2["delay"]);
 }
 
 void combat_info(string message, string message2)
@@ -304,7 +318,8 @@ void stop_combat()
     int *tmp;
     string *item_dmg;
 
-    remove_call_out(combat_call);
+    remove_call_out(fighter1_call);
+    remove_call_out(fighter2_call);
     TAGD->set_tag_value(fighter1, "Combat", nil);
     TAGD->set_tag_value(fighter2, "Combat", nil);
     objs = fighter1->objects_in_container();
