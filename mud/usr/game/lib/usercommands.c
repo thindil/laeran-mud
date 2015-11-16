@@ -353,55 +353,57 @@ static void cmd_look(object user, string cmd, string str)
     user->message("\n");
 }
 
-static void cmd_inventory(object user, string cmd, string str) {
-  int    ctr, size, i;
-  mixed* objs;
-  string *inv, *weared, *wearlocations;
-  string msg;
-  int *wlocs;
+static void cmd_inventory(object user, string cmd, string str) 
+{
+    int    ctr, size, i;
+    mixed* objs;
+    string *inv, *weared, *wearlocations;
+    string msg, money;
+    int *wlocs;
 
-  if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Użycie: " + cmd + "\n");
-    return;
-  }
+    if(str && !STRINGD->is_whitespace(str)) {
+        user->message("Użycie: " + cmd + "\n");
+        return;
+    }
 
-  objs = user->get_body()->objects_in_container();
-  if(!objs || !sizeof(objs)) {
-    user->message("Nic nie nosisz przy sobie.\n");
-    return;
-  }
-  inv = weared = ({ });
-  wearlocations = ({"głowa", "tułów", "ręce", "dłonie", "nogi", "prawa dłoń", "lewa dłoń", 
-          "plecy", "prawa strona pasa", "lewa strona pasa"});
-  for(ctr = 0; ctr < sizeof(objs); ctr++) {
-      if (objs[ctr]->is_dressed()) {
-          wlocs = objs[ctr]->get_wearlocations();
-          msg = "- " + objs[ctr]->get_brief()->to_string(user) + " ( ";
-          for (i = 0; i < sizeof(wlocs); i++)
-              msg += wearlocations[wlocs[i]] + " ";
-          msg += ")";
-          weared += ({ msg });
-      } else
-          inv += ({ lalign("- " + objs[ctr]->get_brief()->to_string(user), 30) });
-  }
-  if (sizeof(weared) > sizeof(inv))
-      size = sizeof(weared);
-  else
-      size = sizeof(inv);
-  msg = lalign("=Inwentarz=", 30) + "=Założone=\n";
-  for (ctr = 0; ctr < size; ctr ++) {
-      if (ctr < sizeof(inv))
-          msg += inv[ctr];
-      else
-          msg += lalign("            ", 30);
-      if (ctr < sizeof(weared))
-          msg += weared[ctr] + "\n";
-      else
-          msg += "\n";
-  }
-  msg += "\nPosiadasz " + user->get_body()->get_price() + " miedziaków.\n"
-    + "Niesiesz " + user->get_body()->get_current_weight() + " kg ekwipunku na " + user->get_body()->get_weight_capacity() + " kg możliwych.\n\n";
-  user->message_scroll(msg);
+    money = "\nPosiadasz " + user->get_body()->get_price() + " miedziaków.\n";
+    objs = user->get_body()->objects_in_container();
+    if(!objs || !sizeof(objs)) {
+        user->message("Nic nie nosisz przy sobie.\n" + money);
+        return;
+    }
+    inv = weared = ({ });
+    wearlocations = ({"głowa", "tułów", "ręce", "dłonie", "nogi", "prawa dłoń", "lewa dłoń", 
+            "plecy", "prawa strona pasa", "lewa strona pasa"});
+    for(ctr = 0; ctr < sizeof(objs); ctr++) {
+        if (objs[ctr]->is_dressed()) {
+            wlocs = objs[ctr]->get_wearlocations();
+            msg = "- " + objs[ctr]->get_brief()->to_string(user) + " ( ";
+            for (i = 0; i < sizeof(wlocs); i++)
+                msg += wearlocations[wlocs[i]] + " ";
+            msg += ")";
+            weared += ({ msg });
+        } else
+            inv += ({ lalign("- " + objs[ctr]->get_brief()->to_string(user), 30) });
+    }
+    if (sizeof(weared) > sizeof(inv))
+        size = sizeof(weared);
+    else
+        size = sizeof(inv);
+    msg = lalign("=Inwentarz=", 30) + "=Założone=\n";
+    for (ctr = 0; ctr < size; ctr ++) {
+        if (ctr < sizeof(inv))
+            msg += inv[ctr];
+        else
+            msg += lalign("            ", 28);
+        if (ctr < sizeof(weared))
+            msg += weared[ctr] + "\n";
+        else
+            msg += "\n";
+    }
+    msg += money + "Niesiesz " + user->get_body()->get_current_weight() + " kg ekwipunku na " 
+        + user->get_body()->get_weight_capacity() + " kg możliwych.\n\n";
+    user->message_scroll(msg);
 }
 
 static void cmd_put(object user, string cmd, string str) {
