@@ -593,6 +593,8 @@ void death()
     object new_body;
     string conj_name;
     string *nouns;
+    int i;
+    object *inv;
 
     message("GINIESZ.\n");
 
@@ -631,6 +633,10 @@ void death()
     body->clear_nouns();
     phr = PHRASED->new_simple_english_phrase("zwłoki, " + conj_name + ", zwloki");
     body->add_noun(phr);
+    inv = body->objects_in_container();
+    for (i = 0; i < sizeof(inv); i++)
+        if (inv[i]->is_dressed())
+            inv[i]->set_dressed(0);
     TAGD->set_tag_value(body, "DropTime", time() + 3600);
     body = new_body;
     location = MAPD->get_room_by_num(current_room);
