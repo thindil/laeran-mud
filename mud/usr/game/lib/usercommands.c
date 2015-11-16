@@ -127,6 +127,7 @@ static void cmd_whoami(object user, string cmd, string str)
     charinfo += "Masz " + user->get_body()->get_length() + " cm wzrostu. "
         + "Ważysz " + user->get_body()->get_weight() + " kg.\n"
         + "Jesteś " + STRINGD->to_lower(user->get_health()) + " i " + STRINGD->to_lower(user->get_condition()) + ".\n"
+        + "Posiadasz " + user->get_body()->get_price() + " miedziaków.\n"
         + "Niesiesz " + user->get_body()->get_current_weight() + " kg ekwipunku na " + user->get_body()->get_weight_capacity() + " kg możliwych.\n\n"
         + "===== CECHY =====";
     statsinfo = ([ "siła": ({ "Słaby", "Przeciętny", "Dobrze zbudowany", "Siłacz" }),
