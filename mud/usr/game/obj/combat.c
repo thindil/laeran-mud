@@ -12,6 +12,8 @@ static int combat_call;
 static mapping combat_info1, combat_info2;
 
 void stop_combat(void);
+void fighter2_attack(void);
+void combat_info(string message, string message2);
 
 static void create(varargs int clone)
 {
@@ -34,7 +36,6 @@ void start_combat(object new_fighter1, object new_fighter2)
 
     fighter1 = new_fighter1; /* always player body */
     fighter2 = new_fighter2; /* player or mobile body */
-    combat_call = call_out("combat_round", 2);
     TAGD->set_tag_value(fighter1, "Combat", 1);
     TAGD->set_tag_value(fighter2, "Combat", 1);
 
@@ -141,12 +142,14 @@ void start_combat(object new_fighter1, object new_fighter2)
     }
     combat_info2["exp"] = combat_info2["hit"] + combat_info2["evade"] + combat_info2["hp"];
     combat_info2["hits"] = 0;
+    combat_call = call_out("fighter1_attack", 2);
 }
 
-void combat_round(void)
+void fighter1_attack(void)
 {
     int hit, evade, loc, dmg;
     string message, message2;
+
     if (combat_info1["stamina"] > 0)
         hit = combat_info1["hit"] + random(50);
     else
@@ -190,9 +193,16 @@ void combat_round(void)
         if (combat_info2["stamina"] < 0)
             combat_info2["stamina"] = 0;
     }
-    fighter1->get_mobile()->get_user()->message(message + "\n");
-    if (fighter2->get_mobile()->get_user())
-        fighter2->get_mobile()->get_user()->message(message2 + "\n");
+    combat_info(message, message2);
+    if (combat_info2["hp"] > 0)
+        fighter2_attack();
+}
+
+void fighter2_attack(void)
+{
+    int hit, evade, loc, dmg;
+    string message, message2;
+
     if (combat_info2["stamina"] > 0)
         hit = combat_info2["hit"] + random(50);
     else
@@ -238,6 +248,13 @@ void combat_round(void)
         if (combat_info1["stamina"] < 0)
             combat_info1["stamina"] = 0;
     }
+    combat_info(message, message2);
+    if (combat_info1["hp"] > 0)
+        combat_call = call_out("fighter1_attack", 2);
+}
+
+void combat_info(string message, string message2)
+{
     fighter1->get_mobile()->get_user()->message(message + "\n");
     fighter1->get_mobile()->get_user()->set_condition(combat_info1["stamina"]);
     fighter1->get_mobile()->get_user()->set_health(combat_info1["hp"]);
@@ -276,9 +293,8 @@ void combat_round(void)
         if (combat_info1["dodge"]) {
             fighter1->get_mobile()->get_user()->gain_exp("walka/uniki", combat_info2["exp"]);
             fighter1->get_mobile()->get_user()->gain_exp("zręczność", combat_info2["exp"]);
-        }
-    } else    
-        combat_call = call_out("combat_round", 2);
+        }  
+    }
 }
 
 void stop_combat()
