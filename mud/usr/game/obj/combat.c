@@ -193,7 +193,7 @@ void fighter1_attack(void)
                 dmg -= (int)((float)dmg * ((float)combat_info2["damage_res"][combat_info1["damage_type"]] / 100.0));
         }
         combat_info2["hp"] -= dmg;
-        if (dmg = 0) {
+        if (dmg == 0) {
             message += " Jednak atak odbija się od jego ciała.";
             message2 += " Na szczęście atak odbija się od Twojej zbroi.";
         }
@@ -247,7 +247,7 @@ void fighter2_attack(void)
                 dmg -= (int)((float)dmg * ((float)combat_info1["damage_res"][combat_info2["damage_type"]] / 100.0));
         }
         combat_info1["hp"] -= dmg;
-        if (dmg = 0)
+        if (dmg == 0)
         {
             message2 += " Jednak atak odbija się od jego ciała.";
             message += " Na szczęście atak odbija się od Twojej zbroi.";
