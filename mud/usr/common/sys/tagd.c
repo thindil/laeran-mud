@@ -290,3 +290,12 @@ int num_tags(void)
 
   return sizeof(map_indices(object_tags)) + sizeof(map_indices(mobile_tags));
 }
+
+void clear_tags(void)
+{
+  if(!GAME() && !COMMON() && !SYSTEM())
+    error("Tylko uprzywilejowany kod może wywoływać clear_tags!");
+
+  object_tags = ([ ]);
+  mobile_tags = ([ ]);
+}

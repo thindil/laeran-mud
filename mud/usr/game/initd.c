@@ -8,7 +8,7 @@
 
 static mixed* load_file_with_dtd(string file_path, string dtd_path);
 static void load_sould(void);
-static void load_tagd(void);
+void load_tagd(void);
 static void set_up_heart_beat(void);
 static int read_object_dir(string pathi, int type);
 
@@ -74,7 +74,7 @@ static mixed* load_file_with_dtd(string file_path, string dtd_path) {
   return dtd_unq;
 }
 
-static void load_tagd(void) {
+void load_tagd(void) {
   mixed *dtd_unq;
   int    ctr, ctr2;
 

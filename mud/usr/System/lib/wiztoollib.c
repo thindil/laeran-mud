@@ -1314,3 +1314,15 @@ static void cmd_set_zone_attribute(object user, string cmd, string str)
     ZONED->set_attribute(number, attribute, new_value);
     user->message("Ustawiono.\n");
 }
+
+static void cmd_reload_tags(object user, string cmd, string str) 
+{
+    if (str) {
+        user->message("Użycie: " + cmd + "\n");
+        return;
+    }
+
+    TAGD->clear_tags();
+    GAME_INITD->load_tagd();
+    user->message("Przeładowano tagi\n");
+}

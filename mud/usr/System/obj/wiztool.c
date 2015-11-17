@@ -112,6 +112,7 @@ void upgraded(varargs int clone) {
 	"@list_tags"                  : ({ "cmd_list_tags" }),
     "@set_tag"                    : ({ "cmd_set_tag" }),
     "@set_obj_tag"                : ({ "cmd_set_tag" }),
+    "@reload_tags"                : ({ "cmd_reload_tags" }),
 
 	"@add_noun"            : ({ "cmd_add_nouns" }),
 	"@add_nouns"           : ({ "cmd_add_nouns" }),
