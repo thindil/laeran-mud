@@ -22,13 +22,16 @@ Niektóre komedy do zabawy z pokojami:
 ~keywords{admin}
 ~desc{
 
-Komenda @list pokazuje ponumerowaną listę pokoi w grze, zarejestrowanych
-z Demonem Map (MAPD). Wylistowuje każdy poków z numerem oraz krótkim
-(brief) opisem.
+Komenda @list pokazuje ponumerowaną listę wszystkich obiektów w grze, 
+zarejestrowanych z Demonem Map (MAPD). Wylistowuje każdy poków z numerem 
+oraz krótkim (brief) opisem.
 
-Domyślnie pokazane są tylko pokoje w obecnej strefie. Ten sam efekt można
-osiągnąć używając komendy "@list zone". Aby zobaczyć wszystkie pokoje
-w grze, wpisz "@list all".
+Domyślnie pokazane są tylko wszystkie obiekty w obecnej strefie. Ten sam 
+efekt można osiągnąć używając komendy "@list zone". Aby zobaczyć wszystkie 
+pokoje w grze, wpisz "@list all". Można również wybrać jaki konkretnie
+rodzaj obiektów chce się zobaczyć. Komenda "@list zone body" pokaże wszystkie
+ciała w obecnej strefie, "@list zone port" wszystkie przenośne, "@list zone
+det" wszystkie detale a "@list zone room" wszystkie pokoje.
 
 }
 
