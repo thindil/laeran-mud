@@ -34,17 +34,20 @@ static void destructed(varargs int clone)
  * NAME:	lalign()
  * DESCRIPTION:	return a string as a left-aligned string
  */
-private string lalign(string num, int width)
+private string lalign(string str, int width)
 {
-    string str;
     int i, diff;
 
-    str = num + "                         ";
+    for (i = 0; i < strlen(str); i++) 
+        if ((int)str[i] == 196 || (int)str[i] == 197) 
+            width++;
     if (width > strlen(str)) {
         diff = width - strlen(str);
         for (i = 0; i <= diff; i++)
             str += " ";
     }
+    if (strlen(str) <= width)
+        width = strlen(str) - 1;
     return str[0..width];
 }
 
@@ -397,7 +400,7 @@ static void cmd_inventory(object user, string cmd, string str)
         if (ctr < sizeof(inv))
             msg += inv[ctr];
         else
-            msg += lalign("            ", 28);
+            msg += lalign("            ", 30);
         if (ctr < sizeof(weared))
             msg += weared[ctr] + "\n";
         else
