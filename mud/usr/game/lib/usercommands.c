@@ -1552,6 +1552,7 @@ static void cmd_transform(object user, string cmd, string str)
             gain = 1;
         user->get_body()->set_price(user->get_body()->get_price() + gain);
         user->get_location()->remove_from_container(tmp[number]);
+        destruct_object(tmp[number]);
         user->message("Zdobywasz " + gain + " miedziaków.\n");
     }
     else if (target == "nowy") {
