@@ -10,6 +10,7 @@ wartością "OtwieralnyPrzezKluczNumer"
 pomoc new_tag_type
 pomoc set_tag
 pomoc list_tag
+pomoc reload_tags
 
 }
 
@@ -80,4 +81,15 @@ Ustawienia tagów dla wybranego obiektu mogą zostać sprawdzone przy
 pomocy komendy @stat na tym obiekcie.
 
 Zobacz również: @new_tag_type
+}
+
+~name{reload_tags,reload_tag,reload tags}
+~keywords{admin}
+~desc{
+
+Komend @reload_tags służy do przeładowania zarejestrowanych tagów zapisanych 
+w pliku. Wszystkie obecnie zarejestrowane tagi są najpierw kasowane a dopiero
+wtedy wczytywana jest zawartość pliku.
+
+Zobacz również: list_tag
 }
