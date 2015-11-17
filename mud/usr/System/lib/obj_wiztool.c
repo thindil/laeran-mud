@@ -69,24 +69,21 @@ static void cmd_set_obj_desc(object user, string cmd, string str) {
   int    must_set;
 
   if(!sscanf(cmd, "@set_%s", look_type))
-    error("Unrecognized command to set desc: " + cmd);
+    error("Nierozpoznana komenda do ustawiania opisu: " + cmd);
 
   desc = nil;
   if(!str || str == "") {
     obj = user->get_location();
-    user->message("(This location)\n");
+    user->message("(Obecna lokacja)\n");
   } else if(sscanf(str, "%s %s", objname, desc) == 2
 	    || sscanf(str, "%s", objname)) {
     obj = resolve_object_name(user, objname);
   }
 
   if(!obj) {
-    user->message("Not a valid object to be set!\n");
+    user->message("Brak prawidłowego obiektu do ustawienia!\n");
     return;
   }
-
-  user->message("Locale is ");
-  user->message(PHRASED->name_for_language(user->get_locale()) + "\n");
 
   if(!desc) {
     user->push_new_state(US_OBJ_DESC, obj, look_type, user->get_locale());
@@ -98,17 +95,17 @@ static void cmd_set_obj_desc(object user, string cmd, string str) {
   if(desc) {
     object phr;
 
-    user->message("Setting " + look_type + " desc on object #"
+    user->message("Ustawianie opisu " + look_type + " na obiekcie #"
 		  + obj->get_number() + "\n");
 
     if(!function_object("get_" + look_type, obj))
-      error("Can't find getter function for " + look_type + " in "
+      error("Nie mogę znaleźć funkcji get dla " + look_type + " w "
 	    + object_name(obj));
 
     must_set = 0;
     phr = call_other(obj, "get_" + look_type);
     if(!phr || (look_type == "examine" && phr == obj->get_look())) {
-      phr = PHRASED->new_simple_english_phrase("CHANGE ME!");
+      phr = PHRASED->new_simple_english_phrase("ZMIEŃ MNIE!");
       must_set = 1;
     }
     phr->from_unq(desc);
@@ -532,20 +529,20 @@ static void cmd_add_nouns(object user, string cmd, string str) {
         str = STRINGD->trim_whitespace(str);
 
     if(!str || str == "" || !sscanf(str, "%*s %*s")) {
-        user->message("Usage: " + cmd + " #<objnum> [<noun> <noun>...]\n");
+        user->message("Użycie: " + cmd + " #<numer obiektu> [<rzeczownik> <rzeczownik>...]\n");
         return;
     }
 
     words = explode(str, " ");
     obj = resolve_object_name(user, words[0]);
     if(!obj) {
-        user->message("Can't find object '" + words[0] + "'.\n");
+        user->message("Nie mogę znaleźć obiektu '" + words[0] + "'.\n");
         return;
     }
 
-    user->message("Adding nouns...");
+    user->message("Dodawanie rzeczowników...");
     obj->add_noun(PHRASED->new_simple_english_phrase(implode(words[1..], ",")));
-    user->message("done.\n");
+    user->message("wykonane.\n");
 }
 
 
@@ -555,16 +552,16 @@ static void cmd_clear_nouns(object user, string cmd, string str) {
   if(str)
     str = STRINGD->trim_whitespace(str);
   if(!str || str == "" || sscanf(str, "%*s %*s")) {
-    user->message("Usage: " + cmd + "\n");
+    user->message("Użycie: " + cmd + "\n");
     return;
   }
 
   obj = resolve_object_name(user, str);
   if(obj) {
     obj->clear_nouns();
-    user->message("Cleared.\n");
+    user->message("Usunięte.\n");
   } else {
-    user->message("Couldn't find object '" + str + "'.\n");
+    user->message("Nie mogę znaleźć obiektu '" + str + "'.\n");
   }
 }
 
@@ -578,14 +575,14 @@ static void cmd_add_adjectives(object user, string cmd, string str) {
     str = STRINGD->trim_whitespace(str);
 
   if(!str || str == "" || !sscanf(str, "%*s %*s")) {
-    user->message("Usage: " + cmd + " #<objnum> [<adj> <adj>...]\n");
+    user->message("Użycie: " + cmd + " #<numer obiektu> [<przymiotnik> <przymiotnik>...]\n");
     return;
   }
 
   words = explode(str, " ");
   obj = resolve_object_name(user, words[0]);
   if(!obj) {
-    user->message("Can't find object '" + words[0] + "'.\n");
+    user->message("Nie można znaleźć obiektu '" + words[0] + "'.\n");
     return;
   }
 
@@ -593,13 +590,13 @@ static void cmd_add_adjectives(object user, string cmd, string str) {
     words[ctr] = STRINGD->to_lower(words[ctr]);
   }
 
-  user->message("Adding adjectives ("
+  user->message("Dodawanie przymiotników ("
 		+ PHRASED->locale_name_for_language(user->get_locale())
 		+ ").\n");
   phr = new_object(LWO_PHRASE);
-  phr->from_unq("~enUS{" + implode(words[1..],",") + "}");
+  phr->from_unq("~plPL{" + implode(words[1..],",") + "}");
   obj->add_adjective(phr);
-  user->message("Done.\n");
+  user->message("Wykonane.\n");
 }
 
 
@@ -609,16 +606,16 @@ static void cmd_clear_adjectives(object user, string cmd, string str) {
   if(str)
     str = STRINGD->trim_whitespace(str);
   if(!str || str == "" || sscanf(str, "%*s %*s")) {
-    user->message("Usage: " + cmd + "\n");
+    user->message("Użycie: " + cmd + "\n");
     return;
   }
 
   obj = resolve_object_name(user, str);
   if(obj) {
     obj->clear_adjectives();
-    user->message("Cleared.\n");
+    user->message("Wyczyszczone.\n");
   } else {
-    user->message("Couldn't find object '" + str + "'.\n");
+    user->message("Nie można znaleźć obiektu '" + str + "'.\n");
   }
 }
 
@@ -631,30 +628,30 @@ static void cmd_move_obj(object user, string cmd, string str) {
   if(!str || sscanf(str, "%*s %*s %*s") == 3
      || ((sscanf(str, "#%d #%d", objnum1, objnum2) != 2)
 	 && (sscanf(str, "#%d %s", objnum1, second) != 2))) {
-    user->message("Usage: " + cmd + " #<obj> #<location>\n");
-    user->message("    or " + cmd + " #<obj> here\n");
+    user->message("Użycie: " + cmd + " #<obiekt> #<lokacja>\n");
+    user->message("    lub " + cmd + " #<obiekt> here\n");
     return;
   }
 
   if(second && STRINGD->stricmp(second, "here")) {
-    user->message("Usage: " + cmd + " #<obj> #<location>\n");
-    user->message("    or " + cmd + " #<obj> here\n");
+    user->message("Użycie: " + cmd + " #<obiekt> #<lokacja>\n");
+    user->message("    lub " + cmd + " #<obiekt> tutaj\n");
   }
 
   if(second) {
     if(user->get_location()) {
       objnum2 = user->get_location()->get_number();
     } else {
-      user->message("You can't move an object to your current location "
-		    + "unless you have one!\n");
+      user->message("Nie możesz przenieść obiektu do swojej obecnej lokacji "
+		    + "ponieważ jej nie masz!\n");
       return;
     }
   }
 
   obj2 = MAPD->get_room_by_num(objnum2);
   if(!obj2) {
-    user->message("The second argument must be a room.  Obj #"
-		  + objnum2 + " is not.\n");
+    user->message("Drugi argument musi być pokojem. Obiekt #"
+		  + objnum2 + " nie jest.\n");
     return;
   }
 
@@ -664,8 +661,8 @@ static void cmd_move_obj(object user, string cmd, string str) {
   }
 
   if(!obj1) {
-    user->message("Obj #" + objnum1 + " doesn't appear to be a registered "
-		  + "room or exit.\n");
+    user->message("Obiekt #" + objnum1 + " nie wygląda że jest zarejestrowany "
+		  + "jako pokój bądź wyjście.\n");
     return;
   }
 
@@ -674,9 +671,9 @@ static void cmd_move_obj(object user, string cmd, string str) {
   }
   obj2->add_to_container(obj1);
 
-  user->message("You teleport ");
+  user->message("Teleportowałeś ");
   user->send_phrase(obj1->get_brief());
-  user->message(" (#" + obj1->get_number() + ") into ");
+  user->message(" (#" + obj1->get_number() + ") w ");
   user->send_phrase(obj2->get_brief());
   user->message(" (#" + obj2->get_number() + ").\n");
 }
@@ -691,8 +688,8 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
 
   if(!str
      || (sscanf(str, "#%d %s", objnum, parentstr) != 2)) {
-    user->message("Usage: " + cmd + " #<obj> #<parent> [#<parent2>...]\n");
-    user->message("       " + cmd + " #<obj> none\n");
+    user->message("Użycie: " + cmd + " #<obiekt> #<rodzic> [#<rodzic2>...]\n");
+    user->message("        " + cmd + " #<obiekt> none\n");
     return;
   }
 
@@ -700,8 +697,8 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
 
   obj = MAPD->get_room_by_num(objnum);
   if(!obj) {
-    user->message("The object must be a room or portable.  Obj #"
-		  + objnum + " is not.\n");
+    user->message("Obiekt musi być pokojem bądź przenośny. Obiekt #"
+		  + objnum + " nie jest.\n");
     return;
   }
 
@@ -709,7 +706,7 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
 
   if(!STRINGD->stricmp(parentstr, "none")) {
     obj->set_archetypes( ({ }) );
-    user->message("Object is now unparented.\n");
+    user->message("Usunieto wszystkich rodziców.\n");
     return;
   }
 
@@ -721,9 +718,9 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
 	    "remove" : 1 ]);
 
   if(!par_kw[par_entries[0]]) {
-    user->message("The operation keyword must be one of 'none', 'add' or "
-		  + "remove.\n  Your keyword, '" + par_entries[0]
-		  + "', was not.\n  See help entry.\n");
+    user->message("Argument operacji musi być jednym z 'none', 'add' lub "
+		  + "remove.\n Twój argument, '" + par_entries[0]
+		  + "', nie był.\n Sprawdź wpis pomocy.\n");
     return;
   }
 
@@ -735,19 +732,19 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
       continue;
 
     if(!sscanf(par_entries[objnum], "#%d", parentnum)) {
-      user->message("Post-keyword arguments must be parent object numbers ("
-		    + "#<num>).\n"
-		    + "  Your argument, '" + par_entries[objnum]
-		    + "', was not.\n");
+      user->message("Argumenty rodziców muszą być numerami obiektów ("
+		    + "#<numer>).\n"
+		    + " Twój argument, '" + par_entries[objnum]
+		    + "', nie był.\n");
       return;
     }
 
     parent = MAPD->get_room_by_num(parentnum);
 
     if(!parent) {
-      user->message("The parent must be a room or portable.  Obj #"
+      user->message("Rodzice muszą być pokojami bądź przenośnymi. Obiekt #"
 		    + parentnum
-		    + " is not.\n");
+		    + " nie jest.\n");
       return;
     }
 
@@ -757,7 +754,7 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
   switch(par_entries[0]) {
   case "none":
     /* Should never get this far */
-    user->message("Don't include any object numbers with the keyword 'none'."
+    user->message("Nie dołączaj żadnych numerów obiektu do argumentu 'none'."
 		  + "\n");
     return;
 
@@ -769,12 +766,11 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
     obj->set_archetypes(parents);
     break;
   default:
-    user->message("Internal error based on keyword name.  "
-		  + "Throwing an exception.\n");
-    error("Internal error!  Should never get here!");
+    user->message("Wewnętrzny błąd bazujący na słowie kluczowym.\n");
+    error("Wewnętrzny błąd! Nie powinno Ciebie tutaj być!");
   }
 
-  user->message("Done setting parents.\n");
+  user->message("Zakończono ustawianie rodziców.\n");
 }
 
 static void cmd_set_obj_wearlocations(object user, string cmd, string str) 
@@ -834,8 +830,8 @@ static void cmd_set_obj_wearlocations(object user, string cmd, string str)
 
     obj = MAPD->get_room_by_num(objnum);
     if(!obj) {
-        user->message("The object must be a room or portable.  Obj #"
-		      + objnum + " is not.\n");
+        user->message("Obiekt musi być pokojem bądź przenośnym. Obiekt #"
+		      + objnum + " nie jest.\n");
         return;
     }
 
@@ -859,8 +855,8 @@ static void cmd_set_obj_room_type(object user, string cmd, string str)
 
     obj = MAPD->get_room_by_num(objnum);
     if(!obj) {
-        user->message("The object must be a room or portable.  Obj #"
-                + objnum + " is not.\n");
+        user->message("Obiekt musi być pokojem bądź przenośnym. Obiekt #"
+                + objnum + " nie jest.\n");
         return;
     }
     switch (str) {
@@ -898,8 +894,8 @@ static void cmd_set_obj_body_locations(object user, string cmd, string str)
 
   obj = MAPD->get_room_by_num(objnum);
   if(!obj) {
-    user->message("The object must be a room or portable.  Obj #"
-		  + objnum + " is not.\n");
+    user->message("Obiekt musi być pokojem bądź przenośnym. Obiekt #"
+		  + objnum + " nie jest.\n");
     return;
   }
 
@@ -993,8 +989,8 @@ static void cmd_set_obj_int_value(object user, string cmd, string str)
 
   obj = MAPD->get_room_by_num(objnum);
   if(!obj) {
-    user->message("The object must be a room or portable.  Obj #"
-		  + objnum + " is not.\n");
+    user->message("Obiekt musi być pokojem bądź przenośnym. Obiekt #"
+		  + objnum + " nie jest.\n");
     return;
   }
 
@@ -1022,7 +1018,7 @@ static void cmd_set_obj_value(object user, string cmd, string str) {
 
   if(!str || sscanf(str, "%*s %*s %*s") == 3
      || sscanf(str, "#%d %f", objnum, newvalue) != 2) {
-    user->message("Usage: " + cmd + " #<obj> <value>\n");
+    user->message("Użycie: " + cmd + " #<obiekt> <wartość>\n");
     return;
   }
 
@@ -1045,20 +1041,20 @@ static void cmd_set_obj_value(object user, string cmd, string str) {
     cmd_norm_name = val_names[cmd_value_name];
     is_cap = 0;
   } else {
-    user->message("Internal parsing error on command name '"
-		  + cmd + "'.  Sorry!\n");
+    user->message("Wewnętrzny błąd parsowania komendy '"
+		  + cmd + "'.\n");
     return;
   }
 
   obj = MAPD->get_room_by_num(objnum);
   if(!obj) {
-    user->message("The object must be a room or portable.  Obj #"
-		  + objnum + " is not.\n");
+    user->message("Obiekt musi być pokojem bądź przenośnym. Obiekt #"
+		  + objnum + " nie jest.\n");
     return;
   }
 
   if(newvalue < 0.0) {
-    user->message("Length, weight and height values must be positive or zero."
+    user->message("Długość, waga i objętość muszą być dodatnie bądź zero."
 		  + "\n.  " + newvalue + " is not.\n");
     return;
   }
@@ -1153,7 +1149,7 @@ static void cmd_make_obj(object user, string cmd, string str) {
   string typename;
 
   if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\n");
+    user->message("Użycie: " + cmd + "\n");
     return;
   }
 
@@ -1164,8 +1160,8 @@ static void cmd_make_obj(object user, string cmd, string str) {
   } else if (cmd == "@make_det" || cmd == "@make_detail") {
     typename = "detail";
   } else {
-    user->message("I don't recognize the kind of object "
-		  + "you're trying to make.\n");
+    user->message("Nie rozpoznaję typu obiektu "
+		  + "który próbujesz utworzyć.\n");
     return;
   }
 
@@ -1182,7 +1178,7 @@ static void cmd_set_obj_detail(object user, string cmd, string str) {
   if(!str
      || sscanf(str, "%*s %*s %*s") == 3
      || sscanf(str, "#%d #%d", objnum, detailnum) != 2) {
-    user->message("Usage: " + cmd + " #<base_obj> #<detail_obj>\n");
+    user->message("Użycie: " + cmd + " #<obiekt bazowy> #<numer detalu>\n");
     return;
   }
 
@@ -1190,28 +1186,28 @@ static void cmd_set_obj_detail(object user, string cmd, string str) {
   detail = MAPD->get_room_by_num(detailnum);
 
   if(objnum != -1 && !obj) {
-    user->message("Base object (#" + objnum
-		  + ") doesn't appear to be a room or portable.\n");
+    user->message("Bazowy obiekt (#" + objnum
+		  + ") nie wygląda na pokój lub przenośny.\n");
   }
   if(!detail) {
-    user->message("Detail object (#" + detailnum
-		  + ") doesn't appear to be a room or portable.\n");
+    user->message("Obiekt detal (#" + detailnum
+		  + ") nie wygląda na pokój lub przenośny.\n");
   }
 
   if(!obj || !detail) return;
 
   if(obj && detail->get_detail_of()) {
-    user->message("Object #" + detailnum + " is already a detail of object #"
+    user->message("Obiekt #" + detailnum + " jest już detalem obiektu #"
 		  + detail->get_detail_of()->get_number() + "!\n");
     return;
   } else if(!obj && !detail->get_detail_of()) {
-    user->message("Object #" + detailnum
-		  + " isn't a detail of anything!\n");
+    user->message("Obiekt #" + detailnum
+		  + " nie jest detalem czegokolwiek!\n");
     return;
   }
 
   if(obj) {
-    user->message("Setting object #" + detailnum + " to be a detail of obj #"
+    user->message("Ustawianie obiektu #" + detailnum + " jako detalu obiektu #"
 		  + objnum + ".\n");
     if(detail->get_location())
       detail->get_location()->remove_from_container(detail);
@@ -1219,10 +1215,10 @@ static void cmd_set_obj_detail(object user, string cmd, string str) {
   } else {
     obj = detail->get_detail_of();
 
-    user->message("Removing detail #" + detailnum + " from object #"
+    user->message("Usuwanie detalu #" + detailnum + " z obiektu #"
 		  + obj->get_number() + ".\n");
     obj->remove_detail(detail);
   }
 
-  user->message("Done.\n");
+  user->message("Wykonane.\n");
 }
