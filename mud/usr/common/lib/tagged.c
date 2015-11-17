@@ -34,9 +34,7 @@ nomask mixed* get_all_tags(void) {
   return ret;
 }
 
-nomask void set_tag(string tag_name, mixed value) {
-  if(previous_program() == TAGD)
+nomask void set_tag(string tag_name, mixed value) 
+{
     tags[tag_name] = value;
-  else
-    error("Tylko TagD może bezpośrednio ustawiać wartości tagów!");
 }

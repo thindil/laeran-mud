@@ -91,10 +91,6 @@ static void create(varargs int clone)
         pending_removed_details = ({ });
         pending_removed_nouns = ({ });
         pending_removed_adjectives = ({ });
-        if (!registered) {
-            registered = 1;
-            TIMED->set_heart_beat(TIMED_TEN_MINUTES, "heartbeat");
-        }
     }
 }
 
@@ -151,6 +147,18 @@ void heartbeat(void)
         if (get_location())
             get_location()->remove_from_container(this_object());
         destruct_object(this_object());
+    }
+}
+
+void set_drop_time(string tag_name, mixed drop_time)
+{
+    this_object()->set_tag(tag_name, drop_time);
+    if (drop_time == nil && registered) {
+        registered = 0;
+        TIMED->stop_heart_beat(TIMED_TEN_MINUTES);
+    } else if (!registered) {
+        registered = 1;
+        TIMED->set_heart_beat(TIMED_TEN_MINUTES, "heartbeat");
     }
 }
 

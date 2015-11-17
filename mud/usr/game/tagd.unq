@@ -13,6 +13,7 @@
 ~object_tag{
   ~name{DropTime}
   ~type{1}
+  ~setter{set_drop_time}
 }
 ~object_tag{
   ~name{Fatigue}
