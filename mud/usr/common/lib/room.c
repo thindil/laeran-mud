@@ -141,11 +141,16 @@ void upgraded(varargs int clone)
 void heartbeat(void)
 {
     mixed tag;
+    object *objs;
+    int i;
     
     tag = TAGD->get_tag_value(this_object(), "DropTime");
     if (tag && (time() - tag >= 300)) {
         if (get_location())
             get_location()->remove_from_container(this_object());
+        objs = objects_in_container();
+        for (i = 0; i < sizeof(objs); i++)
+            TAGD->set_tag_value(objs[i], "DropTime", time());
         destruct_object(this_object());
     }
 }
