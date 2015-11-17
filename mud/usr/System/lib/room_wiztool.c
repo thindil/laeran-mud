@@ -84,62 +84,90 @@ static void destructed(varargs int clone) {
 /********** Room Functions *****************************************/
 
 /* List MUD rooms */
-static void cmd_list_room(object user, string cmd, string str) {
-  int*    rooms;
-  int     ctr, zone;
-  string  tmp;
-  object  room, phr;
+static void cmd_list_room(object user, string cmd, string str) 
+{
+    int*    rooms;
+    int     ctr, zone;
+    string  tmp, type;
+    object  room, phr;
 
-  if(str) {
-    str = STRINGD->trim_whitespace(str);
-    str = STRINGD->to_lower(str);
-  } else {
-    str = "";
-  }
+    if(str) {
+        str = STRINGD->trim_whitespace(str);
+        str = STRINGD->to_lower(str);
+    } else 
+        str = "";
 
-  if(str == "all" || str == "world" || str == "mud") {
-    user->message("Rooms in MUD (" + ZONED->num_zones() + " zones):\n");
-
-    rooms = ({ });
-    for(zone = 0; zone < ZONED->num_zones(); zone++) {
-      rooms += MAPD->rooms_in_zone(zone);
+    sscanf(str, "%s %s", str, type);
+    switch (type) {
+        case "body":
+            tmp = "Lista ciał";
+            break;
+        case "det":
+            tmp = "Lista detali";
+            break;
+        case "port":
+            tmp = "Lista przenośnych";
+            break;
+        case "room":
+            tmp = "Lista pokoi";
+            break;
+        default:
+            tmp = "Lista wszystkich obiektów";
+            break;
     }
-  } else if(str == "" || str == "zone") {
-    user->message("Rooms in zone:\n");
+    if (!type)
+        type = "all";
 
-    room = user->get_location();
-    zone = ZONED->get_zone_for_room(room);
-    if(zone == -1)
-      zone = 0;  /* Unzoned rooms */
+    if(str == "all") {
+        user->message(tmp + " w całej grze (" + ZONED->num_zones() + " stref):\n");
 
-    rooms = MAPD->rooms_in_zone(zone);
-  } else {
-    user->message("Usage: " + cmd + "\n"
-		  + "       " + cmd + " world\n");
-    return;
-  }
+        rooms = ({ });
+        for(zone = 0; zone < ZONED->num_zones(); zone++) 
+            rooms += MAPD->rooms_in_zone(zone);
+    } else if(str == "" || str == "zone") {
+        user->message(tmp + " w strefie:\n");
 
-  tmp = "";
-  for(ctr = 0; ctr < sizeof(rooms); ctr++) {
-    room = MAPD->get_room_by_num(rooms[ctr]);
-    phr = room->get_brief();
-    tmp += ralign10("" + rooms[ctr], 6) + "  ";
-    if (room->get_mobile()) {
-      tmp += "(body) ";
-    } else if (room->get_detail_of()) {
-      tmp += "(det)  ";
-    } else if (room->get_location()
-	       && room->get_location()!=MAPD->get_room_by_num(0)) {
-      tmp += "(port) ";
-    } else {
-      tmp += "(room) ";
+        room = user->get_location();
+        zone = ZONED->get_zone_for_room(room);
+        if(zone == -1)
+            zone = 0;  /* Unzoned rooms */
+
+        rooms = MAPD->rooms_in_zone(zone);
     }
-    tmp += phr->to_string(user);
-    tmp += "\n";
-  }
 
-  tmp += "-----\n";
-  user->message_scroll(tmp);
+    tmp = "";
+    for(ctr = 0; ctr < sizeof(rooms); ctr++) {
+        room = MAPD->get_room_by_num(rooms[ctr]);
+        if (type != "all")
+            if (type == "body" && !room->get_mobile())
+                continue;
+            else if (type == "det" && !room->get_detail_of())
+                continue;
+            else if (type == "port" && (!room->get_location()
+                        || room->get_location() == MAPD->get_room_by_num(0)
+                        || room->get_mobile()))
+                continue;
+            else if (type == "room" && (room->get_mobile()
+                        || room->get_detail_of()
+                        || room->get_location() != MAPD->get_room_by_num(0)))
+                continue;
+        phr = room->get_brief();
+        tmp += ralign10("" + rooms[ctr], 6) + "  ";
+        if (room->get_mobile()) 
+            tmp += "(ciało) ";
+        else if (room->get_detail_of())
+            tmp += "(det)  ";
+        else if (room->get_location()
+                && room->get_location()!=MAPD->get_room_by_num(0))
+            tmp += "(przen) ";
+        else 
+            tmp += "(pokój) ";
+        tmp += phr->to_string(user);
+        tmp += "\n";
+    }
+
+    tmp += "-----\n";
+    user->message_scroll(tmp);
 }
 
 
