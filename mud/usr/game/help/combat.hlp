@@ -6,6 +6,7 @@ z NPC'kami.  Poniżej znajdziesz spis tematów związanych
 z walką:
 
 pomoc atakuj               Rozpoczynanie walki
+pomoc strzel               Strzelanie do wrogów
 pomoc smierc               Co się dzieje w wypadku śmierci
 
 Z walki w każdej chwili można uciec poprzez wyjście z
@@ -32,5 +33,20 @@ w posługiwaniu się wybraną bronią, siły oraz ciężaru broni.
 Dlatego na początku walka może rozpoczynać się z dość dużym
 opóźnieniem.
 
-Zobacz również: śmierć
+Zobacz również: śmierć, strzel
+}
+
+~name{strzel,strzelectwo,strzelanie}
+~desc{
+
+Komenda 'strzel' podobnie jak komenda 'atakuj' służy do rozpoczęcia
+walki z wybranym przeciwnikiem. Jej pełna forma to: 'strzel <cel>'
+gdzie cel musi być żywą istotą (na chwilę obecną nie jest możliwe
+atakowanie innych graczy). Aby komenda się powiodła, oprócz standardowych
+wymogów dla rozpoczęćia walki, musisz jeszcze mieć założoną na siebie i
+załadowaną broń strzelecką. Dzięki tej komendzie, wykonujesz po prostu
+dodatkowy atak jako pierwszy. Po Twoim strzale rozpoczyna się normalna
+walka wręcz
+
+Zobacz również: atak
 }
