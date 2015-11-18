@@ -1723,6 +1723,7 @@ static void cmd_reload(object user, string cmd, string str)
     object *tmp, *inv, *parents;
     int i, diff, ammo, j;
     object weapon;
+    string *magazine;
 
     if (str)
         str = STRINGD->trim_whitespace(str);
@@ -1751,7 +1752,6 @@ static void cmd_reload(object user, string cmd, string str)
     ammo = 0;
     parents = tmp[0]->get_archetypes();
     for (i = 0; i < sizeof(parents); i++) {
-        user->message((string)parents[i]->get_number() +  " " + (string) weapon->get_ammo() + "\n");
         if (parents[i]->get_number() == weapon->get_ammo()) {
             ammo = 1;
             break;
@@ -1761,7 +1761,8 @@ static void cmd_reload(object user, string cmd, string str)
         user->message("Amunicja '" + str + "' nie pasuje do założonej broni strzeleckiej.\n");
         return;
     }
-    diff = weapon->get_magazine() - weapon->get_cur_magazine();
+    magazine = weapon->get_cur_magazine();
+    diff = weapon->get_magazine() - sizeof(magazine);
     if (!diff) {
         user->message(weapon->get_brief()->to_string(user) + " jest już załadowany.\n");
         return;
@@ -1771,6 +1772,7 @@ static void cmd_reload(object user, string cmd, string str)
         parents = inv[i]->get_archetypes();
         for (j = 0; j < sizeof(parents); j++) {
             if (parents[j]->get_number() == weapon->get_ammo()) {
+                magazine += ({ inv[i]->get_damage_type() + ":" + inv[i]->get_damage() });
                 user->get_body()->remove_from_container(inv[i]);
                 destruct_object(inv[i]);
                 diff --;
@@ -1779,7 +1781,7 @@ static void cmd_reload(object user, string cmd, string str)
             }
         }
     }
-    weapon->set_cur_magazine(weapon->get_magazine() - diff);
+    weapon->set_cur_magazine(magazine);
     user->message("Załadowałeś " + weapon->get_brief()->to_string(user) + ".\n");
 }
 

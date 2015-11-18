@@ -53,7 +53,7 @@
   ~room_type{int}
   ~magazine{int}
   ~ammo{int}
-  ~cur_magazine{int}
+  ~cur_magazine{string}
   ~newexit{rnumber,direction,destination,return,type,rbdesc?,rgdesc?,
            rldesc?,redesc?,rnouns?,radjectives?,rflags?}
   ~rnumber{int}

@@ -54,9 +54,9 @@ private int objflags;
 private float weight, volume, length;
 private float weight_capacity, volume_capacity, length_capacity;
 private int damage, armor, price, hp, combat_rating, quality, durability, cur_durability, room_type;
-private int magazine, ammo, cur_magazine;
+private int magazine, ammo;
 private int* wearlocations;
-private string *body_locations;
+private string *body_locations, *cur_magazine;
 private string skill, damage_type, craft_skill;
 private mapping damage_res;
 
@@ -81,9 +81,10 @@ static void create(varargs int clone)
         weight = volume = length = -1.0;
         weight_capacity = volume_capacity = length_capacity = -1.0;
         damage = armor = price = hp = combat_rating = quality = room_type = 0;
-        magazine = ammo = cur_magazine = 0;
+        magazine = ammo = 0;
         wearlocations = ({ });
         body_locations = ({ });
+        cur_magazine = ({ });
         damage_res = ([ ]);
         damage_type = skill = craft_skill = "";
 
@@ -138,6 +139,8 @@ void destructed(int clone) {
 void upgraded(varargs int clone) 
 {
     obj::upgraded();
+    if (cur_magazine == nil)
+        cur_magazine = ({ });
 }
 
 void heartbeat(void)
@@ -365,7 +368,7 @@ int get_ammo(void)
     return ammo;
 }
 
-int get_cur_magazine(void)
+string* get_cur_magazine(void)
 {
     return cur_magazine;
 }
@@ -575,7 +578,7 @@ void set_ammo(int new_ammo)
     ammo = new_ammo;
 }
 
-void set_cur_magazine(int new_cur_magazine) 
+void set_cur_magazine(string *new_cur_magazine) 
 {
     if(!SYSTEM() && !COMMON() && !GAME())
         error("Tylko autoryzowany kod może ustawiać wielkość magazynka!");
@@ -1358,8 +1361,8 @@ string to_unq_flags(void)
         ret += "  ~room_type{" + room_type + "}\n";
     if (magazine > 0)
         ret += "  ~magazine{" + magazine + "}\n";
-    if (cur_magazine > 0)
-        ret += "  ~cur_magazine{" + cur_magazine + "}\n";
+    if (sizeof(cur_magazine))
+        ret += "  ~cur_magazine{" + serialize_list(cur_magazine) + "}\n";
     if (ammo > 0)
         ret += "  ~ammo{" + ammo + "}\n";
 
@@ -1561,7 +1564,10 @@ void from_dtd_tag(string tag, mixed value) {
             magazine = value;
             break;
         case "cur_magazine":
-            cur_magazine = value;
+            value = explode(value, ", ");
+            for(ctr2 = 0; ctr2 < sizeof(value); ctr2++)
+                cur_magazine += ({ value[ctr2] });
+            break;
             break;
         case "ammo":
             ammo = value;
