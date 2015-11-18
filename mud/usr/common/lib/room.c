@@ -139,8 +139,6 @@ void destructed(int clone) {
 void upgraded(varargs int clone) 
 {
     obj::upgraded();
-    if (cur_magazine == nil)
-        cur_magazine = ({ });
 }
 
 void heartbeat(void)
