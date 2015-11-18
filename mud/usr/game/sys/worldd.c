@@ -110,8 +110,10 @@ string get_hour(void)
         return "Godzina " + (string)hour + " rano. ";
     else if (hour == 12)
         return "Południe. ";
-    else
+    else if (hour > 12 && hour < 19)
         return "Godzina " + (string)(hour - 12) + " po południu. ";
+    else
+        return "Godzina " + (string)(hour - 12) + " wieczorem. ";
 }
 
 string get_date(void)
