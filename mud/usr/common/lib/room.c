@@ -54,7 +54,7 @@ private int objflags;
 private float weight, volume, length;
 private float weight_capacity, volume_capacity, length_capacity;
 private int damage, armor, price, hp, combat_rating, quality, durability, cur_durability, room_type;
-private int magazine, ammo;
+private int magazine, ammo, cur_magazine;
 private int* wearlocations;
 private string *body_locations;
 private string skill, damage_type, craft_skill;
@@ -81,7 +81,7 @@ static void create(varargs int clone)
         weight = volume = length = -1.0;
         weight_capacity = volume_capacity = length_capacity = -1.0;
         damage = armor = price = hp = combat_rating = quality = room_type = 0;
-        magazine = ammo = 0;
+        magazine = ammo = cur_magazine = 0;
         wearlocations = ({ });
         body_locations = ({ });
         damage_res = ([ ]);
@@ -365,6 +365,11 @@ int get_ammo(void)
     return ammo;
 }
 
+int get_cur_magazine(void)
+{
+    return cur_magazine;
+}
+
 void set_weight(float new_weight) {
   object loc;
 
@@ -569,6 +574,15 @@ void set_ammo(int new_ammo)
 
     ammo = new_ammo;
 }
+
+void set_cur_magazine(int new_cur_magazine) 
+{
+    if(!SYSTEM() && !COMMON() && !GAME())
+        error("Tylko autoryzowany kod może ustawiać wielkość magazynka!");
+
+    cur_magazine = new_cur_magazine;
+}
+
 /*** Functions dealing with Exits ***/
 
 void clear_exits(void) {
@@ -1250,110 +1264,113 @@ private string serialize_mapping(mapping map)
  * creates a string out of the object flags.
  */
 
-string to_unq_flags(void) {
-  string  ret;
-  object *rem, *arch;
-  int     locale, ctr;
+string to_unq_flags(void) 
+{
+    string  ret;
+    object *rem, *arch;
+    int     locale, ctr;
 
-  ret = "  ~number{" + tr_num + "}\n";
-  if (get_detail_of()) {
-    ret += "  ~detail{" + get_detail_of()->get_number() + "}\n";
-  } else if (obj::get_location()) {
-    ret += "  ~location{" + obj::get_location()->get_number() + "}\n";
-  }
+    ret = "  ~number{" + tr_num + "}\n";
+    if (get_detail_of()) {
+        ret += "  ~detail{" + get_detail_of()->get_number() + "}\n";
+    } else if (obj::get_location()) {
+        ret += "  ~location{" + obj::get_location()->get_number() + "}\n";
+    }
 
-  if(bdesc)
-    ret += "  ~bdesc{" + bdesc->to_unq_text() + "}\n";
-  if(ldesc)
-    ret += "  ~ldesc{" + ldesc->to_unq_text() + "}\n";
-  if(edesc)
-    ret += "  ~edesc{" + edesc->to_unq_text() + "}\n";
+    if(bdesc)
+        ret += "  ~bdesc{" + bdesc->to_unq_text() + "}\n";
+    if(ldesc)
+        ret += "  ~ldesc{" + ldesc->to_unq_text() + "}\n";
+    if(edesc)
+        ret += "  ~edesc{" + edesc->to_unq_text() + "}\n";
 
-  ret += "  ~flags{" + objflags + "}\n";
+    ret += "  ~flags{" + objflags + "}\n";
 
-  arch = obj::get_archetypes();
-  if(arch && sizeof(arch)) {
-    ret += "  ~parent{" + serialize_list(arch) + "}\n";
-  }
+    arch = obj::get_archetypes();
+    if(arch && sizeof(arch)) {
+        ret += "  ~parent{" + serialize_list(arch) + "}\n";
+    }
 
-  /* The double-braces are intentional -- this uses the efficient
-     method of specifying nouns and adjectives rather than the human-
-     friendly one.  Both are parseable, naturally. */
-  ret += "  ~nouns{{" + serialize_wordlist(get_immediate_nouns()) + "}}\n";
-  ret += "  ~adjectives{{" + serialize_wordlist(get_immediate_adjectives())
-    + "}}\n";
+    /* The double-braces are intentional -- this uses the efficient
+       method of specifying nouns and adjectives rather than the human-
+       friendly one.  Both are parseable, naturally. */
+    ret += "  ~nouns{{" + serialize_wordlist(get_immediate_nouns()) + "}}\n";
+    ret += "  ~adjectives{{" + serialize_wordlist(get_immediate_adjectives())
+        + "}}\n";
 
-  arch = get_archetypes();
-  if(arch && sizeof(arch)) {
-    ret += "  ~rem_nouns{{" + serialize_wordlist(removed_nouns) + "}}\n";
-    ret += "  ~rem_adjectives{{" + serialize_wordlist(removed_adjectives)
-      + "}}\n";
-  }
+    arch = get_archetypes();
+    if(arch && sizeof(arch)) {
+        ret += "  ~rem_nouns{{" + serialize_wordlist(removed_nouns) + "}}\n";
+        ret += "  ~rem_adjectives{{" + serialize_wordlist(removed_adjectives)
+            + "}}\n";
+    }
 
-  ret += exits_to_unq();
+    ret += exits_to_unq();
 
-  if(weight >= 0.0)
-    ret += "  ~weight{" + weight + "}\n";
+    if(weight >= 0.0)
+        ret += "  ~weight{" + weight + "}\n";
 
-  if(volume >= 0.0)
-    ret += "  ~volume{" + volume + "}\n";
+    if(volume >= 0.0)
+        ret += "  ~volume{" + volume + "}\n";
 
-  if(length >= 0.0)
-    ret += "  ~length{" + length + "}\n";
+    if(length >= 0.0)
+        ret += "  ~length{" + length + "}\n";
 
-  if(is_container()) {
-    if(weight_capacity >= 0.0)
-      ret += "  ~weight_capacity{" + weight_capacity + "}\n";
+    if(is_container()) {
+        if(weight_capacity >= 0.0)
+            ret += "  ~weight_capacity{" + weight_capacity + "}\n";
 
-    if(volume_capacity >= 0.0)
-      ret += "  ~volume_capacity{" + volume_capacity + "}\n";
+        if(volume_capacity >= 0.0)
+            ret += "  ~volume_capacity{" + volume_capacity + "}\n";
 
-    if(length_capacity >= 0.0)
-      ret += "  ~length_capacity{" + length_capacity + "}\n";
-  }
-  if (damage > 0)
-      ret += "  ~damage{" + damage + "}\n";
-  if (damage_type != "")
-      ret += "  ~damage_type{" + damage_type + "}\n";
-  if (is_wearable() && sizeof(wearlocations))
-      ret += "  ~wearlocations{" + serialize_list(wearlocations) + "}\n";
-  if (armor > 0)
-      ret += "  ~armor{" + armor + "}\n";
-  if (sizeof(map_indices(damage_res)))
-      ret += "  ~damage_res{" + serialize_mapping(damage_res) + "}\n";
-  if (price > 0)
-      ret += "  ~price{" + price + "}\n";
-  if (hp > 0)
-      ret += "  ~hp{" + hp + "}\n";
-  if (combat_rating > 0)
-      ret += "  ~combat_rating{" + combat_rating + "}\n";
-  if (sizeof(body_locations))
-      ret += "  ~body_locations{" + serialize_list(body_locations) + "}\n";
-  if (skill != "")
-      ret += "  ~skill{" + skill + "}\n";
-  if (quality > 0) 
-      ret += "  ~quality{" + quality + "}\n";
-  if (durability > 0 && durability < 100)
-      ret += "  ~durability{" + durability + "}\n";
-  if (cur_durability > 0 && cur_durability < 100)
-      ret += "  ~cur_durability{" + cur_durability + "}\n";
-  if (craft_skill && craft_skill != "")
-      ret += "  ~craft_skill{" + craft_skill + "}\n";
-  if (room_type)
-      ret += "  ~room_type{" + room_type + "}\n";
-  if (magazine > 0)
-      ret += "  ~magazine{" + magazine + "}\n";
-  if (ammo > 0)
-      ret += "  ~ammo{" + ammo + "}\n";
+        if(length_capacity >= 0.0)
+            ret += "  ~length_capacity{" + length_capacity + "}\n";
+    }
+    if (damage > 0)
+        ret += "  ~damage{" + damage + "}\n";
+    if (damage_type != "")
+        ret += "  ~damage_type{" + damage_type + "}\n";
+    if (is_wearable() && sizeof(wearlocations))
+        ret += "  ~wearlocations{" + serialize_list(wearlocations) + "}\n";
+    if (armor > 0)
+        ret += "  ~armor{" + armor + "}\n";
+    if (sizeof(map_indices(damage_res)))
+        ret += "  ~damage_res{" + serialize_mapping(damage_res) + "}\n";
+    if (price > 0)
+        ret += "  ~price{" + price + "}\n";
+    if (hp > 0)
+        ret += "  ~hp{" + hp + "}\n";
+    if (combat_rating > 0)
+        ret += "  ~combat_rating{" + combat_rating + "}\n";
+    if (sizeof(body_locations))
+        ret += "  ~body_locations{" + serialize_list(body_locations) + "}\n";
+    if (skill != "")
+        ret += "  ~skill{" + skill + "}\n";
+    if (quality > 0) 
+        ret += "  ~quality{" + quality + "}\n";
+    if (durability > 0 && durability < 100)
+        ret += "  ~durability{" + durability + "}\n";
+    if (cur_durability > 0 && cur_durability < 100)
+        ret += "  ~cur_durability{" + cur_durability + "}\n";
+    if (craft_skill && craft_skill != "")
+        ret += "  ~craft_skill{" + craft_skill + "}\n";
+    if (room_type)
+        ret += "  ~room_type{" + room_type + "}\n";
+    if (magazine > 0)
+        ret += "  ~magazine{" + magazine + "}\n";
+    if (cur_magazine > 0)
+        ret += "  ~cur_magazine{" + cur_magazine + "}\n";
+    if (ammo > 0)
+        ret += "  ~ammo{" + ammo + "}\n";
 
-  rem = get_removed_details();
-  if(rem && sizeof(rem)) {
-    ret += "  ~removed_details{" + serialize_list(rem) + "}\n";
-  }
+    rem = get_removed_details();
+    if(rem && sizeof(rem)) {
+        ret += "  ~removed_details{" + serialize_list(rem) + "}\n";
+    }
 
-  ret += "  ~tags{" + all_tags_to_unq() + "}\n";
+    ret += "  ~tags{" + all_tags_to_unq() + "}\n";
 
-  return ret;
+    return ret;
 }
 
 private void parse_all_tags(mixed* value) 
@@ -1542,6 +1559,9 @@ void from_dtd_tag(string tag, mixed value) {
             break;
         case "magazine":
             magazine = value;
+            break;
+        case "cur_magazine":
+            cur_magazine = value;
             break;
         case "ammo":
             ammo = value;

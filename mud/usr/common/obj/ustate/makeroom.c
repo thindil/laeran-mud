@@ -1804,7 +1804,7 @@ static int prompt_ammo_input(string input)
         return RET_NORMAL;
     }
 
-    new_obj->set_magazine(value);
+    new_obj->set_ammo(value);
 
     substate = SS_PROMPT_WEARABLE;
     push_new_state(US_ENTER_YN, "Obiekt można zakładać na ciało? ");

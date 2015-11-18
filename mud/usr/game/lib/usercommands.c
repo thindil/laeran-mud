@@ -379,7 +379,7 @@ static void cmd_inventory(object user, string cmd, string str)
     }
     inv = weared = ({ });
     wearlocations = ({"głowa", "tułów", "ręce", "dłonie", "nogi", "prawa dłoń", "lewa dłoń", 
-            "plecy", "prawa strona pasa", "lewa strona pasa"});
+            "plecy", "prawa strona pasa", "lewa strona pasa", "broń strzelecka"});
     for(ctr = 0; ctr < sizeof(objs); ctr++) {
         if (objs[ctr]->is_dressed()) {
             wlocs = objs[ctr]->get_wearlocations();
@@ -1715,4 +1715,75 @@ static void cmd_repair(object user, string cmd, string str)
         user->message("Twoje narzędzia ulegają uszkodzeniu.\n");
     else if (number == 2)
         user->message("Twoje narzędzia ulegają zniszczeniu.\n");
+}
+
+/* Reload shooting weapon */
+static void cmd_reload(object user, string cmd, string str)
+{
+    object *tmp, *inv, *parents;
+    int i, diff, ammo, j;
+    object weapon;
+
+    if (str)
+        str = STRINGD->trim_whitespace(str);
+    if (!str || str == "") {
+        user->message("Użycie: " + cmd + " <nazwa amunicji>\n");
+        return;
+    }
+
+    tmp = user->find_first_objects(str, LOC_INVENTORY);
+    if (!tmp || !sizeof(tmp)) {
+        user->message("Nie masz amunicji '" + str + "' w ekwipunku.\n");
+        return;
+    }
+
+    inv = user->get_body()->objects_in_container();
+    for (i = 0; i < sizeof(inv); i++) {
+        if (inv[i]->is_dressed() && sizeof(inv[i]->get_wearlocations() & ({10}))) {
+            weapon = inv[i];
+            break;
+        }
+    }
+    if (!weapon) {
+        user->message("Nie masz założonej żadnej broni strzeleckiej.\n");
+        return;
+    }
+    ammo = 0;
+    parents = tmp[0]->get_archetypes();
+    for (i = 0; i < sizeof(parents); i++) {
+        user->message((string)parents[i]->get_number() +  " " + (string) weapon->get_ammo() + "\n");
+        if (parents[i]->get_number() == weapon->get_ammo()) {
+            ammo = 1;
+            break;
+        }
+    }
+    if (!ammo) {
+        user->message("Amunicja '" + str + "' nie pasuje do założonej broni strzeleckiej.\n");
+        return;
+    }
+    diff = weapon->get_magazine() - weapon->get_cur_magazine();
+    if (!diff) {
+        user->message(weapon->get_brief()->to_string(user) + " jest już załadowany.\n");
+        return;
+    }
+
+    for (i = 0; i < sizeof(inv); i++) {
+        parents = inv[i]->get_archetypes();
+        for (j = 0; j < sizeof(parents); j++) {
+            if (parents[j]->get_number() == weapon->get_ammo()) {
+                user->get_body()->remove_from_container(inv[i]);
+                destruct_object(inv[i]);
+                diff --;
+                if (!diff)
+                    break;
+            }
+        }
+    }
+    weapon->set_cur_magazine(weapon->get_magazine() - diff);
+    user->message("Załadowałeś " + weapon->get_brief()->to_string(user) + ".\n");
+}
+
+/* Shoot from shooting weapon */
+static void cmd_shoot(object user, string cmd, string str)
+{
 }

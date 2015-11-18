@@ -143,7 +143,9 @@ void upgraded(varargs int clone) {
 
 		     "at"        : "cmd_attack",
 		     "atak"      : "cmd_attack",
-		     "atakuj"    : "cmd_attack"
+		     "atakuj"    : "cmd_attack",
+             "strzel"    : "cmd_shoot",
+             "zaladuj"   : "cmd_reload"
 
     ]);
 
