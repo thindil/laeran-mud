@@ -92,6 +92,8 @@ void upgraded(varargs int clone) {
     "@set_obj_quality"            : ({ "cmd_set_obj_int_value" }),
     "@set_obj_durability"         : ({ "cmd_set_obj_int_value" }),
     "@set_obj_cur_durability"     : ({ "cmd_set_obj_int_value" }),
+    "@set_obj_magazine"           : ({ "cmd_set_obj_int_value" }),
+    "@set_obj_ammo"               : ({ "cmd_set_obj_int_value" }),
 
     "@set_obj_skill"              : ({ "cmd_set_obj_string_value" }),
     "@set_obj_craft_skill"        : ({ "cmd_set_obj_string_value" }),

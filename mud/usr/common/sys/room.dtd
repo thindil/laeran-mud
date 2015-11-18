@@ -7,7 +7,7 @@
        tags?,data?,damage?,damage_type?,wearlocations?,armor?,damage_res?,
        price?,hp?,combat_rating?,body_locations?,skill?,current_weight?,
        current_volume?,quality?,durability?,cur_durability?,craft_skill?,
-       room_type?}
+       room_type?,magazine?,ammo?}
   ~object:obj{}
   ~obj_type{string}
   ~number{int}
@@ -51,6 +51,8 @@
   ~cur_durability{int}
   ~craft_skill{string}
   ~room_type{int}
+  ~magazine{int}
+  ~ammo{int}
   ~newexit{rnumber,direction,destination,return,type,rbdesc?,rgdesc?,
            rldesc?,redesc?,rnouns?,radjectives?,rflags?}
   ~rnumber{int}

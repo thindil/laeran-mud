@@ -51,18 +51,20 @@ private object obj_detail_of;
 #define SS_PROMPT_LENGTH_CAPACITY  25
 #define SS_PROMPT_DAMAGE           27
 #define SS_PROMPT_DAMAGE_TYPE      28
-#define SS_PROMPT_WEARABLE         29
-#define SS_PROMPT_WLOCATION        30
-#define SS_PROMPT_ARMOR            31
-#define SS_PROMPT_DAMAGE_RES       32
-#define SS_PROMPT_PRICE            33
-#define SS_PROMPT_HP               34
-#define SS_PROMPT_COMBAT_RATING    35
-#define SS_PROMPT_BODY_LOCATIONS   36
-#define SS_PROMPT_SKILL            37
-#define SS_PROMPT_CRAFT_SKILL      38
-#define SS_PROMPT_QUALITY          39
-#define SS_PROMPT_ROOM_TYPE        40
+#define SS_PROMPT_MAGAZINE         29
+#define SS_PROMPT_AMMO             30
+#define SS_PROMPT_WEARABLE         31
+#define SS_PROMPT_WLOCATION        32
+#define SS_PROMPT_ARMOR            33
+#define SS_PROMPT_DAMAGE_RES       34
+#define SS_PROMPT_PRICE            35
+#define SS_PROMPT_HP               36
+#define SS_PROMPT_COMBAT_RATING    37
+#define SS_PROMPT_BODY_LOCATIONS   38
+#define SS_PROMPT_SKILL            39
+#define SS_PROMPT_CRAFT_SKILL      40
+#define SS_PROMPT_QUALITY          41
+#define SS_PROMPT_ROOM_TYPE        42
 
 
 /* Input function return values */
@@ -92,6 +94,8 @@ static int  prompt_volume_capacity_input(string input);
 static int  prompt_length_capacity_input(string input);
 static int  prompt_damage_input(string input);
 static int  prompt_damage_type_input(string input);
+static int  prompt_magazine_input(string input);
+static int  prompt_ammo_input(string input);
 static void prompt_wearable_data(mixed data);
 static int  prompt_wlocation_input(string input);
 static int  prompt_armor_input(string input);
@@ -211,6 +215,12 @@ int from_user(string input) {
     break;
   case SS_PROMPT_DAMAGE_TYPE:
     ret = prompt_damage_type_input(input);
+    break;
+  case SS_PROMPT_MAGAZINE:
+    ret = prompt_magazine_input(input);
+    break;
+  case SS_PROMPT_AMMO:
+    ret = prompt_ammo_input(input);
     break;
   case SS_PROMPT_WLOCATION:
     ret = prompt_wlocation_input(input);
@@ -452,13 +462,28 @@ private string blurb_for_substate(int substate) {
                         + "Możesz również nacisnąć enter aby pominąć ten krok.\n";
                 return "Wprowadź typ zadawanych obrażeń przez obiekt. Dostępne na razie wartości to crush, impaled, cut.\n"
                     + "Możesz również naciśnąć enter aby pominąć ten krok.\n";
+        case SS_PROMPT_MAGAZINE:
+                if(new_obj && sizeof(new_obj->get_archetypes()))
+                    return "Wprowadź rozmiar magazynka obiektu albo wpisz 'none' aby przyjąć wartości\n"
+                        + "z archetypu. Jeżeli rozmiar magazynka będzie dodatni, przedmiot będzie bronią strzelecką.\n";
+                return "Wprowadź rozmiar magazynka obiektu. Jeżeli rozmiar magazynka będzie dodatni, przedmiot bedzie\n"
+                    + "bronią strzelecką.\n";
+        case SS_PROMPT_AMMO:
+                if(new_obj && sizeof(new_obj->get_archetypes()))
+                    return "Wprowadź numer obiektu, który jest bazową amunicją dla broni albo wpisz 'none'\n"
+                        + "aby przyjąć wartości z archetypu. Numer musi być rodzicem używanej przez broń\n"
+                        + "amunicji.\n";
+                return "Wprowadź numer obiektu, który jest bazową amunicją dla broni. Numer musi być rodzicem\n"
+                    + "używanej przez broń amunicji.\n";
         case SS_PROMPT_WLOCATION:
                 if(new_obj && sizeof(new_obj->get_archetypes()))
                     return "Wprowadź lokację (lub lokacje, oddzielone przecinkami) na które można założyć dany obiekt, "
                         + " albo wpisz 'none' \n aby przyjąć wartości z archetypu.\n"
-                        + "Dostępne lokacje to: tułów, ręce, nogi, głowa, dłonie, prawa dłoń, lewa dłoń, plecy, prawy pas, lewy pas\n";
+                        + "Dostępne lokacje to: tułów, ręce, nogi, głowa, dłonie, prawa dłoń, lewa dłoń, plecy, prawy pas,\n"
+                        + "lewy pas, broń strzelecka\n";
                 return "Wprowadź lokację (lub lokacje, oddzielone przecinkami) na które można założyć dany obiekt.\n"
-                    + "Dostępne lokacje to: tułów, ręce, nogi, głowa, dłonie, prawa dłoń, lewa dłoń, plecy prawy pas, lewy pas\n";
+                    + "Dostępne lokacje to: tułów, ręce, nogi, głowa, dłonie, prawa dłoń, lewa dłoń, plecy prawy pas,\n"
+                    + "lewy pas, broń strzelecka\n";
         case SS_PROMPT_ARMOR:
                 if(new_obj && sizeof(new_obj->get_archetypes()))
                     return "Wprowadź wartość zbroi przedmiotu, czyli ile obrażeń potrafi "
@@ -1682,14 +1707,12 @@ static int prompt_damage_input(string input)
     new_obj->set_damage(value);
 
     send_string("Zaakceptowano obrażenia.\n\n");
-    if (value) {
+    if (value) 
         substate = SS_PROMPT_DAMAGE_TYPE;
-        send_string(blurb_for_substate(substate));
-    } else {
-        substate = SS_PROMPT_WEARABLE;
-        push_new_state(US_ENTER_YN, "Obiekt można zakładać na ciało? ");
-    }
+    else
+        substate = SS_PROMPT_MAGAZINE;
 
+    send_string(blurb_for_substate(substate));
     return RET_NORMAL;
 }
 
@@ -1703,6 +1726,86 @@ static int prompt_damage_type_input(string input)
         new_obj->set_damage_type(input);
 
     send_string("Zaakceptowano typ obrażeń.\n\n");
+    substate = SS_PROMPT_MAGAZINE;
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
+}
+
+static int prompt_magazine_input(string input)
+{
+    int value;
+
+    value = 0;
+
+    if(!input || STRINGD->is_whitespace(input)) {
+        send_string("Spróbujmy ponownie.\n");
+        send_string(blurb_for_substate(substate));
+
+        return RET_NORMAL;
+    }
+
+    input = STRINGD->trim_whitespace(input);
+
+    if(sscanf(input, "%d", value) == 1) {
+        if (value < 0) {
+            send_string("Rozmiar magazynka powinien być dodatni bądź zero. Spróbuj ponownie.\n");
+            send_string(blurb_for_substate(substate));
+
+            return RET_NORMAL;
+        }
+    }
+    else if(!STRINGD->stricmp(input, "none"))
+        value = -1;
+    else {
+        send_string("Broń powinna posiadać jakiś magazynek. Spróbuj ponownie.\n");
+        send_string(blurb_for_substate(substate));
+
+        return RET_NORMAL;
+    }
+
+    new_obj->set_magazine(value);
+
+    substate = SS_PROMPT_AMMO;
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
+}
+
+static int prompt_ammo_input(string input)
+{
+    int value;
+
+    value = 0;
+
+    if(!input || STRINGD->is_whitespace(input)) {
+        send_string("Spróbujmy ponownie.\n");
+        send_string(blurb_for_substate(substate));
+
+        return RET_NORMAL;
+    }
+
+    input = STRINGD->trim_whitespace(input);
+
+    if(sscanf(input, "%d", value) == 1) {
+        if (value < 0) {
+            send_string("Numer obiektu amunicji powinien być dodatni bądź zero. Spróbuj ponownie.\n");
+            send_string(blurb_for_substate(substate));
+
+            return RET_NORMAL;
+        }
+    }
+    else if(!STRINGD->stricmp(input, "none"))
+        value = -1;
+    else {
+        send_string("Broń powinna posiadać jakiś numer amunicji. Spróbuj ponownie.\n");
+        send_string(blurb_for_substate(substate));
+
+        return RET_NORMAL;
+    }
+
+    new_obj->set_magazine(value);
+
     substate = SS_PROMPT_WEARABLE;
     push_new_state(US_ENTER_YN, "Obiekt można zakładać na ciało? ");
 
@@ -1782,6 +1885,9 @@ static int prompt_wlocation_input(string input)
       break;
     case "lewy pas":
       locations += ({9});
+      break;
+    case "broń strzelecka":
+      locations += ({10});
       break;
 	case "none":
 	  locations = nil;

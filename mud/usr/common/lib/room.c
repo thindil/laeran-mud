@@ -54,6 +54,7 @@ private int objflags;
 private float weight, volume, length;
 private float weight_capacity, volume_capacity, length_capacity;
 private int damage, armor, price, hp, combat_rating, quality, durability, cur_durability, room_type;
+private int magazine, ammo;
 private int* wearlocations;
 private string *body_locations;
 private string skill, damage_type, craft_skill;
@@ -80,6 +81,7 @@ static void create(varargs int clone)
         weight = volume = length = -1.0;
         weight_capacity = volume_capacity = length_capacity = -1.0;
         damage = armor = price = hp = combat_rating = quality = room_type = 0;
+        magazine = ammo = 0;
         wearlocations = ({ });
         body_locations = ({ });
         damage_res = ([ ]);
@@ -347,6 +349,22 @@ int get_room_type(void)
   return room_type;
 }
 
+int get_magazine(void)
+{
+    if(magazine < 0 && sizeof(obj::get_archetypes()))
+        return obj::get_archetypes()[0]->get_magazine();
+
+    return magazine;
+}
+
+int get_ammo(void)
+{
+    if(ammo < 0 && sizeof(obj::get_archetypes()))
+        return obj::get_archetypes()[0]->get_ammo();
+
+    return ammo;
+}
+
 void set_weight(float new_weight) {
   object loc;
 
@@ -534,6 +552,22 @@ void set_current_weight(float new_current_weight) {
     error("Tylko autoryzowany kod może ustawiać obecny ciężar!");
 
   current_weight = new_current_weight;
+}
+
+void set_magazine(int new_magazine) 
+{
+    if(!SYSTEM() && !COMMON() && !GAME())
+        error("Tylko autoryzowany kod może ustawiać wielkość magazynka!");
+
+    magazine = new_magazine;
+}
+
+void set_ammo(int new_ammo) 
+{
+    if(!SYSTEM() && !COMMON() && !GAME())
+        error("Tylko autoryzowany kod może ustawiać numer amunicji!");
+
+    ammo = new_ammo;
 }
 /*** Functions dealing with Exits ***/
 
@@ -1307,6 +1341,10 @@ string to_unq_flags(void) {
       ret += "  ~craft_skill{" + craft_skill + "}\n";
   if (room_type)
       ret += "  ~room_type{" + room_type + "}\n";
+  if (magazine > 0)
+      ret += "  ~magazine{" + magazine + "}\n";
+  if (ammo > 0)
+      ret += "  ~ammo{" + ammo + "}\n";
 
   rem = get_removed_details();
   if(rem && sizeof(rem)) {
@@ -1501,6 +1539,12 @@ void from_dtd_tag(string tag, mixed value) {
             break;
         case "room_type":
             room_type = value;
+            break;
+        case "magazine":
+            magazine = value;
+            break;
+        case "ammo":
+            ammo = value;
             break;
         case "wearlocations":
             value = explode(value, ", ");
