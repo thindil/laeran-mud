@@ -13,6 +13,7 @@ static mapping combat_info1, combat_info2;
 
 void stop_combat(void);
 void combat_info(string message, string message2);
+void fighter1_shoot(void);
 
 static void create(varargs int clone)
 {
@@ -27,7 +28,7 @@ static void create(varargs int clone)
     }
 }
 
-void start_combat(object new_fighter1, object new_fighter2)
+void start_combat(object new_fighter1, object new_fighter2, int shoot)
 {
     object *objs;
     int i,j, fatigue;
@@ -72,6 +73,13 @@ void start_combat(object new_fighter1, object new_fighter2)
                 combat_info1["damage_type"] = objs[i]->get_damage_type();
                 combat_info1["weapon_num"] = objs[i]->get_number();
             }
+            else if (sizeof(tmp & ({10}))) {
+                combat_info1["shoot_skill"] = objs[i]->get_skill();
+                locs = explode(objs[i]->get_cur_magazine()[0], ":");
+                combat_info1["shoot_damage_type"] = locs[0];
+                combat_info1["shoot_damage"] = (int)locs[1];
+                combat_info1["shoot_weapon_num"] = objs[i]->get_number();
+            }
             else {
                 for (j = 0; j < sizeof(tmp); j++) 
                     combat_info1["armor"][tmp[j]][0] = objs[i]->get_armor();
@@ -79,6 +87,8 @@ void start_combat(object new_fighter1, object new_fighter2)
         }
     }
     combat_info1["hit"] = fighter1->get_mobile()->get_user()->get_stat_val("siła") + fighter1->get_mobile()->get_user()->get_skill_val(combat_info1["skill"]);
+    if (shoot > -1)
+        combat_info1["shoot_hit"] = fighter1->get_mobile()->get_user()->get_stat_val("zręczność") + fighter1->get_mobile()->get_user()->get_skill_val(combat_info1["shoot_skill"]);
     combat_info1["evade"] = fighter1->get_mobile()->get_user()->get_stat_val("zręczność") + fighter1->get_mobile()->get_user()->get_skill_val("walka/unik");
     combat_info1["exp"] = combat_info1["hit"] + combat_info1["evade"] + combat_info1["hp"];
     combat_info1["delay"] -= ((float)fighter1->get_mobile()->get_user()->get_skill_val(combat_info1["skill"]) / 100.0);
@@ -86,6 +96,7 @@ void start_combat(object new_fighter1, object new_fighter2)
     if (combat_info1["delay"] > 4.0)
         combat_info1["delay"] = 4.0;
     combat_info1["hits"] = 0;
+    combat_info1["shoots"] = 0;
 
     if (TAGD->get_tag_value(fighter2, "Hp"))
         combat_info2["hp"] = TAGD->get_tag_value(fighter2, "Hp");
@@ -123,8 +134,7 @@ void start_combat(object new_fighter1, object new_fighter2)
                     combat_info2["stam_cost"] += (int)objs[i]->get_weight();
                     combat_info2["damage_type"] = objs[i]->get_damage_type();
                     combat_info2["weapon_num"] = objs[i]->get_number();
-                }
-                else {
+                } else {
                     for (j = 0; j < sizeof(tmp); j++) 
                         combat_info2["armor"][tmp[j]][0] = objs[i]->get_armor();
                 }
@@ -157,6 +167,59 @@ void start_combat(object new_fighter1, object new_fighter2)
     combat_info2["hits"] = 0;
     fighter1_call = call_out("fighter1_attack", combat_info1["delay"]);
     fighter2_call = call_out("fighter2_attack", combat_info2["delay"]);
+    if (shoot > -1)
+        fighter1_shoot();
+}
+
+void fighter1_shoot(void)
+{
+    int hit, evade, loc, dmg;
+    string message, message2;
+    object weapon;
+
+    weapon = MAPD->get_room_by_num(combat_info1["shoot_weapon_num"]);
+    if (sizeof(weapon->get_cur_magazine()) == 1)
+        weapon->set_cur_magazine(({ }));
+    else
+        weapon->set_cur_magazine(weapon->get_cur_magazine()[1..]);
+    hit = combat_info1["shoot_hit"] + random(50);
+    evade = combat_info2["evade"] + random(50);
+    combat_info1["stamina"] -= 10;
+    if (combat_info1["stamina"] < 0)
+        combat_info1["stamina"] = 0;
+    message = "Strzelasz do " + combat_info2["conj_name"];
+    message2 = combat_info1["name"] + " strzela do Ciebie";
+    if (hit > evade) {
+        loc = random(sizeof(combat_info2["armor"]));
+        message += " i  trafiasz go w " + combat_info2["armor"][loc][1] + ".";
+        message2 +=  " i trafia cię w " + combat_info2["armor"][loc][1] + ".";
+        dmg = combat_info1["shoot_damage"] - combat_info2["armor"][loc][0];
+        if (dmg < 0)
+            dmg = 0;
+        if (dmg > 0) {
+            if (combat_info1["shoot_damage_type"] == "cut") 
+                dmg = (int)((float)dmg * 1.5);
+            else if (combat_info1["shoot_damage_type"] == "impaled")
+                dmg = dmg * 2;
+            if (combat_info2["damage_res"][combat_info1["shoot_damage_type"]])
+                dmg -= (int)((float)dmg * ((float)combat_info2["damage_res"][combat_info1["shoot_damage_type"]] / 100.0));
+        }
+        combat_info2["hp"] -= dmg;
+        if (dmg == 0) {
+            message += " Jednak pocisk odbija się od jego ciała.";
+            message2 += " Na szczęście pocisk odbija się od Twojej zbroi.";
+        }
+        combat_info1["shoots"]++;
+        combat_info2["armor"][loc][2]++;
+    } else {
+        message += " ale ten unika twojego strzału.";
+        message2 += " ale udaje Ci się uniknąć strzału.";
+        combat_info2["dodge"] = 1;
+        combat_info2["stamina"]--;
+        if (combat_info2["stamina"] < 0)
+            combat_info2["stamina"] = 0;
+    }
+    combat_info(message, message2);
 }
 
 void fighter1_attack(void)
@@ -301,8 +364,14 @@ void combat_info(string message, string message2)
             fighter2->get_mobile()->get_user()->death();
         else
             fighter2->get_mobile()->death(fighter1->get_mobile()->get_user());
-        fighter1->get_mobile()->get_user()->gain_exp(combat_info1["skill"], combat_info2["exp"]);
-        fighter1->get_mobile()->get_user()->gain_exp("siła", combat_info2["exp"]);
+        if (combat_info1["hits"]) {
+            fighter1->get_mobile()->get_user()->gain_exp(combat_info1["skill"], combat_info2["exp"]);
+            fighter1->get_mobile()->get_user()->gain_exp("siła", combat_info2["exp"]);
+        }
+        if (combat_info1["shoots"]) {
+            fighter1->get_mobile()->get_user()->gain_exp(combat_info1["shoot_skill"], combat_info2["exp"]);
+            fighter1->get_mobile()->get_user()->gain_exp("zręczność", combat_info2["exp"]);
+        }
         fighter1->get_mobile()->get_user()->gain_exp("kondycja", combat_info2["exp"]);
         if (combat_info1["dodge"]) {
             fighter1->get_mobile()->get_user()->gain_exp("walka/uniki", combat_info2["exp"]);
@@ -326,34 +395,42 @@ void stop_combat()
     item_dmg = ({ });
     ctr = 0;
     for (i = 0; i < sizeof(objs); i++) {
-        if (objs[i]->is_dressed()) {
+        if (i == combat_info1["weapon_num"] && combat_info1["hits"]) {
+            item_dmg += ({ "" });
+            for (j = 0; j < combat_info1["hits"]; j++) {
+                dmg = objs[i]->damage_item(fighter1->get_mobile()->get_user());
+                if (dmg == 1)
+                    item_dmg[ctr] = "Twoja broń ulega uszkodzeniu.\n";
+                else if(dmg == 2) {
+                    item_dmg[ctr] = "Twoja broń ulega zniszczeniu.\n";
+                    break;
+                }
+            }
+            ctr ++;
+        } else if (i == combat_info1["shoot_weapon_num"] && combat_info1["shoots"]) {
+            item_dmg += ({ "" });
+            dmg = objs[i]->damage_item(fighter1->get_mobile()->get_user());
+            if (dmg == 1)
+                item_dmg[ctr] = "Twoja broń strzelecka ulega uszkodzeniu.\n";
+            else if(dmg == 2) 
+                item_dmg[ctr] = "Twoja broń strzelecka ulega zniszczeniu.\n";
+            ctr ++;
+        } else if (objs[i]->is_dressed()) {
             tmp = objs[i]->get_wearlocations();
             item_dmg += ({ "" });
-            if (tmp[0] == 5 && combat_info1["hits"])
-                for (j = 0; j < combat_info1["hits"]; j++) {
+            for (j = 0; j < sizeof(tmp); j++)
+                for (k = 0; k < combat_info1["armor"][j][2]; k++) {
                     dmg = objs[i]->damage_item(fighter1->get_mobile()->get_user());
                     if (dmg == 1)
-                        item_dmg[ctr] = "Twoja broń ulega uszkodzeniu.\n";
-                    else if(dmg == 2) {
-                        item_dmg[ctr] = "Twoja broń ulega zniszczeniu.\n";
+                        item_dmg[ctr] = objs[i]->get_brief()->to_string(fighter1->get_mobile()->get_user())
+                            + " ulega uszkodzeniu.\n";
+                    else if (dmg == 2) {
+                        item_dmg[ctr] = objs[i]->get_brief()->to_string(fighter1->get_mobile()->get_user())
+                            + " ulega zniszczeniu.\n";
                         break;
                     }
                 }
-            else {
-                for (j = 0; j < sizeof(tmp); j++)
-                    for (k = 0; k < combat_info1["armor"][j][2]; k++) {
-                        dmg = objs[i]->damage_item(fighter1->get_mobile()->get_user());
-                        if (dmg == 1)
-                            item_dmg[ctr] = objs[i]->get_brief()->to_string(fighter1->get_mobile()->get_user())
-                                + " ulega uszkodzeniu.\n";
-                        else if (dmg == 2) {
-                            item_dmg[ctr] = objs[i]->get_brief()->to_string(fighter1->get_mobile()->get_user())
-                                + " ulega zniszczeniu.\n";
-                            break;
-                        }
-                    }
-            }
-            ctr ++;
+            ctr++;
         }
     }
     for (i = 0; i < sizeof(item_dmg); i++) {

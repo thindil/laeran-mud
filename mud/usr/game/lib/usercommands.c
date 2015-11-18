@@ -1233,9 +1233,9 @@ static void cmd_takeoff(object user, string cmd, string str)
 /* Start combat */
 static void cmd_attack(object user, string cmd, string str)
 {
-    object *tmp;
+    object *tmp, *inv;
     string target;
-    int number;
+    int number, i, shoot;
     string *nouns;
 
     if(str)
@@ -1280,12 +1280,30 @@ static void cmd_attack(object user, string cmd, string str)
     }
     if (TAGD->get_tag_value(user->get_body(), "Follow"))
         stop_follow(user);
+    shoot = -1;
+    if (cmd == "strzel") {
+        inv = user->get_body()->objects_in_container();
+        for (i = 0; i < sizeof(inv); i++) {
+            if (inv[i]->is_dressed() && sizeof(inv[i]->get_wearlocations() & ({10}))) {
+                shoot = i;
+                break;
+            }
+        }
+        if (shoot == -1) {
+            user->message("Nie masz założonej jakiejkolwiek broni strzeleckiej.\n");
+            return;
+        }
+        if (!sizeof(inv[shoot]->get_cur_magazine())) {
+            user->message("Twoja broń strzelecka nie jest załadowana.\n");
+            return;
+        }
+    }
     nouns = tmp[number]->get_nouns(user->get_locale());
     if (sizeof(nouns) < 5)
         user->message("Atakujesz " + tmp[number]->get_brief()->to_string(user) + "...\n");
     else
         user->message("Atakujesz " + nouns[3] + "...\n");
-    user->begin_combat(tmp[number]);
+    user->begin_combat(tmp[number], shoot);
 }
 
 /* Report bug, typo or propose idea */
@@ -1783,9 +1801,4 @@ static void cmd_reload(object user, string cmd, string str)
     }
     weapon->set_cur_magazine(magazine);
     user->message("Załadowałeś " + weapon->get_brief()->to_string(user) + ".\n");
-}
-
-/* Shoot from shooting weapon */
-static void cmd_shoot(object user, string cmd, string str)
-{
 }

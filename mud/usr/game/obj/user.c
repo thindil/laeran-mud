@@ -144,7 +144,7 @@ void upgraded(varargs int clone) {
 		     "at"        : "cmd_attack",
 		     "atak"      : "cmd_attack",
 		     "atakuj"    : "cmd_attack",
-             "strzel"    : "cmd_shoot",
+             "strzel"    : "cmd_attack",
              "zaladuj"   : "cmd_reload"
 
     ]);
@@ -854,10 +854,10 @@ object get_location(void)
     return location;
 }
 
-void begin_combat(object enemy)
+void begin_combat(object enemy, int shoot)
 {
     combat = clone_object(COMBAT);
-    combat->start_combat(body, enemy);
+    combat->start_combat(body, enemy, shoot);
 }
 
 void end_combat(void)
