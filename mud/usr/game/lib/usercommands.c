@@ -1523,7 +1523,7 @@ static void cmd_transform(object user, string cmd, string str)
         user->message("Nie możesz przemieniać żywych istot.\n");
         return;
     }
-    if (tmp[number]->get_detail_of()) {
+    if (tmp[number]->get_detail_of() || tmp[number]->get_brief()->to_string(user) == "miecz treningowy") {
         user->message("Nie możesz przemienić tego obiektu.\n");
         return;
     }
