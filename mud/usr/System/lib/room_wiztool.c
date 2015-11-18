@@ -45,7 +45,7 @@ static string read_entire_file(string file) {
   ret = read_file(file);
   if (ret == nil) { return nil; }
   if(strlen(ret) > status(ST_STRSIZE) - 3) {
-    error("File '" + file + "' is too large!");
+    error("Plik '" + file + "' jest za duży!");
   }
 
   return ret;
@@ -180,19 +180,19 @@ static void cmd_new_room(object user, string cmd, string str) {
     roomnum = -1;
   } else if(sscanf(str, "%*s %*s") == 2
 	    || sscanf(str, "#%d", roomnum) != 1) {
-    user->message("Usage: " + cmd + " [#room num]\n");
+    user->message("Użycie: " + cmd + " [#numer pokoju]\n");
     return;
   }
 
   if(MAPD->get_room_by_num(roomnum)) {
-    user->message("There is already a room with that number!\n");
+    user->message("Już istnieje pokój o tym numerze!\n");
     return;
   }
 
   segown = OBJNUMD->get_segment_owner(roomnum / 100);
   if(roomnum >= 0 && segown && segown != MAPD) {
-    user->message("Room number " + roomnum
-		  + " is in a segment reserved for non-rooms!\n");
+    user->message("Pokój numer " + roomnum
+		  + " jest w segmencie zarezerwowanym dla nie-pokoi!\n");
     return;
   }
 
@@ -201,7 +201,7 @@ static void cmd_new_room(object user, string cmd, string str) {
   if(roomnum < 0) {
     zonenum = ZONED->get_zone_for_room(user->get_location());
     if(zonenum < 0) {
-      LOGD->write_syslog("Odd, zone is less than 0 when making new room...",
+      LOGD->write_syslog("Dziwne, strefa ma wartość mniejszą od zera podczas robienia nowego pokoju...",
 			 LOG_WARN);
       zonenum = 0;
     }
@@ -217,8 +217,8 @@ static void cmd_new_room(object user, string cmd, string str) {
     {
       zonename = ZONED->get_name_for_zone(zonenum);
     }
-  user->message("Added room #" + (string)room->get_number()
-		+ " to zone #" + (string)zonenum
+  user->message("Dodano pokój #" + (string)room->get_number()
+		+ " do strefy #" + (string)zonenum
 		+ " (" + zonename + ")" + ".\n");
 }
 
@@ -229,13 +229,13 @@ static void cmd_delete_room(object user, string cmd, string str) {
 
   if(!str || STRINGD->is_whitespace(str)
      || sscanf(str, "%*s %*s") == 2 || !sscanf(str, "#%d", roomnum)) {
-    user->message("Usage: " + cmd + " #<room num>\n");
+    user->message("Użycie: " + cmd + " #<numer pokoju>\n");
     return;
   }
 
   room = MAPD->get_room_by_num(roomnum);
   if(!room) {
-    user->message("No such room as #" + roomnum + ".\n");
+    user->message("Nie ma takiego pokoju jak #" + roomnum + ".\n");
     return;
   }
 
@@ -250,7 +250,7 @@ static void cmd_delete_room(object user, string cmd, string str) {
 
   destruct_object(room);
 
-  user->message("Room/Portable #" + roomnum + " destroyed.\n");
+  user->message("Pokój/przenośny #" + roomnum + " został zniszczony.\n");
 }
 
 
@@ -329,13 +329,13 @@ static void cmd_load_rooms(object user, string cmd, string str) {
   int    iter, roomnum;
 
   if(!access(user->query_name(), "/", FULL_ACCESS)) {
-    user->message("Currently only those with full administrative access "
-		  + "may load rooms.\n");
+    user->message("Obecnie tylko osoba z pełnymi uprawnieniami administratorskimi "
+		  + "może ładować pokoje.\n");
     return;
   }
 
   if(!str || STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + " <file to load>\n");
+    user->message("Użycie: " + cmd + " <plik do załadowania>\n");
     return;
   }
 
@@ -348,7 +348,7 @@ static void cmd_load_rooms(object user, string cmd, string str) {
 	rooms += ({ roomnum });
       } else {
 	user->message("'" + args[iter]
-		      + "' doesn't look like a room number!\n");
+		      + "' nie wygląda jak numer pokoju!\n");
 	return;
       }
     }
@@ -357,28 +357,27 @@ static void cmd_load_rooms(object user, string cmd, string str) {
   /* Check validity of file */
   str = STRINGD->trim_whitespace(str);
   if(!sizeof(get_dir(str)[0])) {
-    user->message("Can't find file: " + str + "\n");
+    user->message("Nie mogę odnaleźć pliku: " + str + "\n");
     return;
   }
   room_file = read_file(str);
   if(!room_file || !strlen(room_file)) {
-    user->message("Error reading room file, or file is empty.\n");
+    user->message("Błąd podczas odczytu pliku albo plik jest pusty.\n");
     return;
   }
   if(strlen(room_file) > status(ST_STRSIZE) - 3) {
-    user->message("Room file is too big!  "
-		  + "See Angelbob to increase current limit.");
+    user->message("Plik z pokojami jest zbyt duży!");
     return;
   }
 
   tmp = UNQ_PARSER->basic_unq_parse(room_file);
   if(!tmp) {
-    user->message("Cannot parse text as UNQ adding UNQ rooms!\n");
+    user->message("Nie mogę sparsować tekstu jako UNQ podczas dodawania UNQ pokoi!\n");
     return;
   }
   tmp = SYSTEM_WIZTOOL->parse_to_room(room_file);
   if(!tmp) {
-    user->message("Cannot parse UNQ as rooms adding UNQ rooms!\n");
+    user->message("Nie mogę sparsować UNQ jako pokój podczas dodawania UNQ pokoi!\n");
     return;
   }
 
@@ -400,7 +399,7 @@ static void cmd_load_rooms(object user, string cmd, string str) {
   if(rooms && sizeof(rooms)) {
     string tmp;
 
-    tmp = "No match loading room numbers: ";
+    tmp = "Nie ma pokoi do załadowania o numerach: ";
     for(iter = 0; iter < sizeof(rooms); iter++) {
       tmp += "#" + rooms[iter] + " ";
     }
@@ -408,18 +407,18 @@ static void cmd_load_rooms(object user, string cmd, string str) {
     user->message(tmp);
 
     if(sizeof(unq_data)) {
-      user->message("Attempting remaining rooms:\n\n");
+      user->message("Próbujemy pozostałe pokoje:\n\n");
     } else {
-      user->message("No specified rooms found, ignoring.\n");
+      user->message("Nie znaleziono wybranych pokojów, ignorowanie.\n");
       return;
     }
   }
 
-  user->message("Registering rooms...\n");
+  user->message("Rejestracja pokoi...\n");
   MAPD->add_dtd_unq_rooms(unq_data, str);
-  user->message("Resolving exits...\n");
+  user->message("Rozwiązywanie wyjść...\n");
   EXITD->add_deferred_exits();
-  user->message("Done.\n");
+  user->message("Wykonane.\n");
 }
 
 static void cmd_goto_room(object user, string cmd, string str) {
@@ -433,23 +432,23 @@ static void cmd_goto_room(object user, string cmd, string str) {
       room = exit->get_from_location();
     }
     if(!room) {
-      user->message("Can't locate room #" + roomnum + "\n");
+      user->message("Nie mogę zlokalizować pokoju #" + roomnum + "\n");
       return;
     }
   } else {
-    user->message("Usage: " + cmd + " #<location num>\n");
+    user->message("Użycie: " + cmd + " #<numer lokacji>\n");
     return;
   }
 
   /* Do we really want people teleporting into a details? */
   if(room->get_detail_of()) {
-    user->message("Can't teleport to a detail.\n");
+    user->message("Nie mogę teleportować do detalu.\n");
     return;
   }
 
   mob = user->get_body()->get_mobile();
 
-  user->message("You teleport to " + room->get_brief()->to_string(user)
+  user->message("Teleportowałeś się do " + room->get_brief()->to_string(user)
 		+ ".\n");
   mob->teleport(room, 1);
   user->show_room_to_player(user->get_location());
@@ -471,61 +470,61 @@ static void cmd_new_exit(object user, string cmd, string str) {
   if(str && (retcode == 3 || retcode == 2)) {
     room = MAPD->get_room_by_num(roomnum);
     if(!room) {
-      user->message("Can't locate room #" + roomnum + "\n");
+      user->message("Nie mogę znaleźć pokoju #" + roomnum + "\n");
       return;
     }
     dir = EXITD->direction_by_string(dirname);
     if(dir == -1) {
-      user->message("Don't recognize " + dirname + " as direction.\n");
+      user->message("Nie rozpoznaję " + dirname + " jako kierunku.\n");
       return;
     }
   } else {
-    user->message("Usage: " + cmd + " <direction> #<room number> <type>\n");
+    user->message("Użycie: " + cmd + " <kierunek> #<numer pokoju> <typ>\n");
     return;
   }
 
   if(!user->get_location()) {
-    user->message("You aren't standing anywhere so you can't make"
-		  + " an exit!\n");
+    user->message("Znajdujesz się w pustce więc nie możesz stworzyć tutaj"
+		  + " wyjścia!\n");
     return;
   }
   if(user->get_location()->get_exit(dir)) {
-    user->message("There already appears to be an exit in that"
-		  + " direction.\n");
+    user->message("Wygląda na to, że jest już wyjście w tym"
+		  + " kierunku.\n");
     return;
   }
 
   if (roomnum == 0) {
-    user->message("Cannot link to void.\n");
+    user->message("Nie można linkować do pustki.\n");
     return;
   }
 
   if (type=="oneway" || type=="one-way" || type=="1") {
-    user->message("You begin creating a one-way exit to '"
+    user->message("Zaczynasz tworzyć jednokierunkowe wyjście do '"
 		+ room->get_brief()->to_string(user) + "'.\n");
     EXITD->add_oneway_exit_between(user->get_location(), room, dir, -1);
 
   } else if (type=="twoway" || type=="two-way" || type=="2") {
     if (room->get_exit(EXITD->opposite_direction(dir))) {
-      user->message("There appears to be an exit in the other room.\n");
+      user->message("Wygląda na to, że jest już wyjście w tym kierunku w drugim pokoju.\n");
       return;
     }
-    user->message("You begin creating a two-way exit to '"
+    user->message("Zaczynasz tworzyć dwukierunkowe wyjście do '"
 		+ room->get_brief()->to_string(user) + "'.\n");
     EXITD->add_twoway_exit_between(user->get_location(), room, dir, -1, -1);
 
   }
-  user->message("You create the exit successfully.\n");
+  user->message("Z powodzeniem stworzyłeś wyjście.\n");
 }
 
 static void cmd_clear_exits(object user, string cmd, string str) {
   if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\n");
+    user->message("Użycie: " + cmd + "\n");
     return;
   }
 
   if(!user->get_location()) {
-    user->message("You aren't anywhere, so you can't " + cmd + "!\n");
+    user->message("Jesteś w pustce więc nie możesz wykonać " + cmd + "!\n");
     return;
   }
   EXITD->clear_all_exits(user->get_location());
@@ -536,30 +535,30 @@ static void cmd_remove_exit(object user, string cmd, string str) {
   object exit, exit2;
 
   if(!str || STRINGD->is_whitespace(str) || sscanf(str, "%*s %*s") == 2) {
-    user->message("Usage: " + cmd + " <direction>\n");
+    user->message("Użycie: " + cmd + " <kierunek>\n");
     return;
   }
 
   str = STRINGD->trim_whitespace(str);
   dir = EXITD->direction_by_string(str);
   if(dir == -1) {
-    user->message("'" + str + "' is not a direction.\n");
+    user->message("'" + str + "' nie jest kierunkiem.\n");
     return;
   }
 
   if(!user->get_location()) {
-    user->message("You aren't anywhere, so you can't " + cmd + "!\n");
+    user->message("Jesteś w pustce więc nie możesz wykonać " + cmd + "!\n");
     return;
   }
   exit = user->get_location()->get_exit(dir);
   if(!exit) {
-    user->message("No exit found going " + str + ".\n");
+    user->message("Nie znaleziono wyjścia w prowadzącego na " + str + ".\n");
     return;
   }
 
   EXITD->clear_exit(exit);
 
-  user->message("Exit " + str + " destroyed.\n");
+  user->message("Wyjście " + str + " zostało zniszczone.\n");
 }
 
 void list_exits(object user, int* exits, int ctr, string tmpstr)
@@ -688,112 +687,15 @@ static void cmd_list_exits(object user, string cmd, string str) {
     call_out("list_exits", 0, user, exits, 0, "");
 }
 
-static void cmd_list_exit(object user, string cmd, string str) {
-  int    objnum, dir, type;
-  string tmpstr;
-  object exit, dest, phr, from;
-
-  if(!str || sscanf(str, "#%d", objnum) != 1) {
-    user->message("Usage: " + cmd + " #<exit num>\n");
-    return;
-  }
-
-  /* Ignore cmd, str for the moment */
-  tmpstr = "";
-
-  exit = EXITD->get_exit_by_num(objnum);
-  if(!exit) {
-    user->message("Can't find exit #" + objnum + " \n");
-    return;
-  }
-
-  dest = exit->get_destination();
-  from = exit->get_from_location();
-
-  tmpstr += "Exit #" + exit->get_number();
-
-  if(exit->get_brief())
-    tmpstr += " (" + exit->get_brief()->to_string(user) + ") ";
-  else
-    tmpstr += " (no desc) ";
-
-  dir = exit->get_direction();
-  if(dir != -1) {
-    phr = EXITD->get_name_for_dir(dir);
-    if(!phr)
-      tmpstr += "undef direction " + dir;
-    else
-      tmpstr += phr->to_string(user);
-  } else
-    tmpstr += "no direction";
-  /* Show "from" location as number or commentary */
-  tmpstr += " from #";
-  if (!from)
-    tmpstr += "<none>";
-  else if (from->get_number() == -1)
-    tmpstr += "<unregistered room>";
-  else
-    tmpstr += from->get_number();
-
-  /* Show "to" location as number or commentary */
-  tmpstr += " to #";
-  if(!dest)
-    tmpstr += "<none>";
-  else if (dest->get_number() == -1)
-    tmpstr += "<unregistered room>";
-  else
-    tmpstr += dest->get_number();
-   /* Show type: one-way, two-way, other */
-  tmpstr += " type: ";
-  type = exit->get_exit_type();
-  switch (type) {
-    case 1: /* one-way */
-           tmpstr += "one-way";
-           break;
-   case 2: /* two-way */
-           tmpstr += "two-way";
-           break;
-   default: /* unknown */
-           tmpstr += type;
-           break;
-  }
-
-  /* Show "link" location as number or commentary */
-  tmpstr += " link #";
-  tmpstr += exit->get_link();
-
-  if (exit->is_open())
-    tmpstr += " Open";
-  else
-    tmpstr += " Closed";
-
-  if (exit->is_openable())
-    tmpstr += " Openable";
-
-  if (exit->is_container())
-    tmpstr += " Container";
-
-  if (exit->is_locked())
-    tmpstr += " Locked";
-
-  if (exit->is_lockable())
-    tmpstr += " Lockable";
-
-  tmpstr += "\n";
-
-  user->message(tmpstr);
-}
-
-
 static void cmd_add_deferred_exits(object user, string cmd, string str) {
   int num;
 
   num = EXITD->num_deferred_exits();
-  user->message("Deferred exits: " + num + ".\n");
+  user->message("Odroczonych wyjść: " + num + ".\n");
 
   if(!access(user->query_name(), "/", FULL_ACCESS)) {
-    user->message("Currently only those with full administrative access "
-		  + "may resolve deferred exits and rooms.\n");
+    user->message("Obecnie tylko osoby z pełnymi uprawnieniami administracyjnymi "
+		  + "mogą rozwiązywać odroczone wyjścia i pokoje.\n");
     return;
   }
 
@@ -801,9 +703,9 @@ static void cmd_add_deferred_exits(object user, string cmd, string str) {
   MAPD->do_room_resolution(0);  /* Don't fully resolve, so no errors */
 
   num = EXITD->num_deferred_exits();
-  user->message(num + " deferred exits still pending.\n");
+  user->message(num + " odroczonych wyjść ciągle oczekuje.\n");
   user->message(sizeof(MAPD->get_deferred_rooms())
-		+ " deferred rooms still pending.\n");
+		+ " odroczonych pokojów ciągle oczekuje.\n");
 }
 
 
@@ -814,13 +716,13 @@ static void cmd_check_deferred_exits(object user, string cmd, string str) {
     str = STRINGD->trim_whitespace(str);
 
   if(str && str != "") {
-    user->message("Usage: " + cmd + "\n");
+    user->message("Użycie: " + cmd + "\n");
     return;
   }
 
   num = EXITD->num_deferred_exits();
 
-  user->message(num + " deferred exits still pending.\n");
+  user->message(num + " odroczonych wyjść ciągle oczekuje.\n");
   user->message(sizeof(MAPD->get_deferred_rooms())
-		+ " deferred rooms still pending.\n");
+		+ " odroczonych pokojów ciągle oczekuje.\n");
 }

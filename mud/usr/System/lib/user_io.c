@@ -61,13 +61,13 @@ void upgraded(varargs int clone) {
   if(SYSTEM()) {
     if(!find_object(US_SCROLL_TEXT)) { compile_object(US_SCROLL_TEXT); }
   } else
-    error("Non-System code called upgraded!");
+    error("Niedozwolony kod wywołał upgraded!");
 }
 
 
 int get_num_lines(void) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only privileged code can call get_num_lines!");
+    error("Tylko uprzywilejowany kod może wywoływać get_num_lines!");
 
   return num_lines;
 }
@@ -144,7 +144,7 @@ static void system_phrase_all_users(string str)
    affect output */
 int send_phrase(object PHRASE obj) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Can't send phrase!  Not privileged!");
+    error("Nie mogę wysłać frazy! Brak uprawnień!");
 
   return message(obj->to_string(this_object()));
 }
@@ -153,11 +153,11 @@ int send_system_phrase(string phrname) {
   object PHRASE phr;
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Can't send system phrase!  Not privileged!");
+    error("Nie mogę wysłać frazy systemowej! Brak uprawnień!");
 
   phr = PHRASED->file_phrase(SYSTEM_PHRASES, phrname);
   if(!phr) {
-    LOGD->write_syslog("Can't find system phrase " + phrname + "!", LOG_ERR);
+    LOGD->write_syslog("Nie mogę odnaleźć frazy systemowej " + phrname + "!", LOG_ERR);
     return -1;
   }
   return send_phrase(phr);
@@ -172,7 +172,7 @@ nomask int ustate_send_string(string str) {
   if(previous_program() == USER_STATE)
     return ::message(str);
   else
-    error("Only USER_STATE can call PHANTASMAL_USER:ustate_send_string!");
+    error("Tylko USER_STATE może wywoływać PHANTASMAL_USER:ustate_send_string!");
 }
 
 /* This does a lowest-level, unfiltered send to the connection object
@@ -190,7 +190,7 @@ void to_state_stack(string str) {
 
 void message_scroll(string str) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only privileged code can call message_scroll!");
+    error("Tylko uprzywilejowany kod może wywoływać message_scroll!");
 
   if(scroll_state) {
     scroll_state->to_user(str);
@@ -200,7 +200,7 @@ void message_scroll(string str) {
       scroll_state->add_text(str);
       push_state(scroll_state);
     } else {
-      LOGD->write_syslog("Couldn't clone US_SCROLL_TEXT state object!",
+      LOGD->write_syslog("Nie można sklonować obiektu stanu US_SCROLL_TEXT!",
                          LOG_ERROR);
     }
   }
@@ -208,7 +208,7 @@ void message_scroll(string str) {
 
 void notify_done_scrolling(void) {
   if(previous_object() != scroll_state)
-    error("Only our own scrolling state can notify a user it's done!");
+    error("Tylko własny stan przewijania może informować użytkownika o zakończeniu!");
 
   scroll_state = nil;
 
@@ -220,13 +220,13 @@ void pop_state(object state) {
   object prev_state, next_state;
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Unprivileged code calling pop_state!");
+    error("Nieuprzywilejowany kod wywołał pop_state!");
 
   if(!state_stack || !sizeof(state_stack))
-    error("Popping empty stack!");
+    error("Ustawianie pustego stosu!");
 
   if(!(state_stack && ({ state })))
-    error("Popping state not in stack!");
+    error("Wywoływanie stanu nie będącego w stosie!");
 
   if(state_stack[0] == state)
     first_state = 1;
@@ -260,10 +260,10 @@ void pop_state(object state) {
 
 void push_state(object state) {
   if(!SYSTEM() && previous_program() != USER_STATE)
-    error("Only privileged code can call push_state()!");
+    error("Tylko uprzywilejowany kod może wywoływać push_state()!");
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Unprivileged code calling SYSTEM_USER_IO:push_state!");
+    error("Nieuprzywilejowany kod wywołuje SYSTEM_USER_IO:push_state!");
 
   if(!state_stack) {
     state_stack = ({ });
@@ -287,11 +287,11 @@ void push_new_state(mixed state_type, mixed params...) {
   object new_state;
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Unprivileged code calling SYSTEM_USER_IO:push_new_state!");
+    error("Nieuprzywilejowany kod wywołuje SYSTEM_USER_IO:push_new_state!");
 
   new_state = clone_object(state_type);
   if(!new_state)
-    error("Can't create new state to push in push_new_state()!");
+    error("Nie mogę utworzyć nowego stanu aby go popchnąć w push_new_state()!");
 
   new_state->set_up_func(params...);
   push_state(new_state);
@@ -299,7 +299,7 @@ void push_new_state(mixed state_type, mixed params...) {
 
 object peek_state(void) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only privileged code can call peek_state!");
+    error("Tylko uprzywilejowany kod może wywoływać peek_state!");
 
   if(!state_stack || !sizeof(state_stack))
     return nil;
@@ -309,7 +309,7 @@ object peek_state(void) {
 
 mixed state_receive_message(string str) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Not privileged!");
+    error("Brak uprawnień!");
 
   return state_stack[0]->from_user(str);
 }
@@ -387,7 +387,7 @@ void set_up_substitutions(void) {
                        "*client-startup" : "<IMPDEMO>",
                        ]);
   } else {
-    error("Unrecognized protocol when setting up substitution maps!");
+    error("Nierozpoznany protokół podczas ustawiania mapy substytucji!");
   }
 
   subs_correct = 1;
@@ -409,7 +409,7 @@ string taglist_to_string(mixed *taglist) {
   mapping my_subs;
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    error("Only privileged code may call this!");
+    error("Tylko uprzywilejowany kod może to wywoływać!");
 
   catch {
 
@@ -443,8 +443,8 @@ string taglist_to_string(mixed *taglist) {
   }
 
   } : {
-    LOGD->write_syslog("Error in taglist_to_string, with taglist '"
-                       + STRINGD->mixed_sprint(taglist) + "', counter " + ctr, LOG_ERR);
+    LOGD->write_syslog("Błąd w  taglist_to_string, z listą tagów '"
+                       + STRINGD->mixed_sprint(taglist) + "', licznik " + ctr, LOG_ERR);
   }
 
   return result;
