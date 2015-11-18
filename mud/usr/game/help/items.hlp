@@ -15,6 +15,7 @@ zaloz                Załóż przedmiot
 zdejmij              Zdejmij noszony przedmiot
 zamien               Zamień przedmiot w pieniądze lub napraw
 napraw               Napraw uszkodzone przedmioty
+zaladuj              Załaduj amunicję do broni strzeleckiej
 
 }
 
@@ -206,4 +207,16 @@ uszkodzone. Sam proces naprawy może uszkodzić narzędzia. Możesz również
 naprawiać przedmioty przy użyciu komendy "zamien".
 
 Zobacz również: zbadaj, zamien
+}
+
+~name{zaladuj,załaduj}
+~desc{
+
+Komenda załaduj pozwala załadować założoną broń strzelecką wybraną amunicją.
+Prawidłowa składnia komendy to "zaladuj <nazwa amunicji>". Musisz posiadać
+przynajmniej jedną sztukę wybranej amunicji w ekwipunku aby móc załadować broń.
+Komenda automatycznie ładuje broń albo do pełna albo wszystkimi posiadanymi
+sztukami amunicji (zależy która wartość jest niższa).
+
+Zobacz również: zbadaj, zaloz, zdejmij
 }
