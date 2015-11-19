@@ -352,7 +352,7 @@ int get_room_type(void)
 
 int get_magazine(void)
 {
-    if(magazine < 0 && sizeof(obj::get_archetypes()))
+    if(magazine < 1 && sizeof(obj::get_archetypes()))
         return obj::get_archetypes()[0]->get_magazine();
 
     return magazine;
@@ -360,7 +360,7 @@ int get_magazine(void)
 
 int get_ammo(void)
 {
-    if(ammo < 0 && sizeof(obj::get_archetypes()))
+    if(ammo < 1 && sizeof(obj::get_archetypes()))
         return obj::get_archetypes()[0]->get_ammo();
 
     return ammo;
