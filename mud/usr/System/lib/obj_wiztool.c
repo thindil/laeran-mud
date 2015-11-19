@@ -364,10 +364,17 @@ static void cmd_stat(object user, string cmd, string str) {
         }
     }
 
-    if (function_object("get_damage", obj))
+    if (function_object("get_damage", obj) && obj->get_damage())
         tmp += "Zadaje " + (string)obj->get_damage() + " obrażeń.\n";
-    if (function_object("get_damage_type", obj))
+    if (function_object("get_damage_type", obj) && strlen(obj->get_damage_type()))
         tmp += "Rodzaj obrażeń: " + obj->get_damage_type() + ".\n";
+    if (function_object("get_magazine", obj) && obj->get_magazine()) {
+        tmp += "Pojemność magazynka: " + obj->get_magazine() + ".\n";
+        if (sizeof(obj->get_cur_magazine()))
+            tmp += "Obecnie w magazynku: " + implode(obj->get_cur_magazine(), ", ") + ".\n";
+    }
+    if (function_object("get_ammo", obj) && obj->get_ammo())
+        tmp += "Numer rodzica amunicji: " + obj->get_ammo() + ".\n";
 
     if(function_object("is_wearable", obj))
     {
