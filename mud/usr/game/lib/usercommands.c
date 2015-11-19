@@ -353,7 +353,13 @@ static void cmd_look(object user, string cmd, string str)
             msg += "Wygląda na zużyty.";
         else if (durability < 20.0)
             msg += "Przeszedł zbyt wiele napraw.";
-        user->message(msg + "\n");
+        msg += "\n";
+        if (tmp[index]->get_magazine()) {
+            msg += "Amunicja: " + sizeof(tmp[index]->get_cur_magazine()) + " na "
+                + tmp[index]->get_magazine() + " możliwych.\n";
+            msg += "Używa amunicji typu " + MAPD->get_room_by_num(tmp[index]->get_ammo())->get_brief()->to_string(user) + ".\n";
+        }
+        user->message(msg);
     }
     user->message("\n");
 }
