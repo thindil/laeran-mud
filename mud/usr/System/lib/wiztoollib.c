@@ -100,7 +100,7 @@ static void cmd_shutdown(object user, string cmd, string str)
     if(str == "force") {
       find_object(INITD)->force_shutdown();
     } else {
-      user->message("Unrecognized argument.  Try again.\n");
+      user->message("Nieznany argument. Spróbuj ponownie.\n");
       return;
     }
   } else {
@@ -118,7 +118,7 @@ static void cmd_compile(object user, string cmd, string str)
 {
   string objname;
 
-  user->message("Compiling '" + str + "'.\n");
+  user->message("Kompilowanie '" + str + "'.\n");
 
   if(!sscanf(str, "$%*d") && sscanf(str, "%s.c", objname)) {
     mixed* status;
@@ -128,7 +128,7 @@ static void cmd_compile(object user, string cmd, string str)
       /* Check to see if there are children and most recent issue is
 	 destroyed... */
       if(status[3] && sizeof(status[3]) && !status[6]) {
-	user->message("Can't recompile -- library issue has children!\n");
+	user->message("Nie mogę rekompilować -- obiekt posiada potomków!\n");
 	return;
       }
     }
@@ -136,7 +136,7 @@ static void cmd_compile(object user, string cmd, string str)
 
   if(!sscanf(str, "$%*d") && !sscanf(str, "%*s.c")) {
     if(!read_file(str, 0, 1) && read_file(str + ".c", 0, 1)) {
-      user->message("(compiling " + str + ".c)\n");
+      user->message("(kompilowanie " + str + ".c)\n");
       str += ".c";
     }
   }
@@ -145,7 +145,7 @@ static void cmd_compile(object user, string cmd, string str)
     wiz::cmd_compile(user, cmd, str);
   } : {
     if(ERRORD->last_compile_errors()) {
-      user->message("===Compile errors:\n" + ERRORD->last_compile_errors());
+      user->message("===Błędy kompilacji:\n" + ERRORD->last_compile_errors());
       user->message("---\n");
     }
 
@@ -155,13 +155,13 @@ static void cmd_compile(object user, string cmd, string str)
 	return;
       }
 
-      user->message("===Runtime error: '" + ERRORD->last_runtime_error()
+      user->message("===Błąd wykonania: '" + ERRORD->last_runtime_error()
 		    + "'.\n");
       user->message("---\n");
     }
 
     if(ERRORD->last_stack_trace()) {
-      user->message("===Stack trace: '" + ERRORD->last_stack_trace()
+      user->message("===Ślad stosu: '" + ERRORD->last_stack_trace()
 		    + "'.\n");
       user->message("---\n");
     }
@@ -169,25 +169,25 @@ static void cmd_compile(object user, string cmd, string str)
     return;
   }
 
-  user->message("Done.\n");
+  user->message("Wykonane.\n");
 }
 
 
 static void cmd_destruct(object user, string cmd, string str)
 {
-  user->message("Destructing '" + str + "'.\n");
+  user->message("Niszczenie '" + str + "'.\n");
 
   catch {
     wiz::cmd_destruct(user, cmd, str);
   } : {
     if(ERRORD->last_runtime_error()) {
-      user->message("===Runtime error: '" + ERRORD->last_runtime_error()
+      user->message("===Błąd wykonania: '" + ERRORD->last_runtime_error()
 		    + "'.\n");
       user->message("---\n");
     }
 
     if(ERRORD->last_stack_trace()) {
-      user->message("===Stack trace: '" + ERRORD->last_stack_trace()
+      user->message("===Ślad stosu: '" + ERRORD->last_stack_trace()
 		    + "'.\n");
       user->message("---\n");
     }
@@ -195,7 +195,7 @@ static void cmd_destruct(object user, string cmd, string str)
     return;
   }
 
-  user->message("Done.\n");
+  user->message("Wykonane.\n");
 }
 
 /* This currently extracts only alphabetic characters from a name, and
@@ -274,13 +274,13 @@ static void cmd_quota(object user, string cmd, string str) {
 static void cmd_datadump(object user, string cmd, string str) {
   find_object(INITD)->save_mud_data(user, ROOM_DIR, MOB_DIR, ZONE_DIR,
 				    SOCIAL_DIR, QUEST_DIR, nil);
-  user->message("Data save commenced.\n");
+  user->message("Rozpoczęto zapis danych.\n");
 }
 
 static void cmd_safesave(object user, string cmd, string str) {
   find_object(INITD)->save_mud_data(user, SAFE_ROOM_DIR, SAFE_MOB_DIR,
 				    SAFE_ZONE_DIR, SAFE_SOCIAL_DIR, SAFE_QUEST_DIR, nil);
-  user->message("Safe data save commenced.\n");
+  user->message("Rozpoczęto bezpieczny zapis danych.\n");
 }
 
 
@@ -296,12 +296,12 @@ static mixed evaluate_lpc_code(object user, string lpc_code)
   string name, str;
 
   if (!lpc_code) {
-    error("Can't evaluate (nil) as LPC code!");
+    error("Nie mogę określić (nil) jako kodu LPC!");
   }
 
   parsed = parse_code(lpc_code);
   if (!parsed) {
-    error("Couldn't parse code!");
+    error("Nie mogę sparsować kodu!");
   }
   name = USR_DIR + "/" + owner + "/_code";
   obj = find_object(name);
@@ -339,11 +339,11 @@ static mixed evaluate_lpc_code(object user, string lpc_code)
 static void cmd_whoami(object user, string cmd, string str)
 {
   if (str && str != "") {
-    message("Usage: " + cmd + "\n");
+    message("Użycie: " + cmd + "\n");
     return;
   }
 
-  message("You are '" + user->get_Name() + "'.  Login name: '"
+  message("Jesteś '" + user->get_Name() + "'. Nazwa konta: '"
 	  + user->get_name() + "'.\n");
 }
 
@@ -354,7 +354,7 @@ static void cmd_people(object user, string cmd, string str)
   int i, sz;
 
   if (str && str != "") {
-    message("Usage: " + cmd + "\n");
+    message("Użycie: " + cmd + "\n");
     return;
   }
 
@@ -371,9 +371,9 @@ static void cmd_people(object user, string cmd, string str)
 
       str += (ipstr + SPACE16)[.. 15];
     } else {
-      str += ("--disc--" + SPACE16)[.. 15];
+      str += ("--rozł--" + SPACE16)[.. 15];
     }
-    str += (usr->get_idle_time() + " seconds idle" + SPACE16)[..18];
+    str += (usr->get_idle_time() + " sekund bezczynny" + SPACE16)[..18];
     str += ((sizeof(owners & ({ name })) == 0) ? " " : "*");
     str += name + "\n";
   }
@@ -385,7 +385,7 @@ static void cmd_writelog(object user, string cmd, string str)
   if(str) {
     LOGD->write_syslog(str, LOG_ERR_FATAL);
   } else {
-    user->message("Usage: " + cmd + " <string to log>\n");
+    user->message("Użycie: " + cmd + " <tekst do zapisania>\n");
   }
 }
 
@@ -395,13 +395,13 @@ static void cmd_log_subscribe(object user, string cmd, string str) {
 
   if(!access(user->query_name(), "/", FULL_ACCESS)) {
     user
-      ->message("Can't set logfile subscriptions without full admin access!");
+      ->message("Nie można ustawić subskrypcji plików dziennika bez pełnych uprawnień administracyjnych!");
     return;
   }
 
   if(str && sscanf(str, "%s %d", chan, lev) == 2) {
     LOGD->set_channel_sub(chan, lev);
-    user->message("Setting channel sub for '" + chan + "' to "
+    user->message("Ustawianie subskrypcji kanału '" + chan + "' na "
 		  + lev + "\n");
     return;
   } else if (str && sscanf(str, "%s %s", chan, levname) == 2
@@ -410,26 +410,26 @@ static void cmd_log_subscribe(object user, string cmd, string str) {
 
     level = LOGD->get_level_by_name(levname);
     LOGD->set_channel_sub(chan, level);
-    user->message("Setting channel sub for '" + chan + "' to "
+    user->message("Ustawianie subskrypcji kanału '" + chan + "' na "
 		  + level + "\n");
     return;
   } else if (str && sscanf(str, "%s", chan)) {
     lev = LOGD->channel_sub(chan);
     if(lev == -1) {
-      user->message("No subscription to channel '" + chan + "'\n");
+      user->message("Brak subskrypcji do kanału '" + chan + "'\n");
     } else {
-      user->message("Sub to channel '" + chan + "' is " + lev + "\n");
+      user->message("Subskrypcja do kanału '" + chan + "' to " + lev + "\n");
     }
     return;
   } else {
-    user->message("Usage: %log_subscribe <channel> <level>\n");
+    user->message("Użycie: %log_subscribe <kanał> <poziom>\n");
   }
 }
 
 static void cmd_list_dest(object user, string cmd, string str)
 {
   if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\n");
+    user->message("Użycie: " + cmd + "\n");
     return;
   }
 
@@ -453,20 +453,20 @@ static void cmd_od_report(object user, string cmd, string str)
   i = -1;
   if(!str || (sscanf(str, "$%d%s", i, str) == 2 &&
 	      (i < 0 || i >= hmax || str != ""))) {
-    message("Usage: " + cmd + " <obj> | $<ident>\n");
+    message("Użycie: " + cmd + " <obiekt> | $<identyfikator>\n");
     return;
   }
 
   if (i >= 0) {
     obj = fetch(i);
     if(typeof(obj) != T_OBJECT) {
-      message("Not an object.\n");
+      message("Nie jest obiektem.\n");
       return;
     }
   } else if (sscanf(str, "$%s", str)) {
     obj = ::ident(str);
     if (!obj) {
-      message("Unknown: $ident.\n");
+      message("Nieznany: $identyfikator.\n");
       return;
     }
   } else if (sscanf(str, "#%*d")) {
@@ -481,7 +481,7 @@ static void cmd_od_report(object user, string cmd, string str)
   if(str) {
     str += "\n";
   } else if (!report) {
-    str = "Nil report from Object Manager!\n";
+    str = "Zgłoszono nil z Menadżera Obiektów!\n";
   } else {
     str = report;
   }
@@ -492,23 +492,23 @@ static void cmd_od_report(object user, string cmd, string str)
 
 static void cmd_full_rebuild(object user, string cmd, string str) {
   if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\n");
+    user->message("Użycie: " + cmd + "\n");
     return;
   }
 
   if(!access(user->query_name(), "/", FULL_ACCESS)) {
-    user->message("Currently only those with full administrative access "
-		  + "may do a full rebuild.\n");
+    user->message("Obecnie tylko osoby z pełnymi prawami administracyjnymi "
+		  + "mogą robić pełną przebudowę.\n");
     return;
   }
 
-  user->message("Recompiling auto object...\n");
+  user->message("Rekompilacja obiektu auto...\n");
 
   catch {
     OBJECTD->recompile_auto_object(user);
   } : {
     if(ERRORD->last_compile_errors()) {
-      user->message("===Compile errors:\n" + ERRORD->last_compile_errors());
+      user->message("===Błędy kompilacji:\n" + ERRORD->last_compile_errors());
       user->message("---\n");
     }
 
@@ -518,13 +518,13 @@ static void cmd_full_rebuild(object user, string cmd, string str) {
 	return;
       }
 
-      user->message("===Runtime error: '" + ERRORD->last_runtime_error()
+      user->message("===Błąd wykonania: '" + ERRORD->last_runtime_error()
 		    + "'.\n");
       user->message("---\n");
     }
 
     if(ERRORD->last_stack_trace()) {
-      user->message("===Stack trace: '" + ERRORD->last_stack_trace()
+      user->message("===Ślad stosu: '" + ERRORD->last_stack_trace()
 		    + "'.\n");
       user->message("---\n");
     }
@@ -532,7 +532,7 @@ static void cmd_full_rebuild(object user, string cmd, string str) {
     return;
   }
 
-  user->message("Done.\n");
+  user->message("Wykonane.\n");
 }
 
 
@@ -543,7 +543,7 @@ static void cmd_list_mobiles(object user, string cmd, string str) {
     string tmp;
 
     if(str && !STRINGD->is_whitespace(str)) {
-        user->message("Usage: " + cmd + "\n");
+        user->message("Użycie: " + cmd + "\n");
         return;
     }
 
@@ -562,7 +562,7 @@ static void cmd_list_mobiles(object user, string cmd, string str) {
             phr = mob->get_body()->get_brief();
             tmp += phr->to_string(user);
         } else {
-            tmp += "<bodiless mob>";
+            tmp += "<mob bez ciała>";
         }
         tmp += "\n";
     }
@@ -578,27 +578,27 @@ static void cmd_delete_mobile(object user, string cmd, string str) {
   if(!str || STRINGD->is_whitespace(str)
      || sscanf(str, "%*s %*s") == 2
      || sscanf(str, "#%d", mobnum) != 1) {
-    user->message("Usage: " + cmd + " #<mobile number>\n");
+    user->message("Użycie: " + cmd + " #<numer mobka>\n");
     return;
   }
 
   mob = MOBILED->get_mobile_by_num(mobnum);
   if(!mob) {
-    user->message("No mobile #" + mobnum
-		  + " is registered with MOBILED.  Failed.\n");
+    user->message("Nie ma mobka #" + mobnum
+		  + " zarejestrowanego z MOBILED. Nieudane.\n");
     return;
   }
 
   if(mob->get_user()) {
-    user->message("Mobile is still hooked up to a network connection."
-		  + "  Failed.\n");
+    user->message("Mobek jest ciągle powiązany z połączeniem sieciowym."
+		  + " Nieudane.\n");
     return;
   }
 
   /* Need to remove mobile from any room lists it currently occupies. */
   MOBILED->remove_mobile(mob);
 
-  user->message("Mobile #" + mobnum + " successfully destructed.\n");
+  user->message("Mobek #" + mobnum + " został pomyślnie usunięty.\n");
 }
 
 
@@ -607,8 +607,8 @@ static void cmd_delete_obj(object user, string cmd, string str) {
   int     obj_num;
 
   if(!str || STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + " #<object number>\n");
-    user->message("   or  " + cmd + " object description\n");
+    user->message("Użycie: " + cmd + " #<numer obiektu>\n");
+    user->message("   lub  " + cmd + " opis obiektu\n");
     return;
   }
 
@@ -626,17 +626,17 @@ static void cmd_delete_obj(object user, string cmd, string str) {
       if(!objs)
 	objs = user->get_body()->find_contained_objects(user, str);
       if(!objs || !sizeof(objs)) {
-	user->message("There's nothing matching '" + str + "'.\n");
+	user->message("Nie ma nic pasującego do '" + str + "'.\n");
 	return;
       }
       if(sizeof(objs) > 1) {
-	user->message("There are multiple things matching '" + str + "'.\n");
-	user->message("Specify just one.\n");
+	user->message("Istnieje wiele rzeczy pasujących do '" + str + "'.\n");
+	user->message("Okreść dokładnie jedną.\n");
 	return;
       }
       obj_num = objs[0]->get_number();
     } else {
-      user->message("You're nowhere.  You can't delete things there.\n");
+      user->message("Jesteś w pustce. Nie możesz kasować rzeczy tutaj.\n");
       return;
     }
   }
@@ -650,15 +650,15 @@ static void cmd_delete_obj(object user, string cmd, string str) {
   } else if(EXITD->get_exit_by_num(obj_num)) {
     object exit;
 
-    user->message("Removing exit...\n");
+    user->message("Usuwanie wyjścia...\n");
     /* Do an exit delete */
     exit = EXITD->get_exit_by_num(obj_num);
     EXITD->clear_exit(exit);
 
-    user->message("Done.\n");
+    user->message("Wykonane.\n");
   } else {
-    user->message("That's not a portable, a room, a mobile or an exit.\n");
-    user->message("Either it doesn't exist, or @delete can't delete it.\n");
+    user->message("To nie jest przenośny, pokój, mob lub wyjście.\n");
+    user->message("Albo to nie istnieje albo @delete nie może tego usunąć.\n");
     return;
   }
 }
@@ -668,11 +668,11 @@ static void cmd_segment_map(object user, string cmd, string str) {
   int hs, ctr;
 
   if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\n");
+    user->message("Użycie: " + cmd + "\n");
     return;
   }
 
-  user->message("Segments:\n");
+  user->message("Segmenty:\n");
   hs = OBJNUMD->get_highest_segment();
   for(ctr = 0; ctr <= hs; ctr++) {
     user->message((OBJNUMD->get_segment_owner(ctr) != nil) ?
@@ -693,22 +693,22 @@ static void cmd_set_segment_zone(object user, string cmd, string str) {
 
   if(!str || STRINGD->is_whitespace(str)
      || sscanf(str, "#%d #%d", segnum, zonenum) != 2) {
-    user->message("Usage: " + cmd + " #<segnum> #<zonenum>\n");
+    user->message("Użycie: " + cmd + " #<numer segmentu> #<numer strefy>\n");
     return;
   }
 
   if(!OBJNUMD->get_segment_owner(segnum)) {
-    user->message("Can't find segment #" + segnum + ".  Try @segmap.\n");
+    user->message("Nie mogę znaleźć segmentu #" + segnum + ". Sprawdź @segmap.\n");
     return;
   }
   if(zonenum >= ZONED->num_zones()) {
-    user->message("Can't find zone #" + zonenum + ".  Try @zonemap.\n");
+    user->message("Nie mogę znaleźć strefy #" + zonenum + ". Sprawdź @zonemap.\n");
     return;
   }
   ZONED->set_segment_zone(segnum, zonenum);
 
-  user->message("Set segment #" + segnum + " (object #" + (segnum * 100)
-		+ "-#" + (segnum * 100 + 99) + ") to be in zone #" + zonenum
+  user->message("Ustawiono segment #" + segnum + " (obiekty #" + (segnum * 100)
+		+ "-#" + (segnum * 100 + 99) + ") aby był w strefie #" + zonenum
 		+ " (" + ZONED->get_name_for_zone(zonenum) + ").\n");
 }
 
@@ -717,13 +717,13 @@ static void cmd_zone_map(object user, string cmd, string str) {
   int ctr, num_zones;
 
   if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\n");
+    user->message("Użycie: " + cmd + "\n");
     return;
   }
 
   num_zones = ZONED->num_zones();
 
-  user->message("Zones:\n");
+  user->message("Strefy:\n");
   for(ctr = 0; ctr < num_zones; ctr++) {
     user->message(ralign(ctr + "", 3) + ": " + ZONED->get_name_for_zone(ctr)
 		  + "\n");
@@ -734,13 +734,13 @@ static void cmd_zone_map(object user, string cmd, string str) {
 static void cmd_new_zone(object user, string cmd, string str) {
   int ctr, new_zonenum;
   if(!str || STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + " <zone name>\n");
+    user->message("Użycie: " + cmd + " <nazwa strefy>\n");
     return;
   }
 
   new_zonenum = ZONED->add_new_zone( str );
 
-  user->message("Added zone #"+new_zonenum+"\n");
+  user->message("Dodano strefę #"+new_zonenum+"\n");
 }
 
 static void cmd_new_mobile(object user, string cmd, string str) {
@@ -752,7 +752,7 @@ static void cmd_new_mobile(object user, string cmd, string str) {
   parentnum = 0;
   spawnroom = 0;
   if(!str) {
-    user->message("Użycie: " + cmd + " #<body num> <mobile type> #<parentbody> #<spawnroom>\n");
+    user->message("Użycie: " + cmd + " #<numer ciała> <typ mobka> #<ciało rodzica> #<pokój spawnu>\n");
     return;
   }
 
@@ -760,32 +760,32 @@ static void cmd_new_mobile(object user, string cmd, string str) {
      || (sscanf(str, "#%d %s #%d", bodynum, mobtype, parentnum) != 3)
      || (sscanf(str, "#%d %s #%d #%d", bodynum, mobtype, parentnum, spawnroom) != 4))
     {
-      user->message("Usage: " + cmd
-		    + " #<body num> <mobile type> #<parentbody> #<spawnroom>\n");
+      user->message("Użycie: " + cmd
+		    + " #<numer ciała> <typ mobka> #<ciało rodzica> #<pokój spawnu>\n");
       return;
     }
 
   mobtype = STRINGD->to_lower(mobtype);
 
   if(mobtype == "user") {
-    user->message("I know you're an administrator, but it's a bad idea "
-		  + "to create random\n"
-		  + "  user mobiles.  I'm stopping you.\n");
+    user->message("Wiem, że jesteś administratorem ale to jest zły pomysł "
+		  + "aby tworzyć losowe\n"
+		  + " mobki użytkowników. Zatrzymuję Ciebie.\n");
     return;
   }
 
   body = MAPD->get_room_by_num(bodynum);
 
   if(!MOBILED->get_file_by_mobile_type(mobtype)) {
-    user->message("MOBILED doesn't recognize type '" + mobtype
-		  + "',\n  so you can't create one.\n");
-    user->message("  Maybe you need to add it to the binder?\n");
+    user->message("MOBILED nie rozpoznaje typu '" + mobtype
+		  + "',\n więc nie możesz stworzyć tego mobka.\n");
+    user->message(" Może musisz dodać go do bindera?\n");
     return;
   }
 
   mobile = MOBILED->clone_mobile_by_type(mobtype);
   if(!mobile)
-    error("Can't clone mobile of type '" + mobtype + "'!");
+    error("Nie można sklonować mobka typu '" + mobtype + "'!");
 
   if (body)
     {
@@ -795,7 +795,7 @@ static void cmd_new_mobile(object user, string cmd, string str) {
   mobile->set_spawnroom(spawnroom);
 
   MOBILED->add_mobile_number(mobile, mobnum);
-  user->message("Added mobile #" + mobile->get_number() + ".\n");
+  user->message("Dodano mobka #" + mobile->get_number() + ".\n");
 }
 
 static void cmd_new_tag_type(object user, string cmd, string str) {
@@ -819,22 +819,22 @@ static void cmd_new_tag_type(object user, string cmd, string str) {
 		 setter) != 5)
 	 && (sscanf(str, "%s %s %s %s", scope, name, type, getter) != 4)
 	 && (sscanf(str, "%s %s %s", scope, name, type) != 3))) {
-    user->message("Usage: " + cmd
-		  + " <obj|mob> <name> <type> [<getter> [<setter>]]\n");
+    user->message("Użycie: " + cmd
+		  + " <obiekt|mob> <nazwa> <typ> [<getter> [<setter>]]\n");
     return;
   }
 
   scope = STRINGD->trim_whitespace(STRINGD->to_lower(scope));
   if(!scope_strings[scope]) {
-    user->message("Scope '" + scope + "' isn't recognized.\n");
-    user->message("Should be 'object' or 'mobile'.\n");
+    user->message("Rodzaj '" + scope + "' nie jest znany.\n");
+    user->message("Powinno być 'object' lub 'mobile'.\n");
     return;
   }
 
   type = STRINGD->trim_whitespace(STRINGD->to_lower(type));
   if(!type_strings[type]) {
-    user->message("Type '" + type + "' isn't recognized.\n");
-    user->message("Should be 'int' or 'float'.\n");
+    user->message("Typ '" + type + "' nie jest rozpoznany.\n");
+    user->message("Powinno być 'int' lub 'float'.\n");
     return;
   }
 
@@ -842,7 +842,7 @@ static void cmd_new_tag_type(object user, string cmd, string str) {
 
   call_other(TAGD, "new_" + scope_strings[scope] + "_tag",
 	     name, type_strings[type], getter, setter);
-  user->message("Added new tag type '" + name + "'.\n");
+  user->message("Dodano nowy typ tagu '" + name + "'.\n");
 }
 
 static void cmd_set_tag(object user, string cmd, string str) {
@@ -851,15 +851,15 @@ static void cmd_set_tag(object user, string cmd, string str) {
   int    index;
   mixed  chk, *split_tmp;
 
-  usage_string = "Usage: " + cmd + " #<obj> <tag name> <value>\n"
-    + "       " + cmd + " $<hist> <tag name> <value>\n";
+  usage_string = "Użycie: " + cmd + " #<obiekt> <nazwa tagu> <wartość>\n"
+    + "       " + cmd + " $<historia> <nazwa tagu> <wartość>\n";
   if(sscanf(str, "#%d %s", index, str2) == 2) {
     obj_to_set = MAPD->get_room_by_num(index);
     if(!obj_to_set)
       obj_to_set = MOBILED->get_mobile_by_num(index);
 
     if(!obj_to_set) {
-      user->message("Can't find object #" + index + "!\n" + usage_string);
+      user->message("Nie mogę znaleźć obiektu #" + index + "!\n" + usage_string);
       return;
     }
   } else if (sscanf(str, "$%d %s", index, str2) == 2) {
@@ -868,18 +868,18 @@ static void cmd_set_tag(object user, string cmd, string str) {
       if(typeof(chk) == T_OBJECT)
 	obj_to_set = chk;
       else {
-	user->message("History entry $" + index + " isn't an object!\n");
+	user->message("Wpis historii $" + index + " nie jest obiektem!\n");
 	return;
       }
 
       if(function_object("get_tag", obj_to_set) != TAGGED) {
-	user->message("History entry $" + index
-		      + " isn't a tagged object!\n");
+	user->message("Wpis historii $" + index
+		      + " nie jest stagowanym obiektem!\n");
 	return;
       }
 
     } else {
-      user->message("Can't find history entry $" + index + ".\n");
+      user->message("Nie mogę znaleźć wpisu historii $" + index + ".\n");
       return;
     }
 
@@ -896,20 +896,20 @@ static void cmd_set_tag(object user, string cmd, string str) {
   tag_name = split_tmp[0];
   str2 = implode(split_tmp[1..], " ");
 
-  user->message("Evaluating code w/ obj, '" + tag_name + "', code: '"
+  user->message("Szacowanie kodu obiektu, '" + tag_name + "', kod: '"
 		+ str2 + "'.\n");
 
   /* Now we have obj_to_set, and str2 contains the remaining command line */
   /* err = catch (chk = evaluate_lpc_code(user, str2)); */
   chk = evaluate_lpc_code(user, str2);
   if(err) {
-    user->message("Error evaluating code: " + err + "\n");
+    user->message("Błąd w szacowaniu kodu: " + err + "\n");
     return;
   }
 
   store(chk);
   TAGD->set_tag_value(obj_to_set, tag_name, chk);
-  user->message("Set value of tag '" + tag_name + "' to "
+  user->message("Ustawiono wartość tagu '" + tag_name + "' na "
 		+ STRINGD->mixed_sprint(chk) + ".\n");
 }
 
@@ -929,7 +929,7 @@ static void cmd_list_tags(object user, string cmd, string str) {
 
   if(!str || !strlen(str)
      || ((str != "object") && (str != "mobile"))) {
-    user->message("Usage: " + cmd + " <object|mobile>\n");
+    user->message("Użycie: " + cmd + " <object|mobile>\n");
     return;
   }
 
@@ -941,15 +941,15 @@ static void cmd_list_tags(object user, string cmd, string str) {
     all_tags = TAGD->mobile_tag_names();
     break;
   default:
-    error("Internal error!");
+    error("Wewnętrzny błąd!");
   }
 
   if(sizeof(all_tags) == 0) {
-    user->message("There are none.\n");
+    user->message("Nie ma jakichkolwiek tagów.\n");
     return;
   }
 
-  msg = "Tag Names & Types:\n";
+  msg = "Nazwy tagów i typy:\n";
   for(ctr = 0; ctr < sizeof(all_tags); ctr++) {
     int type;
 
@@ -961,7 +961,7 @@ static void cmd_list_tags(object user, string cmd, string str) {
       type = TAGD->mobile_tag_type(all_tags[ctr]);
       break;
     default:
-      error("Internal error!");
+      error("Wewnętrzny błąd!");
     }
 
     msg += "  " + type_names[type] + "  " + all_tags[ctr] + "\n";
