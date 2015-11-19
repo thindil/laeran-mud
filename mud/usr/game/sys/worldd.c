@@ -121,7 +121,7 @@ string get_date(void)
     string *months;
 
     months = ({ "stycznia", "lutego", "marca", "kwietnia", "maja", "czerwca", "lipca",
-            "sieprnia", "września", "października", "listopada", "grudzienia" });
+            "sierpnia", "września", "października", "listopada", "grudnia" });
 
     return "Jest " + day + " " + months[(month - 1)] + " roku " + year + ".";
 
