@@ -1794,10 +1794,11 @@ static void cmd_reload(object user, string cmd, string str)
                 user->get_body()->remove_from_container(inv[i]);
                 destruct_object(inv[i]);
                 diff --;
-                if (!diff)
-                    break;
+                break;
             }
         }
+        if (!diff)
+            break;
     }
     weapon->set_cur_magazine(magazine);
     user->message("Załadowałeś " + weapon->get_brief()->to_string(user) + ".\n");
