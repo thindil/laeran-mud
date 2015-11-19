@@ -75,9 +75,14 @@ void start_combat(object new_fighter1, object new_fighter2, int shoot)
             }
             else if (sizeof(tmp & ({10}))) {
                 combat_info1["shoot_skill"] = objs[i]->get_skill();
-                locs = explode(objs[i]->get_cur_magazine()[0], ":");
-                combat_info1["shoot_damage_type"] = locs[0];
-                combat_info1["shoot_damage"] = (int)locs[1];
+                if (sizeof(objs[i]->get_cur_magazine())) {
+                    locs = explode(objs[i]->get_cur_magazine()[0], ":");
+                    combat_info1["shoot_damage_type"] = locs[0];
+                    combat_info1["shoot_damage"] = (int)locs[1];
+                } else {
+                    combat_info1["shoot_damage_type"] = "crush";
+                    combat_info1["shoot_damage"] = 0;
+                }
                 combat_info1["shoot_weapon_num"] = objs[i]->get_number();
             }
             else {
