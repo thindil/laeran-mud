@@ -1750,6 +1750,11 @@ static void cmd_reload(object user, string cmd, string str)
         return;
     }
 
+    if (TAGD->get_tag_value(user->get_body(), "Combat")) {
+        user->message("Nie możesz przeładowywać w trakcie walki.\n");
+        return;
+    }
+
     tmp = user->find_first_objects(str, LOC_INVENTORY);
     if (!tmp || !sizeof(tmp)) {
         user->message("Nie masz amunicji '" + str + "' w ekwipunku.\n");
