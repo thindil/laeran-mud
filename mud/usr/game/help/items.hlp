@@ -141,7 +141,9 @@ Zobacz również: zbadaj
 Komenda zbadaj służy do bliższego przyjrzenia się obiektowi w poszukiwaniu
 jakiś ukrytych cech. Może być skrócona do "zb" bądź "zba". Na przykład:
 "zb drzwi". Dodatkowo komenda ta wyświetla informacje o tym jak bardzo
-zniszczony jest przedmiot.
+zniszczony jest przedmiot oraz w przypadku broni strzeleckiej, o ilości
+załadowanej amunicji oraz typie amunicji jaki dana broń używa (strzały,
+naboje, itd).
 
 Zobacz również: patrz
 
