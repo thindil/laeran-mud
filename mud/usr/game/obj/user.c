@@ -619,6 +619,7 @@ void death()
     phr = PHRASED->new_simple_english_phrase(implode(body->get_nouns(locale), ", ")); 
     new_body->add_noun(phr);
     new_body->set_price(body->get_price());
+    body->set_price(0);
     MAPD->add_room_to_zone(new_body, -1, ZONED->get_zone_for_room(location));
     mobile->assign_body(new_body);
     body_num = new_body->get_number();
