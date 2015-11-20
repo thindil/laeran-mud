@@ -368,14 +368,10 @@ static void cmd_inventory(object user, string cmd, string str)
 {
     int    ctr, size, i;
     mixed* objs;
-    string *inv, *weared, *wearlocations;
+    string *weared, *wearlocations;
     string msg, money;
     int *wlocs;
-
-    if(str && !STRINGD->is_whitespace(str)) {
-        user->message("Użycie: " + cmd + "\n");
-        return;
-    }
+    mixed *inv;
 
     money = "\nPosiadasz " + user->get_body()->get_price() + " miedziaków.\n";
     objs = user->get_body()->objects_in_container();
@@ -394,8 +390,16 @@ static void cmd_inventory(object user, string cmd, string str)
                 msg += wearlocations[wlocs[i]] + " ";
             msg += ")";
             weared += ({ msg });
-        } else
-            inv += ({ lalign("- " + objs[ctr]->get_brief()->to_string(user), 30) });
+        } else {
+            for (i = 0; i < sizeof(inv); i++) {
+                if (objs[ctr]->get_brief()->to_string(user) == inv[i][0])
+                    break;
+            }
+            if (i == sizeof(inv))   
+                inv += ({ ({ objs[ctr]->get_brief()->to_string(user), 1 }) });
+            else
+                inv[i][1]++;
+        }
     }
     if (sizeof(weared) > sizeof(inv))
         size = sizeof(weared);
@@ -404,7 +408,10 @@ static void cmd_inventory(object user, string cmd, string str)
     msg = lalign("=Inwentarz=", 30) + "=Założone=\n";
     for (ctr = 0; ctr < size; ctr ++) {
         if (ctr < sizeof(inv))
-            msg += inv[ctr];
+            if (inv[ctr][1] > 1)
+                msg += lalign("- " + inv[ctr][1] + "x " + inv[ctr][0], 30);
+            else
+                msg += lalign("- " + inv[ctr][0], 30);
         else
             msg += lalign("            ", 30);
         if (ctr < sizeof(weared))
