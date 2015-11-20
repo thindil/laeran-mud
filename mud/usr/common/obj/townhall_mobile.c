@@ -109,6 +109,7 @@ void hook_whisper(object body, string message)
                     + "określonych istot. Aby otrzymać wynagrodzenie za daną istotę, musisz przynieść\n"
                     + "dowód do mnie. Jeżeli chcesz się dowiedzieć dokładnie jakie dowody, szepnij\n"
                     + "do mnie 'lista' aby zobaczyć ich listę wraz z ofertą ile płacimy za nie.\n"
+                    + "Jeżeli masz przy sobie to czego potrzebujemy, szepnij do mnie 'mam <nazwa \n"
                     + "przedmiotu>. Wtedy wymienimy Twoje przedmioty na gotówkę. Jeżeli potrzebujesz\n"
                     + "jakiś porad, szepnij do mnie 'porady'.\n");
             break;
