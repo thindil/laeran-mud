@@ -135,7 +135,7 @@ void player_login(int first_time)
   start_zone = 0;
   if(start_room == nil) {
     /* Panic!  No void! */
-    error("Internal Error: no Void!");
+    error("Wewnętrzny błąd: brak Pustki!");
   }
 
   /* Show room to player */
@@ -187,10 +187,10 @@ int process_command(string str)
       switch (cmd) {
       case "password":
 	if (password) {
-	  message("Old password: ");
+	  message("Stare hasło: ");
 	  set_state(previous_object(), STATE_OLDPASSWD);
 	} else {
-	  message("New password: ");
+	  message("Nowe hasło: ");
 	  set_state(previous_object(), STATE_NEWPASSWD1);
 	}
 	return MODE_NOECHO;
@@ -214,13 +214,13 @@ int process_command(string str)
     if (wiztool) {
       wiztool->command(cmd, str);
     } else {
-      message("No match");
+      message("Nie zgadza się");
       message(": " + cmd + " " + str + "\r\n");
     }
   }
 
   /* All is well, just print a prompt and wait for next command */
-  message("No /usr/game/obj/user exists!  Use ooc cmd to complain.\r\n");
+  message("Nie ma /usr/game/obj/user! Użyj komendy ooc do narzekania.\r\n");
   return -1;
 }
 
@@ -234,12 +234,12 @@ static void cmd_ooc(object user, string cmd, string str) {
   }
 
   message_all_users("(OOC) " + Name + " ");
-  message_all_users("chats: " + str + "\r\n");
+  message_all_users("mówi: " + str + "\r\n");
 
   message("(OOC) ");
-  message("You chat: " + str + "\r\n");
+  message("mówisz: " + str + "\r\n");
 }
 
 static void cmd_whoami(object user, string cmd, string str) {
-  message("You are '" + name + "'.\r\n");
+  message("Jesteś '" + name + "'.\r\n");
 }

@@ -13,9 +13,9 @@ inherit ROOM;
 static void create(int clone) {
   ::create(clone);
   if(clone) {
-    bdesc = NEW_PHRASE("The Void");
-    ldesc = NEW_PHRASE("The wild wind howls through an empty maelstrom...");
-    edesc = NEW_PHRASE("Ooh, distant spots!  No, that's your eyesight going.");
+    bdesc = NEW_PHRASE("Pustka");
+    ldesc = NEW_PHRASE("Dziki wiatr świszcze w wirze pustki...");
+    edesc = NEW_PHRASE("O, coś jest w oddali! Nie, to tylko złudzenie.");
 
     MAPD->add_room_object(this_object());
   }

@@ -242,7 +242,7 @@ static void message(string str)
   if(user)
     user->message(str);
   else
-    DRIVER->message("From wiztool.c: " + str);
+    DRIVER->message("Z wiztool.c: " + str);
 }
 
 /*

@@ -87,7 +87,7 @@ void upgraded(varargs int clone) {
   if(SYSTEM()) {
 
   } else
-    error("Non-system code trying to call upgraded!");
+    error("Nie systemowy kod próbuje wywołać upgraded!");
 }
 
 
@@ -131,12 +131,7 @@ int login(string str)
 void logout(int quit)
 {
     if (previous_program() == LIB_CONN) {
-	conn::close(nil, quit);
-#if 0
-	if (quit) {
-	    destruct_object(this_object());
-	}
-#endif
+        conn::close(nil, quit);
     }
 }
 
@@ -159,26 +154,26 @@ void set_mode(int mode)
     }
 
     if(suppress_echo && mode == MODE_NOECHO) {
-      LOGD->write_syslog("Already suppressing echo!", LOG_VERBOSE);
+      LOGD->write_syslog("Echo już wyłączone!", LOG_VERBOSE);
       return;
     }
 
     if(!suppress_echo && mode == MODE_ECHO) {
-      LOGD->write_syslog("Already allowing echo!", LOG_VERBOSE);
+      LOGD->write_syslog("Echo już dozwolone!", LOG_VERBOSE);
       return;
     }
 
     if(suppress_echo && mode == MODE_ECHO) {
       suppress_echo = 0;
       this_object()->send_telnet_option(TP_WONT, TELOPT_ECHO);	
-      LOGD->write_syslog("Doing echo in set_mode!", LOG_VERBOSE);
+      LOGD->write_syslog("Robienie echa w set_mode!", LOG_VERBOSE);
     } else if(!suppress_echo && mode == MODE_NOECHO) {
       suppress_echo = 1;
       this_object()->send_telnet_option(TP_WILL, TELOPT_ECHO);
-      LOGD->write_syslog("Suppressing echo in set_mode!", LOG_VERBOSE);
+      LOGD->write_syslog("Wyłącznie echa w set_mode!", LOG_VERBOSE);
     }
   } else
-    error("Illegal caller '" + previous_program() + "' of MCC:set_mode!");
+    error("Nielegalny wywołujący '" + previous_program() + "' w MCC:set_mode!");
 }
 
 /*
@@ -221,7 +216,7 @@ int message_done()
       }
       return MODE_NOCHANGE;
     } else
-      error("Illegal call to message_done()!");
+      error("Niedozwolowe wywołanie message_done()!");
 }
 
 /*
@@ -255,7 +250,7 @@ int message(string str)
 {
   if(KERNEL() || SYSTEM() || previous_program() == PHANTASMAL_USER) {
     /* Do appropriate send-filtering first */
-    LOGD->write_syslog("MCC message: " + str, LOG_VERBOSE);
+    LOGD->write_syslog("MCC wiadomość: " + str, LOG_VERBOSE);
 
     /* Do newline expansion */
     str = implode(explode(str, "\r"), "");
@@ -263,7 +258,7 @@ int message(string str)
 
     return binary_message(str);
   } else {
-    error("Unprivileged code calling MCC::message()!");
+    error("Nieuprawniony kod wywołuje MCC::message()!");
   }
 }
 
@@ -287,7 +282,7 @@ private int process_input(string str) {
   string line;
   int    mode;
 
-  LOGD->write_syslog("MCC new telnet input: '" + str + "'",
+  LOGD->write_syslog("MCC nowe dane telnetowe: '" + str + "'",
 		     LOG_ULTRA_VERBOSE);
 
   if(primary_protocol) {
@@ -303,7 +298,7 @@ private int process_input(string str) {
 
       if(sscanf(str, "%sv1.%d%s", pre, imp_version, post) == 3) {
 	/* We've got a response from an IMP-enabled client */
-	LOGD->write_syslog("IMP-enabled client, version 1." + imp_version,
+	LOGD->write_syslog("Klient z włączonym IMP, wersja 1." + imp_version,
 			   LOG_VERBOSE);
 	primary_protocol = "imp";
 
@@ -373,20 +368,20 @@ int receive_message(string str)
     return process_input(str);
   }
 
-  error("Illegal call!");
+  error("Nielegalne wywołanie!");
 }
 
 nomask int send_telnet_option(int command, int option) {
   string opts;
 
   if(!SYSTEM() && previous_object() != MUDCLIENTD->get_telopt_handler(option))
-    error("Only SYSTEM code and telopt handlers can send telnet options!");
+    error("Tylko kod SYSTEM i uchwyty telopt mogą wysyłać opcje telnetowe!");
 
   if(command != TP_DO && command != TP_DONT && command != TP_WILL
      && command != TP_WONT)
-    error("Invalid command in send_telnet_option!");
+    error("Nieprawidłowa komenda w send_telnet_option!");
 
-  LOGD->write_syslog("Sending telnet option IAC " + command + " "
+  LOGD->write_syslog("Wysyłanie opcji telnetowej IAC " + command + " "
 		     + option, LOG_VERBOSE);
 
   opts = "   ";
@@ -402,7 +397,7 @@ nomask int send_telnet_subnegotiation(int option, string arguments) {
   int    ctr;
 
   if(!SYSTEM() && previous_object() != MUDCLIENTD->get_telopt_handler(option))
-    error("Only SYSTEM code and telopt handlers can send telnet options!");
+    error("Tylko kod SYSTEM i uchwyty telopt mogą wysyłać telnetowe opcje!");
 
   tmp = "  ";
   tmp[0] = TP_IAC;
@@ -433,12 +428,12 @@ void should_suppress_ga(int do_suppress) {
      || previous_object() == MUDCLIENTD->get_telopt_handler(TELOPT_SGA)) {
     suppress_ga = do_suppress;
   } else
-    error("Only privileged code may call should_suppress_ga!");
+    error("Tylko uprzywilejowany kod może wywoływać should_suppress_ga!");
 }
 
 void support_protocols(int proto) {
   if(previous_program() != MUDCLIENTD)
-    error("Only MUDCLIENTD may call support_protocols() on a conn!");
+    error("Tylko MUDCLIENTD może wywoływać support_protocols() na połączeniu!");
 
   active_protocols = proto;
 }
@@ -447,7 +442,7 @@ void support_protocols(int proto) {
    tells us that the option will be used for this connection. */
 void set_telopt(int telopt, int will_use) {
   if(previous_object() != MUDCLIENTD->get_telopt_handler(telopt))
-    error("Only the handler for a telnet option may notify a connection!");
+    error("Tylko uchwyt telnetowych opcji może ustawiać telnetowe opcje!");
 
   switch(telopt) {
   case TELOPT_TTYPE:
@@ -462,15 +457,15 @@ void set_telopt(int telopt, int will_use) {
 
 int register_terminal_type(string term_type) {
   if(previous_object() != MUDCLIENTD->get_telopt_handler(TELOPT_TTYPE))
-    error("Only the TELOPT_TTYPE handler may register terminal types!");
+    error("Tylko uchwyt TELOPT_TTYPE może rejestrować typy terminala!");
 
   if(sizeof(terminal_types & ({ term_type }))) {
-    LOGD->write_syslog("Repeat terminal type '" + term_type + "'",
+    LOGD->write_syslog("Powtarzanie typu terminala '" + term_type + "'",
 		       LOG_ULTRA_VERBOSE);
     return 1;  /* This is a repeat of a previous terminal */
   }
 
-  LOGD->write_syslog("Registering terminal type '" + term_type + "'",
+  LOGD->write_syslog("Rejestrowanie typu terminala '" + term_type + "'",
 		     LOG_VERBOSE);
 
   terminal_types += ({term_type});
@@ -481,9 +476,9 @@ int register_terminal_type(string term_type) {
    size. */
 void naws_window_size(int width, int height) {
   if(previous_object() != MUDCLIENTD->get_telopt_handler(TELOPT_NAWS))
-    error("Only the TELOPT_NAWS handler may register window sizes!");
+    error("Tylko uchwyt TELOPT_NAWS może rejestrować rozmiar okna!");
 
-  LOGD->write_syslog("Setting window size to " + width + "," + height,
+  LOGD->write_syslog("Ustawianie rozmiaru okna na " + width + "," + height,
 		     LOG_VERBOSE);
   naws_width = width;
   naws_height = height;
@@ -493,7 +488,7 @@ mapping terminal_info(void) {
   mapping ret;
 
   if(previous_program() != SYSTEM_USER_IO)
-    error("Illegal program calling terminal_info!");
+    error("Nieuprawniony program wywołuje terminal_info!");
 
   ret = ([
 	  "active" : active_protocols,
@@ -570,7 +565,7 @@ private void negotiate_option(int command, int option) {
     }
   } else {
     /* If no handler, ignore */
-    LOGD->write_syslog("Ignoring telnet option " + option, LOG_WARN);
+    LOGD->write_syslog("Ignorowanie opcji telnetowej " + option, LOG_WARN);
   }
 }
 
@@ -587,7 +582,7 @@ private void subnegotiation_string(string str) {
     handler->telnet_sb(str[0], str[1..]);
   } else {
     /* Now, ignore it.  We don't yet accept subnegotiation on that option. */
-    LOGD->write_syslog("Ignoring subnegotiation, option " + str[0] + ": '"
+    LOGD->write_syslog("Ignorowanie subnegocjacji, opcja " + str[0] + ": '"
 		       + debug_escape_str(str) + "'", LOG_WARN);
   }
 }
@@ -613,7 +608,7 @@ static string scan_iac_series(string series) {
     if(strlen(series) < 2)
       return nil;
 
-    LOGD->write_syslog("Processing option: " + series[0] + " / " + series[1],
+    LOGD->write_syslog("Przetwarzanie opcji: " + series[0] + " / " + series[1],
 		       LOG_VERBOSE);
     negotiate_option(series[0], series[1]);
     return series[2..];
@@ -623,7 +618,7 @@ static string scan_iac_series(string series) {
     iac_str = " "; iac_str[0] = TP_IAC;
     se_str = " "; se_str[0] = TP_SE;
     if(sscanf(series, "%s" + iac_str + se_str + "%s", pre, post) == 2) {
-      LOGD->write_syslog("Processing sub-neg: IAC SB '" + pre[1] + " "
+      LOGD->write_syslog("Przetwarzanie subnegocjacji: IAC SB '" + pre[1] + " "
 			 + debug_escape_str(pre[2..]) + "' IAC SE",
 			 LOG_VERBOSE);
 
@@ -688,7 +683,7 @@ static void crlfbs_filter(void)
 
 	  input_lines += ({ str });
 
-	  LOGD->write_syslog("MCC telnet-processed input: '" + str + "'",
+	  LOGD->write_syslog("MCC przetworzone telnetowo dane: '" + str + "'",
 			     LOG_ULTRA_VERBOSE);
 	} else {
 	  break; /* No more newline-delimited input.  Out of full lines. */
