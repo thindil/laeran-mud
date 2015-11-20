@@ -187,10 +187,10 @@ int process_command(string str)
       switch (cmd) {
       case "password":
 	if (password) {
-	  send_system_phrase("Old password: ");
+	  message("Old password: ");
 	  set_state(previous_object(), STATE_OLDPASSWD);
 	} else {
-	  send_system_phrase("New password: ");
+	  message("New password: ");
 	  set_state(previous_object(), STATE_NEWPASSWD1);
 	}
 	return MODE_NOECHO;
@@ -214,7 +214,7 @@ int process_command(string str)
     if (wiztool) {
       wiztool->command(cmd, str);
     } else {
-      send_system_phrase("No match");
+      message("No match");
       message(": " + cmd + " " + str + "\r\n");
     }
   }
@@ -229,20 +229,15 @@ int process_command(string str)
 
 static void cmd_ooc(object user, string cmd, string str) {
   if (!str || str == "") {
-    send_system_phrase("Usage: ");
-    message(cmd + " <text>\r\n");
+    message("Użycie: " + cmd + " <text>\r\n");
     return;
   }
 
-  system_phrase_all_users("(OOC)");
-  message_all_users(" " + Name + " ");
-  system_phrase_all_users("chats");
-  message_all_users(": " + str + "\r\n");
+  message_all_users("(OOC) " + Name + " ");
+  message_all_users("chats: " + str + "\r\n");
 
-  send_system_phrase("(OOC)");
-  message(" ");
-  send_system_phrase("You chat");
-  message(": " + str + "\r\n");
+  message("(OOC) ");
+  message("You chat: " + str + "\r\n");
 }
 
 static void cmd_whoami(object user, string cmd, string str) {

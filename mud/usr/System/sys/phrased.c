@@ -73,12 +73,6 @@ static void create(varargs int clone)
   langnames = ({ "debug", "none", "none", "US english",	"broken spanish", "polski" });
   localenames = ({ "dbUS", "noNO", "noNO", "enUS", "esUS", "plPL" });
 
-  /* Set up base repository of phrases for localized MUD strings outside
-     of any zone or world such as login greetings, menus and error
-     messages. */
-  if(!load_filemanaged_file(SYSTEM_PHRASES)) {
-    error("Can't load system phrase file!");
-  }
 }
 
 void upgraded(varargs int clone) {

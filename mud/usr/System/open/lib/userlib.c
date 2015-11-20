@@ -290,8 +290,7 @@ static void show_room_to_player(object ROOM location)
         error("Only privileged code may call show_room_to_player!");
 
     if(!location) {
-        send_system_phrase("you are nowhere");
-        message("\n");
+        message("Jesteś w pustce\n");
         return;
     }
 
@@ -304,8 +303,7 @@ static void show_room_to_player(object ROOM location)
             message(" [" + location->get_number() + "]");
         message("\n");
     } else {
-        send_system_phrase("(unnamed location)");
-        message("\n");
+        message("(nienazwana lokacja)\n");
     }
 
     phr = location->get_look();
@@ -314,8 +312,7 @@ static void show_room_to_player(object ROOM location)
         message(tmp);
         message("\n");
     } else {
-        send_system_phrase("(no room desc)");
-        message("\n");
+        message("(brak opisu pokoju)\n");
     }
 
     message("*****\n");

@@ -119,27 +119,6 @@ static void message_all_users(string str)
     }
 }
 
-/*
- * NAME:        system_phrase_all_users()
- * DESCRIPTION: send message to listening users
- */
-static void system_phrase_all_users(string str)
-{
-    object *users, user;
-    int i;
-
-    if(!SYSTEM() && !COMMON() && !GAME())
-      return;
-
-    users = users();
-    for (i = sizeof(users); --i >= 0; ) {
-        user = users[i];
-        if (user != this_object()) {
-            user->send_system_phrase(str);
-        }
-    }
-}
-
 /* This sends a Phrase, allowing locale and terminal settings to
    affect output */
 int send_phrase(object PHRASE obj) {
@@ -147,20 +126,6 @@ int send_phrase(object PHRASE obj) {
     error("Nie mogę wysłać frazy! Brak uprawnień!");
 
   return message(obj->to_string(this_object()));
-}
-
-int send_system_phrase(string phrname) {
-  object PHRASE phr;
-
-  if(!SYSTEM() && !COMMON() && !GAME())
-    error("Nie mogę wysłać frazy systemowej! Brak uprawnień!");
-
-  phr = PHRASED->file_phrase(SYSTEM_PHRASES, phrname);
-  if(!phr) {
-    LOGD->write_syslog("Nie mogę odnaleźć frazy systemowej " + phrname + "!", LOG_ERR);
-    return -1;
-  }
-  return send_phrase(phr);
 }
 
 /****** USER_STATE stack implementation ********/
