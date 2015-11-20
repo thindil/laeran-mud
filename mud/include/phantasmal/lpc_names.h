@@ -117,5 +117,3 @@
 #define SOCIAL_DIR         "/usr/game/object/socials"
 #define SAFE_SOCIAL_DIR    "/usr/game/object/safe_socials"
 
-/* Other data files */
-#define SYSTEM_PHRASES      "/usr/System/obj/system.phr"
