@@ -47,7 +47,7 @@ void hook_whisper(object body, string message)
 {
     string* parts;
     mixed* objs;
-    int i, price, amount;
+    int i, price, amount, gain;
     string items;
 
     parts = explode(message, " ");
@@ -77,12 +77,13 @@ void hook_whisper(object body, string message)
                 return;
             }
             objs = body->objects_in_container();
+            gain = 0;
             for (i = 0; i < sizeof(objs); i++) {
                 if (objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) == implode(parts[1..], " ")) {
                     items = body->get_mobile()->place(objs[i], body->get_location());
                     if (!items) {
                         body->set_price(body->get_price() + price);
-                        body->get_mobile()->get_user()->message("Sprzedałeś " + objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) + " i zarobiłeś na tym " + (string)price + " miedziaków.\n");
+                        gain += price;
                         objs[i]->get_location()->remove_from_container(objs[i]);
                         destruct_object(objs[i]);
                         amount ++;
@@ -91,7 +92,9 @@ void hook_whisper(object body, string message)
                         body->get_mobile()->get_user()->message(items + "\n");
                 }
             }
-            if (!amount)
+            if (amount)
+                body->get_mobile()->get_user()->message("Sprzedałeś " + ((amount > 1)? (string)amount + "x " : "") + implode(parts[1..], " ") + " i zarobiłeś na tym " + (string)gain + " miedziaków.\n");
+            else
                 whisper(body, "Widzę, że nie masz takiego przedmiotu do zaoferowania.");
             break;
         case "porady":
