@@ -133,6 +133,9 @@ static void cmd_list_room(object user, string cmd, string str)
             zone = 0;  /* Unzoned rooms */
 
         rooms = MAPD->rooms_in_zone(zone);
+    } else {
+        user->message("Użycie: " + cmd + " [all|zone] [all|body|det|port|room]\n");
+        return;
     }
 
     tmp = "";
