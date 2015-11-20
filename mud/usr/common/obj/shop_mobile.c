@@ -33,8 +33,8 @@ void hook_social(object body, object target, string verb)
     if (target && get_number() == target->get_mobile()->get_number() && verb == "pozdrow") {
         whisper(body, "Witaj w moim sklepie. Jeżeli chcesz zobaczyć listę towarów, szepnij do mnie 'lista'. \n"
                 + " Jeżeli chcesz obejrzeć przedmiot, szepnij do mnie 'zobacz <nazwa przedmiotu>'.\n"
-                + " Jeżeli chcesz coś kupić, szepnij do mnie 'kupuje <nazwa przedmiotu>'.\n"
-                + " Jeżeli chcesz coś sprzedać, szepnij do mnie 'sprzedaje <nazwa przedmiotu>'.\n");
+                + " Jeżeli chcesz coś kupić, szepnij do mnie 'kupuje [ilość] <nazwa przedmiotu>'.\n"
+                + " Jeżeli chcesz coś sprzedać, szepnij do mnie 'sprzedaje [ilość] <nazwa przedmiotu>'.\n");
     }
 }
 
@@ -43,13 +43,18 @@ void hook_whisper(object body, string message)
 {
     string* parts;
     mixed* objs;
-    int i;
+    int i, amount, j, gain;
     string items;
     object new_object;
 
     parts = explode(message, " ");
     objs = get_body()->objects_in_container();
     items = "Lista dostępnych na sprzedaż przedmiotów: \n";
+    amount = 1;
+    if (sizeof(parts) > 1 && !STRINGD->is_alpha(parts[1])) {
+        amount = (int)parts[1];
+        parts = ({ parts[0] }) + parts[2..];
+    }
     switch (parts[0]) {
         case "lista":
             for (i = 0; i < sizeof(objs); i++)
@@ -80,35 +85,40 @@ void hook_whisper(object body, string message)
                         body->get_mobile()->get_user()->message(items + "\n");
                         return;
                     }
-                    if (body->get_price() < objs[i]->get_price()) {
-                        body->get_mobile()->get_user()->message("Nie masz tylu pieniędzy aby kupić ten przedmiot.\n");
+                    if (body->get_price() < (amount * objs[i]->get_price())) {
+                        body->get_mobile()->get_user()->message("Nie masz tylu pieniędzy aby dokonać zakupów.\n");
                         return;
                     }
-                    new_object = clone_object(SIMPLE_ROOM);
-                    MAPD->add_room_to_zone(new_object, -1, ZONED->get_zone_for_room(body->get_location()));
-                    new_object->add_archetype(objs[i]);
-                    new_object->set_brief(nil);
-                    new_object->set_look(nil);
-                    body->get_location()->add_to_container(new_object);
-                    if (objs[i]->is_container())
-                        new_object->set_container(1);
-                    if (objs[i]->is_open())
-                        new_object->set_open(1);
-                    if (objs[i]->is_openable())
-                        new_object->set_openable(1);
-                    if (objs[i]->is_weapon())
-                        new_object->set_weapon(1);
-                    if (objs[i]->is_wearable())
-                        new_object->set_wearable(1);
-                    items = body->get_mobile()->place(new_object, body);
-                    if (!items) {
-                        body->set_price(body->get_price() - objs[i]->get_price());
-                        body->get_mobile()->get_user()->message("Kupiłeś " + objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) + " i zapłaciłeś za to " + (string)objs[i]->get_price() + " miedziaków. \n");
-                    } else {
-                        body->get_mobile()->get_user()->message(items + "\n");
-                        new_object->get_location()->remove_from_container(new_object);
-                        destruct_object(new_object);
+                    for (j = 0; j < amount; j++) {
+                        new_object = clone_object(SIMPLE_ROOM);
+                        MAPD->add_room_to_zone(new_object, -1, ZONED->get_zone_for_room(body->get_location()));
+                        new_object->add_archetype(objs[i]);
+                        new_object->set_brief(nil);
+                        new_object->set_look(nil);
+                        body->get_location()->add_to_container(new_object);
+                        if (objs[i]->is_container())
+                            new_object->set_container(1);
+                        if (objs[i]->is_open())
+                            new_object->set_open(1);
+                        if (objs[i]->is_openable())
+                            new_object->set_openable(1);
+                        if (objs[i]->is_weapon())
+                            new_object->set_weapon(1);
+                        if (objs[i]->is_wearable())
+                            new_object->set_wearable(1);
+                        items = body->get_mobile()->place(new_object, body);
+                        if (!items) {
+                            body->set_price(body->get_price() - objs[i]->get_price());
+                        } else {
+                            body->get_mobile()->get_user()->message(items + "\n");
+                            new_object->get_location()->remove_from_container(new_object);
+                            destruct_object(new_object);
+                            break;
+                        }
                     }
+                    body->get_mobile()->get_user()->message("Kupiłeś " + ((j > 1)? (string)j + "x " : "") 
+                            + objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) + " i zapłaciłeś za to " 
+                            + (string)(j * objs[i]->get_price()) + " miedziaków. \n");
                     return;
                 }
             }
@@ -119,20 +129,27 @@ void hook_whisper(object body, string message)
                 return;
             }
             objs = body->objects_in_container();
-            for (i = 0; i < sizeof(objs); i++) {
-                if (objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) == implode(parts[1..], " ")) {
+            gain = 0;
+            for (i = 0, j = 0; i < sizeof(objs) && j < amount; i++) {
+                if (objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) == implode(parts[1..], " ") && !objs[i]->is_dressed()) {
                     items = body->get_mobile()->place(objs[i], body->get_location());
                     if (!items) {
                         body->set_price(body->get_price() + objs[i]->get_price());
-                        body->get_mobile()->get_user()->message("Sprzedałeś " + objs[i]->get_brief()->to_string(body->get_mobile()->get_user()) + " i zarobiłeś na tym " + (string)objs[i]->get_price() + " miedziaków.\n");
+                        gain += objs[i]->get_price();
                         objs[i]->get_location()->remove_from_container(objs[i]);
                         destruct_object(objs[i]);
-                    } else 
+                        j++;
+                    } else {
                         body->get_mobile()->get_user()->message(items + "\n");
-                    return;
+                        break;
+                    }
                 }
             }
-            whisper(body, "Widzę, że nie masz takiego przedmiotu na sprzedaż.");
+            if (j)
+                body->get_mobile()->get_user()->message("Sprzedałeś " + ((j > 1)? (string)j + "x " : "") + implode(parts[1..], " ") 
+                        + " i zarobiłeś na tym " + (string)gain + " miedziaków.\n");
+            else
+                whisper(body, "Widzę, że nie masz takiego przedmiotu na sprzedaż.");
             return;
         default:
             whisper(body, "Witaj w moim sklepie. Jeżeli chcesz zobaczyć listę towarów, szepnij do mnie 'lista'. \n"
