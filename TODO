@@ -1,0 +1,54 @@
+- Dokończyć Vishtar
+- Dodać więcej komend socjalnych
+- Więcej tłumaczeń
+- Kanały Vishtar
+- Czary bojowe
+- Skradanie się/ukrywanie/spostrzegawczość
+- Głód i pragnienie
+- Ulepszyć run.sh
+- Możliwość tworzenia makr przez graczy
+
+Na później:
+- Ruiny pod Vishtar
+- Złodziei
+- Zombie
+- Upiory
+- Szkielety
+- Książki pisane przez graczy
+- Dodać obsługę MCCP (port binarny, MUDCLIENT)
+- Dodać negocjację linii i kolumn terminala (port binarny, MUDCLIENT)
+- Przejść na system z czasem (opóźnienia komend, itd)
+- Wytwarzanie broni/zbroi
+- Zbieranie materiałów (skóra, drewno, żelazo)
+- Graczy domy/mieszkania (w mieście)
+- Sklepy graczy
+- Gildie
+- Jeździectwo
+- Zwierzęta juczne
+- Budowanie automatonów
+- Pojazdy i ich budowanie
+- Hodowla zwierząt
+- Czary leczące
+- Czary użytkowe (umagicznianie przedmiotów)
+- Magiczne kamienie (przywołujące zombie)
+- Cmentarz poza miastem
+- Dodać grupy graczy
+- Dodać administracyjną wiadomość dla wszystkich graczy
+- Dodać informację o resecie/full rebuild dla wszystkich graczy
+- Przerobić raporty na unq
+- Dodać raporty o nieznanych komendach
+- Dodać call_other do save_rooms
+- Dodać wszystkim mobkom jakieś emocje
+- Dodać opcjonalne opóźnienie do shutdown i reboot
+- Dodać arenę PvP do Vishtar
+- Dodać wielorazowe przygody
+- Dodać przygody na czas
+- Dodać szkołę do Vishtar
+- Dodać kuźnię, zakład stolarski, itp do Vishtar
+- Zużywające się przedmioty przy założeniu (pochodnia)
+- Port za miastem
+- Dodać wiadomość dnia, tuż po zalogowaniu
+- Dodać parowanie do walki (wybór pomiędzy unik/parowanie)
+- Reputacja
+- Otwieranie zamków
+- Pułapki
